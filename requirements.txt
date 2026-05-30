@@ -1,0 +1,32 @@
+# Core
+streamlit>=1.37.0
+python-dotenv>=1.0.0
+
+# LlamaIndex (loosened pins for broader Python compatibility, including 3.13/3.14)
+llama-index>=0.11.0
+llama-index-core>=0.11.0
+llama-index-llms-groq>=0.2.0
+llama-index-embeddings-huggingface>=0.3.0
+llama-index-vector-stores-qdrant>=0.3.0
+llama-index-readers-file>=0.2.0
+
+# Alternative fast local embeddings (optional - uncomment if you want fastembed instead)
+# llama-index-embeddings-fastembed>=0.2.0
+# fastembed>=0.3.0
+
+# Vector DB
+qdrant-client>=1.9.0
+
+# PDF extraction
+pypdf>=5.0.0
+pdfplumber>=0.10.0
+
+# Bible reference parsing
+regex>=2024.5.0
+
+# Utilities
+tqdm>=4.65.0
+python-dateutil>=2.8.0
+
+# HF Spaces friendly
+watchdog>=4.0.0

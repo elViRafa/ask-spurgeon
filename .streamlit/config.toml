@@ -1,0 +1,13 @@
+[theme]
+# Force dark theme for the Spurgeon Bible aesthetic
+# This prevents the "light mode looks strange with dark conversation" issue
+base = "dark"
+
+# Custom colors matching the Spurgeon / vintage Bible look
+primaryColor = "#c9b38a"          # Gold/sepia accent
+backgroundColor = "#16130f"       # Very dark brown-black
+secondaryBackgroundColor = "#1f1a14"
+textColor = "#f4e9d8"             # Warm off-white (parchment)
+
+# Font settings
+font = "serif"
