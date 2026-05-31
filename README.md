@@ -1,3 +1,13 @@
+---
+title: Ask Spurgeon
+emoji: 📖
+colorFrom: blue
+colorTo: indigo
+sdk: streamlit
+app_file: app.py
+pinned: false
+---
+
 # ✝️ Ask Spurgeon — Free Public RAG App
 
 > A beautiful, completely free, publicly accessible web application where anyone can chat with or search the full collection of Charles Haddon Spurgeon’s sermons (~3,500 sermons, 63 volumes — all public domain).
