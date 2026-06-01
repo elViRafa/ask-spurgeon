@@ -102,6 +102,34 @@ Visit http://localhost:8501
 
 ---
 
+### Alternative: Local Development with ChromaDB (Recommended for local testing)
+
+If you want to run everything locally without Qdrant Cloud:
+
+**Easiest option (no Docker required):**
+
+1. Set in your `.env`:
+   ```env
+   VECTOR_STORE=chroma
+   CHROMA_PERSIST_DIR=./chroma_db
+   ```
+
+2. Ingest data locally:
+   ```bash
+   python ingest.py --source markdown --limit 100
+   ```
+
+3. Run the app:
+   ```bash
+   streamlit run app.py
+   ```
+
+**Docker option** (if you prefer running Chroma in Docker):
+- Use `docker compose up -d`
+- Set `CHROMA_HOST` and `CHROMA_PORT` instead of `CHROMA_PERSIST_DIR`
+
+---
+
 ## Deployment to Hugging Face Spaces (Free)
 
 1. Create a new Space → **Streamlit** SDK

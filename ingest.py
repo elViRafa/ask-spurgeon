@@ -2,7 +2,7 @@
 """
 Ask Spurgeon — Ingestion Pipeline
 
-Builds a high-quality vector index in Qdrant from Spurgeon sermons.
+Builds a high-quality vector index in Qdrant (default) or local ChromaDB from Spurgeon sermons.
 
 Recommended data source (best quality):
     git clone https://github.com/lyteword/chspurgeon-sermons.git data/chspurgeon-sermons
@@ -34,12 +34,23 @@ from llama_index.core.node_parser import SentenceSplitter
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.vector_stores.qdrant import QdrantVectorStore
 from llama_index.core import StorageContext, VectorStoreIndex
+
+# Optional ChromaDB support
+try:
+    from llama_index.vector_stores.chroma import ChromaVectorStore
+    import chromadb
+    CHROMA_AVAILABLE = True
+except ImportError:
+    CHROMA_AVAILABLE = False
+
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams, PayloadSchemaType, Filter, FieldCondition, MatchValue
 
 # Local imports
 from config import (
+    VECTOR_STORE,
     QDRANT_URL, QDRANT_API_KEY, QDRANT_COLLECTION,
+    CHROMA_HOST, CHROMA_PORT, CHROMA_COLLECTION, CHROMA_PERSIST_DIR,
     EMBEDDING_MODEL, EMBEDDING_DIM,
     CHUNK_SIZE, CHUNK_OVERLAP, BATCH_SIZE, MAX_SERMONS,
     SERMONS_DIR, MARKDOWN_DIR, DEFAULT_AUTHOR,
@@ -195,6 +206,10 @@ def make_documents_from_sermon(sermon: Dict[str, Any]) -> List[Document]:
         # Re-extract refs from this specific chunk (more precise than sermon-level)
         chunk_refs = extract_bible_references(chunk, max_refs=12)
 
+        # ChromaDB requires simple metadata values (no lists)
+        bible_refs = list(set(sermon.get("bible_references", []) + chunk_refs))
+        chunk_refs_list = chunk_refs
+
         metadata = {
             "author": sermon.get("author", DEFAULT_AUTHOR),
             "sermon_number": sermon.get("sermon_number"),
@@ -204,9 +219,9 @@ def make_documents_from_sermon(sermon: Dict[str, Any]) -> List[Document]:
             "primary_scripture": sermon.get("primary_scripture", ""),
             "bible_book": sermon.get("bible_book", ""),
             "source_url": sermon.get("source_url", ""),
-            # Store both sermon-level and chunk-level references
-            "bible_references": list(set(sermon.get("bible_references", []) + chunk_refs)),
-            "chunk_bible_references": chunk_refs,
+            # Convert lists to comma-separated strings for ChromaDB compatibility
+            "bible_references": ",".join(map(str, bible_refs)) if bible_refs else "",
+            "chunk_bible_references": ",".join(map(str, chunk_refs_list)) if chunk_refs_list else "",
         }
 
         doc = Document(
@@ -231,24 +246,54 @@ def build_index(
 ) -> None:
     print(f"Starting ingestion | source={source} | limit={limit or 'all'} | recreate={recreate}")
 
-    client = get_qdrant_client()
-    if recreate:
-        recreate_collection(client)
-    else:
-        get_or_create_collection(client)
-
     # Configure global LlamaIndex settings
     embed_model = HuggingFaceEmbedding(model_name=EMBEDDING_MODEL)
     Settings.embed_model = embed_model
     Settings.chunk_size = CHUNK_SIZE
     Settings.chunk_overlap = CHUNK_OVERLAP
 
-    # Prepare vector store
-    vector_store = QdrantVectorStore(
-        client=client,
-        collection_name=QDRANT_COLLECTION,
-        batch_size=batch_size,
-    )
+    # Prepare vector store (Qdrant or ChromaDB)
+    if VECTOR_STORE == "chroma":
+        if not CHROMA_AVAILABLE:
+            print("ERROR: ChromaDB support not installed.")
+            print("Install with: pip install chromadb llama-index-vector-stores-chroma")
+            sys.exit(1)
+
+        if CHROMA_PERSIST_DIR:
+            print(f"Using local persistent ChromaDB at: {CHROMA_PERSIST_DIR}")
+            chroma_client = chromadb.PersistentClient(path=CHROMA_PERSIST_DIR)
+        else:
+            print(f"Using local ChromaDB (Docker) at {CHROMA_HOST}:{CHROMA_PORT}")
+            chroma_client = chromadb.HttpClient(host=CHROMA_HOST, port=CHROMA_PORT)
+
+        # Create collection if it doesn't exist
+        try:
+            chroma_client.get_collection(CHROMA_COLLECTION)
+        except Exception:
+            chroma_client.create_collection(CHROMA_COLLECTION)
+
+        chroma_collection = chroma_client.get_collection(CHROMA_COLLECTION)
+        vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
+        print(f"ChromaDB collection ready: {CHROMA_COLLECTION}")
+
+        # Chroma doesn't need the old Qdrant client logic
+        client = None
+
+    else:
+        # Default: Qdrant
+        client = get_qdrant_client()
+        if recreate:
+            recreate_collection(client)
+        else:
+            get_or_create_collection(client)
+
+        vector_store = QdrantVectorStore(
+            client=client,
+            collection_name=QDRANT_COLLECTION,
+            batch_size=batch_size,
+        )
+        print(f"Using Qdrant collection: {QDRANT_COLLECTION}")
+
     storage_context = StorageContext.from_defaults(vector_store=vector_store)
 
     # Stream documents
@@ -280,12 +325,15 @@ def build_index(
         VectorStoreIndex(nodes=all_nodes, storage_context=storage_context, embed_model=embed_model)
 
     print(f"\nIngestion complete. Processed {processed} sermons.")
-    print(f"Collection: {QDRANT_COLLECTION}")
+    if VECTOR_STORE == "chroma":
+        print(f"ChromaDB collection: {CHROMA_COLLECTION} (local Docker)")
+    else:
+        print(f"Qdrant collection: {QDRANT_COLLECTION}")
     print("You can now run: streamlit run app.py")
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Ingest Spurgeon sermons into Qdrant")
+    parser = argparse.ArgumentParser(description="Ingest Spurgeon sermons into Qdrant or local ChromaDB")
     parser.add_argument("--source", choices=["markdown", "pdf"], default="markdown",
                         help="Data source (markdown recommended)")
     parser.add_argument("--limit", type=int, default=MAX_SERMONS or 0,

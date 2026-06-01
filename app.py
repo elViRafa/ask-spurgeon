@@ -26,11 +26,21 @@ from llama_index.llms.groq import Groq
 from llama_index.vector_stores.qdrant import QdrantVectorStore
 from qdrant_client import QdrantClient
 
+# Optional ChromaDB support
+try:
+    from llama_index.vector_stores.chroma import ChromaVectorStore
+    import chromadb
+    CHROMA_AVAILABLE = True
+except ImportError:
+    CHROMA_AVAILABLE = False
+
 # Local
 from config import (
     APP_TITLE, APP_SUBTITLE, APP_SUBTITLE_PT, PAGE_ICON,
     GROQ_API_KEY, PRIMARY_MODEL, FALLBACK_MODEL,
+    VECTOR_STORE,
     QDRANT_URL, QDRANT_API_KEY, QDRANT_COLLECTION,
+    CHROMA_HOST, CHROMA_PORT, CHROMA_COLLECTION,
     EMBEDDING_MODEL, TEMPERATURE, TOP_P, MAX_TOKENS,
     MAX_QUERIES_PER_HOUR, RATE_LIMIT_WINDOW_SECONDS,
     EXAMPLE_QUESTIONS, EXAMPLE_QUESTIONS_PT,
@@ -308,16 +318,60 @@ def get_qdrant_client():
         st.stop()
 
 
+@st.cache_resource(show_spinner="Connecting to local ChromaDB... / Conectando ao ChromaDB local...")
+def get_chroma_client():
+    """Connect to local ChromaDB (supports both Docker and persistent local mode)."""
+    if not CHROMA_AVAILABLE:
+        st.error(
+            "ChromaDB support is not installed.\n\n"
+            "Run this command locally:\n"
+            "pip install chromadb llama-index-vector-stores-chroma"
+        )
+        st.stop()
+
+    try:
+        if CHROMA_PERSIST_DIR:
+            # Pure local file-based mode (no Docker needed)
+            client = chromadb.PersistentClient(path=CHROMA_PERSIST_DIR)
+        else:
+            # Docker / remote HTTP mode
+            client = chromadb.HttpClient(host=CHROMA_HOST, port=CHROMA_PORT)
+            client.heartbeat()  # health check
+        return client
+    except Exception as e:
+        if CHROMA_PERSIST_DIR:
+            st.error(f"Failed to open local ChromaDB at {CHROMA_PERSIST_DIR}\n\nError: {str(e)}")
+        else:
+            st.error(
+                f"Failed to connect to ChromaDB at {CHROMA_HOST}:{CHROMA_PORT}\n\n"
+                f"Options:\n"
+                f"1. Start Docker: docker compose up -d\n"
+                f"2. Or set CHROMA_PERSIST_DIR in .env for file-based mode (no Docker)\n\n"
+                f"Error: {str(e)}"
+            )
+        st.stop()
+
+
 @st.cache_resource(show_spinner="Loading vector index... / Carregando índice vetorial...")
 def get_vector_store_index():
-    """Load the Qdrant-backed LlamaIndex vector store."""
-    client = get_qdrant_client()
-    vector_store = QdrantVectorStore(
-        client=client,
-        collection_name=QDRANT_COLLECTION,
-    )
+    """Load the vector store index (Qdrant or ChromaDB based on VECTOR_STORE)."""
     embed_model = get_embed_model()
     Settings.embed_model = embed_model
+
+    if VECTOR_STORE == "chroma":
+        chroma_client = get_chroma_client()
+        chroma_collection = chroma_client.get_or_create_collection(CHROMA_COLLECTION)
+        vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
+        print("Using local ChromaDB vector store")
+    else:
+        # Default: Qdrant
+        client = get_qdrant_client()
+        vector_store = QdrantVectorStore(
+            client=client,
+            collection_name=QDRANT_COLLECTION,
+        )
+        print("Using Qdrant vector store")
+
     return VectorStoreIndex.from_vector_store(vector_store, embed_model=embed_model)
 
 

@@ -51,11 +51,24 @@ TOP_P = 0.92
 MAX_TOKENS = 2048
 
 # =============================================================================
-# Qdrant Configuration
+# Vector Store Configuration
 # =============================================================================
+# Choose between "qdrant" (default, for production/HF Spaces) or "chroma" (local Docker)
+VECTOR_STORE = os.getenv("VECTOR_STORE", "qdrant").lower()
+
+# --- Qdrant (Production / HF Spaces) ---
 QDRANT_URL = os.getenv("QDRANT_URL", "")
 QDRANT_API_KEY = os.getenv("QDRANT_API_KEY", "")
 QDRANT_COLLECTION = os.getenv("QDRANT_COLLECTION", "spurgeon_sermons_v1")
+
+# --- ChromaDB (Local Development with Docker) ---
+CHROMA_HOST = os.getenv("CHROMA_HOST", "localhost")
+CHROMA_PORT = int(os.getenv("CHROMA_PORT", "8000"))
+CHROMA_COLLECTION = os.getenv("CHROMA_COLLECTION", "spurgeon_sermons_v1")
+
+# Pure local persistent ChromaDB (no Docker needed) - recommended for quick local testing
+# Example: CHROMA_PERSIST_DIR=./chroma_db
+CHROMA_PERSIST_DIR = os.getenv("CHROMA_PERSIST_DIR", None)
 
 # =============================================================================
 # Ingestion Settings
