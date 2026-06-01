@@ -48,6 +48,7 @@ sermons/
 volumes/
 *.pdf
 *.jsonl
+chroma_db/
 *.sqlite
 *.db
 
