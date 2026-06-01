@@ -43,6 +43,20 @@ python fine_tuning/scripts/train_spurgeon_qlora.py \
     --save-merged
 ```
 
+## Using in Google Colab
+
+The file `spurgeon_train_1500.jsonl` is **not automatically available** when you clone the repo in Colab (because large data files bloat git).
+
+**Best ways to use it in Colab:**
+
+1. **Easiest**: After cloning the repo in Colab, upload `fine_tuning/data/spurgeon_train_1500.jsonl` using the Files sidebar (click the folder icon → Upload).
+
+2. **Recommended for repeated use**: Upload the file to your Google Drive, then mount Drive and load it from there.
+
+3. **Best long-term**: Upload the dataset to the Hugging Face Datasets Hub and download it with `load_dataset("your-username/spurgeon-1500")`.
+
+See the notebook `fine_tuning/notebooks/Spurgeon_1500_Training_Colab.ipynb` — it already has clear instructions for this.
+
 ## Important Notes
 
 - The entire approach prioritizes **textual fidelity** over pure stylistic imitation.

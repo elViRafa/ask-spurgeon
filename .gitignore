@@ -47,10 +47,15 @@ data/
 sermons/
 volumes/
 *.pdf
-*.jsonl
 chroma_db/
 *.sqlite
 *.db
+
+# Allow fine-tuning datasets (we want to be able to commit training data)
+!fine_tuning/
+!fine_tuning/data/
+!fine_tuning/data/*.jsonl
+!fine_tuning/data/*.json
 
 # LlamaIndex / index artifacts (we use Qdrant Cloud)
 storage/

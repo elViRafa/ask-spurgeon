@@ -157,6 +157,12 @@ After training:
 - Training configuration: `fine_tuning/train_config.json`
 - Easy launcher: `python fine_tuning/scripts/launch_training.py`
 
+**Important note for Colab**: The file `spurgeon_train_1500.jsonl` is now allowed in git (via `.gitignore` exception), but large data files are still not ideal to commit.  
+For Colab, the recommended ways are:
+1. Upload the file manually via Colab's file browser, or
+2. Upload it to Google Drive and load from there, or
+3. Upload the dataset to Hugging Face Datasets Hub and download it in the notebook.
+
 ### Next Steps
 1. Run training with the 1500 examples (use the launcher or Colab notebook).
 2. Test training on Google Colab (even a small run is very valuable).
