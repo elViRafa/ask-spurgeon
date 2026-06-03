@@ -1,3 +1,20 @@
+## 2026-06-03 11:20 - Committed and pushed workspace configuration, scripts, and memory files
+
+**What was implemented:**
+- Configured git ignore files to exclude heavy model binaries, the local llama.cpp clone, and candidate folders.
+- Staged all source files, configuration files, local memory, and Hugging Face spaces configurations, and successfully committed/pushed them to the remote repository.
+
+**Core files affected:**
+- [.gitignore](file:///c:/Users/rafael/Projetos/search-sermons/.gitignore)
+- [.ai-memory/.gitignore](file:///c:/Users/rafael/Projetos/search-sermons/.ai-memory/.gitignore)
+
+**Key changes:**
+- Added ignore rules for model files (`*.gguf`, `*.zip`), candidate memory directories, and local build files.
+- Executed `git add`, `git commit`, and `git push` to save the full workspace development state.
+
+**Status & Testing:**
+- Pushed successfully to origin/main branch, verified clean working tree.
+
 ## 2026-06-03 11:06 - Updated memory-fabric CLI package in search-sermons virtual environment
 
 **What was implemented:**
