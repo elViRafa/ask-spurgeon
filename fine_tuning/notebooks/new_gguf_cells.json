@@ -1,0 +1,83 @@
+[
+  {
+    "cell_type": "markdown",
+    "metadata": {},
+    "source": [
+      "## 12. Convert Merged Model to GGUF (for CPU / llama.cpp Deployment)\n",
+      "\n",
+      "If you want to deploy your fine-tuned model on **free CPU** (via Hugging Face Spaces or locally with Ollama/llama.cpp), you need to convert the merged model to **GGUF** format.\n",
+      "\n",
+      "This is the recommended format for efficient CPU inference.\n",
+      "\n",
+      "**Note**: This step is heavy and benefits greatly from a GPU runtime in Colab."
+    ]
+  },
+  {
+    "cell_type": "code",
+    "execution_count": null,
+    "metadata": {},
+    "outputs": [],
+    "source": [
+      "# @title 12.1 Clone llama.cpp (needed for GGUF conversion)\n",
+      "!git clone https://github.com/ggerganov/llama.cpp --depth 1\n",
+      "%cd llama.cpp\n",
+      "!make -j\n",
+      "%cd .."
+    ]
+  },
+  {
+    "cell_type": "code",
+    "execution_count": null,
+    "metadata": {},
+    "outputs": [],
+    "source": [
+      "# @title 12.2 Convert Merged Model to GGUF (f16 first)\n",
+      "from pathlib import Path\n",
+      "\n",
+      "# Uses the MERGED_SAVE_PATH from the previous merge cell\n",
+      "MERGED_MODEL_PATH = MERGED_SAVE_PATH\n",
+      "\n",
+      "GGUF_OUTPUT_DIR = \"/content/drive/MyDrive/Spurgeon_GGUF\"\n",
+      "Path(GGUF_OUTPUT_DIR).mkdir(parents=True, exist_ok=True)\n",
+      "\n",
+      "OUTPUT_GGUF = f\"{GGUF_OUTPUT_DIR}/Spurgeon-8B-f16.gguf\"\n",
+      "\n",
+      "print(f\"Converting merged model to GGUF (f16)...\")\n",
+      "!python llama.cpp/convert_hf_to_gguf.py \\\n",
+      "    {MERGED_MODEL_PATH} \\\n",
+      "    --outfile {OUTPUT_GGUF} \\\n",
+      "    --outtype f16\n",
+      "\n",
+      "print(f\"\\n✅ f16 GGUF created at: {OUTPUT_GGUF}\")"
+    ]
+  },
+  {
+    "cell_type": "code",
+    "execution_count": null,
+    "metadata": {},
+    "outputs": [],
+    "source": [
+      "# @title 12.3 (Recommended) Quantize to Q4_K_M for CPU\n",
+      "# This produces a much smaller and faster model (~4.5-5 GB)\n",
+      "\n",
+      "QUANTIZED_OUTPUT = f\"{GGUF_OUTPUT_DIR}/Spurgeon-8B-Q4_K_M.gguf\"\n",
+      "\n",
+      "print(\"Quantizing to Q4_K_M...\")\n",
+      "!llama.cpp/quantize {OUTPUT_GGUF} {QUANTIZED_OUTPUT} q4_k_m\n",
+      "\n",
+      "print(f\"\\n✅ Quantized GGUF ready at: {QUANTIZED_OUTPUT}\")\n",
+      "print(\"Upload this file for efficient CPU deployment.\")"
+    ]
+  },
+  {
+    "cell_type": "markdown",
+    "metadata": {},
+    "source": [
+      "## After GGUF Conversion\n",
+      "\n",
+      "1. Upload the quantized GGUF file (`Spurgeon-8B-Q4_K_M.gguf`) to a Hugging Face repo.\n",
+      "2. Use the ready CPU deployment files in `fine_tuning/spaces/cpu-llama-cpp/` to create a free inference Space.\n",
+      "3. Update your main RAG app to use the new endpoint (`LLM_PROVIDER=openai`)."
+    ]
+  }
+]

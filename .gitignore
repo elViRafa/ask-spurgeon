@@ -83,3 +83,15 @@ temp/
 
 
 TOKEN_HF.md
+
+.env.bkp
+
+# Ignore model weight files and directories in fine_tuning/models/
+fine_tuning/models/*
+!fine_tuning/models/Modelfile
+
+# Ignore local llama.cpp clone
+llama.cpp/
+
+# Ignore tool check files and logs
+doctor_out.txt

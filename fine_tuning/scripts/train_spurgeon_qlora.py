@@ -18,6 +18,19 @@ import os
 import argparse
 from pathlib import Path
 
+# Load HF_TOKEN from .env file if running locally
+if not os.environ.get("HF_TOKEN"):
+    for env_path in [Path(".env"), Path("../.env"), Path("../../.env"), Path("../../../.env")]:
+        if env_path.exists():
+            with open(env_path, "r", encoding="utf-8") as f:
+                for line in f:
+                    if line.strip().startswith("HF_TOKEN="):
+                        token = line.strip().split("=", 1)[1].strip("'\" ")
+                        if token:
+                            os.environ["HF_TOKEN"] = token
+                            break
+
+
 # Unsloth must be imported before transformers
 from unsloth import FastLanguageModel
 from unsloth.chat_templates import get_chat_template
@@ -104,33 +117,104 @@ def main():
 
     print(f"Dataset size: {len(dataset)} examples")
 
-    # Training arguments
-    training_args = TrainingArguments(
-        output_dir=args.output_dir,
-        per_device_train_batch_size=PER_DEVICE_BATCH_SIZE,
-        gradient_accumulation_steps=GRADIENT_ACCUMULATION_STEPS,
-        warmup_steps=WARMUP_STEPS,
-        num_train_epochs=NUM_EPOCHS,
-        learning_rate=LEARNING_RATE,
-        fp16=not LOAD_IN_4BIT,
-        bf16=LOAD_IN_4BIT,
-        logging_steps=10,
-        optim="adamw_8bit",
-        weight_decay=0.01,
-        lr_scheduler_type="cosine",
-        seed=42,
-        save_strategy="epoch",
-    )
+    # Runtime Monkeypatch to fix transformers/trl version incompatibility
+    import transformers
+    from transformers import Trainer
+    original_init = Trainer.__init__
+    def patched_init(self, *args, **kwargs):
+        if "tokenizer" in kwargs:
+            if "processing_class" not in kwargs:
+                kwargs["processing_class"] = kwargs.pop("tokenizer")
+            else:
+                kwargs.pop("tokenizer")
+        return original_init(self, *args, **kwargs)
+    Trainer.__init__ = patched_init
+    transformers.Trainer.__init__ = patched_init
 
-    trainer = SFTTrainer(
-        model=model,
-        tokenizer=tokenizer,
-        train_dataset=dataset,
-        dataset_text_field="text",
-        max_seq_length=MAX_SEQ_LENGTH,
-        args=training_args,
-        packing=False,
-    )
+    try:
+        import unsloth.models._utils as unsloth_utils
+        if hasattr(unsloth_utils, "_original_trainer_init"):
+            orig_unsloth_init = unsloth_utils._original_trainer_init
+            def patched_unsloth_init(self, *args, **kwargs):
+                if "tokenizer" in kwargs:
+                    if "processing_class" not in kwargs:
+                        kwargs["processing_class"] = kwargs.pop("tokenizer")
+                    else:
+                        kwargs.pop("tokenizer")
+                return orig_unsloth_init(self, *args, **kwargs)
+            unsloth_utils._original_trainer_init = patched_unsloth_init
+    except Exception:
+        pass
+
+    # Check for SFTConfig compatibility
+    import inspect
+    try:
+        from trl import SFTConfig
+    except ImportError:
+        SFTConfig = None
+
+    if SFTConfig is not None:
+        # Modern TRL API
+        training_args = SFTConfig(
+            output_dir=args.output_dir,
+            per_device_train_batch_size=PER_DEVICE_BATCH_SIZE,
+            gradient_accumulation_steps=GRADIENT_ACCUMULATION_STEPS,
+            warmup_steps=WARMUP_STEPS,
+            num_train_epochs=NUM_EPOCHS,
+            learning_rate=LEARNING_RATE,
+            fp16=not LOAD_IN_4BIT,
+            bf16=LOAD_IN_4BIT,
+            logging_steps=10,
+            optim="adamw_8bit",
+            weight_decay=0.01,
+            lr_scheduler_type="cosine",
+            seed=42,
+            save_strategy="epoch",
+            max_seq_length=MAX_SEQ_LENGTH,
+            dataset_text_field="text",
+            packing=False,
+        )
+
+        sig = inspect.signature(SFTTrainer.__init__)
+        trainer_kwargs = {
+            "model": model,
+            "train_dataset": dataset,
+            "args": training_args,
+        }
+        if "processing_class" in sig.parameters:
+            trainer_kwargs["processing_class"] = tokenizer
+        else:
+            trainer_kwargs["tokenizer"] = tokenizer
+
+        trainer = SFTTrainer(**trainer_kwargs)
+    else:
+        # Legacy TRL API
+        training_args = TrainingArguments(
+            output_dir=args.output_dir,
+            per_device_train_batch_size=PER_DEVICE_BATCH_SIZE,
+            gradient_accumulation_steps=GRADIENT_ACCUMULATION_STEPS,
+            warmup_steps=WARMUP_STEPS,
+            num_train_epochs=NUM_EPOCHS,
+            learning_rate=LEARNING_RATE,
+            fp16=not LOAD_IN_4BIT,
+            bf16=LOAD_IN_4BIT,
+            logging_steps=10,
+            optim="adamw_8bit",
+            weight_decay=0.01,
+            lr_scheduler_type="cosine",
+            seed=42,
+            save_strategy="epoch",
+        )
+
+        trainer = SFTTrainer(
+            model=model,
+            tokenizer=tokenizer,
+            train_dataset=dataset,
+            dataset_text_field="text",
+            max_seq_length=MAX_SEQ_LENGTH,
+            args=training_args,
+            packing=False,
+        )
 
     print("Starting training...")
     trainer.train()

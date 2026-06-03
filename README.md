@@ -102,31 +102,153 @@ Visit http://localhost:8501
 
 ---
 
-### Alternative: Local Development with ChromaDB (Recommended for local testing)
+### Local Development Options
 
-If you want to run everything locally without Qdrant Cloud:
+You can run the full stack locally using either ChromaDB or Qdrant.
 
-**Easiest option (no Docker required):**
+#### 1. ChromaDB — Recommended for quick local development (default)
 
-1. Set in your `.env`:
-   ```env
-   VECTOR_STORE=chroma
-   CHROMA_PERSIST_DIR=./chroma_db
-   ```
+**Easiest (no Docker):**
+```env
+VECTOR_STORE=chroma
+CHROMA_PERSIST_DIR=./chroma_db
+CHROMA_COLLECTION=spurgeon_sermons_v1
+```
 
-2. Ingest data locally:
+Then:
+```bash
+python ingest.py --source markdown --limit 100
+streamlit run app.py
+```
+
+**With Docker:**
+```bash
+docker compose up -d chromadb
+```
+
+#### 2. Qdrant — Recommended when you want realistic local testing
+
+This is closer to what you will use in production/HF Spaces.
+
+```bash
+docker compose up -d qdrant
+```
+
+Then set in `.env`:
+```env
+VECTOR_STORE=qdrant
+QDRANT_URL=http://localhost:6333
+QDRANT_API_KEY=
+QDRANT_COLLECTION=spurgeon_sermons_local
+```
+
+Ingest and run as usual:
+```bash
+python ingest.py --source markdown --limit 100
+streamlit run app.py
+```
+
+**Tip**: Use Chroma for fast iteration. Switch to local Qdrant when you want to test features that behave more like production (better filtering, etc.).
+
+### Accessing the Qdrant Management UI (Dashboard)
+
+When you have Qdrant running locally via Docker:
+
+1. Make sure the container is up:
    ```bash
-   python ingest.py --source markdown --limit 100
+   docker compose up -d qdrant
    ```
 
-3. Run the app:
+2. Open your browser and go to:
+   ```
+   http://localhost:6333/dashboard
+   ```
+
+If you set an API key in `docker-compose.yml`, append it like this:
+```
+http://localhost:6333/dashboard?api_key=YOUR_API_KEY_HERE
+```
+
+The Dashboard lets you:
+- Browse collections
+- View and search vectors
+- Inspect payload (metadata)
+- Run raw queries
+- Monitor cluster status
+
+This is very useful for debugging during local development.
+
+### Using Your Fine-Tuned Custom Model Locally
+
+If you have built the Q4_K_M GGUF locally (in `fine_tuning/models/Spurgeon-8B-Q4_K_M.gguf`), you can test the full RAG + custom LLM pipeline locally.
+
+1. Start the generator server (in one terminal):
+   ```bash
+   cd fine_tuning/spaces/cpu-llama-cpp
+   # Use the local GGUF (adjust path if needed)
+   LOCAL_MODEL_PATH=../../models/Spurgeon-8B-Q4_K_M.gguf python main.py
+   ```
+   It will listen on http://localhost:7860/v1 (OpenAI-compatible).
+
+2. In your `.env` (for the main app), add/override:
+   ```env
+   LLM_PROVIDER=openai
+   CUSTOM_LLM_BASE_URL=http://localhost:7860/v1
+   CUSTOM_LLM_API_KEY=hf_dummy
+   CUSTOM_LLM_MODEL=spurgeon-8b
+   ```
+
+3. Run the main app:
    ```bash
    streamlit run app.py
    ```
 
-**Docker option** (if you prefer running Chroma in Docker):
-- Use `docker compose up -d`
-- Set `CHROMA_HOST` and `CHROMA_PORT` instead of `CHROMA_PERSIST_DIR`
+The sidebar will show "Using custom model: **spurgeon-8b**" and chat will use your local fine-tuned model.
+
+**Note**: The generator loads the entire model into RAM (~5-8 GB for Q4 8B). Close it when not testing.
+
+### Local Streamlit + Remote HF Generator Space (easiest way to test your fine-tuned model)
+
+This is exactly your current setup: run the Streamlit RAG app on your local PC, but use the fine-tuned LLM running on a (free) Hugging Face Space.
+
+**Step-by-step:**
+
+1. Edit your `.env` (in the project root) with these lines (replace with your actual generator space name):
+
+   ```env
+   LLM_PROVIDER=openai
+   CUSTOM_LLM_BASE_URL=https://<your-username>-<your-generator-space-name>.hf.space/v1
+   CUSTOM_LLM_API_KEY=hf_dummy
+   CUSTOM_LLM_MODEL=spurgeon-8b
+   ```
+
+   Leave your other settings (GROQ_API_KEY for fallback, VECTOR_STORE, etc.) as they are.
+
+2. **Wake up the generator Space first** (critical on free tier):
+   - Open `https://<your-username>-<your-generator-space-name>.hf.space` in your browser.
+   - Wait until the status shows **Running** (it can take 30-90+ seconds the first time after sleeping; it may download the GGUF on cold start).
+   - You can test it quickly by visiting the /health endpoint in browser or with curl.
+
+3. Run Streamlit locally:
+
+   ```bash
+   streamlit run app.py
+   ```
+
+4. Look for these signs that it's using your custom model:
+   - In the **sidebar**: "🤖 Using custom model: **spurgeon-8b**"
+   - In the **terminal** where you ran streamlit: a line like  
+     `Using custom OpenAI-compatible LLM at: https://...hf.space/v1 (model=spurgeon-8b)`
+
+**Common gotchas on local + HF generator**:
+- Free HF Spaces sleep after ~48h of no traffic. Always visit the generator URL first.
+- First generation after wake-up will be slow (model load + download if needed).
+- Make sure the generator Space has its own secrets set correctly (MODEL_REPO, MODEL_FILENAME pointing to your uploaded GGUF).
+- If you see "Unknown model 'tgi'" it means your .env or deployed code still has the old default — use `spurgeon-8b` and make sure you pulled the latest code changes.
+
+To go back to Groq only: set `LLM_PROVIDER=groq` in .env and restart Streamlit.
+
+This setup lets you develop the UI locally while the heavy model runs on (free) HF infrastructure.
 
 ---
 

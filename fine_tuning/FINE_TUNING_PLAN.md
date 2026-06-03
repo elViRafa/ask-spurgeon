@@ -129,15 +129,25 @@ We will not trust "it sounds good" subjective judgment.
 
 ---
 
-## 6. Deployment Strategy
+## 6. Deployment Strategy (Free Tier)
 
-After training:
-1. Merge LoRA weights into base model.
-2. Upload merged model to Hugging Face (e.g. `rafaelvieirar1r/llama-3.1-8b-spurgeon-generator`).
-3. Inference options (in order of recommendation):
-   - **Best**: Keep using Groq 70B for most traffic + route difficult/style-sensitive queries to fine-tuned model.
-   - Use the fine-tuned model via Hugging Face Inference Endpoints (paid but cheap).
-   - Run locally with vLLM or Ollama for personal use.
+### Recommended: Hugging Face Spaces + TGI
+
+1. Merge the LoRA adapter (use `scripts/merge_lora_adapter.py`).
+2. Upload the merged model to the Hugging Face Hub.
+3. Create a **Docker Space** using the official TGI image.
+4. You get a free OpenAI-compatible endpoint.
+
+Prepared files:
+- `fine_tuning/spaces/tgi-deployment/Dockerfile`
+- `fine_tuning/spaces/tgi-deployment/README.md`
+- `fine_tuning/spaces/tgi-deployment/DEPLOY_TGI.md` (full guide)
+
+This is currently the best realistic free option for using your fine-tuned Spurgeon generator in production-like conditions.
+
+Other options:
+- HF Inference Endpoints (paid)
+- Local with Ollama + ngrok/Cloudflare Tunnel
 
 ---
 

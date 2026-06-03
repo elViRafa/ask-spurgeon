@@ -23,6 +23,8 @@ from llama_index.core import Settings, VectorStoreIndex
 from llama_index.core.vector_stores import MetadataFilters, ExactMatchFilter, FilterOperator
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.llms.groq import Groq
+from llama_index.llms.openai import OpenAI as LlamaOpenAI
+from llama_index.llms.openai_like import OpenAILike  # For custom OpenAI-compatible endpoints (llama.cpp, vLLM, TGI, etc.) - allows arbitrary model names
 from llama_index.vector_stores.qdrant import QdrantVectorStore
 from qdrant_client import QdrantClient
 
@@ -38,6 +40,7 @@ except ImportError:
 from config import (
     APP_TITLE, APP_SUBTITLE, APP_SUBTITLE_PT, PAGE_ICON,
     GROQ_API_KEY, PRIMARY_MODEL, FALLBACK_MODEL,
+    LLM_PROVIDER, CUSTOM_LLM_BASE_URL, CUSTOM_LLM_API_KEY, CUSTOM_LLM_MODEL,
     VECTOR_STORE,
     QDRANT_URL, QDRANT_API_KEY, QDRANT_COLLECTION,
     CHROMA_HOST, CHROMA_PORT, CHROMA_COLLECTION,
@@ -48,6 +51,7 @@ from config import (
     get_secret,
 )
 from utils.bible_refs import get_bible_book_filter_values, extract_bible_references
+import requests
 from utils.prompts import get_system_prompt
 from utils.language import (
     get_language_options,
@@ -287,6 +291,25 @@ else:
 # Cached Resources (critical for performance on HF Spaces)
 # =============================================================================
 
+@st.cache_data(ttl=3600, show_spinner=False)
+def fetch_full_sermon(raw_url: str = "", volume: int = None, sermon_number: int = None) -> str:
+    """Fetch the full sermon text. Tries raw_url first, otherwise constructs it from volume + number."""
+    if not raw_url and volume and sermon_number:
+        raw_url = f"https://raw.githubusercontent.com/lyteword/chspurgeon-sermons/main/volume-{volume}/sermon-{sermon_number}.md"
+
+    if not raw_url:
+        return "Full sermon text not available for this source."
+
+    try:
+        response = requests.get(raw_url, timeout=10)
+        if response.status_code == 200:
+            return response.text
+        else:
+            return f"Could not load full sermon (status {response.status_code}). You can try: {raw_url}"
+    except Exception as e:
+        return f"Error loading full sermon: {str(e)}"
+
+
 @st.cache_resource(show_spinner="Loading embedding model (first run ~100MB)... / Carregando modelo de embeddings (primeira vez ~100MB)...")
 def get_embed_model():
     return HuggingFaceEmbedding(model_name=EMBEDDING_MODEL)
@@ -294,27 +317,35 @@ def get_embed_model():
 
 @st.cache_resource(show_spinner="Connecting to Qdrant... / Conectando ao Qdrant...")
 def get_qdrant_client():
-    if not QDRANT_URL or not QDRANT_API_KEY:
+    if not QDRANT_URL:
         st.error(
-            "QDRANT_URL or QDRANT_API_KEY is not configured.\n\n"
-            "Please add the following secrets in your Hugging Face Space Settings:\n"
-            "- QDRANT_URL\n"
-            "- QDRANT_API_KEY\n"
-            "- GROQ_API_KEY"
+            "QDRANT_URL is not configured.\n\n"
+            "For production/HF Spaces: Add QDRANT_URL and QDRANT_API_KEY as secrets.\n\n"
+            "For local development with Qdrant:\n"
+            "  1. Run: docker compose up -d qdrant\n"
+            "  2. Set in your .env:\n"
+            "     VECTOR_STORE=qdrant\n"
+            "     QDRANT_URL=http://localhost:6333\n"
+            "     QDRANT_API_KEY=\n"
+            "     QDRANT_COLLECTION=spurgeon_sermons_local"
         )
         st.stop()
 
     try:
         client = QdrantClient(
             url=QDRANT_URL,
-            api_key=QDRANT_API_KEY,
+            api_key=QDRANT_API_KEY or None,
             timeout=20,
         )
-        # Quick health check
         client.get_collections()
         return client
     except Exception as e:
-        st.error(f"Failed to connect to Qdrant: {str(e)}")
+        st.error(
+            f"Failed to connect to Qdrant at {QDRANT_URL}\n\n"
+            f"Tip: For local testing, make sure you ran:\n"
+            f"  docker compose up -d qdrant\n\n"
+            f"Error: {str(e)}"
+        )
         st.stop()
 
 
@@ -377,7 +408,44 @@ def get_vector_store_index():
 
 @st.cache_resource
 def get_llm(use_fallback: bool = False):
-    """Get Groq LLM with graceful fallback handling."""
+    """
+    Get the LLM to use.
+    Supports:
+      - Groq (default, fast & reliable)
+      - Custom OpenAI-compatible endpoint (e.g. your fine-tuned model via llama.cpp on HF Spaces)
+    """
+    provider = LLM_PROVIDER
+
+    # --- Custom OpenAI-compatible LLM (llama.cpp CPU Space, vLLM, etc.) ---
+    if provider == "openai":
+        if not CUSTOM_LLM_BASE_URL:
+            st.error(
+                "CUSTOM_LLM_BASE_URL is not set.\n\n"
+                "To use your fine-tuned model, set in your environment / secrets:\n"
+                "  LLM_PROVIDER=openai\n"
+                "  CUSTOM_LLM_BASE_URL=https://your-generator-space.hf.space/v1\n"
+                "  CUSTOM_LLM_API_KEY=hf_dummy   # any string; your public custom Space server ignores it\n"
+                "  CUSTOM_LLM_MODEL=spurgeon-8b\n\n"
+                "If using HF Space for the generator: open its public URL in browser first (free tier sleeps after inactivity)."
+            )
+            st.stop()
+
+        print(f"Using custom OpenAI-compatible LLM at: {CUSTOM_LLM_BASE_URL} (model={CUSTOM_LLM_MODEL})")
+        # Use OpenAILike for custom endpoints to support arbitrary model names like "spurgeon-8b"
+        # (the standard OpenAI class has a strict list of known models and would reject custom ones).
+        # Note: use api_base= (not base_url) for compatibility with llama-index OpenAILike / OpenAI wrappers.
+        return OpenAILike(
+            model=CUSTOM_LLM_MODEL,
+            api_key=CUSTOM_LLM_API_KEY,
+            api_base=CUSTOM_LLM_BASE_URL,
+            temperature=TEMPERATURE,
+            max_tokens=MAX_TOKENS,
+            timeout=600.0,  # CPU basic spaces are slow and need long timeouts
+            is_chat_model=True,
+            is_function_calling_model=False,  # our server doesn't do tools yet
+        )
+
+    # --- Default: Groq ---
     api_key = get_secret("GROQ_API_KEY", GROQ_API_KEY)
     if not api_key:
         st.error(
@@ -385,14 +453,9 @@ def get_llm(use_fallback: bool = False):
             "Please add the GROQ_API_KEY secret in your Hugging Face Space settings."
         )
         st.stop()
-    return Groq(
-        model=FALLBACK_MODEL if use_fallback else PRIMARY_MODEL,
-        api_key=api_key,
-        temperature=TEMPERATURE,
-        max_tokens=MAX_TOKENS,
-    )
 
     model = FALLBACK_MODEL if use_fallback else PRIMARY_MODEL
+    print(f"Using Groq model: {model}")
     return Groq(
         model=model,
         api_key=api_key,
@@ -628,19 +691,24 @@ def render_source_cards(sources: List[Dict], show_original_note: bool = False):
     title = get_ui_text("sources_title_pt", lang) if show_original_note else get_ui_text("sources_title", lang)
     st.markdown(title)
 
-    for src in sources:
+    for i, src in enumerate(sources):
         vol_label = get_ui_text("vol_label", lang)
         vol = f"{vol_label} {src['volume']}" if src.get("volume") else ""
         year = f"· {src['year']}" if src.get("year") else ""
         scripture = f"· {src['primary_scripture']}" if src.get('primary_scripture') else ""
-        url = src.get("source_url", "")
+
+        source_url = src.get("source_url", "")
+        raw_url = src.get("raw_url", "") or source_url
 
         sermon_word = get_ui_text("sermon_label", lang)
+        sermon_num = src.get('sermon_number', '?')
+        sermon_title = src.get('title', 'Untitled')
+
         st.markdown(
             f"""
             <div class="source-card">
                 <div class="source-title">
-                    {sermon_word} {src.get('sermon_number', '?')} — {src.get('title', 'Untitled')}
+                    {sermon_word} {sermon_num} — {sermon_title}
                 </div>
                 <div class="source-meta">
                     {vol} {year} {scripture}
@@ -652,6 +720,26 @@ def render_source_cards(sources: List[Dict], show_original_note: bool = False):
             """,
             unsafe_allow_html=True,
         )
+
+        # Links and full text button
+        cols = st.columns([2, 3])
+
+        with cols[0]:
+            if source_url:
+                st.markdown(f"[🔗 View on GitHub]({source_url})")
+
+        with cols[1]:
+            btn_key = f"view_full_{sermon_num}_{i}"
+            if st.button("📖 View full sermon", key=btn_key, use_container_width=True):
+                full_text = fetch_full_sermon(
+                    raw_url=raw_url,
+                    volume=src.get("volume"),
+                    sermon_number=sermon_num if isinstance(sermon_num, int) else None
+                )
+                with st.expander(f"📜 Full Sermon {sermon_num} — {sermon_title}", expanded=True):
+                    st.markdown(full_text)
+                    if source_url:
+                        st.markdown(f"[Open in new tab →]({source_url})")
 
 
 def render_sidebar_filters() -> dict:
@@ -684,6 +772,17 @@ def render_sidebar_filters() -> dict:
     if st.session_state.get("language") != selected_lang:
         st.session_state["language"] = selected_lang
         st.query_params["lang"] = selected_lang
+
+    # Show which LLM is active (helpful when using custom fine-tuned model)
+    if LLM_PROVIDER == "openai":
+        model_name = CUSTOM_LLM_MODEL or "custom"
+        st.sidebar.caption(f"🤖 Using custom model: **{model_name}**")
+        if CUSTOM_LLM_BASE_URL:
+            # Show a hint for HF Spaces (free tier sleeps)
+            if "hf.space" in CUSTOM_LLM_BASE_URL:
+                st.sidebar.caption("ℹ️ If using HF generator Space: visit its URL first to wake it from sleep.")
+    else:
+        st.sidebar.caption(f"🤖 Using Groq: **{PRIMARY_MODEL}**")
 
     st.sidebar.divider()
 

@@ -39,11 +39,19 @@ EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "BAAI/bge-small-en-v1.5")
 EMBEDDING_DIM = int(os.getenv("EMBEDDING_DIM", "384"))
 
 # =============================================================================
-# LLM Configuration (Groq)
+# LLM Configuration
 # =============================================================================
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 PRIMARY_MODEL = os.getenv("PRIMARY_MODEL", "llama-3.3-70b-versatile")
 FALLBACK_MODEL = os.getenv("FALLBACK_MODEL", "llama-3.1-8b-instant")
+
+# --- Custom OpenAI-compatible LLM (e.g. your fine-tuned Spurgeon model via llama.cpp on HF Spaces) ---
+# Set LLM_PROVIDER="openai" to use a custom endpoint instead of (or alongside) Groq.
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "groq").lower()   # "groq" or "openai"
+
+CUSTOM_LLM_BASE_URL = os.getenv("CUSTOM_LLM_BASE_URL", "")          # e.g. "https://your-space.hf.space/v1"
+CUSTOM_LLM_API_KEY = os.getenv("CUSTOM_LLM_API_KEY", "hf_dummy")    # Any non-empty string works for most OpenAI-compatible servers (llama.cpp, vLLM, etc.)
+CUSTOM_LLM_MODEL = os.getenv("CUSTOM_LLM_MODEL", "spurgeon-8b")   # Must match what your generator Space accepts (e.g. "spurgeon-8b")
 
 # Temperature / generation settings tuned for Spurgeon voice
 TEMPERATURE = 0.65

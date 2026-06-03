@@ -65,7 +65,16 @@ from utils.bible_refs import extract_bible_references
 
 def get_qdrant_client() -> QdrantClient:
     if not QDRANT_URL:
-        raise RuntimeError("QDRANT_URL not set. See .env.example")
+        raise RuntimeError(
+            "QDRANT_URL not set.\n\n"
+            "For local Qdrant development:\n"
+            "  1. docker compose up -d qdrant\n"
+            "  2. Set in .env:\n"
+            "     VECTOR_STORE=qdrant\n"
+            "     QDRANT_URL=http://localhost:6333\n"
+            "     QDRANT_COLLECTION=spurgeon_sermons_local\n\n"
+            "See .env.example for examples."
+        )
     return QdrantClient(
         url=QDRANT_URL,
         api_key=QDRANT_API_KEY or None,

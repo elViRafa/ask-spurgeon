@@ -67,6 +67,21 @@ In your Space settings:
 - Subsequent requests are fast.
 - Groq free tier rate limits still apply — the app has built-in fallback and rate limiting.
 
+#### Using Your Fine-Tuned Model
+
+You can route generation to your custom fine-tuned model (deployed via the cpu-llama-cpp Space) by setting these secrets:
+
+- `LLM_PROVIDER=openai`
+- `CUSTOM_LLM_BASE_URL=https://<your-username>-<generator-space-name>.hf.space/v1`
+- `CUSTOM_LLM_API_KEY=hf_dummy`
+- `CUSTOM_LLM_MODEL=spurgeon-8b`
+
+**Note:** The generator Space is an API server only. 
+- Root URL in browser → returns JSON with links to `/docs` (Swagger UI for testing the API), `/health`, `/v1/chat/completions`.
+- No full web UI at root (normal for API-only FastAPI service).
+
+You can keep Groq as fallback by leaving `LLM_PROVIDER=groq` (default).
+
 ### Custom Domain (Optional)
 
 You can assign a free `*.hf.space` subdomain or connect a custom domain in Space settings.

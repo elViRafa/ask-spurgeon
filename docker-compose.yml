@@ -1,6 +1,7 @@
 version: "3.8"
 
 services:
+  # --- ChromaDB (Recommended default for quick local development) ---
   chromadb:
     image: chromadb/chroma:latest
     container_name: ask-spurgeon-chromadb
@@ -13,5 +14,24 @@ services:
       - ANONYMIZED_TELEMETRY=FALSE
     restart: unless-stopped
 
+  # --- Qdrant (Better for realistic local testing, closer to production) ---
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: ask-spurgeon-qdrant
+    ports:
+      - "6333:6333"   # REST API + Web UI (Dashboard)
+      - "6334:6334"   # gRPC API
+    volumes:
+      - qdrant_data:/qdrant/storage
+    environment:
+      # For local development you can leave this empty or set a simple key.
+      # If you set a key, you will need to use it when connecting from the app
+      # and when accessing the Dashboard.
+      - QDRANT__SERVICE__API_KEY=
+    restart: unless-stopped
+    # Access the management UI at: http://localhost:6333/dashboard
+    # (append ?api_key=YOUR_KEY if you have one set)
+
 volumes:
   chroma_data:
+  qdrant_data:

@@ -58,8 +58,13 @@ def parse_markdown_sermon(path: Path) -> Dict[str, Any]:
     if year_match:
         year = int(year_match.group(1))
 
-    # Source URL (we can construct spurgeongems style if we want)
-    source_url = f"https://www.spurgeongems.org/sermon/chs{sermon_number}.pdf" if sermon_number else ""
+    # Source URLs for the Markdown source (lyteword collection)
+    if volume and sermon_number:
+        source_url = f"https://github.com/lyteword/chspurgeon-sermons/blob/main/volume-{volume}/sermon-{sermon_number}.md"
+        raw_url = f"https://raw.githubusercontent.com/lyteword/chspurgeon-sermons/main/volume-{volume}/sermon-{sermon_number}.md"
+    else:
+        source_url = ""
+        raw_url = ""
 
     return {
         "author": DEFAULT_AUTHOR,
@@ -70,6 +75,7 @@ def parse_markdown_sermon(path: Path) -> Dict[str, Any]:
         "primary_scripture": primary,
         "bible_book": primary.split()[0] if primary else "",
         "source_url": source_url,
+        "raw_url": raw_url,
         "bible_references": refs,
         "full_text": text,
     }

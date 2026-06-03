@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "memory-fabric": {
+      "command": "memory-fabric-mcp"
+    }
+  }
+}

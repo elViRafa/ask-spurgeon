@@ -1,0 +1,17 @@
+# Ollama Modelfile for Spurgeon-8b
+# Target: Spurgeon-8B-Q4_K_M.gguf
+
+FROM ./Spurgeon-8B-Q4_K_M.gguf
+
+# Set parameters
+PARAMETER num_ctx 4096
+PARAMETER temperature 0.7
+PARAMETER top_p 0.95
+
+# Set custom chat template matching your model's training
+TEMPLATE """{{ if .System }}<|system|>
+{{ .System }}
+{{ end }}{{ if .Prompt }}<|user|>
+{{ .Prompt }}
+{{ end }}<|assistant|>
+"""

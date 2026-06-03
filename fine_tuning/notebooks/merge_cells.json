@@ -1,0 +1,102 @@
+[
+  {
+    "cell_type": "markdown",
+    "metadata": {},
+    "source": [
+      "## 10. Merge LoRA Adapter (for TGI Deployment)\n",
+      "\n",
+      "After training, you usually only have a **LoRA adapter**. To deploy with TGI (or for easier use), it is highly recommended to **merge** the adapter weights into the base model.\n",
+      "\n",
+      "This section helps you do that directly in Colab."
+    ]
+  },
+  {
+    "cell_type": "code",
+    "execution_count": null,
+    "metadata": {},
+    "outputs": [],
+    "source": [
+      "# @title 10. Merge LoRA Adapter\n",
+      "from peft import PeftModel\n",
+      "from transformers import AutoModelForCausalLM, AutoTokenizer\n",
+      "import torch\n",
+      "from pathlib import Path\n",
+      "import os\n",
+      "\n",
+      "# --- CONFIGURATION ---\n",
+      "# This uses the OUTPUT_DIR from the training section above\n",
+      "ADAPTER_PATH = OUTPUT_DIR\n",
+      "\n",
+      "# Base model used during training\n",
+      "BASE_MODEL = \"meta-llama/Llama-3.1-8B-Instruct\"\n",
+      "\n",
+      "# Where to save the merged model (change if needed)\n",
+      "MERGED_SAVE_PATH = \"/content/drive/MyDrive/Spurgeon-8B-Merged-16bit\"\n",
+      "\n",
+      "print(f\"Loading base model: {BASE_MODEL}\")\n",
+      "base_model = AutoModelForCausalLM.from_pretrained(\n",
+      "    BASE_MODEL,\n",
+      "    torch_dtype=torch.float16,\n",
+      "    device_map=\"auto\",\n",
+      "    low_cpu_mem_usage=True,\n",
+      "    trust_remote_code=True,\n",
+      ")\n",
+      "\n",
+      "print(f\"Loading LoRA adapter from: {ADAPTER_PATH}\")\n",
+      "model = PeftModel.from_pretrained(base_model, ADAPTER_PATH)\n",
+      "\n",
+      "print(\"Merging adapter into base model...\")\n",
+      "merged_model = model.merge_and_unload()\n",
+      "\n",
+      "print(f\"Saving merged model to: {MERGED_SAVE_PATH}\")\n",
+      "Path(MERGED_SAVE_PATH).mkdir(parents=True, exist_ok=True)\n",
+      "merged_model.save_pretrained(MERGED_SAVE_PATH)\n",
+      "\n",
+      "print(\"Saving tokenizer...\")\n",
+      "tokenizer = AutoTokenizer.from_pretrained(ADAPTER_PATH)\n",
+      "tokenizer.save_pretrained(MERGED_SAVE_PATH)\n",
+      "\n",
+      "print(\"\\n✅ Merge completed successfully!\")\n",
+      "print(f\"Merged model saved at: {MERGED_SAVE_PATH}\")"
+    ]
+  },
+  {
+    "cell_type": "code",
+    "execution_count": null,
+    "metadata": {},
+    "outputs": [],
+    "source": [
+      "# @title 11. (Optional) Upload Merged Model to Hugging Face\n",
+      "from huggingface_hub import login, HfApi\n",
+      "\n",
+      "HF_REPO_ID = \"your-username/llama-3.1-8b-spurgeon-generator\"   # <-- CHANGE THIS\n",
+      "\n",
+      "print(\"Logging into Hugging Face...\")\n",
+      "login()   # You will be prompted for your HF write token\n",
+      "\n",
+      "print(f\"Uploading merged model to: {HF_REPO_ID}\")\n",
+      "api = HfApi()\n",
+      "api.upload_folder(\n",
+      "    folder_path=MERGED_SAVE_PATH,\n",
+      "    repo_id=HF_REPO_ID,\n",
+      "    repo_type=\"model\",\n",
+      "    commit_message=\"Upload merged Spurgeon fine-tuned model (1500 examples)\"\n",
+      ")\n",
+      "\n",
+      "print(\"✅ Upload complete!\")\n",
+      "print(f\"Your model is now available at: https://huggingface.co/{HF_REPO_ID}\")"
+    ]
+  },
+  {
+    "cell_type": "markdown",
+    "metadata": {},
+    "source": [
+      "## Next Steps After Merging\n",
+      "\n",
+      "1. Download the merged model from your Drive (or the path you chose).\n",
+      "2. Upload it to the Hugging Face Hub (the cell above can do this).\n",
+      "3. Use the TGI deployment guide in `fine_tuning/spaces/tgi-deployment/DEPLOY_TGI.md` to create a free inference Space.\n",
+      "4. Call your fine-tuned Spurgeon generator from your main RAG app using the OpenAI-compatible endpoint."
+    ]
+  }
+]
