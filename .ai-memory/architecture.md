@@ -1,11 +1,11 @@
 ---
 section: architecture
-summary: "Defines the system's core architectural context; consult for high-level design decisions."
+summary: "Defines the RAG architecture for Spurgeon's sermons, detailing layers from Streamlit UI to Chroma/Qdrant vector DBs and LLM providers."
 priority: high
 tags: [architecture]
 schema_version: 1.3
 last_updated: "2026-06-03T08:33:08-04:00"
-summary_hash: d3946a64beefbe228f73fc781b7c1a44
+summary_hash: bfa6b46d9eb00a6552e658b497cc91ad
 ---
 
 # Architecture

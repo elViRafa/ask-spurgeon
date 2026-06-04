@@ -1,11 +1,11 @@
 ---
 section: schemas
-summary: "Defines critical data structures and contracts for consistent application-wide data handling."
+summary: "Defines data contracts, metadata schemas for ingested texts, and environment variable configurations."
 priority: high
 tags: [schemas, contracts]
 schema_version: 1.3
 last_updated: "2026-06-03T08:33:40-04:00"
-summary_hash: b3b07bd428a50a2feac2c6473b6abb02
+summary_hash: e0fe7d0aa73fa2f3f2226b9a4b4b16f9
 ---
 
 # Schemas
@@ -36,7 +36,7 @@ primary_scripture: string   # (Optional) The primary scripture text preached on 
 Defined in `.env` and validated through `config.py`:
 
 ```properties
-LLM_PROVIDER=groq|openai
+LLM_PROVIDER=groq|openai|ollama
 GROQ_API_KEY=gsk_...
 VECTOR_STORE=chroma|qdrant
 

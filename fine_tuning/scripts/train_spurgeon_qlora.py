@@ -40,24 +40,25 @@ from trl import SFTTrainer
 from transformers import TrainingArguments, DataCollatorForSeq2Seq
 
 # =============================================================================
-# CONFIGURATION (adjust as needed)
+# DEFAULT CONFIGURATION
 # =============================================================================
 
-MODEL_NAME = "unsloth/llama-3.1-8b-instruct-bnb-4bit"   # Fast 4-bit version from Unsloth
-MAX_SEQ_LENGTH = 4096
-LOAD_IN_4BIT = True
+DEFAULT_MODEL_NAME = "unsloth/llama-3.1-8b-instruct-bnb-4bit"   # Fast 4-bit version from Unsloth
+DEFAULT_CHAT_TEMPLATE = "llama-3"
+DEFAULT_MAX_SEQ_LENGTH = 4096
+DEFAULT_LOAD_IN_4BIT = True
 
 # LoRA settings (good starting point for style transfer)
-LORA_R = 64
-LORA_ALPHA = 128
-LORA_DROPOUT = 0.05
+DEFAULT_LORA_R = 64
+DEFAULT_LORA_ALPHA = 128
+DEFAULT_LORA_DROPOUT = 0.05
 
 # Training hyperparameters
-PER_DEVICE_BATCH_SIZE = 2
-GRADIENT_ACCUMULATION_STEPS = 8
-LEARNING_RATE = 1e-4
-NUM_EPOCHS = 2
-WARMUP_STEPS = 50
+DEFAULT_BATCH_SIZE = 2
+DEFAULT_GRAD_ACCUM = 8
+DEFAULT_LEARNING_RATE = 1e-4
+DEFAULT_NUM_EPOCHS = 2
+DEFAULT_WARMUP_STEPS = 50
 
 
 def formatting_func(examples, tokenizer):
@@ -76,33 +77,47 @@ def formatting_func(examples, tokenizer):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", type=str, required=True, help="Path to JSONL dataset (ChatML format)")
-    parser.add_argument("--output-dir", type=str, default="fine_tuning/outputs/spurgeon-8b-qlora")
+    parser.add_argument("--output-dir", type=str, default="fine_tuning/outputs/spurgeon-qlora")
+    parser.add_argument("--model-name", type=str, default=DEFAULT_MODEL_NAME, help="Base model Hugging Face ID")
+    parser.add_argument("--chat-template", type=str, default=DEFAULT_CHAT_TEMPLATE, help="Chat template (e.g. llama-3, gemma2)")
+    parser.add_argument("--max-seq-length", type=int, default=DEFAULT_MAX_SEQ_LENGTH, help="Maximum sequence length")
+    parser.add_argument("--load-in-4bit", type=str, default="true", help="Load model in 4-bit (true/false)")
+    parser.add_argument("--lora-r", type=int, default=DEFAULT_LORA_R, help="LoRA rank")
+    parser.add_argument("--lora-alpha", type=int, default=DEFAULT_LORA_ALPHA, help="LoRA alpha")
+    parser.add_argument("--lora-dropout", type=float, default=DEFAULT_LORA_DROPOUT, help="LoRA dropout")
+    parser.add_argument("--batch-size", type=int, default=DEFAULT_BATCH_SIZE, help="Batch size per device")
+    parser.add_argument("--grad-accum", type=int, default=DEFAULT_GRAD_ACCUM, help="Gradient accumulation steps")
+    parser.add_argument("--learning-rate", type=float, default=DEFAULT_LEARNING_RATE, help="Learning rate")
+    parser.add_argument("--num-epochs", type=int, default=DEFAULT_NUM_EPOCHS, help="Number of training epochs")
+    parser.add_argument("--warmup-steps", type=int, default=DEFAULT_WARMUP_STEPS, help="Warmup steps")
     parser.add_argument("--save-merged", action="store_true", help="Also save merged 16-bit model at the end")
     args = parser.parse_args()
 
-    print(f"Loading base model: {MODEL_NAME}")
+    load_in_4bit = args.load_in_4bit.lower() == "true"
+
+    print(f"Loading base model: {args.model_name}")
 
     model, tokenizer = FastLanguageModel.from_pretrained(
-        model_name=MODEL_NAME,
-        max_seq_length=MAX_SEQ_LENGTH,
-        load_in_4bit=LOAD_IN_4BIT,
+        model_name=args.model_name,
+        max_seq_length=args.max_seq_length,
+        load_in_4bit=load_in_4bit,
         dtype=None,  # Auto
     )
 
     # Add LoRA adapters
     model = FastLanguageModel.get_peft_model(
         model,
-        r=LORA_R,
-        lora_alpha=LORA_ALPHA,
-        lora_dropout=LORA_DROPOUT,
+        r=args.lora_r,
+        lora_alpha=args.lora_alpha,
+        lora_dropout=args.lora_dropout,
         target_modules=["q_proj", "k_proj", "v_proj", "o_proj",
                         "gate_proj", "up_proj", "down_proj"],
         use_gradient_checkpointing="unsloth",
         random_state=42,
     )
 
-    # Apply Llama-3 chat template
-    tokenizer = get_chat_template(tokenizer, chat_template="llama-3")
+    # Apply specified chat template (llama-3, gemma2, etc.)
+    tokenizer = get_chat_template(tokenizer, chat_template=args.chat_template)
 
     # Load dataset
     print(f"Loading dataset from {args.dataset}")
@@ -157,20 +172,20 @@ def main():
         # Modern TRL API
         training_args = SFTConfig(
             output_dir=args.output_dir,
-            per_device_train_batch_size=PER_DEVICE_BATCH_SIZE,
-            gradient_accumulation_steps=GRADIENT_ACCUMULATION_STEPS,
-            warmup_steps=WARMUP_STEPS,
-            num_train_epochs=NUM_EPOCHS,
-            learning_rate=LEARNING_RATE,
-            fp16=not LOAD_IN_4BIT,
-            bf16=LOAD_IN_4BIT,
+            per_device_train_batch_size=args.batch_size,
+            gradient_accumulation_steps=args.grad_accum,
+            warmup_steps=args.warmup_steps,
+            num_train_epochs=args.num_epochs,
+            learning_rate=args.learning_rate,
+            fp16=not load_in_4bit,
+            bf16=load_in_4bit,
             logging_steps=10,
             optim="adamw_8bit",
             weight_decay=0.01,
             lr_scheduler_type="cosine",
             seed=42,
             save_strategy="epoch",
-            max_seq_length=MAX_SEQ_LENGTH,
+            max_seq_length=args.max_seq_length,
             dataset_text_field="text",
             packing=False,
         )
@@ -191,13 +206,13 @@ def main():
         # Legacy TRL API
         training_args = TrainingArguments(
             output_dir=args.output_dir,
-            per_device_train_batch_size=PER_DEVICE_BATCH_SIZE,
-            gradient_accumulation_steps=GRADIENT_ACCUMULATION_STEPS,
-            warmup_steps=WARMUP_STEPS,
-            num_train_epochs=NUM_EPOCHS,
-            learning_rate=LEARNING_RATE,
-            fp16=not LOAD_IN_4BIT,
-            bf16=LOAD_IN_4BIT,
+            per_device_train_batch_size=args.batch_size,
+            gradient_accumulation_steps=args.grad_accum,
+            warmup_steps=args.warmup_steps,
+            num_train_epochs=args.num_epochs,
+            learning_rate=args.learning_rate,
+            fp16=not load_in_4bit,
+            bf16=load_in_4bit,
             logging_steps=10,
             optim="adamw_8bit",
             weight_decay=0.01,
@@ -211,7 +226,7 @@ def main():
             tokenizer=tokenizer,
             train_dataset=dataset,
             dataset_text_field="text",
-            max_seq_length=MAX_SEQ_LENGTH,
+            max_seq_length=args.max_seq_length,
             args=training_args,
             packing=False,
         )

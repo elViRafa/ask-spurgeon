@@ -1,8 +1,8 @@
 {
-  "model_name": "unsloth/llama-3.1-8b-instruct-bnb-4bit",
-  "chat_template": "llama-3",
+  "model_name": "unsloth/gemma-2-9b-it-bnb-4bit",
+  "chat_template": "gemma2",
   "dataset_path": "fine_tuning/data/spurgeon_train_1500.jsonl",
-  "output_dir": "fine_tuning/outputs/spurgeon-8b-qlora-v1",
+  "output_dir": "fine_tuning/outputs/spurgeon-gemma2-9b-qlora-v1",
   "max_seq_length": 4096,
   "load_in_4bit": true,
   
@@ -27,5 +27,5 @@
     "save_strategy": "epoch"
   },
   
-  "notes": "Configuration for first training run using 1500 high-fidelity Spurgeon examples. Prioritizes faithfulness to source text."
+  "notes": "Gemma 2 9b configuration for Spurgeon style transfer using the 1500 high-fidelity dataset. Designed for Gemma-2 4-bit fine-tuning."
 }

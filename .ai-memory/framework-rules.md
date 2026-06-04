@@ -1,11 +1,11 @@
 ---
 section: framework-rules
-summary: "Defines project-wide coding standards, requiring Python 3.11+ and using pytest for all unit testing."
+summary: "Defines coding standards, required libraries (Streamlit, LlamaIndex), environment setup (.env), and database rules for the codebase."
 priority: medium
 tags: [framework, rules]
 schema_version: 1.3
 last_updated: "2026-06-03T08:33:33-04:00"
-summary_hash: 558f00833027bc0a96a2d499ad428a31
+summary_hash: f0dd594251d74f0ce1c3d34410c1767e
 ---
 
 # Framework Rules

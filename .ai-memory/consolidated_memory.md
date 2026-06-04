@@ -5,34 +5,38 @@ summary: "Map of available project memory sections."
 priority: high
 tags: [index, memory]
 schema_version: 1.3
-last_updated: "2026-06-03T08:33:50-04:00"
-consolidation_hash: eae938c84e51afe555b7f9cb6e0d2fb4
+last_updated: "2026-06-04T10:26:16-04:00"
+consolidation_hash: ec824adedf4cc5ba13d99b8da6c91476
 contradictions: []
 consolidation_warnings: []
 ---
 
 # Project Memory Index
 
-Updated by Memory Fabric Dreaming mode `light` at 2026-06-03T08:33:50-04:00.
+Updated by Memory Fabric Dreaming mode `light` at 2026-06-04T10:26:16-04:00.
 
 | Section | Priority | Summary | Key Topics |
 | --- | --- | --- | --- |
-| `architecture` | high | Defines the system's core architectural context; consult for high-level design decisions. | • Core Architecture Layers<br>• Key Subsystems |
-| `debt` | low | Tracks technical debt, noting known risks and necessary code cleanup tasks for future reference. | • Known Technical Debt & Limits<br>• Roadmap & Pending Features |
-| `decisions` | medium | Details model fine-tuning, memory integration, and local deployment strategies for LLM inference. | • 1. Custom Model Fine-Tuning & Quantization (2026-06-01)<br>• 2. Memory Systems Integration (2026-06-01 to 2026-06-02)<br>• 3. Deployment & Performance Optimization (2026-06-02)<br>• 4. Local Execution Options (2026-06-02) |
-| `framework-rules` | medium | Defines project-wide coding standards, requiring Python 3.11+ and using pytest for all unit testing. | • 1. Runtime Environment<br>• 2. Core Libraries & Packages<br>• 3. Vector Database Rules<br>• 4. Agent Memory Guidelines |
-| `schemas` | high | Defines critical data structures and contracts for consistent application-wide data handling. | • 1. Document & Chunk Metadata Schema<br>• 2. Ingestion Parameters<br>• 3. Environment Variables (Configuration Schema) |
+| `architecture` | high | Defines the RAG architecture for Spurgeon's sermons, detailing layers from Streamlit UI to Chroma/Qdrant vector DBs and LLM providers. | • Core Architecture Layers<br>• Key Subsystems |
+| `debt` | low | Tracks technical debt (e.g., pure vector search, rate limiting) and roadmap items like multi-author support and automated ingestion. | • Known Technical Debt & Limits<br>• Roadmap & Pending Features |
+| `decisions` | medium | Details model fine-tuning, memory integration, performance fixes (FastAPI/OpenBLAS), and local execution options (Ollama/CUDA). | • 1. Custom Model Fine-Tuning & Quantization (2026-06-01)<br>• 2. Memory Systems Integration (2026-06-01 to 2026-06-02)<br>• 3. Deployment & Performance Optimization (2026-06-02)<br>• 4. Local Execution Options (2026-06-02) |
+| `framework-rules` | medium | Defines coding standards, required libraries (Streamlit, LlamaIndex), environment setup (.env), and database rules for the codebase. | • 1. Runtime Environment<br>• 2. Core Libraries & Packages<br>• 3. Vector Database Rules<br>• 4. Agent Memory Guidelines |
+| `schemas` | high | Defines data contracts, metadata schemas for ingested texts, and environment variable configurations. | • 1. Document & Chunk Metadata Schema<br>• 2. Ingestion Parameters<br>• 3. Environment Variables (Configuration Schema) |
 | `ubiquitous-language` | medium | Defines consistent domain language used throughout the codebase for clarity and shared understanding. | None recorded |
+
+## Memory Store
+
+Please see the dedicated [Memory Store Index](memory-store/index.md) for a map of available semantic memory store files.
 
 <!-- memory-fabric:local/architecture -->
 ---
 section: architecture
-summary: "Defines the system's core architectural context; consult for high-level design decisions."
+summary: "Defines the RAG architecture for Spurgeon's sermons, detailing layers from Streamlit UI to Chroma/Qdrant vector DBs and LLM providers."
 priority: high
 tags: [architecture]
 schema_version: 1.3
 last_updated: "2026-06-03T08:33:08-04:00"
-summary_hash: d3946a64beefbe228f73fc781b7c1a44
+summary_hash: bfa6b46d9eb00a6552e658b497cc91ad
 ---
 
 # Architecture
@@ -59,12 +63,12 @@ The Ask Spurgeon application is a RAG (Retrieval-Augmented Generation) system bu
 <!-- memory-fabric:local/schemas -->
 ---
 section: schemas
-summary: "Defines critical data structures and contracts for consistent application-wide data handling."
+summary: "Defines data contracts, metadata schemas for ingested texts, and environment variable configurations."
 priority: high
 tags: [schemas, contracts]
 schema_version: 1.3
 last_updated: "2026-06-03T08:33:40-04:00"
-summary_hash: b3b07bd428a50a2feac2c6473b6abb02
+summary_hash: e0fe7d0aa73fa2f3f2226b9a4b4b16f9
 ---
 
 # Schemas
@@ -95,7 +99,7 @@ primary_scripture: string   # (Optional) The primary scripture text preached on 
 Defined in `.env` and validated through `config.py`:
 
 ```properties
-LLM_PROVIDER=groq|openai
+LLM_PROVIDER=groq|openai|ollama
 GROQ_API_KEY=gsk_...
 VECTOR_STORE=chroma|qdrant
 
@@ -117,12 +121,12 @@ CUSTOM_LLM_MODEL=spurgeon-8b
 <!-- memory-fabric:local/decisions -->
 ---
 section: decisions
-summary: "Details model fine-tuning, memory integration, and local deployment strategies for LLM inference."
+summary: "Details model fine-tuning, memory integration, performance fixes (FastAPI/OpenBLAS), and local execution options (Ollama/CUDA)."
 priority: medium
 tags: [decisions, adr]
 schema_version: 1.3
 last_updated: "2026-06-03T08:33:24-04:00"
-summary_hash: c9f68144d5138d88c179236ec40a6546
+summary_hash: b3f7967650eea7bea2eee8fb73f743be
 ---
 
 # Decisions
@@ -153,12 +157,12 @@ Record durable decisions and rationale here.
 <!-- memory-fabric:local/framework-rules -->
 ---
 section: framework-rules
-summary: "Defines project-wide coding standards, requiring Python 3.11+ and using pytest for all unit testing."
+summary: "Defines coding standards, required libraries (Streamlit, LlamaIndex), environment setup (.env), and database rules for the codebase."
 priority: medium
 tags: [framework, rules]
 schema_version: 1.3
 last_updated: "2026-06-03T08:33:33-04:00"
-summary_hash: 558f00833027bc0a96a2d499ad428a31
+summary_hash: f0dd594251d74f0ce1c3d34410c1767e
 ---
 
 # Framework Rules
@@ -205,12 +209,12 @@ Record project terminology here.
 <!-- memory-fabric:local/debt -->
 ---
 section: debt
-summary: "Tracks technical debt, noting known risks and necessary code cleanup tasks for future reference."
+summary: "Tracks technical debt (e.g., pure vector search, rate limiting) and roadmap items like multi-author support and automated ingestion."
 priority: low
 tags: [debt, risk]
 schema_version: 1.3
 last_updated: "2026-06-03T08:33:16-04:00"
-summary_hash: 35d09f7cc83f7a612e143ede7aed0ff4
+summary_hash: 7afd302688cef326194440331d0c034f
 ---
 
 # Technical Debt & Roadmap
@@ -228,3 +232,50 @@ This section tracks outstanding technical debt, limitations, and future developm
 - **Multi-Author Interface**: While the data schema is author-aware, the application UI and prompt logic currently assume Charles Spurgeon is the single author. Support needs to be added for comparative queries (e.g., comparing Spurgeon and Jonathan Edwards on the same topic).
 - **Weekly Automated Ingestion**: Set up automated pipelines to pull weekly updates from `lyteword/chspurgeon-sermons` to keep the vector database aligned with the community's latest transcriptions.
 - **Mobile Styling**: Streamlit layouts require additional custom CSS injections to optimize readability and sidebar responsiveness on smaller mobile displays.
+
+<!-- memory-fabric:store/decisions/gemma4-finetuning -->
+---
+store_path: decisions/gemma4-finetuning
+title: "Gemma 4 Fine-Tuning Transition"
+summary: "Guides the upgrade of fine-tuning pipelines from Gemma 2 to the efficient, newer Gemma 4 12B model."
+priority: medium
+tags: [gemma4, finetuning, decisions]
+schema_version: 1.3
+last_updated: "2026-06-04T10:24:33-04:00"
+summary_hash: 58d9e4c42d7f3c068e76867ebfc3458f
+---
+
+# Decision: Upgrade Fine-Tuning Pipeline to Gemma 4 12B
+
+We have transitioned the Spurgeon fine-tuning configurations, Google Colab notebooks, and Ollama templates from Gemma 2 9B to Google DeepMind's newly released Gemma 4 12B model (`unsloth/gemma-4-12b-it-bnb-4bit`).
+
+## Rationale
+- Gemma 4 is Google's newest open frontier-tier model family.
+- The 12B variant utilizes a highly efficient "encoder-free" architecture that improves latency and multimodal processing capability.
+- Unsloth provides optimized 4-bit configurations for fast, memory-efficient LoRA tuning, fitting well within free Google Colab T4 hardware limits.
+
+## Configuration Details
+- **Base model**: `unsloth/gemma-4-12b-it-bnb-4bit`
+- **Chat Template**: `gemma-4`
+- **Turn boundary sequences**: `<start_of_turn>` and `<end_of_turn>`
+
+<!-- memory-fabric:store/fine-tuning/gemma-support -->
+---
+store_path: fine-tuning/gemma-support
+title: "Gemma 2 Fine-Tuning Support"
+summary: "Gemma 2 fine-tuning support scripts and configs."
+priority: medium
+tags: [gemma2, fine-tuning, ollama]
+schema_version: 1.3
+last_updated: "2026-06-03T17:19:45-04:00"
+summary_hash: c6e3f7de5ff6c7d4b7d2b0101970513d
+---
+
+# Gemma 2 Fine-Tuning Support
+
+Parameterized scripts and config files to support fine-tuning Gemma 2 models (like unsloth/gemma-2-9b-it-bnb-4bit) matching local gemma4 configurations.
+
+- Updated train_spurgeon_qlora.py to read base model and chat template (gemma2) via CLI args.
+- Configured launch_training.py to pass parameters dynamically from configuration files.
+- Added train_config_gemma.json configuration file.
+- Created Spurgeon_Gemma2_Training_Colab.ipynb for Colab training and Modelfile.gemma for Ollama import.

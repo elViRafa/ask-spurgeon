@@ -1,0 +1,18 @@
+---
+store_path: index
+title: "Memory Store Index"
+summary: "Index of all semantic memory store files."
+priority: high
+tags: [index, memory-store]
+schema_version: 1.3
+last_updated: "2026-06-04T10:26:16-04:00"
+---
+
+# Memory Store Index
+
+Updated by Memory Fabric Dreaming mode `light` at 2026-06-04T10:26:16-04:00.
+
+| Path | Priority | Summary | Key Topics | Tags |
+| --- | --- | --- | --- | --- |
+| `decisions/gemma4-finetuning` | medium | Guides the upgrade of fine-tuning pipelines from Gemma 2 to the efficient, newer Gemma 4 12B model. | • Rationale<br>• Configuration Details | gemma4, finetuning, decisions |
+| `fine-tuning/gemma-support` | medium | Gemma 2 fine-tuning support scripts and configs. | • Updated train_spurgeon_qlora.py to read base model and ch...<br>• Configured launch_training.py to pass parameters dynamica...<br>• Added train_config_gemma.json configuration file. | gemma2, fine-tuning, ollama |

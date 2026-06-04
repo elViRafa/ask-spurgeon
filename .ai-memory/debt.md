@@ -1,11 +1,11 @@
 ---
 section: debt
-summary: "Tracks technical debt, noting known risks and necessary code cleanup tasks for future reference."
+summary: "Tracks technical debt (e.g., pure vector search, rate limiting) and roadmap items like multi-author support and automated ingestion."
 priority: low
 tags: [debt, risk]
 schema_version: 1.3
 last_updated: "2026-06-03T08:33:16-04:00"
-summary_hash: 35d09f7cc83f7a612e143ede7aed0ff4
+summary_hash: 7afd302688cef326194440331d0c034f
 ---
 
 # Technical Debt & Roadmap

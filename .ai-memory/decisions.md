@@ -1,11 +1,11 @@
 ---
 section: decisions
-summary: "Details model fine-tuning, memory integration, and local deployment strategies for LLM inference."
+summary: "Details model fine-tuning, memory integration, performance fixes (FastAPI/OpenBLAS), and local execution options (Ollama/CUDA)."
 priority: medium
 tags: [decisions, adr]
 schema_version: 1.3
 last_updated: "2026-06-03T08:33:24-04:00"
-summary_hash: c9f68144d5138d88c179236ec40a6546
+summary_hash: b3f7967650eea7bea2eee8fb73f743be
 ---
 
 # Decisions

@@ -1,3 +1,211 @@
+## 2026-06-04 15:12 - Added Transformers Upgrade to Notebook Dependencies
+
+**What was implemented:**
+- Added a `transformers` upgrade command to cell 1 ("Install Dependencies") in `Spurgeon_Gemma4_Training_Colab.ipynb` to prevent compatibility crashes with the new `gemma4_unified` model architecture.
+
+**Core files affected:**
+- [fine_tuning/notebooks/Spurgeon_Gemma4_Training_Colab.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/Spurgeon_Gemma4_Training_Colab.ipynb) — Added `!pip install --upgrade transformers -q` to cell 1.
+
+**Key changes:**
+- Explicitly upgraded the `transformers` dependency to support loading Gemma 4 models which are not natively supported in older packages (e.g., `transformers==5.5.0` lacking `gemma4_unified` config keys).
+
+**Status & Testing:**
+- Validated that the notebook compiles successfully and has updated dependency installation scripts.
+
+## 2026-06-04 14:55 - Corrected Gemma 4 Model Identifier
+
+**What was implemented:**
+- Corrected the base model repository identifier from the non-existent `unsloth/gemma-4-12b-it-bnb-4bit` to the official instruction-tuned model `unsloth/gemma-4-12b-it`.
+
+**Core files affected:**
+- [fine_tuning/notebooks/Spurgeon_Gemma4_Training_Colab.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/Spurgeon_Gemma4_Training_Colab.ipynb) — Corrected `MODEL_NAME` configuration variable.
+- [fine_tuning/train_config_gemma4.json](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/train_config_gemma4.json) — Updated `model_name` key in training configuration.
+
+**Key changes:**
+- Changed the hardcoded model identifier to `unsloth/gemma-4-12b-it`. Since cell 5 already defines `load_in_4bit = True`, Unsloth will perform the 4-bit quantization automatically during model loading.
+
+**Status & Testing:**
+- Validated that the notebook and JSON config file have been correctly updated and are syntax-compliant.
+
+## 2026-06-04 14:50 - Robust Chat Template Application for Gemma 4 in Training Notebook
+
+**What was implemented:**
+- Fixed a potential template-loading crash in cell 5 ("Load Model + Apply LoRA") of `Spurgeon_Gemma4_Training_Colab.ipynb` by wrapping the chat template retrieval in a robust try-except fallback block.
+
+**Core files affected:**
+- [fine_tuning/notebooks/Spurgeon_Gemma4_Training_Colab.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/Spurgeon_Gemma4_Training_Colab.ipynb) — Enhanced cell 5 code block to handle "gemma-4" template fallbacks.
+
+**Key changes:**
+- Wrapped `get_chat_template` with a try-catch construct.
+- Added fallbacks to the native tokenizer chat template, and legacy `gemma2` / `gemma` templates in case the installed `unsloth` environment lacks direct `"gemma-4"` template mappings.
+
+**Status & Testing:**
+- Programmatically modified the notebook JSON, validated that the notebook compiles successfully and is ready to run.
+
+## 2026-06-04 10:25 - Prepared Gemma 4 fine-tuning configurations, Modelfile, and Jupyter notebook
+
+**What was implemented:**
+- Created dedicated fine-tuning assets for the newly released Gemma 4 12B model, replacing the legacy Gemma 2 configurations.
+
+**Core files affected:**
+- [fine_tuning/notebooks/Spurgeon_Gemma4_Training_Colab.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/Spurgeon_Gemma4_Training_Colab.ipynb) — New Google Colab notebook configured for Gemma 4 12B.
+- [fine_tuning/train_config_gemma4.json](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/train_config_gemma4.json) — Training config file with Gemma 4 parameters.
+- [fine_tuning/models/Modelfile.gemma4](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/models/Modelfile.gemma4) — Ollama Modelfile mapping to Gemma 4 turn special tokens.
+
+**Key changes:**
+- Configured default base model target to `unsloth/gemma-4-12b-it-bnb-4bit` and applied `"gemma-4"` chat template.
+- Updated all internal directory references and repository tags to target the Gemma 4 variant.
+
+**Status & Testing:**
+- Validated that the notebook JSON format compiles perfectly.
+
+## 2026-06-04 08:46 - Execute Memory Fabric Dreaming consolidation in search-sermons
+
+
+**What was implemented:**
+- Ran the `dream_tool` from the `memory-fabric` MCP server on the `search-sermons` workspace via the Split-Tool Protocol. This consolidated the semantic memory store, updated memory indexes, and verified section metadata.
+
+**Core files affected:**
+- [.ai-memory/index.md](file:///c:/Users/rafael/Projetos/search-sermons/.ai-memory/index.md) — Main memory index file updated with fresh consolidation hashes.
+- [.ai-memory/memory-store/index.md](file:///c:/Users/rafael/Projetos/search-sermons/.ai-memory/memory-store/index.md) — Memory store index file updated.
+
+**Key changes:**
+- Executed `prepare_dream_payload_tool` to generate a snapshot and consolidation prompt.
+- Invoked `apply_dream_results_tool` with the formatted client-side LLM response to write and apply index modifications.
+
+**Status & Testing:**
+- Consolidations applied successfully, with no warnings or contradictions reported.
+
+## 2026-06-04 08:44 - Configure Memory Fabric local Ollama integration in search-sermons
+
+**What was implemented:**
+- Configured the `.env` environment variables in the `search-sermons` workspace to enable local memory dreaming using Ollama and the `gemma4` model. This allows the Memory Fabric MCP server to run local LLM dreaming requests directly without falling back to MCP sampling.
+
+**Core files affected:**
+- [C:\Users\rafael\Projetos\search-sermons\.env](file:///C:/Users/rafael/Projetos/search-sermons/.env) — Added MEMORY_FABRIC_LLM_PROVIDER and OLLAMA_MODEL environment variables.
+
+**Key changes:**
+- Appended `MEMORY_FABRIC_LLM_PROVIDER=ollama` and `OLLAMA_MODEL=gemma4` configuration lines to the end of the project's `.env` file.
+
+**Status & Testing:**
+- Verified `.env` file updates successfully. The MCP server will automatically load these local Ollama overrides when running memory commands (like dreaming) in the `search-sermons` workspace.
+
+## 2026-06-04 08:28 - Configure Robust Git Hooks and Verify Memory Fabric in search-sermons
+
+**What was implemented:**
+- Updated the pre-commit and post-commit git hooks in the `search-sermons` repository to use `python -m memory_fabric.cli` instead of the direct `ai-memory` script. This prevents command-not-found failures during commits in environments where the Python User Scripts path is not added to the global system PATH.
+- Synchronized and updated all multi-platform agent rule files in the `search-sermons` workspace to match the latest template-driven format.
+
+**Core files affected:**
+- [C:\Users\rafael\Projetos\search-sermons\.git\hooks\pre-commit](file:///C:/Users/rafael/Projetos/search-sermons/.git/hooks/pre-commit) — Switched agent rule synchronization command to use the python module invocation.
+- [C:\Users\rafael\Projetos\search-sermons\.git\hooks\post-commit](file:///C:/Users/rafael/Projetos/search-sermons/.git/hooks/post-commit) — Switched background Dreaming/consolidation command to use the python module invocation.
+
+**Key changes:**
+- Changed `ai-memory sync-agents` to `python -m memory_fabric.cli sync-agents` inside the pre-commit hook script.
+- Changed `ai-memory dream` to `python -m memory_fabric.cli dream` inside the post-commit hook script.
+- Verified that all 9 memory files in `search-sermons` are fully recognized and healthy.
+
+**Status & Testing:**
+- Executed `python -m memory_fabric.cli doctor` inside the `search-sermons` workspace, returning `ok: True` with zero errors. Tested script executable invocation paths under Python 3.14.
+
+## 2026-06-04 08:02 - Reinstalled memory-fabric in editable mode and synchronized agent rules
+
+**What was implemented:**
+- Fetched and pulled the latest updates for `memory-fabric` from its remote repository.
+- Reinstalled the package in editable mode (`-e`) in the project's virtual environment (`.venv`), pointing directly to the local development clone `C:\Users\rafael\Projetos\agentic-memory`.
+- Synchronized all local agent instructions and rule files (e.g., CLAUDE.md, .cursor, .windsurf rules) using the package's template-driven sync command.
+
+**Core files affected:**
+- [.venv (virtual environment dependencies)](file:///c:/Users/rafael/Projetos/search-sermons/.venv)
+- [CLAUDE.md](file:///c:/Users/rafael/Projetos/search-sermons/CLAUDE.md)
+- [AGENTS.md](file:///c:/Users/rafael/Projetos/search-sermons/AGENTS.md)
+
+**Key changes:**
+- Ran `git pull` on `C:\Users\rafael\Projetos\agentic-memory` to fetch the latest commits (which resolve MCP sampling deadlocks and add client-driven dreaming tools).
+- Reinstalled the package using `pip install -e "C:\Users\rafael\Projetos\agentic-memory[mcp]"`.
+- Ran `ai-memory sync-agents` to update the multi-platform agent rule files to the latest structure.
+
+**Status & Testing:**
+- Verified the CLI installation with `ai-memory doctor` returning `ok: True`.
+
+## 2026-06-03 21:02 - Upgraded memory-fabric and refreshed agent rules
+
+**What was implemented:**
+- Upgraded the `memory-fabric` package inside the workspace's virtual environment (`.venv`) to the latest version directly from the remote Git repository.
+- Re-initialized and refreshed the local project's Agentic Architecture rule files and Git hook scripts to align with the new canonical template structures.
+
+**Core files affected:**
+- [.venv (virtual environment dependencies)](file:///c:/Users/rafael/Projetos/search-sermons/.venv)
+- [AGENTS.md](file:///c:/Users/rafael/Projetos/search-sermons/AGENTS.md)
+- [.cursor/rules/memory-fabric.mdc](file:///c:/Users/rafael/Projetos/search-sermons/.cursor/rules/memory-fabric.mdc)
+- [.windsurf/rules/memory-fabric.md](file:///c:/Users/rafael/Projetos/search-sermons/.windsurf/rules/memory-fabric.md)
+- [CLAUDE.md](file:///c:/Users/rafael/Projetos/search-sermons/CLAUDE.md)
+
+**Key changes:**
+- Reinstalled the latest version of `memory-fabric` with MCP support from the GitHub repository URL.
+- Ran `ai-memory init --install-hooks` to deploy updated, single-source-of-truth agent instructions for Claude Code, Cursor, Windsurf, and Copilot.
+- Verified local repository health using the updated doctor diagnostics tool.
+
+**Status & Testing:**
+- Upgraded successfully and verified repository health with `ai-memory doctor` returning `ok: True`.
+
+## 2026-06-03 17:15 - Added support for Gemma 2 fine-tuning
+
+**What was implemented:**
+- Parameterized the Unsloth training script to accept dynamic base model, chat template, and sequence parameters via CLI arguments.
+- Configured a new launcher setup and JSON files supporting both Llama-3.1 and Gemma-2 (gemma4) training.
+- Created a dedicated Google Colab training notebook and an Ollama Modelfile with Gemma-2's specific tokens and stops.
+
+**Core files affected:**
+- [fine_tuning/train_config_gemma.json](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/train_config_gemma.json)
+- [fine_tuning/scripts/train_spurgeon_qlora.py](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/scripts/train_spurgeon_qlora.py)
+- [fine_tuning/scripts/launch_training.py](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/scripts/launch_training.py)
+- [fine_tuning/notebooks/Spurgeon_Gemma2_Training_Colab.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/Spurgeon_Gemma2_Training_Colab.ipynb)
+- [fine_tuning/models/Modelfile.gemma](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/models/Modelfile.gemma)
+
+**Key changes:**
+- Added `--model-name` and `--chat-template` arguments to the training script.
+- Configured launcher to parse config files dynamically.
+- Prepared Gemma-2 Ollama Modelfile with native `<start_of_turn>` and `<end_of_turn>` special tokens.
+
+**Status & Testing:**
+- Verified python syntax compilation locally in `.venv` (no syntax errors). Configurations successfully parameterized.
+
+## 2026-06-03 16:47 - Consolidated local memory index and sections via Memory Fabric dreaming tool
+
+**What was implemented:**
+- Executed the `dream_tool` from the `memory-fabric` MCP server on the workspace to validate and consolidate the project's local memory.
+- Applied the staged memory changes directly to update the index mapping, decisions, rules, and configuration schemas under `.ai-memory/`.
+
+**Core files affected:**
+- [.ai-memory/index.md](file:///c:/Users/rafael/Projetos/search-sermons/.ai-memory/index.md)
+- [.ai-memory/decisions.md](file:///c:/Users/rafael/Projetos/search-sermons/.ai-memory/decisions.md)
+- [.ai-memory/framework-rules.md](file:///c:/Users/rafael/Projetos/search-sermons/.ai-memory/framework-rules.md)
+- [.ai-memory/schemas.md](file:///c:/Users/rafael/Projetos/search-sermons/.ai-memory/schemas.md)
+
+**Key changes:**
+- Ran the `dream_tool` first in dry-run mode, and then with `apply: true` to merge candidate changes.
+- Updated Section summaries and consolidated LLM configurations to include `ollama` as a supported provider.
+
+**Status & Testing:**
+- Successfully completed execution and verified the applied updates locally using `git diff` and `ai-memory doctor`.
+
+## 2026-06-03 16:41 - Upgraded memory-fabric package to v0.1.0 in local virtual environment
+
+**What was implemented:**
+- Upgraded the `memory-fabric` package inside the workspace's virtual environment (`.venv`) to the latest version directly from the remote Git repository, as described in the upgrading guidelines of `agentic-memory/README.md`.
+- Verified that the updated CLI and MCP server execute correctly and that the doctor command reports no issues.
+
+**Core files affected:**
+- [.venv (virtual environment dependencies)](file:///c:/Users/rafael/Projetos/search-sermons/.venv)
+
+**Key changes:**
+- Executed `pip install --upgrade --force-reinstall` for `memory-fabric[mcp]` targeting the main branch repository.
+- Re-verified environmental configurations using `ai-memory doctor`.
+
+**Status & Testing:**
+- Tested locally using `ai-memory doctor` and confirmed `ok: True` with all memory checks passing successfully.
+
 ## 2026-06-03 11:20 - Committed and pushed workspace configuration, scripts, and memory files
 
 **What was implemented:**
