@@ -5,21 +5,22 @@ summary: "Map of available project memory sections."
 priority: high
 tags: [index, memory]
 schema_version: 1.3
-last_updated: "2026-06-04T10:26:16-04:00"
-consolidation_hash: ec824adedf4cc5ba13d99b8da6c91476
+last_updated: "2026-06-05T10:16:02-04:00"
+consolidation_hash: dc4febef829d2344ced791190b2a66be
 contradictions: []
 consolidation_warnings: []
+summary_hash: c81ed9efe309125e42b693ba950f4f04
 ---
 
 # Project Memory Index
 
-Updated by Memory Fabric Dreaming mode `light` at 2026-06-04T10:26:16-04:00.
+Updated by Memory Fabric Dreaming mode `light` at 2026-06-05T10:16:02-04:00.
 
 | Section | Priority | Summary | Key Topics |
 | --- | --- | --- | --- |
 | `architecture` | high | Defines the RAG architecture for Spurgeon's sermons, detailing layers from Streamlit UI to Chroma/Qdrant vector DBs and LLM providers. | • Core Architecture Layers<br>• Key Subsystems |
 | `debt` | low | Tracks technical debt (e.g., pure vector search, rate limiting) and roadmap items like multi-author support and automated ingestion. | • Known Technical Debt & Limits<br>• Roadmap & Pending Features |
-| `decisions` | medium | Details model fine-tuning, memory integration, performance fixes (FastAPI/OpenBLAS), and local execution options (Ollama/CUDA). | • 1. Custom Model Fine-Tuning & Quantization (2026-06-01)<br>• 2. Memory Systems Integration (2026-06-01 to 2026-06-02)<br>• 3. Deployment & Performance Optimization (2026-06-02)<br>• 4. Local Execution Options (2026-06-02) |
+| `decisions` | medium | Details model fine-tuning, memory integration, performance fixes (FastAPI/OpenBLAS), and local execution options (Ollama/CUDA). | • 1. Custom Model Fine-Tuning & Quantization (2026-06-01)<br>• 2. Memory Systems Integration (2026-06-01 to 2026-06-02)<br>• 3. Deployment & Performance Optimization (2026-06-02)<br>• 4. Local Execution Options (2026-06-02)<br>• 5. Grok + Memory Fabric Docs & Full Integration (2026-06-05)<br>• 6. Kaggle Model Saving Support (2026-06-05) |
 | `framework-rules` | medium | Defines coding standards, required libraries (Streamlit, LlamaIndex), environment setup (.env), and database rules for the codebase. | • 1. Runtime Environment<br>• 2. Core Libraries & Packages<br>• 3. Vector Database Rules<br>• 4. Agent Memory Guidelines |
 | `schemas` | high | Defines data contracts, metadata schemas for ingested texts, and environment variable configurations. | • 1. Document & Chunk Metadata Schema<br>• 2. Ingestion Parameters<br>• 3. Environment Variables (Configuration Schema) |
 | `ubiquitous-language` | medium | Defines consistent domain language used throughout the codebase for clarity and shared understanding. | None recorded |
@@ -125,7 +126,7 @@ summary: "Details model fine-tuning, memory integration, performance fixes (Fast
 priority: medium
 tags: [decisions, adr]
 schema_version: 1.3
-last_updated: "2026-06-03T08:33:24-04:00"
+last_updated: "2026-06-05T10:06:40-04:00"
 summary_hash: b3f7967650eea7bea2eee8fb73f743be
 ---
 
@@ -153,6 +154,21 @@ Record durable decisions and rationale here.
 ## 4. Local Execution Options (2026-06-02)
 - **Option 1: Ollama (Preferred)**: Bundles native CUDA support without external SDK requirements. Uses a custom `Modelfile` to enforce correct chat prompt formats. Serves on `http://localhost:11434/v1`.
 - **Option 2: Native CUDA Server**: Requires NVIDIA CUDA Toolkit 12.4. Launched via a powershell script (`.\fine_tuning\scripts\run_local_gpu.ps1`) that installs CUDA-compatible `llama-cpp-python` wheels, offloads all layers to the GPU, and runs the FastAPI server on `http://localhost:7860/v1`.
+
+## 5. Grok + Memory Fabric Docs & Full Integration (2026-06-05)
+- Installed the complete canonical `README.md` from the agentic-memory source into Grok's user-guide as `~/.grok/docs/user-guide/13-memory-fabric.md` (with header explaining it's for Grok help + this project).
+- Updated Grok help skill, 07-mcp-servers.md, and 13-memory.md (native) with cross-references and examples for memory-fabric.
+- Updated the project's own `~/.grok/memory/search-sermons/MEMORY.md` (Grok native layer) with accurate tool count (15) and reference to the installed docs.
+- Added dedicated semantic memory store entry at `grok/integration` (via write_memory_store_tool) documenting the dual-layer setup, config, discovery via search_tool/use_tool, Windows specifics, and how to keep agent files fresh with sync-agents.
+- Confirmed `sync-agents` produces no diff (templates already current).
+- This completes making the full ai-memory (Memory Fabric) "pronto para uso no Grok" with discoverable docs, explicit agent instructions, and recorded integration decisions.
+
+See the new store entry `grok/integration` and `13-memory-fabric.md` in Grok for full details.
+
+## 6. Kaggle Model Saving Support (2026-06-05)
+- **Problem**: The fine-tuning training notebook (`Spurgeon_Gemma4_Training_Kaggle.ipynb`) was Colab-centric, relying on `/content/drive/...` pathing and mounting Google Drive which does not work in Kaggle.
+- **Solution**: Added dynamic environment detection (`Colab` vs `Kaggle` vs `Local`). When running on Kaggle, the notebook automatically configures output folders to point to `/kaggle/working/`.
+- **Kaggle Upload**: Introduced Section 13 containing credentials loading via Kaggle Secrets (`UserSecretsClient`) and integration hooks for both `kagglehub.model_upload` (Model Hub) and the Kaggle API CLI (Dataset Hub) for programmatic weight uploads.
 
 <!-- memory-fabric:local/framework-rules -->
 ---
@@ -279,3 +295,49 @@ Parameterized scripts and config files to support fine-tuning Gemma 2 models (li
 - Configured launch_training.py to pass parameters dynamically from configuration files.
 - Added train_config_gemma.json configuration file.
 - Created Spurgeon_Gemma2_Training_Colab.ipynb for Colab training and Modelfile.gemma for Ollama import.
+
+<!-- memory-fabric:store/grok/integration -->
+---
+store_path: grok/integration
+title: "Grok Integration with Memory Fabric (MCP + Docs + Native Layer)"
+summary: "Grok Integration with Memory Fabric (MCP + Docs + Native Layer)"
+priority: high
+tags: [grok, mcp, memory-fabric, integration, docs, agents]
+schema_version: 1.3
+last_updated: "2026-06-05T09:41:35-04:00"
+---
+
+# Grok + Memory Fabric Integration
+
+Grok (the TUI/agent harness) has full support for Memory Fabric in this project.
+
+## Key Integration Points (as of 2026-06-04/05)
+
+- **MCP Server**: Configured in `~/.grok/config.toml` under `[mcp_servers.memory-fabric]` (uses full path to project's .venv\Scripts\memory-fabric-mcp.exe from the editable install of C:\Users\rafael\Projetos\agentic-memory).
+  - Also available via project `.mcp.json` for compatibility with other clients.
+  - Timeouts tuned: startup=20s, tool=120s.
+- **Agent Instructions**: The project root `AGENTS.md` (and CLAUDE.md, .agents/rules/dreaming.md + memory-store.md) are kept in sync via `python -m memory_fabric.cli sync-agents`. Grok primarily loads `AGENTS.md` (and deeper ones) as project rules. They instruct to **always use the memory-fabric MCP tools** for any .ai-memory/ operations.
+- **Grok Native Memory (complementary)**: Separate layer at `~/.grok/memory/search-sermons/MEMORY.md` (and global). Provides auto first-turn injection, /memory modal, /flush, hybrid search via built-in memory_search/memory_get. Documented in Grok's own `~/.grok/docs/user-guide/13-memory.md`.
+- **Full Memory Fabric Docs in Grok**: The complete canonical README from agentic-memory source is installed at `~/.grok/docs/user-guide/13-memory-fabric.md`. The help skill lists it, and cross-references were added in 07-mcp-servers.md and 13-memory.md. This makes the full feature set (MCP tools list, CLI, Dreaming, agentic arch, LLM sampling, split-tool protocol, write safety, etc.) available to Grok agents and users asking for help.
+- **Discovery in Grok**: Use the built-in `search_tool` (query e.g. "memory-fabric" or "read_combined") to discover tools. Then `use_tool` with qualified names like "memory-fabric__read_combined_context_tool", "memory-fabric__write_memory_store_tool", etc.
+- **Project .mcp.json**: Minimal { "mcpServers": { "memory-fabric": { "command": "memory-fabric-mcp" } } } for portable/IDE use.
+
+## Usage in Grok Sessions for this Project
+
+- At session start (or when context needed): call `read_combined_context_tool(cwd="C:\\Users\\rafael\\Projetos\\search-sermons")` (or via the higher-level combined that the system does).
+- For semantic store (new standalone topics): `write_memory_store_tool` with store_path like "grok/integration", "decisions/xxx", "fine-tuning/yyy".
+- Maintenance: `dream_tool` (mode light|deep, apply=true for real changes; or prepare+apply split for client-driven).
+- Eval: `evaluate_memory_fabric_tool` or `evaluate_dream_quality_tool`.
+- Never bypass with raw file reads/writes on .ai-memory/ paths.
+
+## Windows / This Env Specifics
+- Use `python -m memory_fabric.cli ...` (not bare `ai-memory`) in hooks/scripts to avoid PATH issues with user scripts.
+- Editable dev flow: changes in agentic-memory source immediately affect the MCP (after restart of Grok or /mcps refresh).
+- Global Grok config takes precedence for the MCP; avoid project-local .grok/config.toml unless intentionally shadowing.
+
+## Benefits for this Project
+- Structured, secret-safe, token-budgeted, versioned (via git + snapshots) memory for agentic work on the RAG/fine-tuning codebase.
+- Complements Grok's native memory for richer, dual-layer context.
+- Agentic architecture ensures even non-MCP-aware instructions still route through the tools.
+
+Last updated via MCP after installing full README into Grok help system.

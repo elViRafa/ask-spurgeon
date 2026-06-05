@@ -1,3 +1,37 @@
+## 2026-06-05 10:20 - Resolved Unsloth Zoo and Transformers Dependency Conflict in Notebooks
+
+**What was implemented:**
+- Resolved a pip dependency conflict between `unsloth-zoo` (which pins `transformers <= 5.5.0` on PyPI) and Gemma 4 (which requires `transformers >= 5.10.0`).
+- Updated the dependency installation cells in both `Spurgeon_Gemma4_Training_Kaggle.ipynb` and `Spurgeon_Gemma4_Training_Colab.ipynb` to install the latest development version of `unsloth-zoo` directly from its official GitHub repository, which accommodates the newer `transformers` versions.
+
+**Core files affected:**
+- [fine_tuning/notebooks/Spurgeon_Gemma4_Training_Kaggle.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/Spurgeon_Gemma4_Training_Kaggle.ipynb) — Updated cell 1 to pull `unsloth-zoo` from GitHub.
+- [fine_tuning/notebooks/Spurgeon_Gemma4_Training_Colab.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/Spurgeon_Gemma4_Training_Colab.ipynb) — Updated cell 1 to pull `unsloth-zoo` from GitHub.
+
+**Key changes:**
+- Changed `!pip install "unsloth[...]"` to first run `!pip install "unsloth_zoo @ git+https://github.com/unslothai/unsloth-zoo.git" -q` and then `!pip install "unsloth[...]"` to install unsloth with the updated, Gemma 4-compatible dependency limits.
+
+**Status & Testing:**
+- Validated that both notebooks parse correctly as valid JSON.
+
+## 2026-06-05 10:06 - Enabled Model Saving on Kaggle for Gemma 4 Training Notebook
+
+**What was implemented:**
+- Updated the Jupyter notebook `Spurgeon_Gemma4_Training_Kaggle.ipynb` to support saving and uploading the trained model in Kaggle environments.
+- Added dynamic detection of Google Colab vs. Kaggle environments, adjusting intermediate storage paths (`SAVE_PATH`, `MERGED_SAVE_PATH`, `GGUF_OUTPUT_DIR`) to point to the local Kaggle writable directory `/kaggle/working/`.
+- Appended a new section (Section 13) at the end of the notebook containing cells to authenticate Kaggle and upload the model weights either directly to the Kaggle Models Registry (using `kagglehub`) or as a Kaggle Dataset (using the Kaggle CLI).
+
+**Core files affected:**
+- [fine_tuning/notebooks/Spurgeon_Gemma4_Training_Kaggle.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/Spurgeon_Gemma4_Training_Kaggle.ipynb) — Updated paths, environments, and added Kaggle model/dataset saving cells.
+
+**Key changes:**
+- Integrated environment checking to dynamically map paths to `/kaggle/working/` when running in a Kaggle Notebook.
+- Added a credential loading code cell using Kaggle Secrets (`UserSecretsClient`) and local environment fallbacks.
+- Authored programmatic upload scripts using `kagglehub.model_upload` and `kaggle datasets create/version` via the Kaggle CLI.
+
+**Status & Testing:**
+- Validated notebook JSON format and checked cell compilation. The notebook is ready to be executed on Kaggle with seamless output saving.
+
 ## 2026-06-04 15:12 - Added Transformers Upgrade to Notebook Dependencies
 
 **What was implemented:**
@@ -691,3 +725,38 @@
 
 **Status & Testing:**
 - Verified notebook JSON structure is valid and the cell compiles successfully without any syntax errors.
+
+## 2026-06-05 - Full ai-memory (Memory Fabric) refresh + complete Grok integration in the project
+
+**What was implemented:**
+- Updated the project's .ai-memory/ (semantic store + legacy sections) to fully document and enable Memory Fabric usage inside Grok for search-sermons.
+- Used only MCP tools (read_combined_context_tool, keyword_search_tool, write_memory_store_tool, write_local_memory_tool, dream_tool, list_memory_store_tool) for all memory operations (per AGENTS.md rules).
+- Added new high-priority semantic entry `grok/integration` (store path) with comprehensive notes on: MCP registration (global config.toml + .mcp.json), synced agent files (AGENTS.md etc.), dual-layer memory (Fabric + native Grok), discovery via search_tool/use_tool, Windows/editable dev flow, and benefits.
+- Appended subsection "5. Grok + Memory Fabric Docs & Full Integration (2026-06-05)" to legacy decisions.md via proper tool.
+- Ran `dream_tool` (light + apply + with_eval) which incorporated the new entry, updated indexes, and improved quality score (85→89).
+- Refreshed agent instruction files via `python -m memory_fabric.cli sync-agents` (already in sync with latest templates from agentic-memory source).
+- Enhanced the source `agentic-memory/README.md` table under "Agentic Architecture" to explicitly list **Grok (TUI / Build / Agent harness)** as a supported target (uses AGENTS.md + MCP config + optionally the installed 13-memory-fabric.md docs).
+- Re-installed the (updated) full canonical README into Grok's help system at `~/.grok/docs/user-guide/13-memory-fabric.md` (with current sync date and Grok row note).
+- Updated Grok help skill, mcp-servers guide, native memory guide, and workspace MEMORY.md with references and accurate details (15 tools, docs path, etc.).
+- Confirmed via tools: list now shows the grok/integration entry; read_combined and read_memory_store succeed; doctor remains ok.
+
+**Core files affected:**
+- [.ai-memory/memory-store/grok/integration.md](file:///c:/Users/rafael/Projetos/search-sermons/.ai-memory/memory-store/grok/integration.md) (new)
+- [.ai-memory/decisions.md](file:///c:/Users/rafael/Projetos/search-sermons/.ai-memory/decisions.md)
+- [.ai-memory/index.md](file:///c:/Users/rafael/Projetos/search-sermons/.ai-memory/index.md) and memory-store index (via dream)
+- C:\Users\rafael\Projetos\agentic-memory\README.md (added Grok row)
+- ~/.grok/docs/user-guide/13-memory-fabric.md (re-synced full README)
+- ~/.grok/skills/help/SKILL.md , 07-mcp-servers.md , 13-memory.md (cross-refs)
+- ~/.grok/memory/search-sermons/MEMORY.md (facts update)
+- IMPLEMENTATION_SUMMARY.md (this entry)
+
+**Key changes:**
+- This makes the ai-memory setup "completo" and first-class for use inside Grok: full docs discoverable in client help, explicit agent rules, recorded integration knowledge in the semantic store itself, and source package updated to acknowledge Grok.
+- All per the Memory Fabric agentic rules (MCP-only writes, sync from canonical templates, dreaming for consolidation).
+
+**Status & Testing:**
+- All MCP tool calls succeeded in this session.
+- New entry readable via read_memory_store_tool.
+- Dream evaluation: +4 score, new entry listed in patch/index, no regressions.
+- sync-agents: up-to-date.
+- `python -m memory_fabric.cli doctor` reports ok: True.

@@ -80,7 +80,7 @@ temp/
 # Jupyter
 .ipynb_checkpoints/
 *.ipynb
-
+!fine_tuning/notebooks/*.ipynb
 
 TOKEN_HF.md
 
