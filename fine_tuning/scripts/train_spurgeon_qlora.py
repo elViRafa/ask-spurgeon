@@ -64,8 +64,9 @@ DEFAULT_WARMUP_STEPS = 50
 def formatting_func(examples, tokenizer):
     """Convert ChatML messages into training text."""
     texts = []
+    raw_tokenizer = getattr(tokenizer, "tokenizer", tokenizer)
     for messages in examples["messages"]:
-        text = tokenizer.apply_chat_template(
+        text = raw_tokenizer.apply_chat_template(
             messages,
             tokenize=False,
             add_generation_prompt=False

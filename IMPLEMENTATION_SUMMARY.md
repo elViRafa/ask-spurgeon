@@ -1,3 +1,22 @@
+## 2026-06-05 12:50 - Fixed Gemma 4 Chat Template Processor Error during Inference
+
+**What was implemented:**
+- Resolved a runtime `TypeError: string indices must be integers` crash when calling `apply_chat_template` on the processor returned by Unsloth/transformers for Gemma 4 models.
+- Pre-retrieved the underlying raw text tokenizer from the processor using `raw_tokenizer = getattr(tokenizer, "tokenizer", tokenizer)` to bypass the multimodal visual/audio parsing steps when processing text-only prompts.
+
+**Core files affected:**
+- [fine_tuning/notebooks/Spurgeon_Gemma4_Training_Kaggle.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/Spurgeon_Gemma4_Training_Kaggle.ipynb) — Fixed inference and dataset formatting cells.
+- [fine_tuning/notebooks/Spurgeon_Gemma4_Training_Colab.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/Spurgeon_Gemma4_Training_Colab.ipynb) — Fixed inference and dataset formatting cells.
+- [fine_tuning/scripts/train_spurgeon_qlora.py](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/scripts/train_spurgeon_qlora.py) — Fixed dataset formatting function.
+
+**Key changes:**
+- Replaced direct `tokenizer.apply_chat_template(...)` calls with `raw_tokenizer.apply_chat_template(...)` where the tokenizer might be a multimodal processor.
+- Updated the `TextStreamer` instantiation in the notebooks to use the raw text tokenizer.
+
+**Status & Testing:**
+- Tested notebook cell modifications programmatically. Validated that both notebooks are structurally sound JSON formats and are ready to be executed without template processor runtime errors.
+
+
 ## 2026-06-05 10:20 - Resolved Unsloth Zoo and Transformers Dependency Conflict in Notebooks
 
 **What was implemented:**

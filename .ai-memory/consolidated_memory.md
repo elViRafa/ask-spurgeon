@@ -5,7 +5,7 @@ summary: "Map of available project memory sections."
 priority: high
 tags: [index, memory]
 schema_version: 1.3
-last_updated: "2026-06-05T10:28:08-04:00"
+last_updated: "2026-06-05T12:50:42-04:00"
 consolidation_hash: dc4febef829d2344ced791190b2a66be
 contradictions: []
 consolidation_warnings: []
@@ -14,7 +14,7 @@ summary_hash: c81ed9efe309125e42b693ba950f4f04
 
 # Project Memory Index
 
-Updated by Memory Fabric Dreaming mode `light` at 2026-06-05T10:28:08-04:00.
+Updated by Memory Fabric Dreaming mode `light` at 2026-06-05T12:50:42-04:00.
 
 | Section | Priority | Summary | Key Topics |
 | --- | --- | --- | --- |
@@ -248,6 +248,45 @@ This section tracks outstanding technical debt, limitations, and future developm
 - **Multi-Author Interface**: While the data schema is author-aware, the application UI and prompt logic currently assume Charles Spurgeon is the single author. Support needs to be added for comparative queries (e.g., comparing Spurgeon and Jonathan Edwards on the same topic).
 - **Weekly Automated Ingestion**: Set up automated pipelines to pull weekly updates from `lyteword/chspurgeon-sermons` to keep the vector database aligned with the community's latest transcriptions.
 - **Mobile Styling**: Streamlit layouts require additional custom CSS injections to optimize readability and sidebar responsiveness on smaller mobile displays.
+
+<!-- memory-fabric:store/bugs/gemma4-chat-template-fix -->
+---
+store_path: bugs/gemma4-chat-template-fix
+title: "Gemma 4 Chat Template Processor Fix"
+summary: "Gemma 4 Chat Template Processor Fix"
+priority: medium
+tags: [gemma4, chat-template, bugfix, unsloth]
+schema_version: 1.3
+last_updated: "2026-06-05T12:50:30-04:00"
+---
+
+# Bug Fix: Gemma 4 Multimodal Chat Template Processor Error
+
+## Problem
+When training or doing inference with Gemma 4 (`unsloth/gemma-4-E4B-it` or `unsloth/gemma-4-12b-it-bnb-4bit`) in Unsloth / transformers, the `from_pretrained` method returns a `Gemma4Processor` instead of a standard text `Tokenizer` because Gemma 4 has multimodal inputs.
+
+When `apply_chat_template(conversation, tokenize=True)` is called on the processor, the processor mixin tries to extract multimodal content (images/videos) by looping over `message["content"]`:
+```python
+visuals = [content for content in message["content"] if content["type"] in ["image", "video"]]
+```
+For standard text training and inference datasets where `content` is a string (e.g. `{"role": "user", "content": "question"}`), this loops over characters of the string. Attempting to access `content["type"]` on character strings fails with:
+`TypeError: string indices must be integers, not 'str'`.
+
+## Solution
+To bypass the processor's multimodal parsing for text-only inputs, we retrieve and use the underlying text tokenizer's chat template directly:
+```python
+raw_tokenizer = getattr(tokenizer, "tokenizer", tokenizer)
+inputs = raw_tokenizer.apply_chat_template(
+    messages,
+    tokenize=True,
+    add_generation_prompt=True,
+    return_tensors="pt"
+).to("cuda")
+```
+This has been applied to the following training files:
+1. `[REDACTED_SECRET].ipynb` (Inference Cell & Dataset Preparation)
+2. `[REDACTED_SECRET].ipynb` (Inference Cell & Dataset Preparation)
+3. `fine_tuning/scripts/train_spurgeon_qlora.py` (Dataset formatting function)
 
 <!-- memory-fabric:store/decisions/gemma4-finetuning -->
 ---
