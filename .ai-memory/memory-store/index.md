@@ -5,12 +5,12 @@ summary: "Index of all semantic memory store files."
 priority: high
 tags: [index, memory-store]
 schema_version: 1.3
-last_updated: "2026-06-05T12:50:42-04:00"
+last_updated: "2026-06-05T12:54:40-04:00"
 ---
 
 # Memory Store Index
 
-Updated by Memory Fabric Dreaming mode `light` at 2026-06-05T12:50:42-04:00.
+Updated by Memory Fabric Dreaming mode `light` at 2026-06-05T12:54:40-04:00.
 
 | Path | Priority | Summary | Key Topics | Tags |
 | --- | --- | --- | --- | --- |
