@@ -5,11 +5,12 @@
 - Updated the dependency installation cells in both `Spurgeon_Gemma4_Training_Kaggle.ipynb` and `Spurgeon_Gemma4_Training_Colab.ipynb` to install the latest development version of `unsloth-zoo` directly from its official GitHub repository, and explicitly pinned `transformers==5.5.0`.
 
 **Core files affected:**
-- [fine_tuning/notebooks/Spurgeon_Gemma4_Training_Kaggle.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/Spurgeon_Gemma4_Training_Kaggle.ipynb) — Updated cell 1 to pull `unsloth-zoo` from GitHub and pin `transformers==5.5.0`.
+- [fine_tuning/notebooks/Spurgeon_Gemma4_Training_Kaggle.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/Spurgeon_Gemma4_Training_Kaggle.ipynb) — Updated cell 1 to pull `unsloth-zoo` from GitHub, use the `[kaggle-new]` target, and pin `transformers==5.5.0`.
 - [fine_tuning/notebooks/Spurgeon_Gemma4_Training_Colab.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/Spurgeon_Gemma4_Training_Colab.ipynb) — Updated cell 1 to pull `unsloth-zoo` from GitHub and pin `transformers==5.5.0`.
 
 **Key changes:**
 - Changed dependency install from `--upgrade transformers` to `"transformers==5.5.0"`. This ensures the environment has the highest compatible version of `transformers` that satisfies both Gemma 4 loading and `unsloth-zoo`'s upper limit requirement.
+- Updated `unsloth[colab-new]` to `unsloth[kaggle-new]` in the Kaggle-specific notebook to leverage dependency rules tuned specifically for the pre-installed Kaggle environments.
 
 **Status & Testing:**
 - Validated that both notebooks parse correctly as valid JSON.
