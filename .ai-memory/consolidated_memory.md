@@ -5,7 +5,7 @@ summary: "Map of available project memory sections."
 priority: high
 tags: [index, memory]
 schema_version: 1.3
-last_updated: "2026-06-06T14:42:11-04:00"
+last_updated: "2026-06-06T19:38:46-04:00"
 consolidation_hash: dc4febef829d2344ced791190b2a66be
 contradictions: []
 consolidation_warnings: []
@@ -14,7 +14,7 @@ summary_hash: c81ed9efe309125e42b693ba950f4f04
 
 # Project Memory Index
 
-Updated by Memory Fabric Dreaming mode `light` at 2026-06-06T14:42:10-04:00.
+Updated by Memory Fabric Dreaming mode `light` at 2026-06-06T19:38:46-04:00.
 
 | Section | Priority | Summary | Key Topics |
 | --- | --- | --- | --- |
@@ -459,3 +459,76 @@ Grok (the TUI/agent harness) has full support for Memory Fabric in this project.
 - Agentic architecture ensures even non-MCP-aware instructions still route through the tools.
 
 Last updated via MCP after installing full README into Grok help system.
+
+<!-- memory-fabric:store/pretraining/data-collection -->
+---
+store_path: pretraining/data-collection
+title: "Pretraining Step 1 — Data Collection Complete"
+summary: "Pretraining Step 1 — Data Collection Complete"
+priority: medium
+tags: [pretraining, dataset, sermons]
+schema_version: 1.3
+last_updated: "2026-06-06T18:50:44-04:00"
+---
+
+Domain audit complete: 3,536 sermons (129.60 MB, 129.6M chars) across 63 volumes. Created 50-sermon holdout split in data/chspurgeon-holdout. Flagged two oversized multi-sermon files in volumes 5 and 7.
+
+<!-- memory-fabric:store/pretraining/dataset-preparation -->
+---
+store_path: pretraining/dataset-preparation
+title: "Pretraining Step 6 — Dataset Preparation (Notebook A) Plan"
+summary: "Pretraining Step 6 — Dataset Preparation (Notebook A) Plan"
+priority: medium
+tags: [pretraining, dataset, kaggle, huggingface]
+schema_version: 1.3
+last_updated: "2026-06-06T19:38:20-04:00"
+---
+
+Documents the environment settings, directory layout, code cells, and verification diagnostics for Step 6: Dataset Preparation of Phase 1 of the Charles Spurgeon continued pretraining pipeline.
+
+### Details:
+- **Notebook A (`data_prep.ipynb`)** runs on CPU-only (accelerator: None) with Internet ON to preserve GPU quota.
+- Ingests the cleaned training set `spurgeon_train.txt` and holdout set `spurgeon_holdout.txt` from `/kaggle/input/`.
+- Splits text documents on the `<|endoftext|>` marker, filtering out short segments (< 200 chars).
+- Partitions the training corpus into a 99% train and 1% validation split (`train_test_split`).
+- Saves the resulting binary datasets (`spurgeon_dataset` and `spurgeon_holdout_dataset`) to `/kaggle/working/` using `save_to_disk`.
+- The output datasets are versioned as a private Kaggle dataset named `spurgeon-cpt-dataset` to be mounted as input for Notebook B (`training.ipynb`).
+
+<!-- memory-fabric:store/pretraining/environment-setup -->
+---
+store_path: pretraining/environment-setup
+title: "Pretraining Step 5 — Environment Setup & Configurations"
+summary: "Pretraining Step 5 — Environment Setup & Configurations"
+priority: medium
+tags: [pretraining, environment, kaggle, config, secrets]
+schema_version: 1.3
+last_updated: "2026-06-06T19:35:50-04:00"
+---
+
+Execution configurations and dependency management rules for continued pretraining on Kaggle Free Tier. Guidelines specify toggling Internet ON, choosing None accelerator for Notebook A (Data Prep) to conserve quota, and selecting 1x T4 GPU for Notebook B/C. Installation relies solely on `unsloth[kaggle-new]` package pulling from GitHub, with a strict warning against manual upgrades of transformers/trl/peft to avoid breaking CUDA Triton kernels. Detailed setup includes programmatic Hugging Face token authentication via Kaggle Secrets (HF_TOKEN) and optional Weights & Biases training logs tracking (WANDB_API_KEY).
+
+<!-- memory-fabric:store/pretraining/model-choice -->
+---
+store_path: pretraining/model-choice
+title: "Pretraining Step 4 — Model Choice & Technical Rationale"
+summary: "Pretraining Step 4 — Model Choice & Technical Rationale"
+priority: medium
+tags: [pretraining, model, qwen, vram]
+schema_version: 1.3
+last_updated: "2026-06-06T19:33:37-04:00"
+---
+
+Technical rationale for choosing unsloth/Qwen2.5-3B (base model) for continued pretraining on Spurgeon's sermons. The model's 151,643 BPE vocabulary natively represents 19th-century English registers (thee, thou, hast) without excessive subword fragmentation. Detailed VRAM budgeting allocates ~7.55 GB out of 16 GB on a single T4 GPU, leaving massive headroom for packed training. Rationale covers choosing not to train input embeddings or lm_head to save VRAM and maintain gradient stability, while setting lora_dropout=0 enables Unsloth's fused Triton kernels.
+
+<!-- memory-fabric:store/pretraining/notebook-structure -->
+---
+store_path: pretraining/notebook-structure
+title: "Pretraining Step 3 — Kaggle Notebook Structure"
+summary: "Pretraining Step 3 — Kaggle Notebook Structure"
+priority: medium
+tags: [pretraining, kaggle, notebook, setup]
+schema_version: 1.3
+last_updated: "2026-06-06T19:30:22-04:00"
+---
+
+Overview of Kaggle Notebooks layout for Spurgeon's Qwen2.5-3B continued pretraining. Work is split across three notebooks (A: data prep, B: training, C: evaluation/export) to circumvent Kaggle's 9-hour execution limits. Notebook B details PEFT QLoRA configuration, memory-saving parameters (lora_dropout=0, batch size 2, gradient accumulation 8, packing=True), and includes strict rules for trainer epoch incrementing when resuming checkpoints from input datasets. Notebook C handles holdout perplexity and qualitative style evaluation.

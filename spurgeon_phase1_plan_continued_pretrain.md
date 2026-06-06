@@ -156,7 +156,7 @@ you can split it or train on it as-is (it will still be valid text).
 ### 1.4 — Hold-out Split (do this now, before any cleaning)
 
 Randomly select 50 sermons across all volumes as a held-out evaluation set.
-Move them to a separate folder. These files are **never** used in training.
+Copy them to a separate folder. To preserve your original corpus files completely untouched, do NOT delete them from the source folder. The cleaning script in Step 2 will dynamically skip these hold-out files when building the training corpus.
 
 ```python
 import shutil, random
@@ -176,48 +176,17 @@ for src in holdout:
     dst = holdout_dir / rel
     dst.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(src, dst)
-    src.unlink()  # Remove from training corpus
+    # Note: We do NOT run src.unlink() to keep the source files intact.
 
-print(f"Held out {len(holdout)} sermons → {holdout_dir}")
-print(f"Training corpus: {len(all_files) - len(holdout)} sermons remaining")
+print(f"Copied {len(holdout)} sermons to holdout → {holdout_dir}")
+print("Original source files remain completely untouched.")
 ```
-
----
-
-### 1.5 — Upload to Kaggle
-
-Once you have finished auditing and the hold-out split is done:
-
-1. **Zip the training folder:**
-   ```bash
-   # Windows
-   Compress-Archive -Path .\data\chspurgeon-sermons -DestinationPath spurgeon_train.zip
-
-   # or use 7-Zip / any zip tool
-   ```
-
-2. **Upload to Kaggle as a Dataset:**
-   - Go to `kaggle.com/datasets` → New Dataset
-   - Upload `spurgeon_train.zip`
-   - Name it something like `chspurgeon-sermons-md`
-   - Set visibility to **Private**
-
-3. **Upload hold-out separately:**
-   - Repeat for `chspurgeon-holdout` → name it `chspurgeon-holdout-md`
-
-Once uploaded, both datasets are available in your Notebook A as:
-```
-/kaggle/input/chspurgeon-sermons-md/
-/kaggle/input/chspurgeon-holdout-md/
-```
-
 ---
 
 ### What you need at the end of Step 1
 
 - Local audit complete: you know your exact sermon count and any anomalies
 - 50 hold-out sermons moved to a separate folder (never seen during training)
-- Remaining ~3,450+ sermons uploaded to Kaggle as a private dataset
 - Notes on the markdown structure (frontmatter? headers? footnote style?)
   — these notes directly feed into the cleaning decisions in Step 2
 
@@ -359,13 +328,21 @@ def clean_md_sermon(raw_text: str) -> str:
     return text.strip()
 
 
-def build_corpus(corpus_root: str, output_file: str):
+def build_corpus(corpus_root: str, output_file: str, holdout_dir: str = None):
     root = Path(corpus_root)
+    holdout_path = Path(holdout_dir) if holdout_dir else None
     seen = set()
     written, skipped = 0, 0
 
     with open(output_file, 'w', encoding='utf-8') as out:
         for md_file in sorted(root.glob("*.md")) + sorted(root.glob("*/*.md")):
+            # If holdout_dir is provided, check if this file is a holdout and skip it
+            if holdout_path:
+                rel = md_file.relative_to(root)
+                if (holdout_path / rel).exists():
+                    skipped += 1
+                    continue
+
             raw = md_file.read_text(encoding='utf-8', errors='replace')
 
             # Dedup by first 300 chars of raw content
@@ -391,8 +368,16 @@ def build_corpus(corpus_root: str, output_file: str):
 # Run locally before uploading to Kaggle
 build_corpus(
     corpus_root = r".\data\chspurgeon-sermons",
-    output_file = r".\data\spurgeon_train.txt"
+    output_file = r".\data\spurgeon_train.txt",
+    holdout_dir = r".\data\chspurgeon-holdout"
 )
+
+# Clean and build the holdout corpus as well
+build_corpus(
+    corpus_root = r".\data\chspurgeon-holdout",
+    output_file = r".\data\spurgeon_holdout.txt"
+)
+```
 ```
 
 ### Verify before uploading
@@ -419,7 +404,29 @@ print(f"Estimated total tokens: {estimated_total:,}")
 | `spurgeon_train.txt` | Cleaned + concatenated, `<\|endoftext\|>` separated | ~3,450+ | ~25M |
 | `spurgeon_holdout.txt` | Same cleaning, never used in training | 50 | ~350K |
 
-Both files go to Kaggle as datasets (Step 1.5).
+---
+
+### 2.4 — Upload to Kaggle
+
+Once both files have been built and verified locally, you upload them directly as Kaggle datasets:
+
+1. **Upload the training corpus:**
+   - Go to `kaggle.com/datasets` → New Dataset
+   - Upload `spurgeon_train.txt`
+   - Name the dataset **`spurgeon-cpt-corpus`**
+   - Set visibility to **Private**
+
+2. **Upload the holdout corpus:**
+   - Go to `kaggle.com/datasets` → New Dataset
+   - Upload `spurgeon_holdout.txt`
+   - Name the dataset **`spurgeon-cpt-holdout`**
+   - Set visibility to **Private**
+
+Once uploaded, both files are available in your Kaggle Notebook as:
+```
+/kaggle/input/spurgeon-cpt-corpus/spurgeon_train.txt
+/kaggle/input/spurgeon-cpt-holdout/spurgeon_holdout.txt
+```
 
 ---
 

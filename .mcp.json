@@ -1,7 +1,7 @@
 {
   "mcpServers": {
     "memory-fabric": {
-      "command": "memory-fabric-mcp"
+      "command": "c:\\Users\\rafael\\Projetos\\search-sermons\\.venv\\Scripts\\memory-fabric-mcp.exe"
     }
   }
 }

@@ -1,3 +1,137 @@
+## 2026-06-06 19:38 - Completed Step 6 — Dataset Preparation (Notebook A) of continued pretraining plan
+
+**What was implemented:**
+- Planned and documented the structural specifications and instructions for Step 6: Dataset Preparation (Notebook A). The plan details how to load the cleaned plain-text training and holdout files, parse them into Hugging Face `Dataset` structures using the `<|endoftext|>` token boundary, partition a 99/1 train/validation split to monitor loss during pretraining, and save the binary dataset formats to disk. Also created the corresponding Jupyter notebook template containing these steps.
+
+**Core files affected:**
+- [spurgeon_phase1_plan_continued_pretrain_step6.md](file:///c:/Users/rafael/Projetos/search-sermons/spurgeon_phase1_plan_continued_pretrain_step6.md) — Step 6 Dataset Preparation plan file.
+- [continued_pretrain/notebooks/A_data_prep.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/continued_pretrain/notebooks/A_data_prep.ipynb) — Notebook A template file containing code cells for dataset installation, creation, splitting, saving, and output verification.
+
+**Key changes:**
+- Created the step 6 planning report covering CPU accelerator configurations, directory layout mappings, document length thresholds, and verification diagnostics.
+- Wrote the complete 11-cell Python notebook template at `continued_pretrain/notebooks/A_data_prep.ipynb` and verified its JSON structure programmatically.
+
+**Status & Testing:**
+- Tested and verified. The notebook JSON parses successfully and runs correctly under python code checks.
+
+## 2026-06-06 19:36 - Completed Step 5 — Environment Setup & Configurations of continued pretraining plan
+
+**What was implemented:**
+- Planned and documented the structural specifications and instructions for Step 5: Environment Setup. The document details hardware selection (CPU vs 1x T4 GPU), internet settings, pinned installation of `unsloth[kaggle-new]`, rules against manual dependency upgrades that break optimized CUDA kernels, directory structures, and secure programmatic authentication to Hugging Face and W&B using Kaggle Secrets.
+
+**Core files affected:**
+- [spurgeon_phase1_plan_continued_pretrain_step5.md](file:///c:/Users/rafael/Projetos/search-sermons/spurgeon_phase1_plan_continued_pretrain_step5.md) — Step 5 Environment Setup plan file.
+
+**Key changes:**
+- Created the step 5 report covering Kaggle session limits, accelerator choices, custom script variables, and programmatic token registration.
+- Logged the setup configuration in the Semantic Memory Store and updated indices via dreaming.
+
+**Status & Testing:**
+- Documentation-only change. Checked markdown layout and code blocks.
+
+## 2026-06-06 19:34 - Completed Step 4 — Model Choice & Technical Rationale of continued pretraining plan
+
+**What was implemented:**
+- Planned and documented the technical rationale and configuration specifications for Step 4: Model Choice. The document analyses the 3.09B dense architecture of `unsloth/Qwen2.5-3B`, comparing it to alternatives (Llama 3.2 3B, Gemma 2 2B), detailing why its 151,643 BPE tokenizer is ideal for 19th-century archaic English prose, detailing LoRA hyperparameters (rank 32, alpha 64, target modules, lora_dropout=0), and charting the VRAM footprint budget (~7.55 GB out of 16 GB on a single T4 GPU) to prevent OOM errors.
+
+**Core files affected:**
+- [spurgeon_phase1_plan_continued_pretrain_step4.md](file:///c:/Users/rafael/Projetos/search-sermons/spurgeon_phase1_plan_continued_pretrain_step4.md) — Step 4 Model Choice plan file.
+
+**Key changes:**
+- Created the step 4 report documenting model parameters, vocab characteristics, hardware constraints, VRAM allocation math, and special tokens mapping.
+- Logged the model choice architecture parameters into the Semantic Memory Store and updated indexes via light dreaming.
+
+**Status & Testing:**
+- Documentation-only change. Checked markdown structure and memory safety equations.
+
+## 2026-06-06 19:31 - Completed Step 3 — Kaggle Notebook Structure of continued pretraining plan
+
+**What was implemented:**
+- Planned and drafted the complete structural specification for Step 3: Kaggle Notebook Structure. The design documents the division of the pretraining pipeline into three separate notebooks to respect Kaggle's session limits and GPU memory limits. It details environment setup, dataset formatting/saving, QLoRA PEFT model setup (with Triton optimization parameters), epoch-incrementing resumption logic to prevent trainer auto-exit, holdout perplexity computation, and qualitative completions testing.
+
+**Core files affected:**
+- [spurgeon_phase1_plan_continued_pretrain_step3.md](file:///c:/Users/rafael/Projetos/search-sermons/spurgeon_phase1_plan_continued_pretrain_step3.md) — Step 3 Kaggle Notebook Structure plan file.
+
+**Key changes:**
+- Created the step 3 report detailing the code cells, configuration parameters, and inputs/outputs of Notebook A (Data Prep), Notebook B (Training & Checkpoints), and Notebook C (Evaluation & Export).
+- Documented step-by-step checklists for running training runs and checkpoint resumption, detailing how to increment epochs and load model states from mounted output datasets.
+- Logged the new configuration in the Semantic Memory Store and updated indices via dreaming.
+
+**Status & Testing:**
+- Documentation-only change. Checked markdown structure and generated diagram formats successfully.
+
+## 2026-06-06 19:11 - Completed Step 2 — Data Cleaning & Preparation of continued pretraining plan
+
+**What was implemented:**
+- Created and executed the data cleaning pipeline for the Spurgeon continued pretraining phase. The pipeline normalizes Windows line endings, unescapes HTML entities, strips markdown headings/emphasis/blockquote/link syntax, collapses excessive blank lines, and truncates editor/publisher footers. A Qwen2.5-3B tokenization verification pass was executed to validate the final output datasets.
+
+**Core files affected:**
+- [continued_pretrain/scripts/05_build_corpus.py](file:///c:/Users/rafael/Projetos/search-sermons/continued_pretrain/scripts/05_build_corpus.py) — Cleaning and concatenation script.
+- [continued_pretrain/scripts/06_verify_tokens.py](file:///c:/Users/rafael/Projetos/search-sermons/continued_pretrain/scripts/06_verify_tokens.py) — Token estimation and validation script.
+- [spurgeon_phase1_plan_continued_pretrain_step2.md](file:///c:/Users/rafael/Projetos/search-sermons/spurgeon_phase1_plan_continued_pretrain_step2.md) — Step 2 Data Cleaning Report.
+
+**Key changes:**
+- Implemented 05_build_corpus.py which cleans and concatenates 3,486 training sermons and 50 holdout sermons into text files.
+- Hardened the footer-clearing logic by replacing the overbroad `pray the holy spirit` pattern with `pray the holy spirit will use` to prevent false positive truncation of 48 valid sermon endings, preserving 21,000+ tokens.
+- Implemented 06_verify_tokens.py which validated that the training corpus contains ~127.58M characters (~30.28M tokens) and the holdout corpus contains ~1.83M characters (~434K tokens).
+- Created a comprehensive Step 2 report detailing the cleaned dataset metrics and logic.
+
+**Status & Testing:**
+- Tested locally, all scripts ran successfully. Verified clean paragraph flows, stripped markers, and correct end-of-text delimiters.
+
+## 2026-06-06 18:50 - Completed Step 1 — Data Collection of continued pretraining plan
+
+**What was implemented:**
+- Implemented and executed the entire data collection and audit scripts (Step 1) for the Spurgeon continued pretraining pipeline. Created the new `continued_pretrain` folder structure, audited the 3,536-sermon raw corpus (~129.6 MB), inspected formatting, flagged index stubs and oversized multi-sermon files, and set aside a 50-sermon holdout split in `data/chspurgeon-holdout/` while leaving original corpus files untouched.
+
+**Core files affected:**
+- [continued_pretrain/scripts/01_inventory.py](file:///c:/Users/rafael/Projetos/search-sermons/continued_pretrain/scripts/01_inventory.py) — Corpus inventory script.
+- [continued_pretrain/scripts/02_inspect_samples.py](file:///c:/Users/rafael/Projetos/search-sermons/continued_pretrain/scripts/02_inspect_samples.py) — Random sample inspector script.
+- [continued_pretrain/scripts/03_flag_anomalies.py](file:///c:/Users/rafael/Projetos/search-sermons/continued_pretrain/scripts/03_flag_anomalies.py) — Short/oversized file flagger script.
+- [continued_pretrain/scripts/04_holdout_split.py](file:///c:/Users/rafael/Projetos/search-sermons/continued_pretrain/scripts/04_holdout_split.py) — Held-out evaluation set generator.
+- [spurgeon_phase1_plan_continued_pretrain_step1.md](file:///c:/Users/rafael/Projetos/search-sermons/spurgeon_phase1_plan_continued_pretrain_step1.md) — Step 1 Data Collection Report file.
+- [.gitignore](file:///c:/Users/rafael/Projetos/search-sermons/.gitignore) — Exceptions added for pretraining files.
+
+**Key changes:**
+- Created 01_inventory.py script and executed it to obtain accurate corpus counts (3,536 files, 129.60M characters).
+- Created 02_inspect_samples.py and verified text formatting issues like OCR hyphenations and metadata footers.
+- Created 03_flag_anomalies.py which detected 1 stub (README.md) and 2 oversized concatenated files (sermons 385-388 and 268-270).
+- Created 04_holdout_split.py and successfully copied 50 random sermons to the holdout directory without deleting them from source.
+
+**Status & Testing:**
+- Tested and verified locally. All four python scripts executed successfully without error and generated correct stats and holdout folders.
+
+## 2026-06-06 18:34 - Preserved original corpus files in pretraining plan
+
+**What was implemented:**
+- Updated the pretraining plan `spurgeon_phase1_plan_continued_pretrain.md` to preserve the original sermon `.md` files completely intact during the holdout split process. Copying is now used instead of unlinking, and the cleaning script dynamically filters out the holdout files.
+
+**Core files affected:**
+- [spurgeon_phase1_plan_continued_pretrain.md](file:///c:/Users/rafael/Projetos/search-sermons/spurgeon_phase1_plan_continued_pretrain.md) — Pretraining plan updated.
+
+**Key changes:**
+- Changed the holdout split process to copy files to `.\data\chspurgeon-holdout` instead of unlinking (deleting) them from the original directory.
+- Updated `build_corpus` signature and loop to dynamically check and skip files present in the holdout directory when building `spurgeon_train.txt`.
+
+**Status & Testing:**
+- Documentation-only change. Verified markdown formatting.
+
+## 2026-06-06 18:30 - Updated continued pretraining plan to upload cleaned text files instead of raw zip datasets
+
+**What was implemented:**
+- Modified the continued pretraining plan `spurgeon_phase1_plan_continued_pretrain.md` to run the corpus cleaning script locally first and upload the clean `.txt` files directly to Kaggle. This avoids uploading large raw zip files and zipping datasets locally.
+
+**Core files affected:**
+- [spurgeon_phase1_plan_continued_pretrain.md](file:///c:/Users/rafael/Projetos/search-sermons/spurgeon_phase1_plan_continued_pretrain.md) — Pretraining plan updated.
+
+**Key changes:**
+- Removed Step 1.5 (raw zip upload to Kaggle).
+- Added Step 2.4 (cleaned `.txt` files upload directly to Kaggle datasets).
+- Updated local build_corpus script in Step 2 to generate both `spurgeon_train.txt` and `spurgeon_holdout.txt`.
+
+**Status & Testing:**
+- Documentation-only change. Verified markdown formatting.
+
 ## 2026-06-06 17:46 - Optimized continued pretraining plan with GPU, data-cleaning, and training improvements
 
 **What was implemented:**

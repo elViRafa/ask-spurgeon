@@ -5,12 +5,12 @@ summary: "Index of all semantic memory store files."
 priority: high
 tags: [index, memory-store]
 schema_version: 1.3
-last_updated: "2026-06-06T14:42:11-04:00"
+last_updated: "2026-06-06T19:38:46-04:00"
 ---
 
 # Memory Store Index
 
-Updated by Memory Fabric Dreaming mode `light` at 2026-06-06T14:42:11-04:00.
+Updated by Memory Fabric Dreaming mode `light` at 2026-06-06T19:38:46-04:00.
 
 | Path | Priority | Summary | Key Topics | Tags |
 | --- | --- | --- | --- | --- |
@@ -20,3 +20,8 @@ Updated by Memory Fabric Dreaming mode `light` at 2026-06-06T14:42:11-04:00.
 | `decisions/gemma4-local-ollama` | medium | Gemma 4 Local Ollama Deployment | • 1. Tokenizer List Parsing Bug Fix<br>• 2. Remote Streaming Conversion & Double Quantization<br>• 3. Importing into Ollama<br>• 4. Local Disk Cleanup (8B f16 Reclaim) | gemma4, ollama, gguf, quantization, cleanup |
 | `fine-tuning/gemma-support` | medium | Gemma 2 fine-tuning support scripts and configs. | • Updated train_spurgeon_qlora.py to read base model and ch...<br>• Configured launch_training.py to pass parameters dynamica...<br>• Added train_config_gemma.json configuration file. | gemma2, fine-tuning, ollama |
 | `grok/integration` | high | Grok Integration with Memory Fabric (MCP + Docs + Native Layer) | • Key Integration Points (as of 2026-06-04/05)<br>• Usage in Grok Sessions for this Project<br>• Windows / This Env Specifics<br>• Benefits for this Project | grok, mcp, memory-fabric, integration, docs, agents |
+| `pretraining/data-collection` | medium | Pretraining Step 1 — Data Collection Complete | None recorded | pretraining, dataset, sermons |
+| `pretraining/dataset-preparation` | medium | Pretraining Step 6 — Dataset Preparation (Notebook A) Plan | • **Notebook A (`data_prep.ipynb`)** runs on CPU-only (acce...<br>• Ingests the cleaned training set `spurgeon_train.txt` and...<br>• Splits text documents on the `<\|endoftext\|>` marker, filt... | pretraining, dataset, kaggle, huggingface |
+| `pretraining/environment-setup` | medium | Pretraining Step 5 — Environment Setup & Configurations | None recorded | pretraining, environment, kaggle, config, secrets |
+| `pretraining/model-choice` | medium | Pretraining Step 4 — Model Choice & Technical Rationale | None recorded | pretraining, model, qwen, vram |
+| `pretraining/notebook-structure` | medium | Pretraining Step 3 — Kaggle Notebook Structure | None recorded | pretraining, kaggle, notebook, setup |

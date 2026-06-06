@@ -95,3 +95,11 @@ llama.cpp/
 
 # Ignore tool check files and logs
 doctor_out.txt
+
+# Allow continued_pretrain notebooks, scripts and configs
+!continued_pretrain/
+!continued_pretrain/**
+!continued_pretrain/notebooks/*.ipynb
+# But still exclude large generated corpus files
+continued_pretrain/data/*.txt
+continued_pretrain/data/*.bin
