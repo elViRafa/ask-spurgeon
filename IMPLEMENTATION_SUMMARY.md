@@ -1,4 +1,58 @@
+## 2026-06-06 14:08 - Regenerated and Imported Gemma 4 Spurgeon Model to local Ollama
+
+**What was implemented:**
+- Regenerated the local GGUF version of the fine-tuned model `rafaelvieirar1r/gemma-4-12b-spurgeon-generator` from Hugging Face for use in local Ollama.
+- Solved a local C: drive disk space issue (where Ollama create failed due to double copying) by deleting the obsolete local `Spurgeon-8B-f16.gguf` file (~16 GB).
+
+**Core files affected:**
+- [fine_tuning/models/Spurgeon-Gemma4-12B-Q4_K_M.gguf](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/models/Spurgeon-Gemma4-12B-Q4_K_M.gguf) — Quantized model weight file.
+- [fine_tuning/models/Modelfile.gemma4](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/models/Modelfile.gemma4) — Ollama Modelfile mapping to Gemma 4 turn special tokens.
+
+**Key changes:**
+- Stream-converted Hugging Face model weights to a temporary `Q8_0` GGUF over the network to bypass disk space constraints.
+- Quantized the `Q8_0` GGUF locally to the target `Q4_K_M` GGUF file.
+- Deleted the obsolete local 16GB float16 GGUF model `Spurgeon-8B-f16.gguf` to free up 16 GB of disk space.
+- Created and registered the model locally in Ollama as `spurgeon-gemma4` using the custom `Modelfile.gemma4`.
+
+**Status & Testing:**
+- Tested successfully. Verified model creation in Ollama using the Ollama REST API, returning HTTP status 200 with correct theological responses in Spurgeon's style.
+
+## 2026-06-06 17:16 - Install and Update Memory Fabric (ai-memory) package
+
+**What was implemented:**
+- Reinstalled/updated the `memory-fabric` package (providing the `ai-memory` CLI) in editable mode within the `search-sermons` virtual environment (`C:\Users\rafael\Projetos\search-sermons`).
+- Validated the installation inside the project using the `ai-memory doctor` CLI command to ensure all local memory files and settings are healthy.
+
+**Core files affected:**
+- None (virtual environment dependencies update).
+
+**Key changes:**
+- Ran pip installation of `agentic-memory` (`memory-fabric`) in editable mode (`-e`) into the local `.venv`.
+- Confirmed correct execution of `ai-memory doctor` in the local workspace.
+
+**Status & Testing:**
+- Tested locally, all checks passed and the CLI operates successfully.
+
+## 2026-06-06 12:05 - Fixed Unsloth Fast Patching Performance Warning by Setting LoRA Dropout to Zero
+
+**What was implemented:**
+- Fixed the Unsloth training warning regarding suboptimal LoRA matrix patching performance. Setting LoRA dropout to 0 enables Unsloth's highly optimized custom CUDA kernels.
+- Investigated and explained the initialization warning about `Gemma4AudioModel`'s `audio_tower` failing to register an input-embedding hook. This warning is expected and benign, as Unsloth automatically falls back to a pre-forward hook and the audio-tower is unused in text-only training.
+
+**Core files affected:**
+- [fine_tuning/scripts/train_spurgeon_qlora.py](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/scripts/train_spurgeon_qlora.py) — Updated default LoRA dropout parameter to 0.0.
+- [fine_tuning/train_config_gemma4.json](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/train_config_gemma4.json) (and `train_config_gemma.json`, `train_config.json`) — Changed `lora_dropout` to 0.
+- [fine_tuning/notebooks/Spurgeon_Gemma4_Training_Kaggle.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/Spurgeon_Gemma4_Training_Kaggle.ipynb) (and other notebooks under `fine_tuning/notebooks/`) — Programmatically updated `lora_dropout` to 0 in cell configurations.
+
+**Key changes:**
+- Set `lora_dropout` to 0 in all JSON configurations, Python training script parameters, and Jupyter notebook cells to enable Unsloth's fast-patching optimized kernels.
+- Added comprehensive documentation and explanation of both Unsloth logs (dropout performance warning and audio tower hook registration fallback).
+
+**Status & Testing:**
+- Verified config syntax and notebook structure. Git diff confirms clean application of dropout fixes across all 4 notebooks and 3 configurations.
+
 ## 2026-06-05 22:19 - Enabled Qdrant Support, Groq API, and Rate Limit Retries in Synthetic Data Generator
+
 
 **What was implemented:**
 - Enabled Qdrant vector store support in the synthetic dataset generator `generate_synthetic_data.py` to allow querying production-tier database collections.

@@ -51,7 +51,7 @@ DEFAULT_LOAD_IN_4BIT = True
 # LoRA settings (good starting point for style transfer)
 DEFAULT_LORA_R = 64
 DEFAULT_LORA_ALPHA = 128
-DEFAULT_LORA_DROPOUT = 0.05
+DEFAULT_LORA_DROPOUT = 0.0
 
 # Training hyperparameters
 DEFAULT_BATCH_SIZE = 2

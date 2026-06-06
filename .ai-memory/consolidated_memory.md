@@ -5,7 +5,7 @@ summary: "Map of available project memory sections."
 priority: high
 tags: [index, memory]
 schema_version: 1.3
-last_updated: "2026-06-05T17:20:08-04:00"
+last_updated: "2026-06-06T14:08:43-04:00"
 consolidation_hash: dc4febef829d2344ced791190b2a66be
 contradictions: []
 consolidation_warnings: []
@@ -14,7 +14,7 @@ summary_hash: c81ed9efe309125e42b693ba950f4f04
 
 # Project Memory Index
 
-Updated by Memory Fabric Dreaming mode `light` at 2026-06-05T17:20:08-04:00.
+Updated by Memory Fabric Dreaming mode `light` at 2026-06-06T14:08:43-04:00.
 
 | Section | Priority | Summary | Key Topics |
 | --- | --- | --- | --- |
@@ -288,6 +288,36 @@ This has been applied to the following training files:
 2. `[REDACTED_SECRET].ipynb` (Inference Cell & Dataset Preparation)
 3. `fine_tuning/scripts/train_spurgeon_qlora.py` (Dataset formatting function)
 
+<!-- memory-fabric:store/bugs/unsloth-fast-patching-warnings -->
+---
+store_path: bugs/unsloth-fast-patching-warnings
+title: "Unsloth Training Warnings & Fast Patching Resolution"
+summary: "Unsloth Training Warnings & Fast Patching Resolution"
+priority: medium
+tags: [unsloth, lora, gemma4, bugfix]
+schema_version: 1.3
+last_updated: "2026-06-06T12:04:12-04:00"
+---
+
+# Unsloth Training Warnings & Fast Patching Resolution
+
+## 1. LoRA Dropout Performance Warning
+* **Problem**: Setting `lora_dropout` to any non-zero value (e.g., `0.05`) in Unsloth triggers the following warning:
+  ```
+  Unsloth: Dropout = 0 is supported for fast patching. You are using dropout = 0.05.
+  Unsloth will patch all other layers, except LoRA matrices, causing a performance hit.
+  ```
+* **Implication**: Unsloth uses highly optimized custom CUDA kernels for LoRA layers which require `lora_dropout = 0`. Setting it higher causes Unsloth to fall back to the slower default PEFT implementation for the LoRA adapter matrices, losing significant training speedup and VRAM efficiency.
+* **Resolution**: Updated all configurations and notebooks to use `lora_dropout = 0` (or `0.0`), enabling full Unsloth optimization.
+
+## 2. Gemma 4 Audio Tower Hook Registration Warning
+* **Problem**: Loading multimodal Gemma 4 variants (such as `unsloth/gemma-4-E4B-it` or `unsloth/gemma-4-12b-it`) in Unsloth produces the initialization warning:
+  ```
+  [unsloth_zoo.log|WARNING]Unsloth: Failed to register input-embedding hook for `model.base_model.model.model.audio_tower`: `get_input_embeddings` not auto‑handled for Gemma4AudioModel; please override in the subclass.. Falling back to pre-forward hook.
+  ```
+* **Implication**: Gemma 4 is a multimodal model containing audio components (`audio_tower`/`Gemma4AudioModel`). Unsloth's auto-patcher does not natively handle embedding hooks for the audio tower and falls back to a standard pre-forward hook.
+* **Status**: This warning is expected, benign, and can be safely ignored. For text-only fine-tuning tasks (such as Spurgeon style-transfer training), the audio tower is completely inactive and does not receive input sequences, so the fallback pre-forward hook has zero impact on training correctness or stability.
+
 <!-- memory-fabric:store/decisions/gemma4-finetuning -->
 ---
 store_path: decisions/gemma4-finetuning
@@ -320,9 +350,9 @@ store_path: decisions/gemma4-local-ollama
 title: "Gemma 4 Local Ollama Deployment"
 summary: "Gemma 4 Local Ollama Deployment"
 priority: medium
-tags: [gemma4, ollama, gguf, quantization]
+tags: [gemma4, ollama, gguf, quantization, cleanup]
 schema_version: 1.3
-last_updated: "2026-06-05T17:19:49-04:00"
+last_updated: "2026-06-06T14:08:24-04:00"
 ---
 
 # Gemma 4 Local Ollama Deployment
@@ -347,7 +377,7 @@ To circumvent this:
    This outputs an 8.0 GB `Q8_0` file rather than a 24 GB file.
 2. We quantize the `Q8_0` GGUF down to `Q4_K_M` locally using `llama-quantize.exe` (with `--allow-requantize`):
    ```bash
-   .\llama.cpp\build\bin\Release\llama-quantize.exe --allow-requantize .\fine_tuning\models\Spurgeon-Gemma4-12B-Q8_0.gguf .\fine_tuning\models\Spurgeon-Gemma4-12B-Q4_K_M.gguf Q4_K_M
+   .\\llama.cpp\\build\\bin\\Release\\llama-quantize.exe --allow-requantize .\\fine_tuning\\models\\Spurgeon-Gemma4-12B-Q8_0.gguf .\\fine_tuning\\models\\Spurgeon-Gemma4-12B-Q4_K_M.gguf Q4_K_M
    ```
    This generates the target 5.3 GB `Spurgeon-Gemma4-12B-Q4_K_M.gguf` file.
 3. We delete the intermediate `Q8_0` file to free up local storage.
@@ -358,6 +388,10 @@ We load the quantized GGUF file into local Ollama using the custom `Modelfile.ge
 ollama create spurgeon-gemma4 -f Modelfile.gemma4
 ```
 This registers `spurgeon-gemma4:latest` locally, making it available for local inference.
+
+## 4. Local Disk Cleanup (8B f16 Reclaim)
+When registering a new GGUF version in Ollama, Ollama copies/duplicates the GGUF file to its internal blob directory (`C:\Users\rafael\.ollama\models\blobs\...`). Under tight disk space conditions, this requires having at least double the model size (~10.6 GB) free on the C: drive.
+To free up sufficient space during conversion, we deleted the obsolete local 16GB `Spurgeon-8B-f16.gguf` file (which had already been uploaded to the remote Hugging Face repository in an earlier phase). This safely reclaimed 16 GB, resolving the `not enough space on the disk` error during the `ollama create` command.
 
 <!-- memory-fabric:store/fine-tuning/gemma-support -->
 ---

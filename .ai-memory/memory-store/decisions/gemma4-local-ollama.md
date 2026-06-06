@@ -3,9 +3,9 @@ store_path: decisions/gemma4-local-ollama
 title: "Gemma 4 Local Ollama Deployment"
 summary: "Gemma 4 Local Ollama Deployment"
 priority: medium
-tags: [gemma4, ollama, gguf, quantization]
+tags: [gemma4, ollama, gguf, quantization, cleanup]
 schema_version: 1.3
-last_updated: "2026-06-05T17:19:49-04:00"
+last_updated: "2026-06-06T14:08:24-04:00"
 ---
 
 # Gemma 4 Local Ollama Deployment
@@ -30,7 +30,7 @@ To circumvent this:
    This outputs an 8.0 GB `Q8_0` file rather than a 24 GB file.
 2. We quantize the `Q8_0` GGUF down to `Q4_K_M` locally using `llama-quantize.exe` (with `--allow-requantize`):
    ```bash
-   .\llama.cpp\build\bin\Release\llama-quantize.exe --allow-requantize .\fine_tuning\models\Spurgeon-Gemma4-12B-Q8_0.gguf .\fine_tuning\models\Spurgeon-Gemma4-12B-Q4_K_M.gguf Q4_K_M
+   .\\llama.cpp\\build\\bin\\Release\\llama-quantize.exe --allow-requantize .\\fine_tuning\\models\\Spurgeon-Gemma4-12B-Q8_0.gguf .\\fine_tuning\\models\\Spurgeon-Gemma4-12B-Q4_K_M.gguf Q4_K_M
    ```
    This generates the target 5.3 GB `Spurgeon-Gemma4-12B-Q4_K_M.gguf` file.
 3. We delete the intermediate `Q8_0` file to free up local storage.
@@ -41,3 +41,7 @@ We load the quantized GGUF file into local Ollama using the custom `Modelfile.ge
 ollama create spurgeon-gemma4 -f Modelfile.gemma4
 ```
 This registers `spurgeon-gemma4:latest` locally, making it available for local inference.
+
+## 4. Local Disk Cleanup (8B f16 Reclaim)
+When registering a new GGUF version in Ollama, Ollama copies/duplicates the GGUF file to its internal blob directory (`C:\Users\rafael\.ollama\models\blobs\...`). Under tight disk space conditions, this requires having at least double the model size (~10.6 GB) free on the C: drive.
+To free up sufficient space during conversion, we deleted the obsolete local 16GB `Spurgeon-8B-f16.gguf` file (which had already been uploaded to the remote Hugging Face repository in an earlier phase). This safely reclaimed 16 GB, resolving the `not enough space on the disk` error during the `ollama create` command.
