@@ -9,6 +9,8 @@ TGI on CPU basic is unstable for 8B models. `llama.cpp` is much better for CPU.
 1. Your model must be converted to **GGUF** format (Q4_K_M or Q5_K_M recommended).
 2. Upload the GGUF file to a Hugging Face repo (e.g. `rafaelvieirar1r/llama-3.1-8b-spurgeon-generator-gguf`).
 
+If you want to use the same fine-tuned model in **Ollama** locally, download the GGUF from Hugging Face and import it with the Gemma 4 Modelfile.
+
 ## Step-by-Step Deployment
 
 ### 1. Convert your merged model to GGUF (do this once)
@@ -27,6 +29,26 @@ python convert_hf_to_gguf.py /path/to/your/merged/model --outfile Spurgeon-8B-Q4
 ```
 
 Upload the resulting `.gguf` file to a new HF repo.
+
+### 1b. Use the model locally in Ollama
+
+If your GGUF is already on Hugging Face at `rafaelvieirar1r/gemma-4-12b-spurgeon-generator`, you can pull it down and create an Ollama model directly:
+
+```bash
+huggingface-cli download rafaelvieirar1r/gemma-4-12b-spurgeon-generator Spurgeon-Gemma4-12B-Q4_K_M.gguf --local-dir ..\..\models --local-dir-use-symlinks False
+cd ..\..\models
+ollama create spurgeon-gemma4 -f Modelfile.gemma4
+ollama run spurgeon-gemma4
+```
+
+Then set your app to use the local Ollama endpoint:
+
+```env
+LLM_PROVIDER=openai
+CUSTOM_LLM_BASE_URL=http://localhost:11434/v1
+CUSTOM_LLM_API_KEY=ollama
+CUSTOM_LLM_MODEL=spurgeon-gemma4
+```
 
 ### 2. Create the Space
 

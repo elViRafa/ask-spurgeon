@@ -57,6 +57,26 @@ The file `spurgeon_train_1500.jsonl` is **not automatically available** when you
 
 See the notebook `fine_tuning/notebooks/Spurgeon_1500_Training_Colab.ipynb` — it already has clear instructions for this.
 
+## Running the Fine-Tuned Model in Ollama
+
+If you already published your quantized Gemma 4 model to Hugging Face, you can import it into Ollama with the provided Modelfile.
+
+```bash
+huggingface-cli download rafaelvieirar1r/gemma-4-12b-spurgeon-generator Spurgeon-Gemma4-12B-Q4_K_M.gguf --local-dir fine_tuning/models --local-dir-use-symlinks False
+cd fine_tuning/models
+ollama create spurgeon-gemma4 -f Modelfile.gemma4
+ollama run spurgeon-gemma4
+```
+
+Then point the main app to Ollama:
+
+```env
+LLM_PROVIDER=openai
+CUSTOM_LLM_BASE_URL=http://localhost:11434/v1
+CUSTOM_LLM_API_KEY=ollama
+CUSTOM_LLM_MODEL=spurgeon-gemma4
+```
+
 ## Important Notes
 
 - The entire approach prioritizes **textual fidelity** over pure stylistic imitation.

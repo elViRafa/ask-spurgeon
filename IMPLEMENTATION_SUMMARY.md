@@ -1,4 +1,51 @@
+## 2026-06-05 22:19 - Enabled Qdrant Support, Groq API, and Rate Limit Retries in Synthetic Data Generator
+
+**What was implemented:**
+- Enabled Qdrant vector store support in the synthetic dataset generator `generate_synthetic_data.py` to allow querying production-tier database collections.
+- Activated the Groq API key configuration in the project `.env` and installed the `groq` Python package in the virtual environment.
+- Implemented an exponential backoff retry loop in `generate_spurgeon_response` to gracefully handle Groq rate limits (429) and transient errors.
+- Added a 3-attempt retry wrapper for Qdrant context retrieval in the main query loop to prevent script crashes on connection timeouts.
+- Configured a 60-second connection timeout (`timeout=60.0`) for the QdrantClient instance to prevent cold-start remote handshakes from timing out.
+- Configured output flushing after each file write to prevent progress loss.
+- Launched a full dataset generation run of 1000 items in the background to rewrite the training dataset.
+
+**Core files affected:**
+- [fine_tuning/scripts/generate_synthetic_data.py](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/scripts/generate_synthetic_data.py) — Added Qdrant retrieval, embedding model integration, QdrantClient timeout configuration, rate limit retries, and retrieval retry loop.
+- [.env](file:///c:/Users/rafael/Projetos/search-sermons/.env) — Activated the Groq API key setting.
+
+**Key changes:**
+- Imported Qdrant configuration variables and implemented `VECTOR_STORE == "qdrant"` retrieval using `QdrantVectorStore` and `QdrantClient`.
+- Configured `timeout=60.0` inside the `QdrantClient` constructor.
+- Installed `groq` to allow the generator script to perform chat completion requests.
+- Added a `for attempt in range(max_retries)` loop catching exceptions containing "rate_limit" or "429" and sleeping with increasing delay.
+- Wrapped `retriever.retrieve(question)` in a try-except retry loop with exponential delay and skip-upon-failure behavior.
+- Added `f.flush()` after every JSON line write.
+- Launched background generation directly into the training file `fine_tuning/data/spurgeon_train_1500.jsonl`.
+
+**Status & Testing:**
+- Completed successfully. Generated and verified 1,000 high-quality training examples using `llama-3.1-8b-instant` local generator, saved directly under `fine_tuning/data/spurgeon_train_1500.jsonl` (2,031,016 bytes).
+
+## 2026-06-05 17:20 - Quantized and Imported Gemma 4 Spurgeon Model to local Ollama
+
+**What was implemented:**
+- Resolved a tokenizer list parsing bug in `llama.cpp/convert_hf_to_gguf.py` by monkey-patching `SpecialTokensMixin._set_model_specific_special_tokens` to handle list-based `extra_special_tokens` without raising `AttributeError`.
+- Remotely downloaded and quantized the `rafaelvieirar1r/gemma-4-12b-spurgeon-generator` model to `Q8_0` on-the-fly, then quantized it locally to `Q4_K_M` GGUF (`Spurgeon-Gemma4-12B-Q4_K_M.gguf`), managing tight disk space limits (24.17 GB free at start).
+- Created and registered the model locally in Ollama as `spurgeon-gemma4` using the custom `Modelfile.gemma4`.
+
+**Core files affected:**
+- [llama.cpp/convert_hf_to_gguf.py](file:///c:/Users/rafael/Projetos/search-sermons/llama.cpp/convert_hf_to_gguf.py) — Added transformers tokenization bug monkey-patch.
+- [fine_tuning/models/Spurgeon-Gemma4-12B-Q4_K_M.gguf](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/models/Spurgeon-Gemma4-12B-Q4_K_M.gguf) — Quantized model weight file.
+
+**Key changes:**
+- Modified `convert_hf_to_gguf.py` to convert the `extra_special_tokens` list into a dict on the fly to bypass `transformers` package bugs.
+- Executed local `llama-quantize` to quantize the model and cleaned up intermediate large files to prevent disk full conditions.
+- Ran `ollama create` using the `Modelfile.gemma4` configuration.
+
+**Status & Testing:**
+- Model successfully registered and listed as `spurgeon-gemma4:latest` in local Ollama instance (`ollama list` verified).
+
 ## 2026-06-05 12:50 - Fixed Gemma 4 Chat Template Processor Error during Inference
+
 
 **What was implemented:**
 - Resolved a runtime `TypeError: string indices must be integers` crash when calling `apply_chat_template` on the processor returned by Unsloth/transformers for Gemma 4 models.
