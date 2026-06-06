@@ -1,3 +1,59 @@
+## 2026-06-06 17:46 - Optimized continued pretraining plan with GPU, data-cleaning, and training improvements
+
+**What was implemented:**
+- Hardened and improved the continued pretraining plan (`spurgeon_phase1_plan_continued_pretrain.md`) based on detailed codebase research and optimization techniques. Replaced a dangerous and overbroad search-and-replace cleaning step with a robust last-25-lines footer truncation method to prevent loss of actual sermon paragraphs containing common words like "alabaster" or "published by". Added GPU quota usage guidelines, package dependency warning notes, a fix for the LoRA dropout speed-up warning, and a mitigation for the HuggingFace Trainer immediate-exit bug when resuming from checkpoints.
+
+**Core files affected:**
+- [spurgeon_phase1_plan_continued_pretrain.md](file:///c:/Users/rafael/Projetos/search-sermons/spurgeon_phase1_plan_continued_pretrain.md) — Pretraining plan updated with GPU, cleaning script, environment, training config, and risk sections improved.
+
+**Key changes:**
+- Replaced dangerous publisher ad/credit keyword deletion regex with a safe scan-and-truncate footer logic restricted to the last 25 lines of each file, preventing deletion of normal sermon paragraphs.
+- Fixed spelling mismatch for `PORTIONS OF SCRIPTURE READ` by supporting both singular and plural forms in cleaning.
+- Recommended single T4 GPU usage instead of 2x T4 to half quota consumption and simplify configuration without DDP overhead.
+- Added a warning to toggle Kaggle Internet ON and warned against running generic pip upgrades that corrupt Unsloth dependencies.
+- Updated `lora_dropout` from 0.05 to 0 to enable Unsloth's optimized CUDA kernels for a 20-50% speedup.
+- Addressed the HuggingFace Trainer immediate-exit bug when resuming by explaining how to increment `num_train_epochs` before loading.
+
+**Status & Testing:**
+- Handled via documentation updates. Validated the footer truncation logic on the actual 3,537 sermons corpus, confirming that it accurately cleans all 712 files with footers while leaving normal body text untouched.
+
+## 2026-06-06 17:23 - Applied audit fixes to continued pretraining plan
+
+**What was implemented:**
+- Applied all consistency fixes identified by an automated audit of `spurgeon_phase1_plan_continued_pretrain.md` against the real project on disk. Two critical bugs were fixed (wrong corpus folder name, missing HTML entity decoding), the cleaning script was significantly hardened with CRLF normalisation and corpus-specific footer stripping, the anomaly checker gained an upper-bound check for multi-sermon files, Kaggle dataset path names were unified, and a full `continued_pretrain/` folder layout + `.gitignore` guidance were added to the plan.
+
+**Core files affected:**
+- [spurgeon_phase1_plan_continued_pretrain.md](file:///c:/Users/rafael/Projetos/search-sermons/spurgeon_phase1_plan_continued_pretrain.md) — All fixes applied (plan document only, no code implemented yet).
+
+**Key changes:**
+- Fixed `chspurgeon-sermon` → `chspurgeon-sermons` in 5 places (lines 28, 53, 150, 178, 339)
+- Added `html.unescape()` + `\r\n` normalisation to the cleaning script — fixes `&mdash;` noise in volume-1 files
+- Added footer-stripping regexes: `HYMNS FROM`, `PORTIONS OF SCRIPTURE READ`, `PRAY THE HOLY SPIRIT`, `Adapted from The C. H. Spurgeon Collection`
+- Expanded anomaly checker with upper-bound (>80KB) detection for multi-sermon concatenations
+- Unified three inconsistent Kaggle dataset path names → `spurgeon-cpt-corpus`, `spurgeon-cpt-holdout`, `spurgeon-cpt-dataset`
+- Added `continued_pretrain/` folder structure + `.gitignore` additions section at end of plan
+- Fixed misleading filename diagram (`sermon_001.md` → real format) and frontmatter note
+
+**Status & Testing:**
+- Documentation-only change. No code implemented. Plan is now consistent with the real system.
+
+## 2026-06-06 15:52 - Updated continued pretraining plan to use Qwen2.5-3B exclusively
+
+**What was implemented:**
+- Edited `spurgeon_phase1_plan_continued_pretrain.md` to remove the Gemma 4 E4B alternative code block from Step 7 (Model + LoRA setup). The plan already specified Qwen2.5-3B as the chosen model in the Overview and Step 4, but the training configuration section still presented Gemma 4 E4B as an optional alternative, creating ambiguity. The document is now unambiguous — Qwen2.5-3B is the sole target model throughout.
+
+**Core files affected:**
+- [spurgeon_phase1_plan_continued_pretrain.md](file:///c:/Users/rafael/Projetos/search-sermons/spurgeon_phase1_plan_continued_pretrain.md) — Removed Gemma 4 E4B `FastModel` block and the "choose one" instruction; consolidated to a single `FastLanguageModel` block for `unsloth/Qwen2.5-3B`.
+
+**Key changes:**
+- Removed the `FastModel` import and Gemma 4 E4B `from_pretrained` / `get_peft_model` code block.
+- Removed the "Choose one block depending on your model decision" heading.
+- Removed the "or Llama-3.2-3B" comment from the `model_name` line.
+- Plan now has a single, clean setup block using `FastLanguageModel` + `unsloth/Qwen2.5-3B`.
+
+**Status & Testing:**
+- Documentation-only change. No code executed.
+
 ## 2026-06-06 14:08 - Regenerated and Imported Gemma 4 Spurgeon Model to local Ollama
 
 **What was implemented:**
