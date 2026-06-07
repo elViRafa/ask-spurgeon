@@ -1,3 +1,18 @@
+## 2026-06-07 06:35 - Fixed SFTConfig pickling serialization crash on Kaggle
+
+**What was implemented:**
+- Resolved a `PicklingError` during checkpoint saving when calling `trainer.train()`. The error (`Can't pickle <class 'trl.trainer.sft_config.SFTConfig'>: it's not the same object as trl.trainer.sft_config.SFTConfig`) occurs because Unsloth's dynamic compilation of `UnslothSFTTrainer` reloads or re-defines modules dynamically, causing a class identity mismatch between the instantiated trainer configuration and the class in the module namespace.
+- Migrated Notebook B to use `trl`'s `SFTConfig` directly (the standard for newer TRL versions) and added a dynamic python metaprogramming fallback entry inside Cell 9 right before calling `trainer.train()` that binds `sys.modules['trl.trainer.sft_config'].SFTConfig` to the class of `trainer.args`.
+
+**Core files affected:**
+- [continued_pretrain/notebooks/B_training.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/continued_pretrain/notebooks/B_training.ipynb) — Updated Cell 7 and Cell 9 to use `SFTConfig` and apply the pickling fix.
+- [spurgeon_phase1_plan_continued_pretrain_step7.md](file:///c:/Users/rafael/Projetos/search-sermons/spurgeon_phase1_plan_continued_pretrain_step7.md) — Kept code blocks in sync with `SFTConfig` and pickling fix.
+- [spurgeon_phase1_plan_continued_pretrain_step3.md](file:///c:/Users/rafael/Projetos/search-sermons/spurgeon_phase1_plan_continued_pretrain_step3.md) — Updated layout and resumed run sheets to include `SFTConfig` and pickling fix.
+- [spurgeon_phase1_plan_continued_pretrain.md](file:///c:/Users/rafael/Projetos/search-sermons/spurgeon_phase1_plan_continued_pretrain.md) — Unified training code snippets in main plan.
+
+**Status & Testing:**
+- Verified notebook JSON layout integrity. Metaprogramming fix aligns class identities for `pickle` serialization.
+
 ## 2026-06-06 21:54 - Enforced single GPU visibility in training configuration
 
 **What was implemented:**

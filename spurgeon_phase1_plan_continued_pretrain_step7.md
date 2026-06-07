@@ -90,8 +90,7 @@ model = FastLanguageModel.get_peft_model(
 We configure the Hugging Face `SFTTrainer` with sequence packing enabled. Packing is crucial for pretraining: it concatenates multiple short texts (separated by `<|endoftext|>`) into a single 2048-token sequence, preventing wasted compute on padding tokens and speeding up training by 3-5x.
 
 ```python
-from trl import SFTTrainer
-from transformers import TrainingArguments
+from trl import SFTTrainer, SFTConfig
 from datasets import load_from_disk
 import os
 import shutil
@@ -150,7 +149,7 @@ PREV_RUN_CHECKPOINT = None
 # Define total target epochs (must be equal to the current run number)
 TOTAL_TARGET_EPOCHS = RUN_NUMBER
 
-training_args = TrainingArguments(
+training_args = SFTConfig(
     per_device_train_batch_size = 2,
     gradient_accumulation_steps = 8,
     num_train_epochs            = TOTAL_TARGET_EPOCHS,
@@ -169,6 +168,9 @@ training_args = TrainingArguments(
     save_total_limit            = 3,
     output_dir                  = output_dir,
     seed                        = 42,
+    dataset_text_field          = "text",
+    max_seq_length              = MAX_SEQ_LENGTH,
+    packing                     = True,
 )
 
 trainer = SFTTrainer(
@@ -176,11 +178,17 @@ trainer = SFTTrainer(
     tokenizer          = tokenizer,
     train_dataset      = dataset["train"],
     eval_dataset       = dataset["test"],
-    dataset_text_field = "text",
-    max_seq_length     = MAX_SEQ_LENGTH,
-    packing            = True,
     args               = training_args,
 )
+
+# Fix potential PicklingError with SFTConfig in Unsloth/TRL on Kaggle
+import sys
+import trl
+if hasattr(trainer, "args") and trainer.args.__class__.__name__ == "SFTConfig":
+    import trl.trainer.sft_config
+    trl.trainer.sft_config.SFTConfig = trainer.args.__class__
+    sys.modules["trl.trainer.sft_config"].SFTConfig = trainer.args.__class__
+    trl.SFTConfig = trainer.args.__class__
 
 # Execute training
 if PREV_RUN_CHECKPOINT:

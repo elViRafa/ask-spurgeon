@@ -130,8 +130,7 @@ model = FastLanguageModel.get_peft_model(
 
 ### Cell 3: Configure Training Arguments and Resumption Logic
 ```python
-from trl import SFTTrainer
-from transformers import TrainingArguments
+from trl import SFTTrainer, SFTConfig
 from datasets import load_from_disk
 import os
 
@@ -147,7 +146,7 @@ RESUME_CHECKPOINT = None # e.g., "/kaggle/input/spurgeon-training-run-1/checkpoi
 # CRITICAL: SFTTrainer will exit immediately if num_train_epochs <= completed_epochs in checkpoint
 TOTAL_TARGET_EPOCHS = RUN_NUMBER 
 
-training_args = TrainingArguments(
+training_args = SFTConfig(
     per_device_train_batch_size = 2,
     gradient_accumulation_steps = 8,   # Effective batch size = 16 (2 * 8)
     num_train_epochs            = TOTAL_TARGET_EPOCHS,
@@ -166,6 +165,9 @@ training_args = TrainingArguments(
     save_total_limit            = 3,     # Keep the last 3 checkpoints to manage disk space
     output_dir                  = "/kaggle/working/checkpoints",
     seed                        = 42,
+    dataset_text_field          = "text",
+    max_seq_length              = MAX_SEQ_LENGTH,
+    packing                     = True,  # Packs multiple short texts into a single context window
 )
 
 trainer = SFTTrainer(
@@ -173,15 +175,21 @@ trainer = SFTTrainer(
     tokenizer          = tokenizer,
     train_dataset      = dataset["train"],
     eval_dataset       = dataset["test"],
-    dataset_text_field = "text",
-    max_seq_length     = MAX_SEQ_LENGTH,
-    packing            = True, # Packs multiple short texts into a single context window
     args               = training_args,
 )
 ```
 
 ### Cell 4: Launch Training
 ```python
+# Fix potential PicklingError with SFTConfig in Unsloth/TRL on Kaggle
+import sys
+import trl
+if hasattr(trainer, "args") and trainer.args.__class__.__name__ == "SFTConfig":
+    import trl.trainer.sft_config
+    trl.trainer.sft_config.SFTConfig = trainer.args.__class__
+    sys.modules["trl.trainer.sft_config"].SFTConfig = trainer.args.__class__
+    trl.SFTConfig = trainer.args.__class__
+
 if RESUME_CHECKPOINT and os.path.exists(RESUME_CHECKPOINT):
     print(f"Resuming training from checkpoint: {RESUME_CHECKPOINT}")
     trainer.train(resume_from_checkpoint=RESUME_CHECKPOINT)

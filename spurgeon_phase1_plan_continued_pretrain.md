@@ -570,47 +570,49 @@ model = FastLanguageModel.get_peft_model(
 ### Training arguments
 
 ```python
-from trl import SFTTrainer
-from transformers import TrainingArguments
+from trl import SFTTrainer, SFTConfig
 from datasets import load_from_disk
 
 dataset = load_from_disk("/kaggle/input/spurgeon-cpt-dataset/spurgeon_dataset")
+
+training_args = SFTConfig(
+    # Batch
+    per_device_train_batch_size  = 2,
+    gradient_accumulation_steps  = 8,   # Effective batch size = 16
+    # Schedule
+    num_train_epochs             = 1,   # 1 epoch per Kaggle session
+    warmup_steps                 = 100,
+    learning_rate                = 2e-4,
+    lr_scheduler_type            = "cosine",
+    # Precision
+    fp16 = not torch.cuda.is_bf16_supported(),
+    bf16 = torch.cuda.is_bf16_supported(),
+    # Optimizer
+    optim        = "adamw_8bit",
+    weight_decay = 0.01,
+    # Logging
+    logging_steps          = 50,
+    eval_strategy          = "steps",
+    eval_steps             = 500,
+    # Checkpointing
+    save_strategy          = "steps",
+    save_steps             = 500,
+    save_total_limit       = 3,         # Keep last 3 checkpoints
+    output_dir             = "/kaggle/working/checkpoints",
+    # Reproducibility
+    seed = 42,
+    # SFT Parameters
+    dataset_text_field     = "text",
+    max_seq_length         = MAX_SEQ_LENGTH,
+    packing                = True,      # Critical: fills context windows for efficiency
+)
 
 trainer = SFTTrainer(
     model             = model,
     tokenizer         = tokenizer,
     train_dataset     = dataset["train"],
     eval_dataset      = dataset["test"],
-    dataset_text_field = "text",
-    max_seq_length    = MAX_SEQ_LENGTH,
-    packing           = True,   # Critical: fills context windows for efficiency
-    args = TrainingArguments(
-        # Batch
-        per_device_train_batch_size  = 2,
-        gradient_accumulation_steps  = 8,   # Effective batch size = 16
-        # Schedule
-        num_train_epochs             = 1,   # 1 epoch per Kaggle session
-        warmup_steps                 = 100,
-        learning_rate                = 2e-4,
-        lr_scheduler_type            = "cosine",
-        # Precision
-        fp16 = not torch.cuda.is_bf16_supported(),
-        bf16 = torch.cuda.is_bf16_supported(),
-        # Optimizer
-        optim        = "adamw_8bit",
-        weight_decay = 0.01,
-        # Logging
-        logging_steps          = 50,
-        eval_strategy          = "steps",
-        eval_steps             = 500,
-        # Checkpointing
-        save_strategy          = "steps",
-        save_steps             = 500,
-        save_total_limit       = 3,         # Keep last 3 checkpoints
-        output_dir             = "/kaggle/working/checkpoints",
-        # Reproducibility
-        seed = 42,
-    ),
+    args              = training_args,
 )
 ```
 
@@ -620,6 +622,15 @@ trainer = SFTTrainer(
 > **Resuming Training Bug:** When resuming training in subsequent sessions (Session 2, etc.), you MUST increase `num_train_epochs` in the `TrainingArguments` (e.g. change it to `2` for Run 2, `3` for Run 3). If `num_train_epochs` remains equal to the number of completed epochs in the checkpoint (e.g. `1`), the trainer will assume training has completed and immediately exit without training anything.
 
 ```python
+# Fix potential PicklingError with SFTConfig in Unsloth/TRL on Kaggle
+import sys
+import trl
+if hasattr(trainer, "args") and trainer.args.__class__.__name__ == "SFTConfig":
+    import trl.trainer.sft_config
+    trl.trainer.sft_config.SFTConfig = trainer.args.__class__
+    sys.modules["trl.trainer.sft_config"].SFTConfig = trainer.args.__class__
+    trl.SFTConfig = trainer.args.__class__
+
 # First session: train from scratch
 trainer.train()
 
