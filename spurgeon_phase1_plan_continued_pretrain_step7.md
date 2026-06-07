@@ -146,7 +146,7 @@ training_args = TrainingArguments(
     optim                       = "adamw_8bit",
     weight_decay                = 0.01,
     logging_steps               = 50,
-    evaluation_strategy         = "steps",
+    eval_strategy               = "steps",
     eval_steps                  = 500,
     save_strategy               = "steps",
     save_steps                  = 500,
@@ -167,9 +167,13 @@ trainer = SFTTrainer(
 )
 
 # Execute training
-if PREV_RUN_CHECKPOINT and os.path.exists(PREV_RUN_CHECKPOINT):
-    print(f"Resuming training from checkpoint: {PREV_RUN_CHECKPOINT}")
-    trainer.train(resume_from_checkpoint=PREV_RUN_CHECKPOINT)
+if PREV_RUN_CHECKPOINT:
+    if os.path.exists(PREV_RUN_CHECKPOINT):
+        print(f"Resuming training from checkpoint: {PREV_RUN_CHECKPOINT}")
+        trainer.train(resume_from_checkpoint=PREV_RUN_CHECKPOINT)
+    else:
+        raise FileNotFoundError(f"Checkpoint not found at: {PREV_RUN_CHECKPOINT}. "
+                                "Please check the path or ensure the previous run's dataset is mounted.")
 else:
     print("Starting training from scratch...")
     trainer.train()

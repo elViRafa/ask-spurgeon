@@ -601,7 +601,7 @@ trainer = SFTTrainer(
         weight_decay = 0.01,
         # Logging
         logging_steps          = 50,
-        evaluation_strategy    = "steps",
+        eval_strategy          = "steps",
         eval_steps             = 500,
         # Checkpointing
         save_strategy          = "steps",

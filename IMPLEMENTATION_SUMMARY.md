@@ -1,3 +1,30 @@
+## 2026-06-06 21:39 - Strengthened checkpoint check in Step 7 plan and notebook B
+
+**What was implemented:**
+- Hardened the training execution cells in both Notebook B and the Step 7 plan. If a previous run checkpoint path is specified for resumption, the script now explicitly raises a `FileNotFoundError` if the checkpoint path is missing or invalid, preventing the script from silently falling back to training from scratch (which would overwrite progress or waste time).
+
+**Core files affected:**
+- [continued_pretrain/notebooks/B_training.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/continued_pretrain/notebooks/B_training.ipynb) — Updated Cell 9 execution logic.
+- [spurgeon_phase1_plan_continued_pretrain_step7.md](file:///c:/Users/rafael/Projetos/search-sermons/spurgeon_phase1_plan_continued_pretrain_step7.md) — Updated Python snippet cell.
+
+**Status & Testing:**
+- Validated notebook JSON structure. Executed Python parsing check successfully.
+
+## 2026-06-06 21:36 - Fixed TrainingArguments evaluation_strategy deprecation crash
+
+**What was implemented:**
+- Resolved a runtime `TypeError` crash in `TrainingArguments` caused by the deprecated `evaluation_strategy` keyword argument being completely removed in the latest Hugging Face `transformers` versions.
+- Updated the training notebook (Notebook B) and all planning documents to use the correct `eval_strategy` keyword.
+
+**Core files affected:**
+- [continued_pretrain/notebooks/B_training.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/continued_pretrain/notebooks/B_training.ipynb) — Changed `evaluation_strategy` parameter to `eval_strategy` in Cell 3.
+- [spurgeon_phase1_plan_continued_pretrain_step7.md](file:///c:/Users/rafael/Projetos/search-sermons/spurgeon_phase1_plan_continued_pretrain_step7.md) — Updated Python snippet cell.
+- [spurgeon_phase1_plan_continued_pretrain_step3.md](file:///c:/Users/rafael/Projetos/search-sermons/spurgeon_phase1_plan_continued_pretrain_step3.md) — Updated Python snippet cell.
+- [spurgeon_phase1_plan_continued_pretrain.md](file:///c:/Users/rafael/Projetos/search-sermons/spurgeon_phase1_plan_continued_pretrain.md) — Updated Python snippet cell.
+
+**Status & Testing:**
+- Checked notebook JSON structure parses correctly. Checked code cell parameters.
+
 ## 2026-06-06 21:19 - Updated Kaggle input paths in Step 7 plan and notebook B
 
 **What was implemented:**
