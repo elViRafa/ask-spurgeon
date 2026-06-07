@@ -5,12 +5,12 @@ summary: "Index of all semantic memory store files."
 priority: high
 tags: [index, memory-store]
 schema_version: 1.3
-last_updated: "2026-06-06T20:17:04-04:00"
+last_updated: "2026-06-06T20:59:39-04:00"
 ---
 
 # Memory Store Index
 
-Updated by Memory Fabric Dreaming mode `light` at 2026-06-06T20:17:04-04:00.
+Updated by Memory Fabric Dreaming mode `light` at 2026-06-06T20:59:39-04:00.
 
 | Path | Priority | Summary | Key Topics | Tags |
 | --- | --- | --- | --- | --- |
@@ -25,3 +25,4 @@ Updated by Memory Fabric Dreaming mode `light` at 2026-06-06T20:17:04-04:00.
 | `pretraining/environment-setup` | medium | Pretraining Step 5 — Environment Setup & Configurations | None recorded | pretraining, environment, kaggle, config, secrets |
 | `pretraining/model-choice` | medium | Pretraining Step 4 — Model Choice & Technical Rationale | None recorded | pretraining, model, qwen, vram |
 | `pretraining/notebook-structure` | medium | Pretraining Step 3 — Kaggle Notebook Structure | None recorded | pretraining, kaggle, notebook, setup |
+| `pretraining/training-configuration` | medium | Pretraining Step 7 — Training Configuration (Notebook B) Plan | • **Notebook B (`training.ipynb`)** runs on 1x T4 GPU (16GB...<br>• VRAM is budgeted carefully (~7.55 GB usage, leaving ~8.45...<br>• Pinned installation of `unsloth[kaggle-new]` is used; man... | pretraining, training, lora, qlora, kaggle, unsloth |

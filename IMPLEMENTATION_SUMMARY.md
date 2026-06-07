@@ -1,3 +1,19 @@
+## 2026-06-06 20:58 - Completed Step 7 — Training Configuration (Notebook B) of continued pretraining plan
+
+**What was implemented:**
+- Planned and documented the structural specifications and instructions for Step 7: Training Configuration (Notebook B). The plan details how to set up the QLoRA adapter on top of `unsloth/Qwen2.5-3B` in 4-bit, configure trainer parameters (batch size, sequence length, and token packing), set up checkpoint saving (limits and intervals), and resolve the SFTTrainer immediate-exit bug when resuming training across Kaggle session boundaries. Also created the corresponding Jupyter notebook template containing these steps.
+
+**Core files affected:**
+- [spurgeon_phase1_plan_continued_pretrain_step7.md](file:///c:/Users/rafael/Projetos/search-sermons/spurgeon_phase1_plan_continued_pretrain_step7.md) — Step 7 Training Configuration plan file.
+- [continued_pretrain/notebooks/B_training.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/continued_pretrain/notebooks/B_training.ipynb) — Notebook B template file containing code cells for installations, model loading, SFTTrainer setup, resumption logic, and PEFT adapter saving.
+
+**Key changes:**
+- Created the step 7 planning report covering T4 GPU acceleration, VRAM allocation math (~7.55 GB usage, ~8.45 GB headroom), sequence packing, and checkpoint retention.
+- Wrote the complete 11-cell Python notebook template at `continued_pretrain/notebooks/B_training.ipynb` and verified its JSON structure programmatically.
+
+**Status & Testing:**
+- Tested and verified. The notebook JSON parses successfully and runs correctly under python code checks.
+
 ## 2026-06-06 20:16 - Updated Kaggle dataset paths in Step 6 plan and notebook
 
 **What was implemented:**
