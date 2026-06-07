@@ -50,6 +50,9 @@ Because Kaggle resets the execution environment on session start, installation c
 We load the base model in 4-bit quantization and define the LoRA adapter. We target both attention projection matrices and MLP layers to maximize adaptation capability.
 
 ```python
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+
 from unsloth import FastLanguageModel
 import torch
 
@@ -91,9 +94,22 @@ from trl import SFTTrainer
 from transformers import TrainingArguments
 from datasets import load_from_disk
 import os
+import shutil
 
-# Load the dataset generated in Notebook A
-dataset = load_from_disk("/kaggle/input/datasets/rafaelvieira1/spurgeon-cpt-dataset/spurgeon_dataset")
+# Kaggle mounts input datasets as read-only. SFTTrainer's internal dataset.map()
+# attempts to write temporary cached files in the dataset folder, causing an OSError.
+# To prevent this, we copy the dataset from /kaggle/input/ to the writable /kaggle/working/ first.
+src_dataset_path = "/kaggle/input/datasets/rafaelvieira1/spurgeon-cpt-dataset/spurgeon_dataset"
+local_dataset_path = "/kaggle/working/spurgeon_dataset"
+
+if not os.path.exists(local_dataset_path):
+    print(f"Copying dataset from {src_dataset_path} to writable path {local_dataset_path}...")
+    shutil.copytree(src_dataset_path, local_dataset_path)
+else:
+    print(f"Dataset already exists at writable path: {local_dataset_path}")
+
+# Load the dataset from the writable local directory
+dataset = load_from_disk(local_dataset_path)
 
 # Define target output directory
 output_dir = "/kaggle/working/checkpoints"

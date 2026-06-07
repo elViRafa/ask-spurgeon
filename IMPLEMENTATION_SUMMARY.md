@@ -1,3 +1,28 @@
+## 2026-06-06 21:54 - Enforced single GPU visibility in training configuration
+
+**What was implemented:**
+- Prevented potential multi-GPU DDP initialization crashes when running Unsloth on Kaggle's `GPU T4 x2` accelerator configuration. Added `os.environ["CUDA_VISIBLE_DEVICES"] = "0"` at the very top of Notebook B's model setup cell before importing PyTorch or Unsloth, forcing the environment to execute on a single GPU.
+
+**Core files affected:**
+- [continued_pretrain/notebooks/B_training.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/continued_pretrain/notebooks/B_training.ipynb) — Added `CUDA_VISIBLE_DEVICES = "0"` setup in Cell 5.
+- [spurgeon_phase1_plan_continued_pretrain_step7.md](file:///c:/Users/rafael/Projetos/search-sermons/spurgeon_phase1_plan_continued_pretrain_step7.md) — Updated Python snippet cell.
+
+**Status & Testing:**
+- Validated notebook JSON structure. Executed Python checks.
+
+## 2026-06-06 21:50 - Fixed SFTTrainer read-only filesystem dataset map OSError
+
+**What was implemented:**
+- Resolved a runtime `OSError: [Errno 30] Read-only file system` crash when calling `SFTTrainer`. During training initialization, `SFTTrainer` calls `dataset.map` to tokenize texts. In Hugging Face `datasets`, `dataset.map` attempts to write temporary cached files directly into the source dataset folder, which fails on Kaggle's read-only `/kaggle/input/` mount.
+- Fixed this by copying the dataset from `/kaggle/input/` to `/kaggle/working/` using `shutil.copytree` before loading, making the directory writable.
+
+**Core files affected:**
+- [continued_pretrain/notebooks/B_training.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/continued_pretrain/notebooks/B_training.ipynb) — Added `shutil.copytree` logic and updated load path in Cell 7.
+- [spurgeon_phase1_plan_continued_pretrain_step7.md](file:///c:/Users/rafael/Projetos/search-sermons/spurgeon_phase1_plan_continued_pretrain_step7.md) — Updated Python snippet cell.
+
+**Status & Testing:**
+- Validated notebook JSON structure. Checked path copy logic.
+
 ## 2026-06-06 21:39 - Strengthened checkpoint check in Step 7 plan and notebook B
 
 **What was implemented:**
