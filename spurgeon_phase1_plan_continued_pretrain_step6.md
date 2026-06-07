@@ -22,8 +22,8 @@ Kaggle mounts input datasets under `/kaggle/input/` and writes output artifacts 
 
 | Path | Access Mode | Purpose / Contents |
 | :--- | :--- | :--- |
-| `/kaggle/input/spurgeon-cpt-corpus/spurgeon_train.txt` | Read-Only | Cleaned training text file (~3,486 sermons, `<|endoftext|>` separated). |
-| `/kaggle/input/spurgeon-cpt-holdout/spurgeon_holdout.txt` | Read-Only | Cleaned holdout text file (50 sermons, `<|endoftext|>` separated). |
+| `/kaggle/input/datasets/rafaelvieira1/spurgeon-cpt-corpus/spurgeon_train.txt` | Read-Only | Cleaned training text file (~3,486 sermons, `<|endoftext|>` separated). |
+| `/kaggle/input/datasets/rafaelvieira1/spurgeon-cpt-holdout/spurgeon_holdout.txt` | Read-Only | Cleaned holdout text file (50 sermons, `<|endoftext|>` separated). |
 | `/kaggle/working/spurgeon_dataset/` | Read/Write | Output Hugging Face `DatasetDict` folder containing `train` and `test` (validation) splits. |
 | `/kaggle/working/spurgeon_holdout_dataset/` | Read/Write | Output Hugging Face `Dataset` folder containing the holdout split for final perplexity evaluation. |
 
@@ -48,7 +48,7 @@ import os
 from pathlib import Path
 from datasets import Dataset
 
-train_corpus_path = "/kaggle/input/spurgeon-cpt-corpus/spurgeon_train.txt"
+train_corpus_path = "/kaggle/input/datasets/rafaelvieira1/spurgeon-cpt-corpus/spurgeon_train.txt"
 
 if not os.path.exists(train_corpus_path):
     raise FileNotFoundError(f"Training corpus file not found at: {train_corpus_path}. "
@@ -88,7 +88,7 @@ print(f"  - Validation split: {len(dataset_split['test'])} documents")
 We prepare the 50-sermon holdout dataset as a separate Hugging Face `Dataset`. This dataset will remain completely untouched during training and will only be used in Notebook C to calculate final perplexity.
 ```python
 # Cell 4: Load and Parse Holdout Corpus
-holdout_corpus_path = "/kaggle/input/spurgeon-cpt-holdout/spurgeon_holdout.txt"
+holdout_corpus_path = "/kaggle/input/datasets/rafaelvieira1/spurgeon-cpt-holdout/spurgeon_holdout.txt"
 
 if not os.path.exists(holdout_corpus_path):
     raise FileNotFoundError(f"Holdout corpus file not found at: {holdout_corpus_path}. "

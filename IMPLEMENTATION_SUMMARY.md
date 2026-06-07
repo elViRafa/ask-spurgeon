@@ -1,4 +1,21 @@
+## 2026-06-06 20:16 - Updated Kaggle dataset paths in Step 6 plan and notebook
+
+**What was implemented:**
+- Updated the Kaggle input dataset paths in both the Step 6 planning document and the dataset preparation notebook (Notebook A) to include the user's Kaggle username (`rafaelvieira1`). This ensures the notebook runs correctly in Kaggle sessions mounting custom private datasets.
+
+**Core files affected:**
+- [continued_pretrain/notebooks/A_data_prep.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/continued_pretrain/notebooks/A_data_prep.ipynb) — Updated paths to `/kaggle/input/datasets/rafaelvieira1/spurgeon-cpt-corpus/` and `/kaggle/input/datasets/rafaelvieira1/spurgeon-cpt-holdout/`.
+- [spurgeon_phase1_plan_continued_pretrain_step6.md](file:///c:/Users/rafael/Projetos/search-sermons/spurgeon_phase1_plan_continued_pretrain_step6.md) — Updated layout and code tables to reflect the new user-specific Kaggle input dataset paths.
+
+**Key changes:**
+- Changed training corpus path to `/kaggle/input/datasets/rafaelvieira1/spurgeon-cpt-corpus/spurgeon_train.txt`.
+- Changed holdout corpus path to `/kaggle/input/datasets/rafaelvieira1/spurgeon-cpt-holdout/spurgeon_holdout.txt`.
+
+**Status & Testing:**
+- Verified paths match target Kaggle dataset naming convention. Staged for commit.
+
 ## 2026-06-06 19:38 - Completed Step 6 — Dataset Preparation (Notebook A) of continued pretraining plan
+
 
 **What was implemented:**
 - Planned and documented the structural specifications and instructions for Step 6: Dataset Preparation (Notebook A). The plan details how to load the cleaned plain-text training and holdout files, parse them into Hugging Face `Dataset` structures using the `<|endoftext|>` token boundary, partition a 99/1 train/validation split to monitor loss during pretraining, and save the binary dataset formats to disk. Also created the corresponding Jupyter notebook template containing these steps.
