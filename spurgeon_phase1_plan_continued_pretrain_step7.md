@@ -93,7 +93,7 @@ from datasets import load_from_disk
 import os
 
 # Load the dataset generated in Notebook A
-dataset = load_from_disk("/kaggle/input/spurgeon-cpt-dataset/spurgeon_dataset")
+dataset = load_from_disk("/kaggle/input/datasets/rafaelvieira1/spurgeon-cpt-dataset/spurgeon_dataset")
 
 # Define target output directory
 output_dir = "/kaggle/working/checkpoints"
@@ -128,7 +128,7 @@ We implement a robust check that automatically detects if previous checkpoints e
 RUN_NUMBER = 1 # Update to 2, 3, etc. for subsequent runs
 
 # If resuming from a previous run output mounted as an input, specify the path here:
-# Example: "/kaggle/input/spurgeon-training-run-1/checkpoints/checkpoint-1500"
+# Example: "/kaggle/input/datasets/rafaelvieira1/spurgeon-training-run-1/checkpoints/checkpoint-1500"
 PREV_RUN_CHECKPOINT = None 
 
 # Define total target epochs (must be equal to the current run number)
@@ -210,7 +210,7 @@ print("Weights saved successfully. Notebook B execution completed.")
 2. Under "Input", click "Add Input". Search for and mount **`spurgeon-training-run-1`**.
 3. In the configuration cell:
    * Set `RUN_NUMBER = 2`
-   * Set `PREV_RUN_CHECKPOINT = "/kaggle/input/spurgeon-training-run-1/checkpoints/checkpoint-XXXX"` (pointing to the last checkpoint folder in the mounted Run 1 output, e.g. `checkpoint-1500`).
+   * Set `PREV_RUN_CHECKPOINT = "/kaggle/input/datasets/rafaelvieira1/spurgeon-training-run-1/checkpoints/checkpoint-XXXX"` (pointing to the last checkpoint folder in the mounted Run 1 output, e.g. `checkpoint-1500`).
 4. Run the notebook. SFTTrainer will load the weights and resume training from the exact step of epoch 1.
 5. Click **"Save Version"** -> **"Save & Run All (Commit)"**.
 6. Create a private output dataset from the viewer named **`spurgeon-training-run-2`** (containing `spurgeon_lora_epoch2`).

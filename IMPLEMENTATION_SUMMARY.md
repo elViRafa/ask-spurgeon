@@ -1,3 +1,15 @@
+## 2026-06-06 21:19 - Updated Kaggle input paths in Step 7 plan and notebook B
+
+**What was implemented:**
+- Updated the Kaggle input dataset paths in both the Step 7 planning document and the training notebook (Notebook B) to include the user's Kaggle username (`rafaelvieira1`). This ensures the training script can resolve the mounted dataset outputs from Notebook A.
+
+**Core files affected:**
+- [continued_pretrain/notebooks/B_training.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/continued_pretrain/notebooks/B_training.ipynb) — Updated paths to `/kaggle/input/datasets/rafaelvieira1/spurgeon-cpt-dataset/`.
+- [spurgeon_phase1_plan_continued_pretrain_step7.md](file:///c:/Users/rafael/Projetos/search-sermons/spurgeon_phase1_plan_continued_pretrain_step7.md) — Updated configuration cell and checklists to reflect the correct username path prefix.
+
+**Status & Testing:**
+- Checked notebook JSON parses correctly. Checked path matches.
+
 ## 2026-06-06 20:58 - Completed Step 7 — Training Configuration (Notebook B) of continued pretraining plan
 
 **What was implemented:**
