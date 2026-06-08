@@ -5,7 +5,7 @@ summary: "Map of available project memory sections."
 priority: high
 tags: [index, memory]
 schema_version: 1.3
-last_updated: "2026-06-07T06:45:58-04:00"
+last_updated: "2026-06-08T07:35:14-04:00"
 consolidation_hash: dc4febef829d2344ced791190b2a66be
 contradictions: []
 consolidation_warnings: []
@@ -14,7 +14,7 @@ summary_hash: c81ed9efe309125e42b693ba950f4f04
 
 # Project Memory Index
 
-Updated by Memory Fabric Dreaming mode `light` at 2026-06-07T06:45:58-04:00.
+Updated by Memory Fabric Dreaming mode `light` at 2026-06-08T07:35:14-04:00.
 
 | Section | Priority | Summary | Key Topics |
 | --- | --- | --- | --- |
@@ -537,6 +537,24 @@ last_updated: "2026-06-06T19:35:50-04:00"
 ---
 
 Execution configurations and dependency management rules for continued pretraining on Kaggle Free Tier. Guidelines specify toggling Internet ON, choosing None accelerator for Notebook A (Data Prep) to conserve quota, and selecting 1x T4 GPU for Notebook B/C. Installation relies solely on `unsloth[kaggle-new]` package pulling from GitHub, with a strict warning against manual upgrades of transformers/trl/peft to avoid breaking CUDA Triton kernels. Detailed setup includes programmatic Hugging Face token authentication via Kaggle Secrets (HF_TOKEN) and optional Weights & Biases training logs tracking (WANDB_API_KEY).
+
+<!-- memory-fabric:store/pretraining/eval-and-export -->
+---
+store_path: pretraining/eval-and-export
+title: "Pretraining Step 8 (Schedule) and Step 9 (Evaluation & Export)"
+summary: "Pretraining Step 8 (Schedule) and Step 9 (Evaluation & Export)"
+priority: medium
+tags: [pretraining, schedule, evaluation, export, notebook-c, perplexity]
+schema_version: 1.3
+last_updated: "2026-06-08T07:34:40-04:00"
+---
+
+# Pretraining Step 8 (Schedule) and Step 9 (Evaluation & Export)
+
+Following the successful execution of Notebook B (Epoch 1 & 2) up to step 432:
+1. **Pretraining Schedule Updated:** Timeline has been updated to bypass Epoch 3 and proceed directly to evaluation and merge. v2 of the private Kaggle dataset `spurgeon-training-run-1` carries the `checkpoint-432` weights and files forward.
+2. **Notebook C Plan created:** Step 9 details the evaluation requirements (1x T4 GPU, Internet ON), input dataset mounts, loading the adapter via Unsloth's native `FastLanguageModel.from_pretrained()`, computing length-weighted perplexity on the 50-sermon holdout dataset, executing qualitative prompts, and exporting the final Phase 1 LoRA adapter weights.
+3. **Jupyter Notebook Template created:** The evaluation template has been created at `continued_pretrain/notebooks/C_eval_and_merge.ipynb`.
 
 <!-- memory-fabric:store/pretraining/model-choice -->
 ---

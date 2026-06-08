@@ -1,3 +1,16 @@
+## 2026-06-08 07:34 - Completed Step 8 (Schedule) and Step 9 (Evaluating Training - Notebook C) of continued pretraining plan
+
+**What was implemented:**
+- Planned and documented the structural specifications and schedules for Step 8: Session Schedule and Step 9: Evaluating Training. The schedule plan documents the successful completion of Epoch 1 and Epoch 2 (432 cumulative steps) and coordinates transitioning directly to the evaluation stage. Created the corresponding Jupyter notebook template `C_eval_and_merge.ipynb` containing dependency installation, direct adapter loading via Unsloth, holdout set perplexity calculation (using length-weighted cross-entropy loss), qualitative completion checks, and the finalized LoRA adapter export weights saving logic.
+
+**Core files affected:**
+- [spurgeon_phase1_plan_continued_pretrain_step8.md](file:///C:/Users/rafael/Projetos/search-sermons/spurgeon_phase1_plan_continued_pretrain_step8.md) — Step 8 Schedule update plan.
+- [spurgeon_phase1_plan_continued_pretrain_step9.md](file:///C:/Users/rafael/Projetos/search-sermons/spurgeon_phase1_plan_continued_pretrain_step9.md) — Step 9 Notebook C Evaluation and Export plan.
+- [continued_pretrain/notebooks/C_eval_and_merge.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/continued_pretrain/notebooks/C_eval_and_merge.ipynb) — Notebook C template containing evaluation code cells.
+
+**Status & Testing:**
+- Tested and verified. Notebook JSON structure parses successfully and is free of errors. Documentation files check out.
+
 ## 2026-06-07 06:35 - Fixed SFTConfig pickling serialization crash on Kaggle
 
 **What was implemented:**
