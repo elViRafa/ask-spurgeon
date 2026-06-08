@@ -1,4 +1,21 @@
+## 2026-06-08 09:49 - Updated GGUF upload logic in Notebook C to dynamic glob search
+
+**What was implemented:**
+- Resolved a file path and naming discrepancy during Hugging Face upload where Unsloth appends `_gguf` to the directory name and outputs the base model file name instead of `unsloth.F16.gguf` under certain environments.
+- Replaced the hardcoded GGUF upload path in `C_eval_and_merge.ipynb` with a dynamic python glob search that detects any GGUF files recursively inside `/kaggle/working/`, resolving file missing errors and ensuring seamless uploading regardless of varying folder names or filename formats.
+
+**Core files affected:**
+- [continued_pretrain/notebooks/C_eval_and_merge.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/continued_pretrain/notebooks/C_eval_and_merge.ipynb) — Updated the Hugging Face upload code cell (Section 7) to run a dynamic file search.
+
+**Key changes:**
+- Replaced hardcoded GGUF file path with `glob.glob("/kaggle/working/**/*.gguf", recursive=True)`.
+- Extracted base filename dynamically using `os.path.basename` for proper mapping inside the remote HF repository namespace.
+
+**Status & Testing:**
+- Tested and applied update to local notebook file using programmatically executed python JSON parsing script. Verified JSON layout validity.
+
 ## 2026-06-08 07:34 - Completed Step 8 (Schedule) and Step 9 (Evaluating Training - Notebook C) of continued pretraining plan
+
 
 **What was implemented:**
 - Planned and documented the structural specifications and schedules for Step 8: Session Schedule and Step 9: Evaluating Training. The schedule plan documents the successful completion of Epoch 1 and Epoch 2 (432 cumulative steps) and coordinates transitioning directly to the evaluation stage. Created the corresponding Jupyter notebook template `C_eval_and_merge.ipynb` containing dependency installation, direct adapter loading via Unsloth, holdout set perplexity calculation (using length-weighted cross-entropy loss), qualitative completion checks, and the finalized LoRA adapter export weights saving logic.

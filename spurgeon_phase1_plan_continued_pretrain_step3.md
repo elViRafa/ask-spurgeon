@@ -344,7 +344,7 @@ try:
     login(token=hf_token)
     
     api = HfApi()
-    repo_id = "rafaelvieira1/qwen2.5-3b-spurgeon-gguf-phase1"
+    repo_id = "rafaelvieirar1r/qwen2.5-3b-spurgeon-gguf-phase1"
     
     print(f"Creating Hugging Face repository {repo_id} (if it does not exist)...")
     api.create_repo(repo_id=repo_id, repo_type="model", exist_ok=True)

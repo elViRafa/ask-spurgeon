@@ -103,3 +103,7 @@ doctor_out.txt
 # But still exclude large generated corpus files
 continued_pretrain/data/*.txt
 continued_pretrain/data/*.bin
+
+# Ignore model weight files in continued_pretrain/models/
+continued_pretrain/models/*
+!continued_pretrain/models/Modelfile

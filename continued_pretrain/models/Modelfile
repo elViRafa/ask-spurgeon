@@ -1,0 +1,5 @@
+FROM ./unsloth.F16.gguf
+
+# Causal LMs have no chat templates. Set generation parameters.
+PARAMETER temperature 0.7
+PARAMETER top_p 0.9
