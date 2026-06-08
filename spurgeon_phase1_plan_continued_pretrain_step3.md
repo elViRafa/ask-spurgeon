@@ -232,31 +232,15 @@ import torch
 MAX_SEQ_LENGTH = 2048
 
 # Update this path to the Kaggle Input directory containing the final training run outputs
-FINAL_LORA_PATH = "/kaggle/input/spurgeon-training-run-final/spurgeon_lora_final"
+FINAL_LORA_PATH = "/kaggle/input/datasets/rafaelvieira1/spurgeon-training-run-1/checkpoints/checkpoint-432"
 
-# 1. Load base Qwen model
+# Load base model + LoRA adapter in 4-bit quantization natively
 model, tokenizer = FastLanguageModel.from_pretrained(
-    model_name   = "unsloth/Qwen2.5-3B",
+    model_name     = FINAL_LORA_PATH,
     max_seq_length = MAX_SEQ_LENGTH,
-    dtype        = None,
-    load_in_4bit = True,
+    dtype          = None,
+    load_in_4bit   = True,
 )
-
-# 2. Apply the fine-tuned PEFT LoRA adapter
-model = FastLanguageModel.get_peft_model(
-    model,
-    r = 32,
-    target_modules = ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
-    lora_alpha   = 64,
-    lora_dropout = 0,
-    bias         = "none",
-    use_gradient_checkpointing = "unsloth",
-    random_state = 42,
-)
-
-# Load weights from the trained adapter
-model.load_state_dict(torch.load(f"{FINAL_LORA_PATH}/adapter_model.bin"))
-print("Model loaded with fine-tuned PEFT adapter.")
 ```
 
 ### Cell 3: Perplexity Evaluation on Holdout Set
@@ -268,39 +252,44 @@ from datasets import load_from_disk
 FastLanguageModel.for_inference(model)
 
 # Load holdout dataset built in Notebook A
-holdout_dataset = load_from_disk("/kaggle/input/spurgeon-cpt-dataset/spurgeon_holdout_dataset")
+holdout_dataset = load_from_disk("/kaggle/input/datasets/rafaelvieira1/spurgeon-cpt-dataset/spurgeon_holdout_dataset")
 
 total_loss = 0.0
 total_tokens = 0
 
-print("Evaluating perplexity over holdout documents...")
+print("Evaluating holdout perplexity...")
 for idx, doc in enumerate(holdout_dataset):
-    inputs = tokenizer(doc["text"], return_tensors="pt", truncation=True, max_length=MAX_SEQ_LENGTH)
+    # Tokenize sequence
+    inputs = tokenizer(doc["text"], return_tensors="pt")
     inputs = {k: v.to("cuda") for k, v in inputs.items()}
+    num_tokens = inputs["input_ids"].size(1)
     
+    # Safe truncation
+    if num_tokens > MAX_SEQ_LENGTH:
+        inputs = {k: v[:, :MAX_SEQ_LENGTH] for k, v in inputs.items()}
+        num_tokens = MAX_SEQ_LENGTH
+        
     with torch.no_grad():
         outputs = model(**inputs, labels=inputs["input_ids"])
+        loss = outputs.loss.item()
         
-    num_tokens = inputs["input_ids"].size(1)
-    # Accumulate loss weighted by token count
-    total_loss += outputs.loss.item() * num_tokens
+    total_loss += loss * num_tokens
     total_tokens += num_tokens
 
 average_loss = total_loss / total_tokens
 perplexity = math.exp(average_loss)
 
-print(f"\nAverage Cross-Entropy Loss: {average_loss:.4f}")
-print(f"Final Holdout Perplexity: {perplexity:.2f}")
+print(f"\nEvaluation Results:")
+print(f"  - Total Holdout Tokens: {total_tokens:,}")
+print(f"  - Length-Weighted Loss: {average_loss:.4f}")
+print(f"  - Holdout Perplexity: {perplexity:.2f}")
 ```
 
 ### Cell 4: Qualitative Style Validation
 ```python
 prompts = [
-    # Completion Test
     "The love of Christ is not a cold, speculative thing. It is ",
-    # Sermon Opening Test
     "Text: Romans 8:28. 'And we know that all things work together for good to them that love God.' My dear friends, ",
-    # Outline & Doctrine Test
     "What, then, is saving faith? Let us examine this question carefully, for "
 ]
 
@@ -325,15 +314,52 @@ for i, prompt in enumerate(prompts):
     print(f"Output:\n{generated_text}\n")
 ```
 
-### Cell 5: Merge and Save Export Options
+### Cell 5: Save PEFT Adapter Weights
 ```python
-# Recommend Option B (Save LoRA adapter only) for Phase 2 integration
-print("Saving LoRA adapter only...")
-model.save_pretrained("/kaggle/working/spurgeon_lora_final")
-tokenizer.save_pretrained("/kaggle/working/spurgeon_lora_final")
+output_path = "/kaggle/working/spurgeon_lora_final"
+print(f"Saving final LoRA adapter weights to {output_path}...")
+model.save_pretrained(output_path)
+tokenizer.save_pretrained(output_path)
+```
 
-# Optional: Save merged 16bit model (requires standard RAM/Disk limits)
-# model.save_pretrained_merged("/kaggle/working/spurgeon_merged", tokenizer, save_method="merged_16bit")
+### Cell 6: Convert and Export to GGUF (Original 16-bit)
+```python
+# Convert to GGUF format locally on Kaggle.
+# Unsloth will compile/download llama.cpp internally and output the merged F16 GGUF file.
+model.save_pretrained_gguf(
+    "/kaggle/working/spurgeon_f16_gguf",
+    tokenizer,
+    quantization_method = "f16",
+)
+```
+
+### Cell 7: Upload GGUF Model to Hugging Face Hub
+```python
+from huggingface_hub import HfApi, login
+from kaggle_secrets import UserSecretsClient
+
+try:
+    user_secrets = UserSecretsClient()
+    hf_token = user_secrets.get_secret("HF_TOKEN")
+    login(token=hf_token)
+    
+    api = HfApi()
+    repo_id = "rafaelvieira1/qwen2.5-3b-spurgeon-gguf-phase1"
+    
+    print(f"Creating Hugging Face repository {repo_id} (if it does not exist)...")
+    api.create_repo(repo_id=repo_id, repo_type="model", exist_ok=True)
+    
+    file_path = "/kaggle/working/spurgeon_f16_gguf/unsloth.F16.gguf"
+    print(f"Uploading GGUF file {file_path} to Hugging Face Hub...")
+    api.upload_file(
+        path_or_fileobj=file_path,
+        path_in_repo="unsloth.F16.gguf",
+        repo_id=repo_id,
+        repo_type="model"
+    )
+    print("Model successfully uploaded to Hugging Face!")
+except Exception as e:
+    print(f"Failed to upload to Hugging Face: {e}")
 ```
 
 ---

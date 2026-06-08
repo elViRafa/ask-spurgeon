@@ -2,6 +2,7 @@
 
 **What was implemented:**
 - Planned and documented the structural specifications and schedules for Step 8: Session Schedule and Step 9: Evaluating Training. The schedule plan documents the successful completion of Epoch 1 and Epoch 2 (432 cumulative steps) and coordinates transitioning directly to the evaluation stage. Created the corresponding Jupyter notebook template `C_eval_and_merge.ipynb` containing dependency installation, direct adapter loading via Unsloth, holdout set perplexity calculation (using length-weighted cross-entropy loss), qualitative completion checks, and the finalized LoRA adapter export weights saving logic.
+- Appended GGUF conversion (original 16-bit `f16` format) and Hugging Face Hub upload capabilities to Notebook C. The upload securely pulls your Hugging Face write token from Kaggle Secrets (`HF_TOKEN`) and transfers the resulting 6GB GGUF model directly to your repository.
 
 **Core files affected:**
 - [spurgeon_phase1_plan_continued_pretrain_step8.md](file:///C:/Users/rafael/Projetos/search-sermons/spurgeon_phase1_plan_continued_pretrain_step8.md) — Step 8 Schedule update plan.

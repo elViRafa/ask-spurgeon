@@ -110,7 +110,7 @@ Perplexity alone does not guarantee that the model is capturing Spurgeon's rheto
 
 ## 5. Output Adapter Export
 
-Finally, the adapter weights are saved to the local directory so they can be exported as your finalized Phase 1 LoRA model:
+First, the adapter weights are saved to the local directory so they can be exported as your finalized Phase 1 LoRA model:
 
 ```python
 output_path = "/kaggle/working/spurgeon_lora_final"
@@ -119,4 +119,58 @@ print(f"Saving final Phase 1 LoRA adapter weights to {output_path}...")
 model.save_pretrained(output_path)
 tokenizer.save_pretrained(output_path)
 print("LoRA weights saved successfully.")
+```
+
+---
+
+## 6. Convert and Export to GGUF (Original 16-bit)
+
+We merge the PEFT LoRA adapter weights into the base Qwen model and convert it directly to GGUF format on Kaggle. We choose `quantization_method = "f16"` to retain the original 16-bit floating point precision of the weights without any quantization quality loss:
+
+```python
+# Convert to GGUF format locally on Kaggle.
+# Unsloth will compile/download llama.cpp internally and output the merged F16 GGUF file.
+model.save_pretrained_gguf(
+    "/kaggle/working/spurgeon_f16_gguf",
+    tokenizer,
+    quantization_method = "f16",
+)
+```
+*(This outputs the file `unsloth.F16.gguf` under `/kaggle/working/spurgeon_f16_gguf/`).*
+
+---
+
+## 7. Upload GGUF Model to Hugging Face Hub
+
+We securely load your Hugging Face write token from Kaggle Secrets (you must add it under **Add-ons -> Secrets** as `HF_TOKEN`), initialize the Hugging Face API, and upload the 6GB `unsloth.F16.gguf` file to your model repository:
+
+```python
+# Upload GGUF file to Hugging Face Hub using Kaggle Secrets
+from huggingface_hub import HfApi, login
+from kaggle_secrets import UserSecretsClient
+
+try:
+    # Load Hugging Face API write token from Kaggle Secrets
+    user_secrets = UserSecretsClient()
+    hf_token = user_secrets.get_secret("HF_TOKEN")
+    login(token=hf_token)
+    
+    api = HfApi()
+    repo_id = "rafaelvieira1/qwen2.5-3b-spurgeon-gguf-phase1"
+    
+    print(f"Creating Hugging Face repository {repo_id} (if it does not exist)...")
+    api.create_repo(repo_id=repo_id, repo_type="model", exist_ok=True)
+    
+    file_path = "/kaggle/working/spurgeon_f16_gguf/unsloth.F16.gguf"
+    print(f"Uploading GGUF file {file_path} to Hugging Face Hub...")
+    api.upload_file(
+        path_or_fileobj=file_path,
+        path_in_repo="unsloth.F16.gguf",
+        repo_id=repo_id,
+        repo_type="model"
+    )
+    print("Model successfully uploaded to Hugging Face!")
+except Exception as e:
+    print(f"Failed to upload to Hugging Face: {e}")
+    print("Please ensure you have toggled Internet ON and added the 'HF_TOKEN' key to Kaggle Secrets.")
 ```
