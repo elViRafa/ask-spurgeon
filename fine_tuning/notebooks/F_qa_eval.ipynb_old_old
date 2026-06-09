@@ -432,34 +432,7 @@
     },
     "trusted": true
    },
-   "outputs": [
-    {
-     "name": "stdout",
-     "output_type": "stream",
-     "text": [
-      "\n",
-      "================================================================================\n",
-      "TYPE: Doctrinal\n",
-      "QUESTION: What is Charles Spurgeon's understanding of the doctrine of election?\n",
-      "CONTEXT: God hath chosen his people unto eternal life. It is not of man's will, nor of man's merit, but solely of the sovereign grace of the Almighty. Election is the foundation stone of our salvation, laid in eternity before the foundation of the world.\n",
-      "================================================================================\n"
-     ]
-    },
-    {
-     "ename": "ValueError",
-     "evalue": "Cannot use chat template functions because tokenizer.chat_template is not set and no template argument was passed! For information about writing templates and setting the tokenizer.chat_template attribute, please see the documentation at https://huggingface.co/docs/transformers/main/en/chat_templating",
-     "output_type": "error",
-     "traceback": [
-      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
-      "\u001b[0;31mValueError\u001b[0m                                Traceback (most recent call last)",
-      "\u001b[0;32m/tmp/ipykernel_58/1500990523.py\u001b[0m in \u001b[0;36m<cell line: 0>\u001b[0;34m()\u001b[0m\n\u001b[1;32m     28\u001b[0m     ]\n\u001b[1;32m     29\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 30\u001b[0;31m     inputs = tokenizer.apply_chat_template(\n\u001b[0m\u001b[1;32m     31\u001b[0m         \u001b[0mmessages\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     32\u001b[0m         \u001b[0mtokenize\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;32mTrue\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
-      "\u001b[0;32m/usr/local/lib/python3.12/dist-packages/unsloth_zoo/temporary_patches/misc.py\u001b[0m in \u001b[0;36m_patched_apply_chat_template\u001b[0;34m(self, conversation, *args, **kwargs)\u001b[0m\n\u001b[1;32m   1633\u001b[0m             \u001b[0;32mif\u001b[0m \u001b[0mtokenize\u001b[0m \u001b[0;32mand\u001b[0m \u001b[0;34m\"return_dict\"\u001b[0m \u001b[0;32mnot\u001b[0m \u001b[0;32min\u001b[0m \u001b[0mkwargs\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1634\u001b[0m                 \u001b[0mkwargs\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;34m\"return_dict\"\u001b[0m\u001b[0;34m]\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0;32mFalse\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m-> 1635\u001b[0;31m             \u001b[0;32mreturn\u001b[0m \u001b[0m_original_apply\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mconversation\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m*\u001b[0m\u001b[0margs\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkwargs\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m   1636\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1637\u001b[0m         \u001b[0m_patched_apply_chat_template\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_unsloth_patched\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0;32mTrue\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
-      "\u001b[0;32m/usr/local/lib/python3.12/dist-packages/transformers/tokenization_utils_base.py\u001b[0m in \u001b[0;36mapply_chat_template\u001b[0;34m(self, conversation, tools, documents, chat_template, add_generation_prompt, continue_final_message, tokenize, padding, truncation, max_length, return_tensors, return_dict, return_assistant_tokens_mask, tokenizer_kwargs, **kwargs)\u001b[0m\n\u001b[1;32m   3041\u001b[0m             \u001b[0mtokenizer_kwargs\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0;34m{\u001b[0m\u001b[0;34m}\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   3042\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m-> 3043\u001b[0;31m         \u001b[0mchat_template\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mget_chat_template\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mchat_template\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mtools\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m   3044\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   3045\u001b[0m         if isinstance(conversation, (list, tuple)) and (\n",
-      "\u001b[0;32m/usr/local/lib/python3.12/dist-packages/transformers/tokenization_utils_base.py\u001b[0m in \u001b[0;36mget_chat_template\u001b[0;34m(self, chat_template, tools)\u001b[0m\n\u001b[1;32m   3223\u001b[0m                 \u001b[0mchat_template\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mchat_template\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   3224\u001b[0m             \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m-> 3225\u001b[0;31m                 raise ValueError(\n\u001b[0m\u001b[1;32m   3226\u001b[0m                     \u001b[0;34m\"Cannot use chat template functions because tokenizer.chat_template is not set and no template \"\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   3227\u001b[0m                     \u001b[0;34m\"argument was passed! For information about writing templates and setting the \"\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
-      "\u001b[0;31mValueError\u001b[0m: Cannot use chat template functions because tokenizer.chat_template is not set and no template argument was passed! For information about writing templates and setting the tokenizer.chat_template attribute, please see the documentation at https://huggingface.co/docs/transformers/main/en/chat_templating"
-     ]
-    }
-   ],
+   "outputs": [],
    "source": [
     "from transformers import TextStreamer\n",
     "\n",
@@ -474,14 +447,16 @@
     "    }\n",
     "]\n",
     "\n",
-    "text_streamer = TextStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)\n",
-    "\n",
-    "# Resolve EOS token IDs to prevent generation overrun/repetition loops\n",
+    "# Resolve EOS token IDs so generation stops cleanly at <|im_end|> or <|endoftext|>\n",
     "eos_ids = [tokenizer.eos_token_id]\n",
     "im_end_id = tokenizer.convert_tokens_to_ids(\"<|im_end|>\")\n",
     "if im_end_id is not None and im_end_id != tokenizer.unk_token_id:\n",
     "    eos_ids.append(im_end_id)\n",
     "eos_ids = list(set(x for x in eos_ids if x is not None))\n",
+    "print(f\"EOS token IDs: {eos_ids}\")\n",
+    "\n",
+    "# skip_special_tokens=True prevents <|im_end|> from being printed in the stream\n",
+    "text_streamer = TextStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)\n",
     "\n",
     "for item in test_prompts:\n",
     "    print(f\"\\n{'='*80}\")\n",
