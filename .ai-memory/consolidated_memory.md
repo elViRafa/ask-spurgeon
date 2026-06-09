@@ -5,7 +5,7 @@ summary: "Map of available project memory sections."
 priority: high
 tags: [index, memory]
 schema_version: 1.3
-last_updated: "2026-06-08T10:19:05-04:00"
+last_updated: "2026-06-08T12:47:00-04:00"
 consolidation_hash: dc4febef829d2344ced791190b2a66be
 contradictions: []
 consolidation_warnings: []
@@ -14,7 +14,7 @@ summary_hash: c81ed9efe309125e42b693ba950f4f04
 
 # Project Memory Index
 
-Updated by Memory Fabric Dreaming mode `light` at 2026-06-08T10:19:05-04:00.
+Updated by Memory Fabric Dreaming mode `light` at 2026-06-08T12:47:00-04:00.
 
 | Section | Priority | Summary | Key Topics |
 | --- | --- | --- | --- |
@@ -392,6 +392,33 @@ This registers `spurgeon-gemma4:latest` locally, making it available for local i
 ## 4. Local Disk Cleanup (8B f16 Reclaim)
 When registering a new GGUF version in Ollama, Ollama copies/duplicates the GGUF file to its internal blob directory (`C:\Users\rafael\.ollama\models\blobs\...`). Under tight disk space conditions, this requires having at least double the model size (~10.6 GB) free on the C: drive.
 To free up sufficient space during conversion, we deleted the obsolete local 16GB `Spurgeon-8B-f16.gguf` file (which had already been uploaded to the remote Hugging Face repository in an earlier phase). This safely reclaimed 16 GB, resolving the `not enough space on the disk` error during the `ollama create` command.
+
+<!-- memory-fabric:store/fine-tuning/data-generation-gemma4 -->
+---
+store_path: fine-tuning/data-generation-gemma4
+title: "Gemma 4 Local Dataset Generation Analysis"
+summary: "Gemma 4 Local Dataset Generation Analysis"
+priority: medium
+tags: [fine-tuning, gemma4, dataset, ollama]
+schema_version: 1.3
+last_updated: "2026-06-08T12:46:23-04:00"
+---
+
+# Gemma 4 Local Dataset Generation Analysis
+
+We evaluated the feasibility of using Google's Gemma 4 (12B) model locally via Ollama to generate the synthetic Q&A instruction fine-tuning dataset for the Charles Spurgeon Q&A assistant.
+
+## Evaluation Results
+- **groundedness & Fidelity:** The model successfully followed strict instructions to ground its answers 100% in the provided context chunk, avoiding external extrapolations or hallucinations.
+- **Stylistic Persona:** The model successfully adopted Charles Spurgeon's theological style, register, and vocabulary (e.g., using markers like "My brethren," and "doth").
+- **Question Quality:** Rather than using generic templates, Gemma 4 generated specific, detail-oriented questions directly derived from the passage text.
+- **Speed & Feasibility:** Once loaded into local memory in Ollama, generation takes approximately 3.5 seconds per request. Running locally avoids rate limit errors (such as Groq's 30 RPM limit on free tiers) and has zero API costs.
+
+## Implementation
+- Created `generate_qa_pairs_ollama.py` to target local Ollama instances (with JSON mode enabled).
+- Created `generate_qa_pairs_openrouter.py` to support OpenRouter free model endpoints.
+- Launched a parallel background run of 1,000 examples using the local `gemma4:latest` model, writing to `spurgeon_train_ollama.jsonl`.
+- Created `merge_datasets.py` to consolidate, deduplicate, shuffle, and split all generated outputs.
 
 <!-- memory-fabric:store/fine-tuning/gemma-support -->
 ---
