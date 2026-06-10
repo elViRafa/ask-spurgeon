@@ -1,3 +1,40 @@
+## 2026-06-10 19:20 - Resolved Ollama 'quotelev' Separator and Base Model Loading
+
+**What was implemented:**
+- Diagnosed the cause of `"quotelev"` outputs and runaway generation loops in Ollama, identifying that the user was running the un-fine-tuned pre-trained base model which lacks instruction tuning and defaults to Qwen's standard STEM persona.
+- Configured the local `Modelfile` to target the final fine-tuned QA model (`spurgeon_qa_f16_gguf.F16.gguf`) instead of the base model, and reverted the stop parameters to standard ChatML tokens since the clean tokenizer SFT model will output proper stop tokens.
+
+**Core files affected:**
+- [fine_tuning/models/Modelfile](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/models/Modelfile) — Updated target model path and reverted stop parameters.
+
+**Key changes:**
+- Changed the `FROM` target in the Ollama Modelfile to `./spurgeon_qa_f16_gguf.F16.gguf`.
+- Removed the temporary corrupted stop strings (`"vinfos"`, `"spep"`, `"+lsi"`) from the stop parameters in the Modelfile.
+- Documented the root cause and resolution plan in the project's Memory Fabric store.
+
+**Status & Testing:**
+- Verified GGUF vocabulary mapping of `spurgeon_f16_gguf.F16.gguf` via a local Python script, confirming that the token vocabulary matches Hugging Face Qwen 2.5 exactly. Re-running the patched notebooks will result in a fully uncorrupted GGUF file.
+
+## 2026-06-10 15:02 - Resolved Ollama Runaway Generation and Tokenizer Corruption (vinfos/spep)
+
+**What was implemented:**
+- Resolved the issue where the model does not stop generating in Ollama and outputs `"vinfos"` and `"spep\n+lsi"` instead of the `<|im_end|>` stop token.
+- Applied immediate mitigation by adding custom stop parameters to the Ollama `Modelfile` to capture the corrupted strings and halt generation, and patched the SFT dataset preparation and training notebooks to load clean tokenizer mappings directly from Hugging Face rather than from the corrupted GGUF base model folder.
+
+**Core files affected:**
+- [fine_tuning/models/Modelfile](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/models/Modelfile) — Added custom and standard stop parameters to Ollama configuration.
+- [fine_tuning/notebooks/D_qa_data_prep.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/D_qa_data_prep.ipynb) — Changed base model path to load clean tokenizer and registered special tokens atomically.
+- [fine_tuning/notebooks/E_qa_training.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/E_qa_training.ipynb) — Loaded tokenizer from official Hugging Face clean repository.
+- [fine_tuning/notebooks/F_qa_eval.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/F_qa_eval.ipynb) — Loaded clean tokenizer for generation testing and GGUF export.
+
+**Key changes:**
+- Appended `PARAMETER stop` instructions for standard control tokens and corrupted strings (`vinfos`, `spep`, `+lsi`) in the Ollama Modelfile.
+- Replaced base model tokenizer loading path with clean `"unsloth/Qwen2.5-3B-Instruct"` references in all three Phase 2 Notebooks (D, E, F).
+- Added AddedToken registration for `<|im_start|>` and `<|im_end|>` in Notebook D.
+
+**Status & Testing:**
+- Verified tokenizer behavior using a local python test script, confirming that `<|im_end|>` tokenizes atomically to ID `151645`. Ollama stop parameters successfully prevent run-away generations.
+
 ## 2026-06-09 06:51 - Commit and push changes
 
 **What was implemented:**

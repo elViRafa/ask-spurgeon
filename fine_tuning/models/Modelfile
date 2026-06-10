@@ -1,12 +1,17 @@
-# Ollama Modelfile for Spurgeon-8b
-# Target: Spurgeon-8B-Q4_K_M.gguf
+# Ollama Modelfile for Spurgeon fine-tuned QA model
+# Target: spurgeon_qa_f16_gguf.F16.gguf
 
-FROM ./Spurgeon-8B-Q4_K_M.gguf
+FROM ./spurgeon_qa_f16_gguf.F16.gguf
 
 # Set parameters
 PARAMETER num_ctx 4096
-PARAMETER temperature 0.7
+PARAMETER temperature 0.5
 PARAMETER top_p 0.95
+
+# Explicitly stop on standard control tokens
+PARAMETER stop "<|im_start|>"
+PARAMETER stop "<|im_end|>"
+PARAMETER stop "<|endoftext|>"
 
 # Set custom chat template matching your model's training
 TEMPLATE """{{ if .System }}<|system|>
