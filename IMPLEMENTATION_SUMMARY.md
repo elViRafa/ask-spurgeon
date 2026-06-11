@@ -1,3 +1,20 @@
+## 2026-06-11 07:55 - Restored Notebook F Local Adapter Path Detection
+
+**What was implemented:**
+- Resolved why the evaluated model in Notebook F still outputted corrupted `vinfos` and Chinese characters after retraining in Notebook E.
+- Identified that Notebook F's `ADAPTER_DIR` was hardcoded to the old read-only dataset inputs (`/kaggle/input/datasets/letciansarabiavieira/spurgeon-fine-tuning-trained/...`), causing it to load the old corrupted weights instead of the newly trained ones.
+- Modified Notebook F to dynamically detect if a newly trained adapter exists in `/kaggle/working/spurgeon_lora_qa` (within the same session) and load it, falling back to the dataset inputs with a warning message otherwise.
+
+**Core files affected:**
+- [fine_tuning/notebooks/F_qa_eval.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/F_qa_eval.ipynb) — Added path detection for local same-session adapter in Kaggle environment.
+
+**Key changes:**
+- Added `os.path.exists("/kaggle/working/spurgeon_lora_qa")` check inside the path setup cell of Notebook F.
+- Added warnings alerting the user if they are fallback-loading the read-only dataset without uploading their new clean weights first.
+
+**Status & Testing:**
+- Patched successfully. Pushed changes to GitHub.
+
 ## 2026-06-10 20:05 - Fixed Kaggle Dataset Mismatch to Prevent Tokenizer Corruption
 
 **What was implemented:**
