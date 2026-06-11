@@ -1,3 +1,26 @@
+## 2026-06-11 09:45 - Fixed chat_template crash and FutureWarning noise in Notebooks E/F
+
+**What was implemented:**
+- Resolved `ValueError: tokenizer.chat_template is not set` crash in Notebook F Cell 4. Root cause: `add_special_tokens()` clears the `tokenizer.chat_template` attribute set by `get_chat_template()` on newer transformers versions. Fix: backup/restore pattern around the call.
+- Suppressed `FutureWarning` noise from `transformers.modeling_attn_mask_utils` deprecation that was polluting inference output, making it look like the model was broken.
+- Enhanced adapter source diagnostic in Notebook F to warn clearly when using stale Kaggle input dataset weights vs. clean same-session weights.
+
+**Core files affected:**
+- `fine_tuning/notebooks/F_qa_eval.ipynb` (chat_template fix, FutureWarning suppression, adapter warning)
+- `fine_tuning/notebooks/E_qa_training.ipynb` (preventive chat_template backup/restore)
+
+**Key changes:**
+- Added `_chat_template_backup = tokenizer.chat_template` before `add_special_tokens()` and restore after
+- Added `warnings.filterwarnings("ignore", category=FutureWarning)` in inference cell
+- Added `print("chat_template set:", ...)` diagnostic to both notebooks
+- Enhanced adapter fallback warning with actionable guidance
+
+**Status & Testing:**
+- Code changes verified locally. Ready for Kaggle re-run.
+
+**Notes / Next steps:**
+- User must run E and F in the SAME Kaggle session, OR update the `spurgeon-fine-tuning-trained` Kaggle dataset with clean adapter weights before running F standalone.
+
 ## 2026-06-11 07:55 - Restored Notebook F Local Adapter Path Detection
 
 **What was implemented:**
