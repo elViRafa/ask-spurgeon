@@ -5,18 +5,19 @@ summary: "Index of all semantic memory store files."
 priority: high
 tags: [index, memory-store]
 schema_version: 1.3
-last_updated: "2026-06-11T09:23:08-04:00"
+last_updated: "2026-06-11T10:01:23-04:00"
 ---
 
 # Memory Store Index
 
-Updated by Memory Fabric Dreaming mode `light` at 2026-06-11T09:23:08-04:00.
+Updated by Memory Fabric Dreaming mode `light` at 2026-06-11T10:01:23-04:00.
 
 | Path | Priority | Summary | Key Topics | Tags |
 | --- | --- | --- | --- | --- |
 | `bugs/gemma4-chat-template-fix` | medium | Gemma 4 Chat Template Processor Fix | • Problem<br>• Solution | gemma4, chat-template, bugfix, unsloth |
 | `bugs/lora-frozen-embeddings-special-tokens` | high | Bug Fix: Training embed_tokens and lm_head when resizing vocabulary for special tokens in LoRA | • Context<br>• Problem<br>• Fix | bugs, lora, embeddings, lm_head, special-tokens, unsloth |
 | `bugs/ollama-tokenizer-corruption-fix` | medium | Bug Fix: Ollama Runaway Generation and Tokenizer Corruption | • Context<br>• Solution | bugs, tokenizer, gguf, ollama |
+| `bugs/unsloth-embedding-offload-readonly` | high | Bug Fix: Unsloth Embedding Offload on Read-Only Filesystem | • Context<br>• Problem<br>• Fix | bugs, unsloth, embeddings, lora, kaggle, offloading |
 | `bugs/unsloth-fast-patching-warnings` | medium | Unsloth Training Warnings & Fast Patching Resolution | • 1. LoRA Dropout Performance Warning<br>• 2. Gemma 4 Audio Tower Hook Registration Warning | unsloth, lora, gemma4, bugfix |
 | `decisions/gemma4-finetuning` | medium | Guides the upgrade of fine-tuning pipelines from Gemma 2 to the efficient, newer Gemma 4 12B model. | • Rationale<br>• Configuration Details | gemma4, finetuning, decisions |
 | `decisions/gemma4-local-ollama` | medium | Gemma 4 Local Ollama Deployment | • 1. Tokenizer List Parsing Bug Fix<br>• 2. Remote Streaming Conversion & Double Quantization<br>• 3. Importing into Ollama<br>• 4. Local Disk Cleanup (8B f16 Reclaim) | gemma4, ollama, gguf, quantization, cleanup |

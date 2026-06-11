@@ -5,7 +5,7 @@ summary: "Map of available project memory sections."
 priority: high
 tags: [index, memory]
 schema_version: 1.3
-last_updated: "2026-06-11T09:23:08-04:00"
+last_updated: "2026-06-11T10:01:23-04:00"
 consolidation_hash: dc4febef829d2344ced791190b2a66be
 contradictions: []
 consolidation_warnings: []
@@ -14,7 +14,7 @@ summary_hash: c81ed9efe309125e42b693ba950f4f04
 
 # Project Memory Index
 
-Updated by Memory Fabric Dreaming mode `light` at 2026-06-11T09:23:08-04:00.
+Updated by Memory Fabric Dreaming mode `light` at 2026-06-11T10:01:23-04:00.
 
 | Section | Priority | Summary | Key Topics |
 | --- | --- | --- | --- |
@@ -352,6 +352,46 @@ When exporting a merged model to GGUF format using Unsloth (Phase 1 pretraining)
 1. **Patched Notebooks (Re-training):** Updated [D_qa_data_prep.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/D_qa_data_prep.ipynb), [E_qa_training.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/E_qa_training.ipynb), and [F_qa_eval.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/F_qa_eval.ipynb) to load clean tokenizer configurations directly from Hugging Face's `\"unsloth/Qwen2.5-3B-Instruct\"` repository instead of the corrupted local folder, ensuring proper atomic tokenization to ID `151645`.
 2. **Download Fine-Tuned GGUF Model:** Instructed the user to re-run the patched notebooks D, E, F on Kaggle to produce the clean fine-tuned GGUF file (`spurgeon_qa_f16_gguf.F16.gguf`), download it, and place it in the local `fine_tuning/models/` directory.
 3. **Local Modelfile Configuration:** Updated the local [Modelfile](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/models/Modelfile) to load the fine-tuned model and use standard stop parameters, removing the temporary mitigations for `"vinfos"`, `"spep"`, and `"+lsi"`.
+
+<!-- memory-fabric:store/bugs/unsloth-embedding-offload-readonly -->
+---
+store_path: bugs/unsloth-embedding-offload-readonly
+title: "Bug Fix: Unsloth Embedding Offload on Read-Only Filesystem"
+summary: "Bug Fix: Unsloth Embedding Offload on Read-Only Filesystem"
+priority: high
+tags: [bugs, unsloth, embeddings, lora, kaggle, offloading]
+schema_version: 1.3
+last_updated: "2026-06-11T10:00:40-04:00"
+---
+
+# Bug Fix: Unsloth Embedding Offload on Read-Only Filesystem
+
+## Context
+When training a custom LoRA adapter where `embed_tokens` and `lm_head` are targeted in `FastLanguageModel.get_peft_model()`, Unsloth automatically offloads the base model's input embeddings to disk to save VRAM.
+By default, the offload directory is named `_unsloth_temporary_saved_buffers` and is created in the current working directory.
+
+## Problem
+When running the training notebook on Kaggle via Papermill or automated run scripts, the current working directory may reside in a read-only area (e.g. `/kaggle/input/...` or the home folder).
+This causes `torch.save` inside `offload_to_disk` to crash with:
+`RuntimeError: [enforce fail at inline_container.cc:743] . open file failed with strerror: Read-only file system`
+
+## Fix
+In `fine_tuning/notebooks/E_qa_training.ipynb`:
+1. Configured environment setup to define a writeable `TEMP_LOCATION` (using `/tmp/unsloth_temp` on Kaggle/Colab and `_unsloth_temporary_saved_buffers` locally).
+2. Guaranteed the directory exists using `os.makedirs(TEMP_LOCATION, exist_ok=True)`.
+3. Passed `temporary_location=TEMP_LOCATION` explicitly to `FastLanguageModel.get_peft_model()`:
+```python
+    model,
+    r=LORA_RANK,
+                    "embed_tokens", "lm_head"],
+    lora_alpha=32,
+    lora_dropout=0,
+    bias="none",
+    random_state=42,
+    temporary_location=TEMP_LOCATION,
+)
+```
+This forces Unsloth to save the offloaded weight buffers under `/tmp/unsloth_temp`, which is always writeable.
 
 <!-- memory-fabric:store/bugs/unsloth-fast-patching-warnings -->
 ---

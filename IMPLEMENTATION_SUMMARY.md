@@ -1,3 +1,19 @@
+## 2026-06-11 10:00 - Configured writeable temporary location for Unsloth embedding offload
+
+**What was implemented:**
+- Resolved `RuntimeError: Open file failed with strerror: Read-only file system` crash during LoRA target setup in Notebook E on Kaggle. When targeting `embed_tokens` and `lm_head`, Unsloth attempts to offload input embeddings to disk to save VRAM. Since the default offload location is the current working directory, it crashes if that directory is read-only (as is common when launched via Papermill or Kaggle run scripts). We configured and passed a writeable `TEMP_LOCATION` (`/tmp/unsloth_temp` on Kaggle/Colab) to `get_peft_model`.
+
+**Core files affected:**
+- `fine_tuning/notebooks/E_qa_training.ipynb` (defined `TEMP_LOCATION` and passed it to `FastLanguageModel.get_peft_model()`)
+
+**Key changes:**
+- Defined `TEMP_LOCATION` in environment setup: `/tmp/unsloth_temp` on Kaggle and Colab, `_unsloth_temporary_saved_buffers` on local.
+- Ensured the directory is created via `os.makedirs(TEMP_LOCATION, exist_ok=True)`.
+- Passed `temporary_location=TEMP_LOCATION` in `FastLanguageModel.get_peft_model()`.
+
+**Status & Testing:**
+- Patched successfully, verified notebook structure and python syntax. Ready for execution.
+
 ## 2026-06-11 09:20 - Train embed_tokens and lm_head to fix special tokens and warnings
 
 **What was implemented:**
