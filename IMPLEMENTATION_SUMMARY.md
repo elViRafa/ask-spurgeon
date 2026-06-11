@@ -1,3 +1,21 @@
+## 2026-06-10 20:05 - Fixed Kaggle Dataset Mismatch to Prevent Tokenizer Corruption
+
+**What was implemented:**
+- Resolved why the SFT fine-tuned model still produced corrupted tokens like `"vinfos"`, `"spep"`, and Chinese text during evaluation.
+- Identified that Notebook E was loading the pre-tokenized/pre-formatted dataset from the old, corrupted read-only Kaggle input dataset (`letciansarabiavieira/spurgeon-qa-dataset-chatml-template/...`) rather than the clean raw dataset.
+- Modified Notebook E to load the raw JSONL dataset directly, apply the ChatML template using the clean tokenizer on the fly, and perform the train/val split dynamically, making the training pipeline fully self-contained and immune to cross-session path mismatches.
+
+**Core files affected:**
+- [fine_tuning/notebooks/E_qa_training.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/E_qa_training.ipynb) — Changed dataset configuration to raw JSONL and tokenized/split on the fly using the clean tokenizer.
+
+**Key changes:**
+- Removed hardcoded input directory paths (`TRAIN_DS_PATH` and `VAL_DS_PATH`) pointing to the corrupted pre-tokenized dataset.
+- Configured dynamic raw dataset path `INPUT_JSONL_PATH` for Kaggle, Google Colab, and local environments.
+- Replaced `load_from_disk` in Cell 4 with a Python loader that parses the raw JSONL dataset and formats it using the clean tokenizer loaded in Cell 3.
+
+**Status & Testing:**
+- Patched successfully. The user will upload the updated notebook to Kaggle to produce the uncorrupted model.
+
 ## 2026-06-10 19:20 - Resolved Ollama 'quotelev' Separator and Base Model Loading
 
 **What was implemented:**
