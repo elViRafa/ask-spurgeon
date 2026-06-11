@@ -1,3 +1,19 @@
+## 2026-06-11 10:45 - Enhanced temporary location using tempfile.gettempdir() and robust environment checks
+
+**What was implemented:**
+- Further resolved the `RuntimeError: Open file failed with strerror: Read-only file system` on Kaggle when environment variables for Kaggle detection fail to match `IS_KAGGLE`. Instead of relying solely on `KAGGLE_KERNEL_RUN_TYPE` environment variable detection to assign the writeable `/tmp` path, we now (1) check if the `/kaggle` directory exists (`os.path.exists("/kaggle")`) for extremely robust detection, and (2) unconditionally set `TEMP_LOCATION` using Python's standard `tempfile.gettempdir()` function which dynamically resolves to the platform's guaranteed writeable temp directory (e.g. `/tmp` on Kaggle/Colab and Windows Temp directory locally).
+
+**Core files affected:**
+- `fine_tuning/notebooks/E_qa_training.ipynb` (unconditional platform-agnostic `TEMP_LOCATION` using `tempfile.gettempdir()`, added `import tempfile`, robust `IS_KAGGLE`/`IS_COLAB` path checks)
+
+**Key changes:**
+- Added `import tempfile` in Cell 5.
+- Set `TEMP_LOCATION = os.path.join(tempfile.gettempdir(), "unsloth_temp")`.
+- Updated Kaggle/Colab checks to include `os.path.exists` directories.
+
+**Status & Testing:**
+- Patched successfully, verified structure and syntax. Ready for execution.
+
 ## 2026-06-11 10:00 - Configured writeable temporary location for Unsloth embedding offload
 
 **What was implemented:**
