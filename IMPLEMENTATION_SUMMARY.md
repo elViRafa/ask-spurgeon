@@ -1,3 +1,18 @@
+## 2026-06-11 11:00 - Configured writeable temporary location under /kaggle/working/ and active fallback checking
+
+**What was implemented:**
+- Further resolved the `RuntimeError: Open file failed with strerror: Read-only file system` crash. In some Kaggle environments, `/tmp` is sandbox-restricted or mounted read-only. We updated the default `TEMP_LOCATION` for Kaggle to point inside the workspace directory (`/kaggle/working/unsloth_temp`) which is guaranteed to be writeable. In addition, we implemented an active writeability test block that attempts to write a dummy file to several path options (including `/kaggle/working/unsloth_temp`, `/content/unsloth_temp`, and relative subfolders) and dynamically binds `TEMP_LOCATION` to the first path that successfully accepts writes, completely preventing any read-only filesystem crash.
+
+**Core files affected:**
+- `fine_tuning/notebooks/E_qa_training.ipynb` (defined `TEMP_LOCATION` to point inside `/kaggle/working/unsloth_temp`, added an active writeability check fallback block)
+
+**Key changes:**
+- Changed Kaggle default `TEMP_LOCATION` to `/kaggle/working/unsloth_temp`.
+- Added write-test fallback logic to evaluate writeability.
+
+**Status & Testing:**
+- Patched successfully, verified structure and syntax. Ready for execution.
+
 ## 2026-06-11 10:45 - Enhanced temporary location using tempfile.gettempdir() and robust environment checks
 
 **What was implemented:**
