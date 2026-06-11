@@ -1,3 +1,19 @@
+## 2026-06-11 15:30 - Unconditionally patched model config name_or_path to resolve Kaggle offload read-only crash
+
+**What was implemented:**
+- Patched the model-loading cell of Notebook E (`E_qa_training.ipynb`) to unconditionally set `model.config._name_or_path = "model"` right before setting up the LoRA adapter. We previously stripped absolute paths using `os.path.basename` to solve path-joining issues, but this failed when the config property was empty or had a different representation during execution. Setting it to `"model"` unconditionally ensures that Unsloth always joins it as a relative path, forcing weight offloading to write to a safe, writeable subdirectory inside the specified temporary location (e.g. `/kaggle/working/unsloth_temp/model`).
+
+**Core files affected:**
+- `fine_tuning/notebooks/E_qa_training.ipynb` (unconditionally set `model.config._name_or_path = "model"` in Cell 6)
+- `scratch/patch_notebook_e_name_or_path.py` (updated helper patch script)
+
+**Key changes:**
+- Changed `model.config._name_or_path` patch from a conditional check to an unconditional assignment to `"model"` in Notebook E.
+- Ensured any offload directory (even if defaulted) resolves relative to a writeable workspace path.
+
+**Status & Testing:**
+- Tested and successfully executed the python notebook patching script. Notebook JSON layout parses cleanly, and the patch is successfully written. Ready for Kaggle execution.
+
 ## 2026-06-11 11:30 - Resolved absolute name_or_path join bug causing Unsloth to write to read-only input dir
 
 **What was implemented:**

@@ -5,7 +5,7 @@ summary: "Bug Fix: Unsloth Embedding Offload on Read-Only Filesystem"
 priority: high
 tags: [bugs, unsloth, embeddings, lora, kaggle, offloading]
 schema_version: 1.3
-last_updated: "2026-06-11T12:53:04-04:00"
+last_updated: "2026-06-11T14:26:32-04:00"
 ---
 
 # Bug Fix: Unsloth Embedding Offload on Read-Only Filesystem
@@ -54,14 +54,11 @@ for path_option in [TEMP_LOCATION, "/kaggle/working/unsloth_temp", "/content/uns
 if not writeable_found:
     raise RuntimeError("Could not find any writeable directory for temporary offloading!")
 ```
-4. Added a critical patch in Cell 7 before calling `FastLanguageModel.get_peft_model()` to strip absolute folder paths from `model.config._name_or_path` and convert it into a relative folder name (e.g., `"spurgeon_f16_gguf"`):
+4. Added a critical patch in Cell 7 before calling `FastLanguageModel.get_peft_model()` to unconditionally set `model.config._name_or_path = "model"`:
 ```python
 if getattr(model, "config", None) is not None:
-    _orig_name = getattr(model.config, "_name_or_path", "")
-    if _orig_name:
-        _clean_name = os.path.basename(_orig_name.rstrip("/\\")) or "model"
-        model.config._name_or_path = _clean_name
-        print(f"Patched model.config._name_or_path to relative path: {_clean_name}")
+    model.config._name_or_path = "model"
+    print("Patched model.config._name_or_path to relative path: 'model'")
 ```
 5. Passed `temporary_location=TEMP_LOCATION` explicitly to `FastLanguageModel.get_peft_model()`.
 
