@@ -5,7 +5,7 @@ summary: "Map of available project memory sections."
 priority: high
 tags: [index, memory]
 schema_version: 1.3
-last_updated: "2026-06-11T11:01:40-04:00"
+last_updated: "2026-06-11T12:53:50-04:00"
 consolidation_hash: dc4febef829d2344ced791190b2a66be
 contradictions: []
 consolidation_warnings: []
@@ -14,7 +14,7 @@ summary_hash: c81ed9efe309125e42b693ba950f4f04
 
 # Project Memory Index
 
-Updated by Memory Fabric Dreaming mode `light` at 2026-06-11T11:01:40-04:00.
+Updated by Memory Fabric Dreaming mode `light` at 2026-06-11T12:53:50-04:00.
 
 | Section | Priority | Summary | Key Topics |
 | --- | --- | --- | --- |
@@ -361,7 +361,7 @@ summary: "Bug Fix: Unsloth Embedding Offload on Read-Only Filesystem"
 priority: high
 tags: [bugs, unsloth, embeddings, lora, kaggle, offloading]
 schema_version: 1.3
-last_updated: "2026-06-11T11:00:56-04:00"
+last_updated: "2026-06-11T12:53:04-04:00"
 ---
 
 # Bug Fix: Unsloth Embedding Offload on Read-Only Filesystem
@@ -375,6 +375,11 @@ When running the training notebook on Kaggle via Papermill or automated run scri
 Additionally, on certain Kaggle container executions, the system `/tmp` directory is sandbox-restricted or mounted read-only.
 This causes `torch.save` inside `offload_to_disk` to crash with:
 `RuntimeError: [enforce fail at inline_container.cc:743] . open file failed with strerror: Read-only file system`
+
+Furthermore, even when passing a writeable `TEMP_LOCATION` (like `/kaggle/working/unsloth_temp`), Unsloth's `offload_to_disk` constructs the target file location using:
+`file_location = os.path.join(temporary_location, model.config._name_or_path)`
+
+Because the base model is loaded from an absolute local path on Kaggle (`MODEL_NAME = "/kaggle/input/datasets/..."`), the `model.config._name_or_path` attribute holds this absolute path. In Python/Unix, when joining paths where the second path is absolute, `os.path.join` discards the first path entirely. As a result, the target path resolved directly back to the read-only `/kaggle/input/` directory, causing the same `Read-only file system` crash.
 
 ## Fix
 In `fine_tuning/notebooks/E_qa_training.ipynb`:
@@ -405,9 +410,18 @@ for path_option in [TEMP_LOCATION, "/kaggle/working/unsloth_temp", "/content/uns
 if not writeable_found:
     raise RuntimeError("Could not find any writeable directory for temporary offloading!")
 ```
-4. Passed `temporary_location=TEMP_LOCATION` explicitly to `FastLanguageModel.get_peft_model()`.
+4. Added a critical patch in Cell 7 before calling `FastLanguageModel.get_peft_model()` to strip absolute folder paths from `model.config._name_or_path` and convert it into a relative folder name (e.g., `"spurgeon_f16_gguf"`):
+```python
+if getattr(model, "config", None) is not None:
+    _orig_name = getattr(model.config, "_name_or_path", "")
+    if _orig_name:
+        _clean_name = os.path.basename(_orig_name.rstrip("/\\")) or "model"
+        model.config._name_or_path = _clean_name
+        print(f"Patched model.config._name_or_path to relative path: {_clean_name}")
+```
+5. Passed `temporary_location=TEMP_LOCATION` explicitly to `FastLanguageModel.get_peft_model()`.
 
-This guarantees that Unsloth offloaded buffers are saved under a directory where the Python process has active write permissions on all execution targets (Kaggle VMs, Colab VMs, and local Windows/Linux development environments).
+This guarantees that Unsloth offloaded buffers are saved under a directory where the Python process has active write permissions on all execution targets (Kaggle VMs, Colab VMs, and local Windows/Linux development environments), bypassing the absolute path join bug.
 
 <!-- memory-fabric:store/bugs/unsloth-fast-patching-warnings -->
 ---

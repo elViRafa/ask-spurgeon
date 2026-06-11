@@ -1,3 +1,17 @@
+## 2026-06-11 11:30 - Resolved absolute name_or_path join bug causing Unsloth to write to read-only input dir
+
+**What was implemented:**
+- Resolved `RuntimeError: Open file failed with strerror: Read-only file system` during LoRA target setup on Kaggle. We discovered that Unsloth's `offload_to_disk` uses `os.path.join(temporary_location, model.config._name_or_path)` to construct the offload directory. Since the model was loaded from an absolute local path on Kaggle (`/kaggle/input/...`), `os.path.join` discarded the writeable `TEMP_LOCATION` prefix and resolved directly to the read-only input folder. We added a critical patch in Notebook E Cell 7 to strip absolute paths from `model.config._name_or_path` and convert it to a relative name (e.g. `"spurgeon_f16_gguf"`), ensuring Unsloth offloads weights into `/kaggle/working/unsloth_temp` correctly.
+
+**Core files affected:**
+- `fine_tuning/notebooks/E_qa_training.ipynb` (added `model.config._name_or_path` patch in Cell 7 before calling `FastLanguageModel.get_peft_model()`)
+
+**Key changes:**
+- Added `model.config._name_or_path` conversion to `os.path.basename(_orig_name)` in Cell 7.
+
+**Status & Testing:**
+- Patched successfully, verified structure and syntax. Ready for execution.
+
 ## 2026-06-11 11:00 - Configured writeable temporary location under /kaggle/working/ and active fallback checking
 
 **What was implemented:**
