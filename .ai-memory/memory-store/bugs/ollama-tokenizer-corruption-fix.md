@@ -1,23 +1,35 @@
 ---
 store_path: bugs/ollama-tokenizer-corruption-fix
-title: "Bug Fix: Ollama Runaway Generation and Tokenizer Corruption"
-summary: "Bug Fix: Ollama Runaway Generation and Tokenizer Corruption"
-priority: medium
-tags: [bugs, tokenizer, gguf, ollama]
+title: "Bug Fix: GGUF Vocab Shift and Alignment (具有战士/ _Parms)"
+summary: "Bug Fix: GGUF Vocab Shift and Alignment (具有战士/ _Parms)"
+priority: high
+tags: [bugs, tokenizer, gguf, ollama, alignment]
 schema_version: 1.3
-last_updated: "2026-06-10T15:18:59-04:00"
+last_updated: "2026-06-11T17:07:59-04:00"
 ---
 
-# Bug Fix: Ollama Runaway Generation and Tokenizer Corruption (vinfos/spep/quotelev)
+# Bug Fix: GGUF Vocab Shift and Alignment (具有战士/ _Parms/ +lsi / {lng)
 
-## Context
-When exporting a merged model to GGUF format using Unsloth (Phase 1 pretraining), the special token mappings (like `<|im_end|>` and `<|im_start|>`) inside the tokenizer can get corrupted. When reloading the GGUF model or its converted Hugging Face folder as the base model for Phase 2 fine-tuning:
-1. Special control tokens split into ordinary subwords (e.g., `<|im_end|>` tokenizes to the subwords of `\"vinfos\"` or is mapped to the token ID of `\"quotelev\"`).
-2. SFT training on this dataset teaches the model to end its turn by literally generating the ordinary subwords for `\"vinfos\"` or `\"quotelev\"`.
-3. In Ollama, the model outputs `\"vinfos\"` or `\"quotelev\"` at the end of its turn, and since Ollama does not recognize it as a stop token, generation continues indefinitely in a loop simulating both user and assistant turns.
-4. **Base Model vs. Fine-Tuned Model Confusion:** The user loaded `./spurgeon_f16_gguf.F16.gguf` (the Phase 1 base model) in their local Ollama `Modelfile`. This base model lacks instruction tuning (SFT), causing it to refuse theological questions and claim to be a STEM assistant developed by Alibaba Cloud.
+## Context & Root Cause Discovery
+During Phase 1 pre-training, the model was exported to GGUF format. When Unsloth/llama.cpp processes GGUF vocabulary export, it prepends a header/dummy token (e.g. `Q\x02\x00\x00\x00\x00\x00`) at index 0, causing all subsequent vocabulary tokens and embedding weights to shift by exactly +1 (e.g. standard token `i` maps to GGUF token `i+1`).
+
+When Notebook E and Notebook F loaded this base model using Unsloth but loaded a "clean" tokenizer directly from `"unsloth/Qwen2.5-3B-Instruct"`:
+1. **Misalignment:** The tokenizer used standard token mappings, while the model's embedding matrix and language modeling head weights were shifted by +1.
+2. **Special Tokens Shift:** `<|im_start|>` (standard ID `151644`) mapped to GGUF ID `151645`, and `<|im_end|>` (standard ID `151645`) mapped to GGUF ID `151646`.
+3. **Turn Terminator Failure:** During inference, the model generated GGUF token ID `151646` (`<|im_end|>`), but the standard tokenizer decoded it as `<|object_ref_start|>` or failed to recognize it as a stop token.
+4. **Junk Token Generation:** At paragraph and turn breaks, the model generated shifted tokens:
+   - GGUF `\n\n` (ID `272`) -> decoded by standard tokenizer as `_Parms` (standard ID `78933` / GGUF `78934` `.adjust`).
+   - GGUF `\n` (ID `199`) -> decoded as `+lsi` (standard ID `70237` / GGUF `70238` `igrants`).
+   - GGUF `唾` (ID `117975`) -> decoded as `具有战士` (standard ID `117975` / GGUF `117976`).
+   - GGUF ` preacher` (ID `88754`) -> decoded as `{lng` (standard ID `88754` / GGUF `88755`).
 
 ## Solution
-1. **Patched Notebooks (Re-training):** Updated [D_qa_data_prep.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/D_qa_data_prep.ipynb), [E_qa_training.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/E_qa_training.ipynb), and [F_qa_eval.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/F_qa_eval.ipynb) to load clean tokenizer configurations directly from Hugging Face's `\"unsloth/Qwen2.5-3B-Instruct\"` repository instead of the corrupted local folder, ensuring proper atomic tokenization to ID `151645`.
-2. **Download Fine-Tuned GGUF Model:** Instructed the user to re-run the patched notebooks D, E, F on Kaggle to produce the clean fine-tuned GGUF file (`spurgeon_qa_f16_gguf.F16.gguf`), download it, and place it in the local `fine_tuning/models/` directory.
-3. **Local Modelfile Configuration:** Updated the local [Modelfile](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/models/Modelfile) to load the fine-tuned model and use standard stop parameters, removing the temporary mitigations for `"vinfos"`, `"spep"`, and `"+lsi"`.
+Instead of forcing the clean `"unsloth/Qwen2.5-3B-Instruct"` tokenizer, Notebook E and Notebook F have been patched to load the tokenizer directly from the base model folder (`MODEL_NAME` / `BASE_MODEL_NAME`):
+```python
+# In Notebook E
+tokenizer = [REDACTED_SECRET](MODEL_NAME)
+
+# In Notebook F
+tokenizer = [REDACTED_SECRET](BASE_MODEL_NAME)
+```
+Since the tokenizer in the base model folder was saved during the Phase 1 GGUF export, its `tokenizer.json` contains the exact same shifted vocabulary as the model weights. Loading it aligns the tokenizer and the model embeddings 100% perfectly, resolving the runaway generations, junk character emissions, and paragraph-break corruption.

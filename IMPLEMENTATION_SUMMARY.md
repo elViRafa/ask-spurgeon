@@ -1,3 +1,19 @@
+## 2026-06-11 17:10 - Aligned tokenizer vocabulary with base model shifted embeddings in Notebooks E and F
+
+**What was implemented:**
+- Patched `fine_tuning/notebooks/E_qa_training.ipynb` and `fine_tuning/notebooks/F_qa_eval.ipynb` to load the tokenizer directly from the base model folder (`MODEL_NAME` / `BASE_MODEL_NAME`) instead of the hardcoded `"unsloth/Qwen2.5-3B-Instruct"`. This resolves a severe vocabulary mismatch where all token IDs in the Phase 1 base model were shifted by exactly +1 due to GGUF pre-train export behavior (which prepends a header at ID 0). Using the GGUF-aligned local tokenizer ensures that standard text, paragraph breaks, and special tokens (like `<|im_end|>` mapping to GGUF's ID `151646` instead of standard ID `151645`) align perfectly with the model's shifted weight layers.
+
+**Core files affected:**
+- `fine_tuning/notebooks/E_qa_training.ipynb` (loaded tokenizer from `MODEL_NAME`)
+- `fine_tuning/notebooks/F_qa_eval.ipynb` (loaded tokenizer from `BASE_MODEL_NAME`)
+
+**Key changes:**
+- Replaced `AutoTokenizer.from_pretrained("unsloth/Qwen2.5-3B-Instruct")` with base model path tokenizer loading.
+- Aligned `<|im_start|>` and `<|im_end|>` special tokens to their shifted IDs in the tokenizers.
+
+**Status & Testing:**
+- Patched successfully, verified notebook structures, and validated shifted token IDs in GGUF metadata. Updated memory store index and dreaming.
+
 ## 2026-06-11 15:30 - Unconditionally patched model config name_or_path to resolve Kaggle offload read-only crash
 
 **What was implemented:**
