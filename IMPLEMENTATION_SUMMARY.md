@@ -1,3 +1,21 @@
+## 2026-06-11 09:20 - Train embed_tokens and lm_head to fix special tokens and warnings
+
+**What was implemented:**
+- Configured LoRA training in Notebook E to target `embed_tokens` and `lm_head` layers. Since special tokens `<|im_start|>` and `<|im_end|>` are added to the vocabulary and resized, standard LoRA (which freezes embeddings/head) leaves their representations as random noise/zero, preventing the model from ever generating the stop token `<|im_end|>` at inference and leading to runaway generations and junk subwords like `"vinfos"`. Targetting these layers in LoRA allows the model to learn the special token representations cleanly.
+- Prepended FutureWarning warnings suppression to Notebook F Cell 10 to ensure deprecation warnings from transformers during generation do not pollute the output cell.
+
+**Core files affected:**
+- `fine_tuning/notebooks/E_qa_training.ipynb` (added embed_tokens and lm_head to target_modules, fixed chat_template backup/restore in Cell 6)
+- `fine_tuning/notebooks/F_qa_eval.ipynb` (added warning suppression directly to Cell 10)
+
+**Key changes:**
+- Included `"embed_tokens"` and `"lm_head"` in `target_modules` in `FastLanguageModel.get_peft_model()`.
+- Added the `chat_template` backup/restore around `tokenizer.add_special_tokens()` in Notebook E Cell 6.
+- Prepended `warnings.filterwarnings("ignore", category=FutureWarning)` to Notebook F Cell 10.
+
+**Status & Testing:**
+- Verified notebook JSON structure and diff correctness locally. Ready for Kaggle execution.
+
 ## 2026-06-11 09:45 - Fixed chat_template crash and FutureWarning noise in Notebooks E/F
 
 **What was implemented:**
