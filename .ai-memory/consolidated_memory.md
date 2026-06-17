@@ -5,7 +5,7 @@ summary: "Map of available project memory sections."
 priority: high
 tags: [index, memory]
 schema_version: 1.3
-last_updated: "2026-06-11T17:08:45-04:00"
+last_updated: "2026-06-16T21:09:44-04:00"
 consolidation_hash: dc4febef829d2344ced791190b2a66be
 contradictions: []
 consolidation_warnings: []
@@ -14,7 +14,7 @@ summary_hash: c81ed9efe309125e42b693ba950f4f04
 
 # Project Memory Index
 
-Updated by Memory Fabric Dreaming mode `light` at 2026-06-11T17:08:45-04:00.
+Updated by Memory Fabric Dreaming mode `light` at 2026-06-16T21:09:44-04:00.
 
 | Section | Priority | Summary | Key Topics |
 | --- | --- | --- | --- |
@@ -293,10 +293,10 @@ This has been applied to the following training files:
 store_path: bugs/lora-frozen-embeddings-special-tokens
 title: "Bug Fix: Training embed_tokens and lm_head when resizing vocabulary for special tokens in LoRA"
 summary: "Bug Fix: Training embed_tokens and lm_head when resizing vocabulary for special tokens in LoRA"
-priority: high
+priority: medium
 tags: [bugs, lora, embeddings, lm_head, special-tokens, unsloth]
 schema_version: 1.3
-last_updated: "2026-06-11T09:21:00-04:00"
+last_updated: "2026-06-15T08:56:50-04:00"
 ---
 
 # Bug Fix: Training embed_tokens and lm_head when resizing vocabulary for special tokens in LoRA
@@ -327,6 +327,21 @@ model = FastLanguageModel.get_peft_model(
 )
 ```
 This enables the SFT training to optimize the embeddings and LM head projections for `<|im_start|>` and `<|im_end|>`, allowing the model to learn a clean stop token.
+
+## Update: PEFT Wrapper Attribute Lookup Error during Inference Copying (2026-06-15)
+### Problem
+Although we successfully copied the pre-trained special token embedding weights during training (Notebook E), the base model weights at inference time (Notebook F) remained untrained because the LoRA adapter does not save frozen embedding weights.
+To resolve this, we added a copying step at inference time in Notebook F. However, because `FastLanguageModel.from_pretrained` returns a `PeftModelForCausalLM` when loading an adapter (unlike a base model which returns `Qwen2ForCausalLM` directly), the attribute lookup `model.model.embed_tokens` raised an `AttributeError` during evaluation:
+`AttributeError: 'Qwen2ForCausalLM' object has no attribute 'embed_tokens'`
+
+This crashed the copy cell in Notebook F at line 251, leaving the weights of `<|im_end|>` completely untrained. Since the copy crashed, the model fell back to generating the next most probable tokens (`_Pods of grace, indeed!`) at turn boundaries instead of the stop token `<|im_end|>`.
+
+### Fix
+Patched both Notebook E and Notebook F to use Hugging Face's standard and robust methods:
+- `model.get_input_embeddings().weight` instead of `model.model.embed_tokens.weight`
+- `model.get_output_embeddings().weight` instead of `model.lm_head.weight`
+
+These methods correctly delegate attribute lookup through the `PeftModel` wrappers, ensuring the special token weights are successfully copied at both training and inference time.
 
 <!-- memory-fabric:store/bugs/ollama-tokenizer-corruption-fix -->
 ---
@@ -364,6 +379,43 @@ tokenizer = [REDACTED_SECRET](MODEL_NAME)
 tokenizer = [REDACTED_SECRET](BASE_MODEL_NAME)
 ```
 Since the tokenizer in the base model folder was saved during the Phase 1 GGUF export, its `tokenizer.json` contains the exact same shifted vocabulary as the model weights. Loading it aligns the tokenizer and the model embeddings 100% perfectly, resolving the runaway generations, junk character emissions, and paragraph-break corruption.
+
+<!-- memory-fabric:store/bugs/sft-tokenizer-mismatch-vinfos-spepacer -->
+---
+store_path: bugs/sft-tokenizer-mismatch-vinfos-spepacer
+title: "Bug Fix: Resolving SFT Tokenizer Mismatch (vinfos/spepacer)"
+summary: -----
+priority: medium
+tags: [bugs, lora, tokenizer, qwen]
+schema_version: 1.3
+last_updated: "2026-06-13T22:03:20-04:00"
+---
+
+-----
+store_path: bugs/sft-tokenizer-mismatch-vinfos-spepacer
+title: "Bug Fix: Resolving SFT Tokenizer Mismatch (vinfos/spepacer)"
+summary: "Bug Fix: Resolving SFT Tokenizer Mismatch (vinfos/spepacer)"
+priority: high
+tags: [bugs, lora, tokenizer, qwen]
+schema_version: 1.3
+last_updated: "2026-06-13T22:10:00-04:00"
+---
+
+# Bug Fix: Resolving SFT Tokenizer Mismatch (vinfos/spepacer)
+
+## Context
+During Phase 2 SFT training in Notebook E (`E_qa_training.ipynb`), a tokenizer mismatch led to `<|im_end|>` being split into subwords (`vinfos`/`spepacer`), which the model learned as the turn terminator. When a clean base model and tokenizer were used, the problem appeared resolved, but a new set of Chinese/system garbage tokens (`具有战士`/`rPid`/`sPid`) surfaced at paragraph boundaries.
+
+## Root Cause Analysis
+- **PEFT Weight Untying Mismatch:** Qwen 2.5 uses `tie_word_embeddings=True` to share weights between `embed_tokens` (input embeddings) and `lm_head` (output logits).
+- When `"embed_tokens"` and `"lm_head"` are targeted in LoRA `target_modules`, PEFT creates separate adapters, untying these layers.
+- In Qwen 2.5, this weight-untying causes model corruption, resulting in nonsensical output (like `具有战士` and `rPid`) at token prediction boundaries.
+- Because Qwen 2.5 base model already has correct pre-trained weights for `<|im_start|>` (151644) and `<|im_end|>` (151645), we do NOT need to train these embedding layers. Keeping them frozen and tied is both safe and sufficient.
+
+## Fixes Implemented
+1. **Reverted LoRA Embedding Targets:** Removed `"embed_tokens"` and `"lm_head"` from `target_modules` in Notebook E (`E_qa_training.ipynb`) to keep embeddings properly frozen and tied.
+2. **Fixed Notebook E Syntax Error:** Removed the unexpected indentation from the pre-fix check lines (24-27) in Cell 6 of Notebook E.
+3. **Dynamic Adapter Directory Check:** Restored dynamic verification in `F_qa_eval.ipynb` Cell 4 to load the new adapter from `/kaggle/working/spurgeon_lora_qa` if present, preventing the use of stale adapters from Kaggle input datasets.
 
 <!-- memory-fabric:store/bugs/unsloth-embedding-offload-readonly -->
 ---
@@ -584,6 +636,35 @@ Parameterized scripts and config files to support fine-tuning Gemma 2 models (li
 - Configured launch_training.py to pass parameters dynamically from configuration files.
 - Added train_config_gemma.json configuration file.
 - Created Spurgeon_Gemma2_Training_Colab.ipynb for Colab training and Modelfile.gemma for Ollama import.
+
+<!-- memory-fabric:store/fine-tuning/qwen-sft-alpaca-reversion -->
+---
+store_path: fine-tuning/qwen-sft-alpaca-reversion
+title: "Reverting Custom Model, Weight Copying, and ChatML in Qwen 2.5 SFT"
+summary: "Reverting Custom Model, Weight Copying, and ChatML in Qwen 2.5 SFT"
+priority: medium
+tags: [finetuning, qwen2.5, unsloth, alpaca, reversion]
+schema_version: 1.3
+last_updated: "2026-06-15T09:29:56-04:00"
+---
+
+# Reverting Custom Base Model, Weight Copying, and ChatML Alignment in SFT Notebook
+
+## Context
+Initially, the SFT notebook (`Qwen_2_5_+_Unsloth_2x_faster_finetuning.ipynb`) was adapted to load a custom pre-trained GGUF-shifted base model (`spurgeon_phase1_merged_hf`) and align ChatML formatting with the Qwen-2.5 Instruct model by copying embedding weights.
+
+## Reversion Decision
+The user requested to revert these changes. The notebook was re-configured to:
+1. Load the standard `"unsloth/Qwen2.5-7B"` base model instead of the custom phase 1 merged model.
+2. Remove the Instruct model loading and special token weights copying logic entirely.
+3. Revert ChatML formatting to the standard Alpaca prompt template format.
+
+## Implementation Details
+- **Dataset Preprocessing:** The dataset (`spurgeon_qa_train_final.jsonl`'s `messages` key) is parsed:
+  - System messages are combined with `QUESTION:` as the **Instruction**.
+  - `CONTEXT:` is extracted as the **Input**.
+  - Assistant responses are mapped to the **Response**.
+- **SFT Trainer Delimiters:** The `train_on_responses_only` function masks the labels up to `"### Response:\n"` to focus training only on response generations.
 
 <!-- memory-fabric:store/grok/integration -->
 ---

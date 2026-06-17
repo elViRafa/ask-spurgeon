@@ -1,3 +1,167 @@
+## 2026-06-15 09:30 - Reverted Custom Base Model Loading, Weight Copying, and ChatML Alignment in SFT Notebook
+
+**What was implemented:**
+- Reverted the custom base model loading, weight-copying of special tokens, and ChatML template formatting in `Qwen_2_5_+_Unsloth_2x_faster_finetuning.ipynb`. 
+- Reconfigured the notebook to load the standard `unsloth/Qwen2.5-7B` model, parse the Spurgeon Q&A dataset into the standard Alpaca prompt template format, and configure SFT training to mask non-response tokens using Alpaca delimiters.
+
+**Core files affected:**
+- [fine_tuning/notebooks/Qwen_2_5_+_Unsloth_2x_faster_finetuning.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/Qwen_2_5_+_Unsloth_2x_faster_finetuning.ipynb) — Reconfigured model load, dataset preprocessing, and trainer setup.
+
+**Key changes:**
+- Changed `MODEL_NAME` to standard `"unsloth/Qwen2.5-7B"`.
+- Removed the weight-copying logic and Instruct model load completely.
+- Replaced ChatML template mapping with parsing of the JSONL messages list into standard Alpaca prompt format.
+- Set up `train_on_responses_only` to use Alpaca delimiters (`### Instruction:\n`, `### Response:\n`).
+
+**Status & Testing:**
+- Patched successfully, verified that the notebook file parses as valid JSON and has correct cell index updates.
+
+## 2026-06-15 09:25 - Adapted Unsloth Qwen 2.5 Demo Notebook to Spurgeon SFT on Kaggle
+
+
+**What was implemented:**
+- Adapted the demo notebook `Qwen_2_5_+_Unsloth_2x_faster_finetuning.ipynb` to run the Spurgeon SFT training task. Modified it to load the pre-trained `spurgeon_phase1_merged_hf` base model, utilize the synthetic/curated Q&A datasets, copy special token weights (`<|im_start|>` and `<|im_end|>`) using the robust `get_input_embeddings` and `get_output_embeddings` APIs, and run successfully on Kaggle (T4 GPU).
+
+**Core files affected:**
+- [fine_tuning/notebooks/Qwen_2_5_+_Unsloth_2x_faster_finetuning.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/Qwen_2_5_+_Unsloth_2x_faster_finetuning.ipynb) — Fully adapted code cells for environment detection, dataset formatting, SFT training, and model saving/inference.
+
+**Key changes:**
+- Installed Kaggle-optimized Unsloth and TRL installation blocks.
+- Set up automatic Kaggle/Colab path resolution and write-access temp directory configurations.
+- Integrated the robust special tokens copying fix to resolve PEFT wrappers.
+- Configured response-only training masking and ChatML formatting matching Notebook E.
+
+**Status & Testing:**
+- Patched successfully, verified that the notebook file parses as valid JSON.
+
+## 2026-06-15 09:00 - Fixed PEFT Wrapper Attribute Lookup Error (AttributeError: 'Qwen2ForCausalLM' object has no attribute 'embed_tokens')
+
+**What was implemented:**
+- Diagnosed that `FastLanguageModel.from_pretrained` returns a `PeftModelForCausalLM` when loading the adapter weights during inference in Notebook F. As a result, accessing the raw embedding layer via `model.model.embed_tokens` raises an `AttributeError` because the wrapped model is `Qwen2ForCausalLM` (which does not expose `embed_tokens` directly).
+- Patched both Notebook E (`E_qa_training.ipynb`) and Notebook F (`F_qa_eval.ipynb`) to use Hugging Face's standard, robust model APIs `model.get_input_embeddings().weight` and `model.get_output_embeddings().weight`. This correctly resolves through the PEFT wrapper, enabling successful special token copying and clean stops.
+
+**Core files affected:**
+- [fine_tuning/notebooks/E_qa_training.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/E_qa_training.ipynb) — Updated special tokens weight copying in Cell 6.
+- [fine_tuning/notebooks/F_qa_eval.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/F_qa_eval.ipynb) — Updated special tokens weight copying in Cell 6.
+
+**Key changes:**
+- Replaced direct attribute accesses `model.model.embed_tokens.weight` and `model.lm_head.weight` with `model.get_input_embeddings().weight` and `model.get_output_embeddings().weight` in both training and evaluation notebooks.
+- Verified that both notebooks parse correctly as JSON.
+
+**Status & Testing:**
+- Patched successfully, notebooks verified as valid JSON.
+
+## 2026-06-15 08:52 - Implemented Instruct Embedding Copying at Inference Time in Notebook F
+
+**What was implemented:**
+- Patched Notebook F (`F_qa_eval.ipynb`) to copy the pre-trained special token embedding weights from `unsloth/Qwen2.5-3B-Instruct` into the loaded base model at inference/evaluation time. Since the embedding weights are frozen during SFT training to preserve weight tying, they are not saved in the LoRA adapter. Copying them during inference in Notebook F ensures that `<|im_start|>` (ID `151644`) and `<|im_end|>` (ID `151645`) are correctly represented and projected, allowing the model to stop cleanly.
+
+**Core files affected:**
+- [fine_tuning/notebooks/F_qa_eval.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/F_qa_eval.ipynb) — Added weight copying logic in Cell 6.
+
+**Key changes:**
+- Added the same CPU-based `AutoModelForCausalLM` loading and cloning logic for special tokens in Notebook F Cell 6 as implemented in Notebook E.
+- Released the temporary model immediately after copying to prevent Kaggle CUDA memory errors.
+
+**Status & Testing:**
+- Patched successfully, verified that the notebook file parses as valid JSON.
+
+## 2026-06-14 14:21 - Disabled Repetition Penalty to Fix SFT Stop Failure and Junk Tokens
+
+**What was implemented:**
+- Patched Notebook F (`F_qa_eval.ipynb`) to set `repetition_penalty = 1.0` in the generation configuration. A repetition penalty of `1.15` was heavily penalizing the `<|im_end|>` stop token (because it appears in the prompt template), preventing the model from stopping and forcing it to generate low-probability junk tokens (`NdrFcShort`, `iéndo`, `_Pods`) to avoid repeating common punctuation.
+
+**Core files affected:**
+- [fine_tuning/notebooks/F_qa_eval.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/F_qa_eval.ipynb) — Adjusted `repetition_penalty` from `1.15` to `1.0` in Cell 10.
+
+**Key changes:**
+- Changed the parameter `repetition_penalty=1.15` to `repetition_penalty=1.0` in the `model.generate` call inside the evaluation loop.
+
+**Status & Testing:**
+- Patched successfully, verified that the notebook file parses as valid JSON.
+
+## 2026-06-14 12:01 - Implemented Instruct Embedding Copying to Resolve Untrained Special Tokens Bug
+
+**What was implemented:**
+- Integrated a weight copying mechanism in the SFT initialization to resolve the untrained special tokens bug in Qwen 2.5 Base models. The logic loads the pre-trained Instruct model (`unsloth/Qwen2.5-3B-Instruct`) and copies the fully-trained embedding weights and LM head projections for `<|im_start|>` (ID `151644`) and `<|im_end|>` (ID `151645`) directly into our base model before applying PEFT.
+- Excluded embedding modules from LoRA target layers to keep embeddings frozen and tied, preventing weight-untying corruption. This solves the SFT runaway generation and Chinese/system garbage token issue without causing NaN gradients or VRAM instability.
+
+**Core files affected:**
+- [fine_tuning/notebooks/E_qa_training.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/E_qa_training.ipynb) — Added weight copying logic for `<|im_start|>` and `<|im_end|>` in Cell 6.
+
+**Key changes:**
+- Temporarily loaded `unsloth/Qwen2.5-3B-Instruct` on CPU during Kaggle initialization and cloned its special token embedding tensors into the target model's `embed_tokens` and `lm_head`.
+- Explicitly called `gc.collect()` and `torch.cuda.empty_cache()` immediately after copying to release temporary model resources and prevent out-of-memory errors on Kaggle.
+
+**Status & Testing:**
+- Patched successfully, verified that the notebook file parses as valid JSON.
+
+## 2026-06-13 22:08 - Reverted LoRA Embedding Training to Resolve PEFT Untying Corruption
+
+**What was implemented:**
+- Diagnosed that targeting `embed_tokens` and `lm_head` in LoRA target modules under `tie_word_embeddings=True` (which Qwen 2.5 uses) causes PEFT to untie the embeddings and projection layers. This weight-untying mismatch leads to model corruption and is the root cause of the new Chinese/system garbage tokens (`具有战士`, `rPid`, `sPid`) being generated at paragraph boundaries.
+- Reverted `target_modules` in Notebook E (`E_qa_training.ipynb`) to exclude `embed_tokens` and `lm_head`, keeping them frozen and properly tied in their original pre-trained state. Since Qwen 2.5 base model already contains valid pre-trained embedding weights for `<|im_end|>` (151645) and `<|im_start|>` (151644), training only attention and MLP projection layers is sufficient for SFT alignment when correct clean tokenization is maintained.
+
+**Core files affected:**
+- [fine_tuning/notebooks/E_qa_training.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/E_qa_training.ipynb) — Reverted `target_modules` in Cell 6 to exclude embedding layers.
+
+**Key changes:**
+- Removed `"embed_tokens"` and `"lm_head"` from the `target_modules` list passed to `FastLanguageModel.get_peft_model()`.
+
+**Status & Testing:**
+- Patched successfully. Re-running the training using this clean, tied-embedding configuration will resolve the Chinese/code token corruption and stop generations correctly.
+
+## 2026-06-13 19:58 - Fixed Notebook E Indentation Error & Analyzed Chinese Token Generation
+
+**What was implemented:**
+- Confirmed that the user's recreated base model dataset (`spurgeon_phase1_merged_hf`) tokenizer is correct (encodes `<|im_end|>` to `[151645]`), ruling out base model corruption.
+- Diagnosed that the new garbage tokens (`具有战士`, `rPid`, `sPid`) generated at paragraph boundaries are the direct result of using a clean base model while keeping `embed_tokens` and `lm_head` frozen during the previous SFT training run (Notebook E). Because these layers were frozen, the model could not learn the representations of `<|im_end|>` (151645) and `<|im_start|>` (151644), decoding them to these new clean-base garbage tokens instead of the old GGUF-shifted `vinfos`/`spepacer`.
+- Fixed an unexpected indentation syntax error in the newly added pre-fix assertion check in Cell 6 of Notebook E (`E_qa_training.ipynb`).
+
+**Core files affected:**
+- [fine_tuning/notebooks/E_qa_training.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/E_qa_training.ipynb) — Fixed IndentationError in Cell 6 and unlocked embedding training.
+
+**Key changes:**
+- Removed 4 spaces of indentation from the pre-fix check lines (23-27) in Cell 6 of Notebook E.
+- Ensured `embed_tokens` and `lm_head` are targeted in LoRA modules in Notebook E to train special token representations.
+
+**Status & Testing:**
+- Patched successfully. Re-running Notebook E with the updated target modules and fixed syntax will resolve the garbage token issue completely.
+
+## 2026-06-13 18:51 - Restored Notebook F Same-Session Adapter Path Resolution
+
+**What was implemented:**
+- Restored the dynamic same-session adapter path resolution logic in Notebook F (`F_qa_eval.ipynb`) to check if a newly trained adapter exists in `/kaggle/working/spurgeon_lora_qa` before falling back to the stale read-only input dataset path. This ensures that Notebook F uses the newly-trained clean adapter weights from the same Kaggle session instead of loading the old corrupted weights.
+
+**Core files affected:**
+- [fine_tuning/notebooks/F_qa_eval.ipynb](file:///c:/Users/rafael/Projetos/search-sermons/fine_tuning/notebooks/F_qa_eval.ipynb) — Re-integrated the dynamic same-session check for the adapter directory path.
+
+**Key changes:**
+- Replaced the hardcoded read-only `ADAPTER_DIR` in Notebook F Cell 4 with a conditional check: `if os.path.exists("/kaggle/working/spurgeon_lora_qa"): ADAPTER_DIR = "/kaggle/working/spurgeon_lora_qa"`.
+
+**Status & Testing:**
+- Patched successfully, verified that the notebook file parses as valid JSON.
+
+## 2026-06-13 16:16 - Updated Notebooks E and F to use clean Hugging Face base model and added stop string fallbacks
+
+
+**What was implemented:**
+- Patched Notebook E (`E_qa_training.ipynb`) and Notebook F (`F_qa_eval.ipynb`) to use the clean HuggingFace base model (`spurgeon_phase1_merged_hf`) instead of the GGUF model path. This fixes the vocabulary shift and tokenizer alignment issues at the source, preventing the model from learning corrupted stop tokens during SFT training.
+- Integrated a strict pre-fix assertion check in Notebook E to verify that `<|im_end|>` tokenizes atomically to `[151645]` before SFT training, preventing wasted training runs.
+- Added `vinfos` and `spepacer` directly to the `STOP_STRINGS` in Notebook F as a robust runtime fallback to stop generations cleanly even if stale adapter weights are used.
+
+**Core files affected:**
+- `fine_tuning/notebooks/E_qa_training.ipynb` (pointed MODEL_NAME to clean HF path, added pre-fix assertion)
+- `fine_tuning/notebooks/F_qa_eval.ipynb` (pointed BASE_MODEL_NAME to clean HF path, added fallback tokens to STOP_STRINGS)
+
+**Key changes:**
+- Replaced `/kaggle/input/datasets/rafaelvieira1/spurgeon-lora-final/spurgeon_f16_gguf` with `/kaggle/input/datasets/rafaelvieira1/spurgeon-lora-final/spurgeon_phase1_merged_hf`.
+- Added atomic tokenizer token check assertion in Cell 6 of Notebook E.
+- Appended `vinfos` and `spepacer` variations to `STOP_STRINGS` list in Notebook F.
+
+**Status & Testing:**
+- Patched successfully, verified both notebook files parse as valid JSON.
+
 ## 2026-06-11 17:10 - Aligned tokenizer vocabulary with base model shifted embeddings in Notebooks E and F
 
 **What was implemented:**

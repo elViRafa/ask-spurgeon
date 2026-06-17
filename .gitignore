@@ -107,3 +107,7 @@ continued_pretrain/data/*.bin
 # Ignore model weight files in continued_pretrain/models/
 continued_pretrain/models/*
 !continued_pretrain/models/Modelfile
+
+# Scratch and local debug tools
+scratch/
+fine_tuning/data/ver.py
