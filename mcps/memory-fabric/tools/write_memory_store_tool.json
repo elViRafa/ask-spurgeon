@@ -1,0 +1,47 @@
+{
+  "name": "write_memory_store_tool",
+  "description": "Write a memory file to a semantic store path (e.g. 'architecture/decisions/auth-service').",
+  "inputSchema": {
+    "properties": {
+      "cwd": {
+        "title": "Cwd",
+        "type": "string"
+      },
+      "store_path": {
+        "title": "Store Path",
+        "type": "string"
+      },
+      "content": {
+        "title": "Content",
+        "type": "string"
+      },
+      "title": {
+        "default": "",
+        "title": "Title",
+        "type": "string"
+      },
+      "tags": {
+        "default": "",
+        "title": "Tags",
+        "type": "string"
+      },
+      "priority": {
+        "default": "medium",
+        "title": "Priority",
+        "type": "string"
+      },
+      "mode": {
+        "default": "replace",
+        "title": "Mode",
+        "type": "string"
+      }
+    },
+    "required": [
+      "cwd",
+      "store_path",
+      "content"
+    ],
+    "title": "write_memory_store_toolArguments",
+    "type": "object"
+  }
+}

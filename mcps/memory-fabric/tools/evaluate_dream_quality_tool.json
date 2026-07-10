@@ -1,0 +1,32 @@
+{
+  "name": "evaluate_dream_quality_tool",
+  "description": "",
+  "inputSchema": {
+    "properties": {
+      "cwd": {
+        "title": "Cwd",
+        "type": "string"
+      },
+      "snapshot": {
+        "title": "Snapshot",
+        "type": "string"
+      },
+      "save_report": {
+        "default": false,
+        "title": "Save Report",
+        "type": "boolean"
+      },
+      "llm_review": {
+        "default": false,
+        "title": "Llm Review",
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "cwd",
+      "snapshot"
+    ],
+    "title": "evaluate_dream_quality_toolArguments",
+    "type": "object"
+  }
+}

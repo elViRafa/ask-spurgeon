@@ -1,0 +1,27 @@
+{
+  "name": "keyword_search_tool",
+  "description": "",
+  "inputSchema": {
+    "properties": {
+      "cwd": {
+        "title": "Cwd",
+        "type": "string"
+      },
+      "query": {
+        "title": "Query",
+        "type": "string"
+      },
+      "max_results": {
+        "default": 10,
+        "title": "Max Results",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "cwd",
+      "query"
+    ],
+    "title": "keyword_search_toolArguments",
+    "type": "object"
+  }
+}

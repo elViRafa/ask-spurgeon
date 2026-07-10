@@ -1,3 +1,65 @@
+## 2026-06-19 09:30 - Restored Full Context Transmission to the LLM
+
+**What was implemented:**
+- Reverted prompt context truncation so that the untruncated full contents of matched nodes are transmitted to the LLM prompt. This leverages the increased `num_ctx` configuration in the backend LLM (Ollama).
+
+**Core files affected:**
+- [app.py](file:///c:/Users/rafael/Projetos/search-sermons/app.py) — Updated prompt builder loop in `generate_response()`.
+
+**Key changes:**
+- Replaced `llm_excerpt` with `full_content` inside the `context_blocks` array.
+
+**Status & Testing:**
+- Tested, full chunks are now successfully sent directly to the LLM.
+
+## 2026-06-19 09:26 - Fixed LLM Context Exceeded Error by Separating Prompt Context from UI Excerpts
+
+**What was implemented:**
+- Resolved a 400 Bad Request error (context window size exceeded) by decoupling the text sent in the LLM's prompt context from the text displayed in the source cards UI.
+- Prompt context sent to the LLM is truncated to 650 characters per chunk, while the full chunk is preserved in the `sources` list to be rendered in the Streamlit accordion UI.
+
+**Core files affected:**
+- [app.py](file:///c:/Users/rafael/Projetos/search-sermons/app.py) — Updated chunk parsing in `generate_response()`.
+
+**Key changes:**
+- Reintroduced a `[:650]` slice limit specifically for the `llm_excerpt` built into the LLM system prompt context blocks.
+- Saved the untruncated `full_content` inside the `excerpt` field of the `sources` metadata dictionary returned to the UI.
+
+**Status & Testing:**
+- Tested, LLM queries no longer error out with context limit exceeded, and the UI displays the full source chunk within the accordion.
+
+## 2026-06-19 09:23 - Display Full Source Chunks without Truncation
+
+**What was implemented:**
+- Removed character-level truncation limits when retrieving and rendering source excerpts, allowing the full content of the matched vector document chunks to be displayed directly to the user.
+
+**Core files affected:**
+- [app.py](file:///c:/Users/rafael/Projetos/search-sermons/app.py) — Removed truncation limits in `generate_response` and `render_source_cards`.
+
+**Key changes:**
+- Removed the `[:650]` slice limit from the vector node retriever content assignment.
+- Removed the `[:420]` slice and ellipses suffix from the HTML source card renderer.
+
+**Status & Testing:**
+- Tested locally, source cards now render the full chunk size successfully.
+
+## 2026-06-19 09:20 - Streamlit Source Cards in Expanders (Accordions) and Chat History Replay Support
+
+**What was implemented:**
+- Wrapped the sources display section inside a Streamlit expander (`st.expander`), creating an accordion that users can click to expand and view relevant citations.
+- Extended the chat history replay logic to retrieve and render the sources matching previously generated responses, improving conversation persistence and usability.
+
+**Core files affected:**
+- [app.py](file:///c:/Users/rafael/Projetos/search-sermons/app.py) — Updated `render_source_cards` to use `st.expander` and added source rendering to the chat history loop.
+
+**Key changes:**
+- Replaced direct `st.markdown(title)` and iteration with a `with st.expander` block in `render_source_cards`.
+- Stripped markdown header characters (`#`) from the UI string for a clean accordion header.
+- Added a `sources` rendering conditional block inside the chat history loop in `main()`.
+
+**Status & Testing:**
+- Tested locally, app reloads successfully and renders sources inside an accordion.
+
 ## 2026-06-15 09:30 - Reverted Custom Base Model Loading, Weight Copying, and ChatML Alignment in SFT Notebook
 
 **What was implemented:**

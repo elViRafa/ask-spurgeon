@@ -1,0 +1,32 @@
+{
+  "name": "list_memory_store_tool",
+  "description": "List files in the memory store, optionally filtered by prefix and/or tags.",
+  "inputSchema": {
+    "properties": {
+      "cwd": {
+        "title": "Cwd",
+        "type": "string"
+      },
+      "prefix": {
+        "default": "",
+        "title": "Prefix",
+        "type": "string"
+      },
+      "tags": {
+        "default": "",
+        "title": "Tags",
+        "type": "string"
+      },
+      "max_results": {
+        "default": 50,
+        "title": "Max Results",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "cwd"
+    ],
+    "title": "list_memory_store_toolArguments",
+    "type": "object"
+  }
+}

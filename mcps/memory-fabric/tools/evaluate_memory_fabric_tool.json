@@ -1,0 +1,27 @@
+{
+  "name": "evaluate_memory_fabric_tool",
+  "description": "",
+  "inputSchema": {
+    "properties": {
+      "cwd": {
+        "title": "Cwd",
+        "type": "string"
+      },
+      "save_report": {
+        "default": false,
+        "title": "Save Report",
+        "type": "boolean"
+      },
+      "llm_review": {
+        "default": false,
+        "title": "Llm Review",
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "cwd"
+    ],
+    "title": "evaluate_memory_fabric_toolArguments",
+    "type": "object"
+  }
+}

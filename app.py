@@ -595,9 +595,9 @@ def generate_response(
     sources = []
     for node in nodes[:5]:  # keep top 5 for context
         meta = node.metadata or {}
-        excerpt = node.get_content()[:650].strip()
+        full_content = node.get_content().strip()
         context_blocks.append(
-            f"[Sermon {meta.get('sermon_number', '?')} — \"{meta.get('title', '')}\" | {meta.get('primary_scripture', '')}]\n{excerpt}"
+            f"[Sermon {meta.get('sermon_number', '?')} — \"{meta.get('title', '')}\" | {meta.get('primary_scripture', '')}]\n{full_content}"
         )
         sources.append({
             "sermon_number": meta.get("sermon_number"),
@@ -605,7 +605,7 @@ def generate_response(
             "volume": meta.get("volume"),
             "year": meta.get("year"),
             "primary_scripture": meta.get("primary_scripture"),
-            "excerpt": excerpt,
+            "excerpt": full_content, # Keep full content for user UI
             "source_url": meta.get("source_url", ""),
             "score": getattr(node, "score", None),
         })
@@ -689,57 +689,60 @@ def render_source_cards(sources: List[Dict], show_original_note: bool = False):
 
     lang = st.session_state.get("language", "en")
     title = get_ui_text("sources_title_pt", lang) if show_original_note else get_ui_text("sources_title", lang)
-    st.markdown(title)
+    
+    # Strip markdown header symbols to make a clean title for the expander
+    expander_title = title.replace("#", "").strip()
 
-    for i, src in enumerate(sources):
-        vol_label = get_ui_text("vol_label", lang)
-        vol = f"{vol_label} {src['volume']}" if src.get("volume") else ""
-        year = f"· {src['year']}" if src.get("year") else ""
-        scripture = f"· {src['primary_scripture']}" if src.get('primary_scripture') else ""
+    with st.expander(f"📚 {expander_title}", expanded=False):
+        for i, src in enumerate(sources):
+            vol_label = get_ui_text("vol_label", lang)
+            vol = f"{vol_label} {src['volume']}" if src.get("volume") else ""
+            year = f"· {src['year']}" if src.get("year") else ""
+            scripture = f"· {src['primary_scripture']}" if src.get('primary_scripture') else ""
 
-        source_url = src.get("source_url", "")
-        raw_url = src.get("raw_url", "") or source_url
+            source_url = src.get("source_url", "")
+            raw_url = src.get("raw_url", "") or source_url
 
-        sermon_word = get_ui_text("sermon_label", lang)
-        sermon_num = src.get('sermon_number', '?')
-        sermon_title = src.get('title', 'Untitled')
+            sermon_word = get_ui_text("sermon_label", lang)
+            sermon_num = src.get('sermon_number', '?')
+            sermon_title = src.get('title', 'Untitled')
 
-        st.markdown(
-            f"""
-            <div class="source-card">
-                <div class="source-title">
-                    {sermon_word} {sermon_num} — {sermon_title}
+            st.markdown(
+                f"""
+                <div class="source-card">
+                    <div class="source-title">
+                        {sermon_word} {sermon_num} — {sermon_title}
+                    </div>
+                    <div class="source-meta">
+                        {vol} {year} {scripture}
+                    </div>
+                    <div class="source-excerpt">
+                        {src.get('excerpt', '')}
+                    </div>
                 </div>
-                <div class="source-meta">
-                    {vol} {year} {scripture}
-                </div>
-                <div class="source-excerpt">
-                    {src.get('excerpt', '')[:420]}...
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+                """,
+                unsafe_allow_html=True,
+            )
 
-        # Links and full text button
-        cols = st.columns([2, 3])
+            # Links and full text button
+            cols = st.columns([2, 3])
 
-        with cols[0]:
-            if source_url:
-                st.markdown(f"[🔗 View on GitHub]({source_url})")
+            with cols[0]:
+                if source_url:
+                    st.markdown(f"[🔗 View on GitHub]({source_url})")
 
-        with cols[1]:
-            btn_key = f"view_full_{sermon_num}_{i}"
-            if st.button("📖 View full sermon", key=btn_key, use_container_width=True):
-                full_text = fetch_full_sermon(
-                    raw_url=raw_url,
-                    volume=src.get("volume"),
-                    sermon_number=sermon_num if isinstance(sermon_num, int) else None
-                )
-                with st.expander(f"📜 Full Sermon {sermon_num} — {sermon_title}", expanded=True):
-                    st.markdown(full_text)
-                    if source_url:
-                        st.markdown(f"[Open in new tab →]({source_url})")
+            with cols[1]:
+                btn_key = f"view_full_{sermon_num}_{i}"
+                if st.button("📖 View full sermon", key=btn_key, use_container_width=True):
+                    full_text = fetch_full_sermon(
+                        raw_url=raw_url,
+                        volume=src.get("volume"),
+                        sermon_number=sermon_num if isinstance(sermon_num, int) else None
+                    )
+                    with st.expander(f"📜 Full Sermon {sermon_num} — {sermon_title}", expanded=True):
+                        st.markdown(full_text)
+                        if source_url:
+                            st.markdown(f"[Open in new tab →]({source_url})")
 
 
 def render_sidebar_filters() -> dict:
@@ -912,6 +915,11 @@ def main():
                 lang = st.session_state.get("language", "en")
                 with st.expander(get_ui_text("view_original", lang), expanded=False):
                     st.markdown(msg["english_content"])
+
+            # Show sources if available in history
+            if msg.get("sources"):
+                lang = st.session_state.get("language", "en")
+                render_source_cards(msg["sources"], show_original_note=(lang != "en"))
 
     # Handle pending example question
     question = None

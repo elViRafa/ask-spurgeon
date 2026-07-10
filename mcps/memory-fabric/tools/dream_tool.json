@@ -1,0 +1,52 @@
+{
+  "name": "dream_tool",
+  "description": "",
+  "inputSchema": {
+    "properties": {
+      "cwd": {
+        "title": "Cwd",
+        "type": "string"
+      },
+      "mode": {
+        "default": "light",
+        "title": "Mode",
+        "type": "string"
+      },
+      "apply": {
+        "default": false,
+        "title": "Apply",
+        "type": "boolean"
+      },
+      "llm_rewrite": {
+        "default": false,
+        "title": "Llm Rewrite",
+        "type": "boolean"
+      },
+      "max_rewrite_tasks": {
+        "default": 5,
+        "title": "Max Rewrite Tasks",
+        "type": "integer"
+      },
+      "with_eval": {
+        "default": false,
+        "title": "With Eval",
+        "type": "boolean"
+      },
+      "save_report": {
+        "default": false,
+        "title": "Save Report",
+        "type": "boolean"
+      },
+      "llm_review": {
+        "default": false,
+        "title": "Llm Review",
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "cwd"
+    ],
+    "title": "dream_toolArguments",
+    "type": "object"
+  }
+}

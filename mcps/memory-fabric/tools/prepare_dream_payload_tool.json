@@ -1,0 +1,22 @@
+{
+  "name": "prepare_dream_payload_tool",
+  "description": "Prepare prompt and payload for client-agent to perform consolidation.",
+  "inputSchema": {
+    "properties": {
+      "cwd": {
+        "title": "Cwd",
+        "type": "string"
+      },
+      "mode": {
+        "default": "light",
+        "title": "Mode",
+        "type": "string"
+      }
+    },
+    "required": [
+      "cwd"
+    ],
+    "title": "prepare_dream_payload_toolArguments",
+    "type": "object"
+  }
+}

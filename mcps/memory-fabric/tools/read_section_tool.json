@@ -1,0 +1,27 @@
+{
+  "name": "read_section_tool",
+  "description": "",
+  "inputSchema": {
+    "properties": {
+      "cwd": {
+        "title": "Cwd",
+        "type": "string"
+      },
+      "section": {
+        "title": "Section",
+        "type": "string"
+      },
+      "max_tokens": {
+        "default": 8000,
+        "title": "Max Tokens",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "cwd",
+      "section"
+    ],
+    "title": "read_section_toolArguments",
+    "type": "object"
+  }
+}

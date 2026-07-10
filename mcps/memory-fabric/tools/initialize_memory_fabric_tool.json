@@ -1,0 +1,29 @@
+{
+  "name": "initialize_memory_fabric_tool",
+  "description": "",
+  "inputSchema": {
+    "properties": {
+      "cwd": {
+        "title": "Cwd",
+        "type": "string"
+      },
+      "memory_prompt": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Memory Prompt"
+      }
+    },
+    "required": [
+      "cwd"
+    ],
+    "title": "initialize_memory_fabric_toolArguments",
+    "type": "object"
+  }
+}

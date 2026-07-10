@@ -1,0 +1,27 @@
+{
+  "name": "read_memory_store_tool",
+  "description": "Read a single memory-store file by its semantic path.",
+  "inputSchema": {
+    "properties": {
+      "cwd": {
+        "title": "Cwd",
+        "type": "string"
+      },
+      "store_path": {
+        "title": "Store Path",
+        "type": "string"
+      },
+      "max_tokens": {
+        "default": 8000,
+        "title": "Max Tokens",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "cwd",
+      "store_path"
+    ],
+    "title": "read_memory_store_toolArguments",
+    "type": "object"
+  }
+}

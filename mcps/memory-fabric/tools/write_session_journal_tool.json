@@ -1,0 +1,64 @@
+{
+  "name": "write_session_journal_tool",
+  "description": "Append a timestamped session journal to the episodic memory store.\n\nCreates or appends to an `episodic/YYYY-MM-DD` store entry that records\nwhat was accomplished this session. Multiple calls on the same day accumulate\ninto a single dated journal file. Dreaming consolidates old entries (>7 days)\ninto monthly summaries.\n\nArgs:\n    summary:        2-4 sentence description of what was done this session.\n    key_decisions:  Optional list of architecture decisions or choices made.\n    files_changed:  Optional list of files created or significantly modified.\n    session_label:  Optional short label (e.g. 'auth-refactor'). Defaults to HH:MM UTC.\n",
+  "inputSchema": {
+    "properties": {
+      "cwd": {
+        "title": "Cwd",
+        "type": "string"
+      },
+      "summary": {
+        "title": "Summary",
+        "type": "string"
+      },
+      "key_decisions": {
+        "anyOf": [
+          {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Key Decisions"
+      },
+      "files_changed": {
+        "anyOf": [
+          {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Files Changed"
+      },
+      "session_label": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Session Label"
+      }
+    },
+    "required": [
+      "cwd",
+      "summary"
+    ],
+    "title": "write_session_journal_toolArguments",
+    "type": "object"
+  }
+}

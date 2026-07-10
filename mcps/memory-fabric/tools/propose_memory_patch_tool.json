@@ -1,0 +1,22 @@
+{
+  "name": "propose_memory_patch_tool",
+  "description": "",
+  "inputSchema": {
+    "properties": {
+      "cwd": {
+        "title": "Cwd",
+        "type": "string"
+      },
+      "instructions": {
+        "title": "Instructions",
+        "type": "string"
+      }
+    },
+    "required": [
+      "cwd",
+      "instructions"
+    ],
+    "title": "propose_memory_patch_toolArguments",
+    "type": "object"
+  }
+}

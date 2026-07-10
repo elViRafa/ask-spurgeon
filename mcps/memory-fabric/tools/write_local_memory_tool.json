@@ -1,0 +1,32 @@
+{
+  "name": "write_local_memory_tool",
+  "description": "",
+  "inputSchema": {
+    "properties": {
+      "cwd": {
+        "title": "Cwd",
+        "type": "string"
+      },
+      "section": {
+        "title": "Section",
+        "type": "string"
+      },
+      "content": {
+        "title": "Content",
+        "type": "string"
+      },
+      "mode": {
+        "default": "append",
+        "title": "Mode",
+        "type": "string"
+      }
+    },
+    "required": [
+      "cwd",
+      "section",
+      "content"
+    ],
+    "title": "write_local_memory_toolArguments",
+    "type": "object"
+  }
+}

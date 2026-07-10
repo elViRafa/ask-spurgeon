@@ -1,0 +1,22 @@
+{
+  "name": "delete_memory_store_tool",
+  "description": "Remove a memory-store file by its semantic path.",
+  "inputSchema": {
+    "properties": {
+      "cwd": {
+        "title": "Cwd",
+        "type": "string"
+      },
+      "store_path": {
+        "title": "Store Path",
+        "type": "string"
+      }
+    },
+    "required": [
+      "cwd",
+      "store_path"
+    ],
+    "title": "delete_memory_store_toolArguments",
+    "type": "object"
+  }
+}
