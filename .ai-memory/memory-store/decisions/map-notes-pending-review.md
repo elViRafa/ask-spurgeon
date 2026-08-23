@@ -6,6 +6,7 @@ priority: medium
 tags: [needs-review, legacy-map]
 schema_version: 1.3
 last_updated: "2026-07-09T20:55:33-04:00"
+review_status: stale
 ---
 
 ## Folded from `decisions.md` on 2026-07-09T20:55:33-04:00

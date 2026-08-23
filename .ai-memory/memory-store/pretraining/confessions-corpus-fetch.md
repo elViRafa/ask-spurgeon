@@ -7,6 +7,7 @@ tags: [pretraining, data, confessions, wcf, 1689, calvin]
 schema_version: 1.3
 last_updated: "2026-07-13T10:30:48-04:00"
 evidence: [data/confessions/PROVENANCE.md, continued_pretrain/scripts/11_fetch_confessions.py]
+review_status: stale
 ---
 
 # Confessions / Institutes fetch (2026-07-13)

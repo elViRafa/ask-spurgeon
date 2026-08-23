@@ -6,6 +6,7 @@ priority: medium
 tags: [bugs, lora, embeddings, lm_head, special-tokens, unsloth]
 schema_version: 1.3
 last_updated: "2026-06-15T08:56:50-04:00"
+review_status: stale
 ---
 
 # Bug Fix: Training embed_tokens and lm_head when resizing vocabulary for special tokens in LoRA

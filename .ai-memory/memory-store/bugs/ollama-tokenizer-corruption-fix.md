@@ -6,6 +6,7 @@ priority: high
 tags: [bugs, tokenizer, gguf, ollama, alignment]
 schema_version: 1.3
 last_updated: "2026-06-11T17:07:59-04:00"
+review_status: stale
 ---
 
 # Bug Fix: GGUF Vocab Shift and Alignment (具有战士/ _Parms/ +lsi / {lng)

@@ -6,7 +6,8 @@ priority: high
 tags: [pretraining, cpt, kaggle, m1, mix, v2]
 schema_version: 1.3
 last_updated: "2026-07-13T10:40:05-04:00"
-evidence: [continued_pretrain/KAGGLE_RUNBOOK_V2.md, continued_pretrain/data/M1_BASE_MODEL_GATE.md, continued_pretrain/data/theology_mix_manifest.json]
+evidence: [continued_pretrain/KAGGLE_RUNBOOK_V2.md, [REDACTED_SECRET].md, continued_pretrain/data/theology_mix_manifest.json]
+review_status: stale
 ---
 
 # CPT v2 — ready for Kaggle (2026-07-13)

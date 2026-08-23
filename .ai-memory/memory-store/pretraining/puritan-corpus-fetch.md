@@ -7,6 +7,7 @@ tags: [pretraining, data, puritans, archive-org]
 schema_version: 1.3
 last_updated: "2026-07-13T10:19:03-04:00"
 evidence: [data/puritans/PROVENANCE.md, continued_pretrain/scripts/10_fetch_puritans.py]
+review_status: stale
 ---
 
 # Puritan PD corpus (2026-07-13)

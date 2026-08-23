@@ -6,6 +6,7 @@ priority: high
 tags: [bugs, unsloth, embeddings, lora, kaggle, offloading]
 schema_version: 1.3
 last_updated: "2026-06-11T14:26:32-04:00"
+review_status: stale
 ---
 
 # Bug Fix: Unsloth Embedding Offload on Read-Only Filesystem

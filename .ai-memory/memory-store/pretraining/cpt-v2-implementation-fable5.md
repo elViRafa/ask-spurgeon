@@ -6,7 +6,8 @@ priority: high
 tags: [pretraining, cpt, v2, qwen3.5, mix, notebooks]
 schema_version: 1.3
 last_updated: "2026-07-13T09:34:46-04:00"
-evidence: [continued_pretrain/PLAN_FABLE5_TO_IMPROVE_CPT.md, continued_pretrain/scripts/07_build_theology_mix.py, continued_pretrain/scripts/_gen_sota_notebooks.py]
+evidence: [[REDACTED_SECRET].md, continued_pretrain/scripts/07_build_theology_mix.py, continued_pretrain/scripts/_gen_sota_notebooks.py]
+review_status: stale
 ---
 
 # CPT v2 implementation status (2026-07-13)

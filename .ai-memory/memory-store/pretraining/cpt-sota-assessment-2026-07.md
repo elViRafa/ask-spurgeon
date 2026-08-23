@@ -7,6 +7,7 @@ tags: [pretraining, cpt, unsloth, qlora, spurgeon, sota]
 schema_version: 1.3
 last_updated: "2026-07-10T21:34:01-04:00"
 evidence: [continued_pretrain/notebooks/B_training.ipynb, continued_pretrain/notebooks/B_training_sota.ipynb, continued_pretrain/scripts/07_build_theology_mix.py]
+review_status: stale
 ---
 
 # CPT SOTA Assessment + Implementation (2026-07-10)

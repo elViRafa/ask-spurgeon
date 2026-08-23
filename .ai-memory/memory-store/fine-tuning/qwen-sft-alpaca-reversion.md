@@ -6,6 +6,7 @@ priority: medium
 tags: [finetuning, qwen2.5, unsloth, alpaca, reversion]
 schema_version: 1.3
 last_updated: "2026-06-15T09:29:56-04:00"
+review_status: stale
 ---
 
 # Reverting Custom Base Model, Weight Copying, and ChatML Alignment in SFT Notebook

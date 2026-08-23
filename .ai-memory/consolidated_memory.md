@@ -59,9 +59,9 @@ summary: "Map of available project memory sections."
 priority: high
 tags: [index, memory]
 schema_version: 1.3
-last_updated: "2026-07-09T20:56:16-04:00"
+last_updated: "2026-08-23T11:10:53-04:00"
 consolidation_hash: dc4febef829d2344ced791190b2a66be
-contradictions: []
+contradictions: ["`bugs/lora-frozen-embeddings-special-tokens` and `bugs/sft-tokenizer-mismatch-vinfos-spepacer` disagree about `im_start` (pos vs neg) - review for conflict [polarity]", "`bugs/lora-frozen-embeddings-special-tokens` and `bugs/unsloth-fast-patching-warnings` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/ollama-tokenizer-corruption-fix` and `decisions/gemma4-local-ollama` disagree about `gguf` (neg vs pos) - review for conflict [polarity]", "`bugs/ollama-tokenizer-corruption-fix` and `pretraining/merge-and-export` disagree about `gguf` (neg vs pos) - review for conflict [polarity]", "`bugs/sft-tokenizer-mismatch-vinfos-spepacer` and `bugs/unsloth-fast-patching-warnings` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `decisions/map-notes-pending-review` disagree about `cuda` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/environment-setup` disagree about `cuda` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/model-choice` disagree about `vram` (pos vs neg) - review for conflict [polarity]", "`pretraining/cpt-v2-implementation-fable5` and `pretraining/cpt-v2-plan-fable5` disagree about `mcq` (pos vs neg) - review for conflict [polarity]"]
 consolidation_warnings: []
 summary_hash: c81ed9efe309125e42b693ba950f4f04
 ---
@@ -72,14 +72,16 @@ Updated by Memory Fabric Dreaming mode `light`.
 
 | Section | Priority | Summary | Key Topics |
 | --- | --- | --- | --- |
-| `architecture` | high | Defines the RAG architecture for Spurgeon's sermons, detailing layers from Streamlit UI to Chroma/Qdrant vector DBs and LLM providers. | • Core Architecture Layers<br>• Key Subsystems |
+| `architecture` | high | Generated map of memory-store/architecture/ (2 entries). | • **OPC UA Industrial Engine & SCADA Simulation Platform** ...<br>• **Architecture Map Notes (Pending Review)** (`architectur... |
 | `bugs` | medium | Generated map of memory-store/bugs/ (6 entries). | • **Bug Fix: GGUF Vocab Shift and Alignment (具有战士/ _Parms)*...<br>• **Bug Fix: Unsloth Embedding Offload on Read-Only Filesys...<br>• **Gemma 4 Chat Template Processor Fix** (`bugs/gemma4-cha... |
 | `debt` | low | Tracks technical debt (e.g., pure vector search, rate limiting) and roadmap items like multi-author support and automated ingestion. | • Known Technical Debt & Limits<br>• Roadmap & Pending Features |
 | `decisions` | medium | Generated map of memory-store/decisions/ (3 entries). | • **Gemma 4 Fine-Tuning Transition** (`decisions/gemma4-fin...<br>• **Gemma 4 Local Ollama Deployment** (`decisions/gemma4-lo...<br>• **Decisions Map Notes (Pending Review)** (`decisions/map-... |
+| `episodic` | medium | Generated map of memory-store/episodic/ (6 entries). | • **Episodic Journal — 2026-07-11** (`episodic/2026-07-11`,...<br>• **Episodic Journal — 2026-07-12** (`episodic/2026-07-12`,...<br>• **Episodic Journal — 2026-07-13** (`episodic/2026-07-13`,... |
+| `failures` | medium | Generated map of memory-store/failures/ (1 entries). | • **asyncua write_value BadTypeMismatch when writing int to... |
 | `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (3 entries). | • **Gemma 4 Local Dataset Generation Analysis** (`fine-tuni...<br>• **Gemma 2 Fine-Tuning Support** (`fine-tuning/gemma-suppo...<br>• **Reverting Custom Model, Weight Copying, and ChatML in Q... |
 | `framework-rules` | medium | Defines coding standards, required libraries (Streamlit, LlamaIndex), environment setup (.env), and database rules for the codebase. | • 1. Runtime Environment<br>• 2. Core Libraries & Packages<br>• 3. Vector Database Rules<br>• 4. Agent Memory Guidelines |
 | `grok` | medium | Generated map of memory-store/grok/ (1 entries). | • **Grok Integration with Memory Fabric (MCP + Docs + Nativ... |
-| `pretraining` | medium | Generated map of memory-store/pretraining/ (9 entries). | • **Pretraining Step 10 (Merge & Export to Hugging Face)** ...<br>• **Fixed SFTConfig Pickling Mismatch on Kaggle** (`pretrai...<br>• **Pretraining Step 1 — Data Collection Complete** (`pretr... |
+| `pretraining` | medium | Generated map of memory-store/pretraining/ (15 entries). | • **Confessions + Institutes corpus (WCF, 1689, Calvin)** (...<br>• **CPT SOTA Assessment + Implementation (2026-07)** (`pret...<br>• **CPT v2 implementation (Fable 5 plan)** (`pretraining/cp... |
 | `schemas` | high | Defines data contracts, metadata schemas for ingested texts, and environment variable configurations. | • 1. Document & Chunk Metadata Schema<br>• 2. Ingestion Parameters<br>• 3. Environment Variables (Configuration Schema) |
 | `ubiquitous-language` | medium | Defines consistent domain language used throughout the codebase for clarity and shared understanding. | None recorded |
 
@@ -90,35 +92,240 @@ Please see the dedicated [Memory Store Index](memory-store/index.md) for a map o
 <!-- memory-fabric:local/architecture -->
 ---
 section: architecture
-summary: "Defines the RAG architecture for Spurgeon's sermons, detailing layers from Streamlit UI to Chroma/Qdrant vector DBs and LLM providers."
+summary: "Generated map of memory-store/architecture/ (2 entries)."
 priority: high
 tags: [architecture]
 schema_version: 1.3
-last_updated: "2026-06-03T08:33:08-04:00"
-summary_hash: bfa6b46d9eb00a6552e658b497cc91ad
+last_updated: "2026-08-23T11:09:38-04:00"
+generated: true
+generated_from: memory-store/architecture
+store_fingerprint: d6dfb691840181de6ae69f32e935a35f
+body_hash: ca96f8565333e20a1ed2497f0ff6129a
+---
+
+# Architecture Map
+
+Generated by Memory Fabric from `memory-store/architecture/` — do not edit by hand. Write facts with `write_memory_store_tool`; Dreaming rebuilds this map.
+
+- **OPC UA Industrial Engine & SCADA Simulation Platform** (`architecture/opcua-scada-simulation-platform`, high) — OPC UA Industrial Engine & SCADA Simulation Platform
+- **Architecture Map Notes (Pending Review)** (`architecture/map-notes-pending-review`, medium) — Hand-written notes folded from architecture.md; split into granular memories and delete.
+
+<!-- memory-fabric:store/pretraining/confessions-corpus-fetch -->
+---
+store_path: pretraining/confessions-corpus-fetch
+title: "Confessions + Institutes corpus (WCF, 1689, Calvin)"
+summary: "Confessions + Institutes corpus (WCF, 1689, Calvin)"
+priority: high
+tags: [pretraining, data, confessions, wcf, 1689, calvin]
+schema_version: 1.3
+last_updated: "2026-07-13T10:30:48-04:00"
+evidence: [data/confessions/PROVENANCE.md, continued_pretrain/scripts/11_fetch_confessions.py]
 review_status: stale
 ---
 
-# Architecture
+# Confessions / Institutes fetch (2026-07-13)
 
-The Ask Spurgeon application is a RAG (Retrieval-Augmented Generation) system built for search and conversation over Charles Haddon Spurgeon's sermon catalog (~3,500 sermons).
+## On disk under `data/confessions/` (~5.4 MB)
 
-## Core Architecture Layers
+- **WCF:** `westminster/westminster_confession.txt` (IA confessionoffa00west)
+- **WCF + Larger/Shorter catechisms:** `westminster/wcf_catechisms_1756.txt` (Scottish 1756 IA)
+- **WSC:** already curated `westminster/westminster_shorter_catechism.txt`
+- **1689 LBCF:** `1689/second_london_confession.txt` — curated PD core chapters (IA only had modern class recordings)
+- **Calvin Institutes (Beveridge):** `institutes/institutes_beveridge_vol1.txt` + `vol2.txt`
 
-- **UI Layer**: Built with **Streamlit** (`app.py`), presenting a conversational and search interface, exposing rich metadata filtering, and providing citation highlights.
-- **Orchestration**: Managed via **LlamaIndex**, handling the retrieval pipeline, query compilation, and grounding of LLM prompts.
-- **Embeddings**: Local CPU-friendly embedding generation via **FastEmbed** using the `BAAI/bge-small-en-v1.5` model.
-- **Vector DB Layer**:
-  - **ChromaDB**: Used for local fast development (persists under `./chroma_db`).
-  - **Qdrant**: Used in production (Qdrant Cloud Free Tier) and realistic local testing (via Docker Compose).
-- **LLM Layer**:
-  - **Groq API**: Production default, querying `llama-3.3-70b-versatile` with automated fallback to `llama-3.1-8b-instant` under rate limit constraints.
-  - **Custom Fine-tuned LLM**: Local or remote deployment of `spurgeon-8b` (a custom Llama-3.1-8B-Instruct fine-tuned via Unsloth and QLoRA on ~1,500 RAG grounded examples). Quantized to `Q4_K_M` GGUF and served via llama.cpp or Ollama.
+## Tooling
 
-## Key Subsystems
+`continued_pretrain/scripts/11_fetch_confessions.py` (+ `--rebuild-mix`)
 
-- **Bible Reference Extractor (`utils/bible_refs.py`)**: A robust parser that extracts and normalizes Bible verse references at both sermon and chunk levels, enabling users to filter search results by specific scriptural topics.
-- **Author-Aware Design**: Chunk and document metadata stores an `author` key, facilitating future extensions to query multiple authors (e.g. Edwards, Calvin, Lloyd-Jones).
+## Mix caps
+
+`07_build_theology_mix.py` now supports `--max-confession-share` default **0.06** so Institutes does not dominate (plan target 3–6%). After rebuild: confession ~5.6%, spurgeon 45%, puritan ~45%, bible 4%.
+
+Heidelberg remains holdout-only under `holdouts_manual/`.
+
+<!-- memory-fabric:store/pretraining/cpt-sota-assessment-2026-07 -->
+---
+store_path: pretraining/cpt-sota-assessment-2026-07
+title: "CPT SOTA Assessment + Implementation (2026-07)"
+summary: "CPT SOTA Assessment + Implementation (2026-07)"
+priority: high
+tags: [pretraining, cpt, unsloth, qlora, spurgeon, sota]
+schema_version: 1.3
+last_updated: "2026-07-10T21:34:01-04:00"
+evidence: [continued_pretrain/notebooks/B_training.ipynb, continued_pretrain/notebooks/B_training_sota.ipynb, continued_pretrain/scripts/07_build_theology_mix.py]
+review_status: stale
+---
+
+# CPT SOTA Assessment + Implementation (2026-07-10)
+
+## Verdict on B_training.ipynb
+- Solid **Kaggle-practical Phase-1 Spurgeon style CPT** (~style 7/10, engineering 8/10).
+- **Not** art-state for Spurgeon/Puritans/theology (**~4.5/10** vs multi-author domain goal).
+- Keep as known-good baseline; **never overwrite**.
+
+## Baseline facts
+- Model: unsloth/Qwen2.5-3B QLoRA, r=32 alpha=64, targets attn+MLP only
+- Seq 2048 packing, LR 2e-4 SFTTrainer, no dual LR / no embed+lm_head
+- Corpus Spurgeon-only ~3.5k docs ~32M tokens; 2 epochs done train~2.23 val~2.30
+
+## SOTA path implemented (new files only)
+- `scripts/07_build_theology_mix.py` — multi-source mix, Spurgeon weight 2.5×, replay, holdouts, manifest
+- `notebooks/A_data_prep_sota.ipynb` — HF dataset + multi-holdouts
+- `notebooks/B_training_sota.ipynb` — UnslothTrainer, dual LR 5e-5/5e-6, r=64 rsLoRA, embed+lm_head
+- `notebooks/C_eval_sota.ipynb` — multi-bucket PPL + style/doctrine/forgetting + merge
+- `configs/train_config_cpt_theology_sota.json`
+- `data/SOURCES_SOTA_CPT.md` + empty `data/puritans|confessions|bible/`
+- README documents baseline vs SOTA tracks
+
+## Defaults
+- Body LR 5e-5, embedding_learning_rate 5e-6
+- r=64 use_rslora=True, train embed_tokens+lm_head
+- Spurgeon oversample 2.5×, replay target 10% when sources available
+- Puritan/confession/Bible: user-supplied under data/
+
+## Next operator steps
+1. Add PD Puritan/confession/Bible texts under data/
+2. Rebuild mix; upload Kaggle corpus
+3. Run A_sota → B_sota → C_sota on T4
+
+<!-- memory-fabric:store/pretraining/cpt-v2-implementation-fable5 -->
+---
+store_path: pretraining/cpt-v2-implementation-fable5
+title: "CPT v2 implementation (Fable 5 plan)"
+summary: "CPT v2 implementation (Fable 5 plan)"
+priority: high
+tags: [pretraining, cpt, v2, qwen3.5, mix, notebooks]
+schema_version: 1.3
+last_updated: "2026-07-13T09:34:46-04:00"
+evidence: ["[REDACTED_SECRET].md", continued_pretrain/scripts/07_build_theology_mix.py, continued_pretrain/scripts/_gen_sota_notebooks.py]
+review_status: stale
+---
+
+# CPT v2 implementation status (2026-07-13)
+
+Implemented plan `[REDACTED_SECRET].md` in code (Kaggle train/eval still operator-run).
+
+## Code delivered
+
+- **`07_build_theology_mix.py` v2:** `max_chunk_chars=7000` (Spurgeon chunked), G2 multi-bucket guard (`--allow-spurgeon-only`), paragraph dedup + top-20, `--target-spurgeon-share` weight, `--max-bible-share` (default 0.04), optional `--author-tags` (E1).
+- **`06_verify_tokens.py`:** `--mix` writes `verified_tokens` into manifest (D3).
+- **`08_fetch_pd_sources.py`:** verified Gutenberg IDs only (Bunyan pilgrim/holy_war/badman, KJV). Always spot-check titles.
+- **`09_build_catechism_mcq.py`:** WSC + Heidelberg MCQ JSON.
+- **`_gen_sota_notebooks.py` = G3 source of truth** for A/B/C sota notebooks. Flagship `unsloth/Qwen3.5-4B-Base`, dual LR emb 1e-5, warmup_ratio 0.03, per-bucket eval, D1/D2/D4 cells, 9B VRAM probe, C_eval with EVAL_BASE + greedy probes + MCQ + merge gate.
+- Config/README/SOURCES updated; curated WSC train + Heidelberg holdout.
+
+## Current mix (seed data)
+
+- Sources: Bunyan×3, KJV, WSC; Heidelberg in `holdouts_manual/` only.
+- Shares ~ spurgeon 51% / puritan 45% / bible 4% / confession 1%; max_doc 7000.
+- MCQ: 50 WSC + 42 Heidelberg items.
+- **Still need more Puritans (Owen/Watson/etc.) + confessions + FineWeb replay** before flagship scale.
+
+## Operator next steps (Kaggle)
+
+1. Expand PD corpus under `data/puritans|confessions` (spot-check titles).
+2. Rebuild mix + `06_verify_tokens.py --mix`.
+3. Upload corpus; A_sota → B_sota (M1/D1–D4) → C_sota.
+4. Pin Unsloth commit after first good session (G1).
+
+<!-- memory-fabric:store/pretraining/cpt-v2-plan-fable5 -->
+---
+store_path: pretraining/cpt-v2-plan-fable5
+title: "CPT v2 improvement plan (Fable 5 review, 2026-07-12)"
+summary: "CPT v2 improvement plan (Fable 5 review, 2026-07-12)"
+priority: high
+tags: [pretraining, cpt, base-model, qwen3.5, vram, flagship]
+schema_version: 1.3
+last_updated: "2026-07-13T09:18:31-04:00"
+evidence: ["[REDACTED_SECRET].md", continued_pretrain/notebooks/B_training_sota.ipynb, continued_pretrain/scripts/07_build_theology_mix.py]
+review_status: stale
+---
+
+# CPT v2 improvement plan — key findings (2026-07-12)
+
+Full plan: `[REDACTED_SECRET].md`
+
+## Critical findings (verify before next training run)
+
+1. **Suspected 2048-token truncation bug (F1, highest impact).** Baseline B_training.ipynb run shows 216 steps/epoch = ceil(3451 docs / 16), i.e. ONE packed row per raw document → each ~9k-token sermon was likely clipped to its first 2048 tokens before packing. Only ~7.1M of ~30M tokens/epoch trained. Diagnostic cell (D1) in plan; fix = chunk all docs to ≤7,000 chars in 07_build_theology_mix.py (Spurgeon loader currently does NOT chunk; load_tree chunks at 40k chars — both wrong).
+2. **Qwen2.5-3B has tie_word_embeddings=true** — targeting `lm_head` in LoRA (as B_training_sota.ipynb does) may no-op, error, or force untying. Diagnostic D4 in plan; fallback = embed_tokens only.
+3. **The theology mix on disk is 100% Spurgeon** (manifest 2026-07-11: buckets={spurgeon: 1.0}, replay 0, puritan/confession/general holdouts 0 bytes). data/puritans|confessions|bible are empty. Data acquisition is the real blocker, not the recipe.
+4. **EOS boundaries unproven** in packed stream (A_sota strips <|endoftext|>, Qwen tokenizer doesn't auto-append EOS). Diagnostic D2.
+5. `07_build_theology_mix.py` exits 0 with a valid-looking Spurgeon-only mix when source dirs are empty — needs a ≥2-bucket guard.
+6. `*_sota` notebooks are generated by `scripts/_gen_sota_notebooks.py` — v2 edits must go in generator OR generator retired, never both.
+
+## v2 recipe deltas (from v1 sota)
+
+- warmup_ratio 0.03 (not fixed 100 steps); embedding_learning_rate 1e-5 (5e-6 fallback on fp16 spikes)
+- Per-bucket eval_dataset dict during training (mix/spurgeon/puritan/general, ≤8 docs each)
+- load_best_model_at_end on eval_mix_loss; save_total_limit 2
+- Pin unsloth commit; run config records manifest SHA256 + pip freeze
+- Share-targeted spurgeon_weight (target 40–50% share): w = share×other_chars/(128M×(1−share)) — with ~50M chars Puritans w≈0.7–1.0, NOT the default 2.5
+- Held-out doctrine eval: Heidelberg Catechism + Belgic Confession excluded from training; catechism MCQ log-likelihood metric (WSC=absorption, Heidelberg=generalization)
+
+## Success gate (ship v2)
+
+Spurgeon PPL ≤ Phase-1×1.03; puritan/confession PPL ≥15% better than base; general PPL ≤10% worse; Heidelberg MCQ +10pts vs base.
+
+## Base model decision (added 2026-07-12, plan §4.1)
+
+Qwen2.5-3B is NOT the best choice anymore: Qwen *Research* License (non-commercial — blocker for shipping Ask Spurgeon), two generations old, tied embeddings (root of F3). Web-verified July 2026 landscape:
+
+- **v2 default: Qwen3.5-4B-Base** — Apache 2.0, ~1.3× step time vs 3B (1–2 Kaggle sessions/epoch), likely tied embeddings → train embed_tokens only per D4. Gate M1 before switching: HF config `tie_word_embeddings`, Unsloth 4-bit build exists, D4 passes.
+- **Flagship: Qwen3.5-9B-Base** — Apache 2.0, untied expected → full dual-LR embed+lm_head recipe, ~2.6× time (2–3 sessions/epoch). Run after data v2 + 4B run validate pipeline (E3).
+- **Fallback: Mistral-7B-v0.3** — untied, 33k vocab = ~5× cheaper embed/head training; Unsloth's CPT reference model; weakest base knowledge.
+- Rejected: Llama-3.2-3B (no edge), Qwen3-4B (superseded), Gemma-4-E4B (exotic MatFormer/multimodal arch + 256k vocab + this project's past Gemma template bugs), Gemma-2-9B, ≥12B models (T4 limit).
+
+Caveat: PPL is tokenizer-dependent — after base swap compare %Δ-vs-own-base per bucket, never absolute PPL across bases; Phase-1 comparison then via probes + catechism MCQ.
+
+Qwen3.5/Gemma-4 details are post-cutoff, from July 2026 sources (HF model cards) — hence M1 gate.
+
+## Base-model tiering revision (2026-07-13)
+
+- **Flagship is now `Qwen3.5-4B-Base`**, not merely the dev-cycle default. Full untied dual-LR recipe (if untied) or embed-only fits comfortably on T4 16 GB at seq 2048 / batch 2, 1–2 sessions/epoch.
+- **`Qwen3.5-9B-Base` demoted** to a concession-gated experiment (E3): full dual-LR embed+lm_head is over-budget on single T4 at seq 2048. Embedding VRAM estimate ~2.5 GB ±0.5 (hidden size / layer count not web-verified) — not enough to change the over-budget verdict.
+- **Mandatory 9B VRAM probe** before multi-session commit: ~20 steps, then `torch.cuda.max_memory_reserved()`; proceed only if peak reserved < ~15 GB with headroom. Fail → stay on 4B or re-probe only after explicit concessions (embed-only / shorter seq / batch 1).
+- **T4×2 escape hatch (risk register):** dual-T4 32 GB can train 9B + embed + head via plain HF + PEFT + bitsandbytes `device_map="auto"` (drop Unsloth). Cost: lose ~2× Unsloth speed/kernels; notebooks are Unsloth-based. Generally not worth it vs 4B.
+- Plan file: `[REDACTED_SECRET].md` (§4.1 verdict, E3, risk register, checklist).
+
+<!-- memory-fabric:store/pretraining/cpt-v2-ready-for-kaggle -->
+---
+store_path: pretraining/cpt-v2-ready-for-kaggle
+title: "CPT v2 ready for Kaggle (post local pipeline)"
+summary: "CPT v2 ready for Kaggle (post local pipeline)"
+priority: high
+tags: [pretraining, cpt, kaggle, m1, mix, v2]
+schema_version: 1.3
+last_updated: "2026-07-13T10:40:05-04:00"
+evidence: [continued_pretrain/KAGGLE_RUNBOOK_V2.md, "[REDACTED_SECRET].md", continued_pretrain/data/theology_mix_manifest.json]
+review_status: stale
+---
+
+# CPT v2 — ready for Kaggle (2026-07-13)
+
+## Local pipeline complete
+
+- Multi-source mix with chunking ≤7k, share targets, 10% PD general replay (Gutenberg classics).
+- Shares ~ spurgeon 40.5% / puritan 41% / confession 5% / bible 3.6% / general 10%.
+- D3: ~8.2M tokens (gpt2 sample ratio); max_doc 7000; 0 docs >8k.
+- Holdouts: spurgeon/puritan/confession/general non-empty; Heidelberg + Belgic in holdouts_manual.
+- MCQ: 50 WSC + 42 Heidelberg.
+- Package: `12_package_kaggle_corpus.py` → zip for dataset upload.
+- Runbook: `continued_pretrain/KAGGLE_RUNBOOK_V2.md`.
+
+## M1 (partial pass)
+
+- `Qwen/Qwen3.5-4B-Base` + `unsloth/Qwen3.5-4B-Base` exist.
+- **`tie_word_embeddings=true`** → notebooks default `TRAIN_LM_HEAD=False`.
+- Hybrid `qwen3_5` (linear_attention + full_attention + vision_config) — **must prove Unsloth train on T4**; fallback Qwen2.5-3B.
+- Details: `data/M1_BASE_MODEL_GATE.md`.
+
+## Remaining (operator / Kaggle only)
+
+1. Upload corpus zip as `theology-cpt-corpus`
+2. A_sota → dataset `theology-cpt-dataset`
+3. B_sota session 1: D1/D2/D4 + s/step + MAX_STEPS; pin Unsloth after success
+4. Train 1 epoch; C_sota eval; merge only if §5 passes
 
 <!-- memory-fabric:store/grok/integration -->
 ---
@@ -196,6 +403,7 @@ priority: high
 tags: [bugs, tokenizer, gguf, ollama, alignment]
 schema_version: 1.3
 last_updated: "2026-06-11T17:07:59-04:00"
+review_status: stale
 ---
 
 # Bug Fix: GGUF Vocab Shift and Alignment (具有战士/ _Parms/ +lsi / {lng)
@@ -223,6 +431,55 @@ tokenizer = [REDACTED_SECRET](MODEL_NAME)
 tokenizer = [REDACTED_SECRET](BASE_MODEL_NAME)
 ```
 Since the tokenizer in the base model folder was saved during the Phase 1 GGUF export, its `tokenizer.json` contains the exact same shifted vocabulary as the model weights. Loading it aligns the tokenizer and the model embeddings 100% perfectly, resolving the runaway generations, junk character emissions, and paragraph-break corruption.
+
+<!-- memory-fabric:store/architecture/opcua-scada-simulation-platform -->
+---
+store_path: architecture/opcua-scada-simulation-platform
+title: "OPC UA Industrial Engine & SCADA Simulation Platform"
+summary: "OPC UA Industrial Engine & SCADA Simulation Platform"
+priority: high
+tags: [opcua, scada, python, asyncua, fastapi, simulation]
+schema_version: 1.3
+last_updated: "2026-08-12T08:59:21-04:00"
+---
+
+Implemented an OPC UA Industrial Engine & SCADA simulation platform using Python asyncua and FastAPI.
+Features:
+- OPC UA Server: `opc.tcp://0.0.0.0:4840/freeopcua/server/` with namespace `http://opcua.simulation.engine`.
+- Device hierarchy: `Objects/IndustrialEngine/` with Folders `Status`, `Sensors`, `Controls`, `Alarms`.
+- Telemetry & Physics: RPM, Coolant Temperature, Oil Pressure, Vibration, Total Hours, Trip Counter.
+- RPC Methods: `StartEngine`, `StopEngine`, `SetTargetSpeed`, `ResetFault`, `InjectFault`.
+- Web SCADA Dashboard: Modern glassmorphism UI running on FastAPI (`http://localhost:8000`), with real-time SVG gauges, multi-pen canvas oscilloscope, OPC UA Node Inspector tree browser, and alarm log.
+
+<!-- memory-fabric:store/pretraining/puritan-corpus-fetch -->
+---
+store_path: pretraining/puritan-corpus-fetch
+title: "Puritan PD corpus fetch (Archive.org)"
+summary: "Puritan PD corpus fetch (Archive.org)"
+priority: high
+tags: [pretraining, data, puritans, archive-org]
+schema_version: 1.3
+last_updated: "2026-07-13T10:19:03-04:00"
+evidence: [data/puritans/PROVENANCE.md, continued_pretrain/scripts/10_fetch_puritans.py]
+review_status: stale
+---
+
+# Puritan PD corpus (2026-07-13)
+
+Fetched public-domain OCR into `data/puritans/` (~18 MB) from Internet Archive DjVuTXT + a few Gutenberg Bunyan files. Title-verified where possible; early-modern OCR can be noisy (esp. Sibbes Bruised Reed).
+
+## Authors on disk
+
+Owen (4 works), Watson (Body of Divinity), Sibbes (Bruised Reed), Brooks (Precious Remedies + Complete Works vol 3), Baxter (Saints Rest + Reformed Pastor), Bunyan (4), Flavel (2), Gurnall (Complete Armour), Edwards (Religious Affections).
+
+## Tooling
+
+- `scripts/10_fetch_puritans.py` — re-fetch with verified IA `/download/` URLs + SSL workaround.
+- Provenance table: `data/puritans/PROVENANCE.md`.
+
+## Mix after rebuild
+
+~22M chars / ~5.5M tokens: spurgeon 45% / puritan 51% / bible 4% / confession ~0%. Still need more confessions + FineWeb replay for targets.
 
 <!-- memory-fabric:local/schemas -->
 ---
@@ -292,6 +549,7 @@ priority: high
 tags: [bugs, unsloth, embeddings, lora, kaggle, offloading]
 schema_version: 1.3
 last_updated: "2026-06-11T14:26:32-04:00"
+review_status: stale
 ---
 
 # Bug Fix: Unsloth Embedding Offload on Read-Only Filesystem
@@ -349,6 +607,27 @@ if getattr(model, "config", None) is not None:
 5. Passed `temporary_location=TEMP_LOCATION` explicitly to `FastLanguageModel.get_peft_model()`.
 
 This guarantees that Unsloth offloaded buffers are saved under a directory where the Python process has active write permissions on all execution targets (Kaggle VMs, Colab VMs, and local Windows/Linux development environments), bypassing the absolute path join bug.
+
+<!-- memory-fabric:store/failures/asyncua-write-value-badtypemismatch-188c68c9d2 -->
+---
+store_path: failures/asyncua-write-value-badtypemismatch-188c68c9d2
+title: "asyncua write_value BadTypeMismatch when writing int to UInt16 or Double node wi"
+summary: "asyncua write_value BadTypeMismatch when writing int to UInt16 or Double node wi"
+priority: medium
+tags: [failure, fix]
+schema_version: 1.3
+last_updated: "2026-08-12T08:59:14-04:00"
+occurrences: 1
+error_signature: "asyncua write_value badtypemismatch when writing int to uint<n> or double node without explicit variant wrapper"
+---
+
+## Occurrence 1 — 2026-08-12T08:59:14-04:00
+
+**Error:**
+asyncua write_value BadTypeMismatch when writing int to UInt16 or Double node without explicit Variant wrapper
+
+**Fix:**
+Wrap variables explicitly using ua.Variant(value, ua.VariantType.UInt16) or ua.VariantType.Double before calling node.write_value()
 
 <!-- memory-fabric:local/bugs -->
 ---
@@ -475,6 +754,31 @@ review_status: stale
 
 Execution configurations and dependency management rules for continued pretraining on Kaggle Free Tier. Guidelines specify toggling Internet ON, choosing None accelerator for Notebook A (Data Prep) to conserve quota, and selecting 1x T4 GPU for Notebook B/C. Installation relies solely on `unsloth[kaggle-new]` package pulling from GitHub, with a strict warning against manual upgrades of transformers/trl/peft to avoid breaking CUDA Triton kernels. Detailed setup includes programmatic Hugging Face token authentication via Kaggle Secrets (HF_TOKEN) and optional Weights & Biases training logs tracking (WANDB_API_KEY).
 
+<!-- memory-fabric:local/episodic -->
+---
+section: episodic
+summary: "Generated map of memory-store/episodic/ (6 entries)."
+priority: medium
+tags: [episodic]
+schema_version: 1.3
+last_updated: "2026-08-23T10:13:30-04:00"
+generated: true
+generated_from: memory-store/episodic
+store_fingerprint: 487cb3909649aed6b6b698ff18fdae42
+body_hash: f81dabf934045a0632ea43d13ced1e0c
+---
+
+# Episodic Map
+
+Generated by Memory Fabric from `memory-store/episodic/` — do not edit by hand. Write facts with `write_memory_store_tool`; Dreaming rebuilds this map.
+
+- **Episodic Journal — 2026-07-11** (`episodic/2026-07-11`, low) — Episodic Journal — 2026-07-11
+- **Episodic Journal — 2026-07-12** (`episodic/2026-07-12`, low) — Episodic Journal — 2026-07-12
+- **Episodic Journal — 2026-07-13** (`episodic/2026-07-13`, low) — Episodic Journal — 2026-07-13
+- **Episodic Journal — 2026-07-14** (`episodic/2026-07-14`, low) — Episodic Journal — 2026-07-14
+- **Episodic Journal — 2026-08-12** (`episodic/2026-08-12`, low) — Episodic Journal — 2026-08-12
+- **Episodic Journal — 2026-08-23** (`episodic/2026-08-23`, low) — Upgraded and configured memory-fabric / ai-memory to v1.4.0 with field diary enabled (counts+queries)
+
 <!-- memory-fabric:store/pretraining/eval-and-export -->
 ---
 store_path: pretraining/eval-and-export
@@ -493,6 +797,26 @@ Following the successful execution of Notebook B (Epoch 1 & 2) up to step 432:
 1. **Pretraining Schedule Updated:** Timeline has been updated to bypass Epoch 3 and proceed directly to evaluation and merge. v2 of the private Kaggle dataset `spurgeon-training-run-1` carries the `checkpoint-432` weights and files forward.
 2. **Notebook C Plan created:** Step 9 details the evaluation requirements (1x T4 GPU, Internet ON), input dataset mounts, loading the adapter via Unsloth's native `FastLanguageModel.from_pretrained()`, computing length-weighted perplexity on the 50-sermon holdout dataset, executing qualitative prompts, and exporting the final Phase 1 LoRA adapter weights.
 3. **Jupyter Notebook Template created:** The evaluation template has been created at `continued_pretrain/notebooks/C_eval_and_merge.ipynb`.
+
+<!-- memory-fabric:local/failures -->
+---
+section: failures
+summary: "Generated map of memory-store/failures/ (1 entries)."
+priority: medium
+tags: [failures]
+schema_version: 1.3
+last_updated: "2026-08-23T11:09:38-04:00"
+generated: true
+generated_from: memory-store/failures
+store_fingerprint: 9d6c62d3c81c8fd8fee2a48a23649db2
+body_hash: dab54d9a054189dd254da37e77372a6a
+---
+
+# Failures Map
+
+Generated by Memory Fabric from `memory-store/failures/` — do not edit by hand. Write facts with `write_memory_store_tool`; Dreaming rebuilds this map.
+
+- **asyncua write_value BadTypeMismatch when writing int to UInt16 or Double node wi** (`failures/asyncua-write-value-badtypemismatch-188c68c9d2`, medium) — asyncua write_value BadTypeMismatch when writing int to UInt16 or Double node wi
 
 <!-- memory-fabric:local/fine-tuning -->
 ---
@@ -684,6 +1008,7 @@ priority: medium
 tags: [bugs, lora, embeddings, lm_head, special-tokens, unsloth]
 schema_version: 1.3
 last_updated: "2026-06-15T08:56:50-04:00"
+review_status: stale
 ---
 
 # Bug Fix: Training embed_tokens and lm_head when resizing vocabulary for special tokens in LoRA
@@ -730,6 +1055,40 @@ Patched both Notebook E and Notebook F to use Hugging Face's standard and robust
 
 These methods correctly delegate attribute lookup through the `PeftModel` wrappers, ensuring the special token weights are successfully copied at both training and inference time.
 
+<!-- memory-fabric:store/architecture/map-notes-pending-review -->
+---
+store_path: architecture/map-notes-pending-review
+title: "Architecture Map Notes (Pending Review)"
+summary: "Hand-written notes folded from architecture.md; split into granular memories and delete."
+priority: medium
+tags: [needs-review, legacy-map]
+schema_version: 1.3
+last_updated: "2026-08-23T11:09:38-04:00"
+---
+
+## Folded from `architecture.md` on 2026-08-23T11:09:38-04:00
+
+# Architecture
+
+The Ask Spurgeon application is a RAG (Retrieval-Augmented Generation) system built for search and conversation over Charles Haddon Spurgeon's sermon catalog (~3,500 sermons).
+
+## Core Architecture Layers
+
+- **UI Layer**: Built with **Streamlit** (`app.py`), presenting a conversational and search interface, exposing rich metadata filtering, and providing citation highlights.
+- **Orchestration**: Managed via **LlamaIndex**, handling the retrieval pipeline, query compilation, and grounding of LLM prompts.
+- **Embeddings**: Local CPU-friendly embedding generation via **FastEmbed** using the `BAAI/bge-small-en-v1.5` model.
+- **Vector DB Layer**:
+  - **ChromaDB**: Used for local fast development (persists under `./chroma_db`).
+  - **Qdrant**: Used in production (Qdrant Cloud Free Tier) and realistic local testing (via Docker Compose).
+- **LLM Layer**:
+  - **Groq API**: Production default, querying `llama-3.3-70b-versatile` with automated fallback to `llama-3.1-8b-instant` under rate limit constraints.
+  - **Custom Fine-tuned LLM**: Local or remote deployment of `spurgeon-8b` (a custom Llama-3.1-8B-Instruct fine-tuned via Unsloth and QLoRA on ~1,500 RAG grounded examples). Quantized to `Q4_K_M` GGUF and served via llama.cpp or Ollama.
+
+## Key Subsystems
+
+- **Bible Reference Extractor (`utils/bible_refs.py`)**: A robust parser that extracts and normalizes Bible verse references at both sermon and chunk levels, enabling users to filter search results by specific scriptural topics.
+- **Author-Aware Design**: Chunk and document metadata stores an `author` key, facilitating future extensions to query multiple authors (e.g. Edwards, Calvin, Lloyd-Jones).
+
 <!-- memory-fabric:store/decisions/map-notes-pending-review -->
 ---
 store_path: decisions/map-notes-pending-review
@@ -739,6 +1098,7 @@ priority: medium
 tags: [needs-review, legacy-map]
 schema_version: 1.3
 last_updated: "2026-07-09T20:55:33-04:00"
+review_status: stale
 ---
 
 ## Folded from `decisions.md` on 2026-07-09T20:55:33-04:00
@@ -814,22 +1174,28 @@ Overview of Kaggle Notebooks layout for Spurgeon's Qwen2.5-3B continued pretrain
 <!-- memory-fabric:local/pretraining -->
 ---
 section: pretraining
-summary: "Generated map of memory-store/pretraining/ (9 entries)."
+summary: "Generated map of memory-store/pretraining/ (15 entries)."
 priority: medium
 tags: [pretraining]
 schema_version: 1.3
-last_updated: "2026-07-09T20:55:33-04:00"
+last_updated: "2026-08-23T11:09:38-04:00"
 generated: true
 generated_from: memory-store/pretraining
-store_fingerprint: 47e2833919698e5fd553c1e2c31bae00
-body_hash: 9e5a2279da71fdf370e818abc7f2daba
+store_fingerprint: 5813e7f049d78918f5b85beb3f245588
+body_hash: 7235c2b672b36eb5963042c93f29b640
 ---
 
 # Pretraining Map
 
 Generated by Memory Fabric from `memory-store/pretraining/` — do not edit by hand. Write facts with `write_memory_store_tool`; Dreaming rebuilds this map.
 
+- **Confessions + Institutes corpus (WCF, 1689, Calvin)** (`pretraining/confessions-corpus-fetch`, high) — Confessions + Institutes corpus (WCF, 1689, Calvin)
+- **CPT SOTA Assessment + Implementation (2026-07)** (`pretraining/cpt-sota-assessment-2026-07`, high) — CPT SOTA Assessment + Implementation (2026-07)
+- **CPT v2 implementation (Fable 5 plan)** (`pretraining/cpt-v2-implementation-fable5`, high) — CPT v2 implementation (Fable 5 plan)
+- **CPT v2 improvement plan (Fable 5 review, 2026-07-12)** (`pretraining/cpt-v2-plan-fable5`, high) — CPT v2 improvement plan (Fable 5 review, 2026-07-12)
+- **CPT v2 ready for Kaggle (post local pipeline)** (`pretraining/cpt-v2-ready-for-kaggle`, high) — CPT v2 ready for Kaggle (post local pipeline)
 - **Pretraining Step 10 (Merge & Export to Hugging Face)** (`pretraining/merge-and-export`, high) — Pretraining Step 10 (Merge & Export to Hugging Face)
+- **Puritan PD corpus fetch (Archive.org)** (`pretraining/puritan-corpus-fetch`, high) — Puritan PD corpus fetch (Archive.org)
 - **Fixed SFTConfig Pickling Mismatch on Kaggle** (`pretraining/bugs/sftconfig-pickle`, medium) — Fixed SFTConfig Pickling Mismatch on Kaggle
 - **Pretraining Step 1 — Data Collection Complete** (`pretraining/data-collection`, medium) — Pretraining Step 1 — Data Collection Complete
 - **Pretraining Step 6 — Dataset Preparation (Notebook A) Plan** (`pretraining/dataset-preparation`, medium) — Pretraining Step 6 — Dataset Preparation (Notebook A) Plan
@@ -837,7 +1203,7 @@ Generated by Memory Fabric from `memory-store/pretraining/` — do not edit by h
 - **Pretraining Step 8 (Schedule) and Step 9 (Evaluation & Export)** (`pretraining/eval-and-export`, medium) — Pretraining Step 8 (Schedule) and Step 9 (Evaluation & Export)
 - **Pretraining Step 4 — Model Choice & Technical Rationale** (`pretraining/model-choice`, medium) — Pretraining Step 4 — Model Choice & Technical Rationale
 - **Pretraining Step 3 — Kaggle Notebook Structure** (`pretraining/notebook-structure`, medium) — Pretraining Step 3 — Kaggle Notebook Structure
-- **Pretraining Step 7 — Training Configuration (Notebook B) Plan** (`pretraining/training-configuration`, medium) — Pretraining Step 7 — Training Configuration (Notebook B) Plan
+- …and 1 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:store/fine-tuning/qwen-sft-alpaca-reversion -->
 ---
@@ -848,6 +1214,7 @@ priority: medium
 tags: [finetuning, qwen2.5, unsloth, alpaca, reversion]
 schema_version: 1.3
 last_updated: "2026-06-15T09:29:56-04:00"
+review_status: stale
 ---
 
 # Reverting Custom Base Model, Weight Copying, and ChatML Alignment in SFT Notebook
@@ -877,6 +1244,7 @@ priority: medium
 tags: [bugs, lora, tokenizer, qwen]
 schema_version: 1.3
 last_updated: "2026-06-13T22:03:20-04:00"
+review_status: stale
 ---
 
 -----
@@ -990,6 +1358,254 @@ review_status: stale
   ```
 * **Implication**: Gemma 4 is a multimodal model containing audio components (`audio_tower`/`Gemma4AudioModel`). Unsloth's auto-patcher does not natively handle embedding hooks for the audio tower and falls back to a standard pre-forward hook.
 * **Status**: This warning is expected, benign, and can be safely ignored. For text-only fine-tuning tasks (such as Spurgeon style-transfer training), the audio tower is completely inactive and does not receive input sequences, so the fallback pre-forward hook has zero impact on training correctness or stability.
+
+<!-- memory-fabric:store/episodic/2026-07-11 -->
+---
+store_path: episodic/2026-07-11
+title: "Episodic Journal — 2026-07-11"
+summary: "Episodic Journal — 2026-07-11"
+priority: low
+tags: [episodic, session-journal]
+schema_version: 1.3
+last_updated: "2026-07-10T21:34:01-04:00"
+review_status: stale
+---
+
+## cpt-sota-pipeline
+
+Analyzed B_training.ipynb as solid Phase-1 Spurgeon CPT but not SOTA for multi-author theology. Implemented a parallel SOTA track without overwriting the baseline: theology mix script, A/B/C sota notebooks (Unsloth dual-LR + embed/lm_head), config JSON, data source layout, and README updates.
+
+**Key decisions:**
+- Never overwrite B_training.ipynb; SOTA lives in new files only
+- Unsloth CPT recipe: embed_tokens+lm_head, UnslothTrainer dual LR 5e-5/5e-6, r=64+rsLoRA
+- Data mix: Spurgeon 2.5x oversample + Puritans/confessions/Bible + ~10% replay
+- Highest ROI is multi-source data; training recipe alone is secondary
+
+**Files changed:**
+- `continued_pretrain/scripts/07_build_theology_mix.py`
+- `continued_pretrain/scripts/_gen_sota_notebooks.py`
+- `continued_pretrain/notebooks/A_data_prep_sota.ipynb`
+- `continued_pretrain/notebooks/B_training_sota.ipynb`
+- `continued_pretrain/notebooks/C_eval_sota.ipynb`
+- `continued_pretrain/configs/train_config_cpt_theology_sota.json`
+- `continued_pretrain/README.md`
+- `data/SOURCES_SOTA_CPT.md`
+- `data/puritans/.gitkeep`
+- `data/confessions/.gitkeep`
+- `data/bible/.gitkeep`
+- `.gitignore`
+
+<!-- memory-fabric:store/episodic/2026-07-12 -->
+---
+store_path: episodic/2026-07-12
+title: "Episodic Journal — 2026-07-12"
+summary: "Episodic Journal — 2026-07-12"
+priority: low
+tags: [episodic, session-journal]
+schema_version: 1.3
+last_updated: "2026-07-12T14:36:19-04:00"
+review_status: stale
+---
+
+## cpt-v2-plan
+
+Analyzed baseline B_training.ipynb and the v1 SOTA attempt (B_training_sota.ipynb + 07_build_theology_mix.py + A/C sota notebooks) and wrote a full CPT v2 improvement plan to [REDACTED_SECRET].md. Headline findings: suspected 2048-token document truncation in the baseline run (step-count math: 216 steps/epoch matches one row per doc), Qwen2.5-3B tied-embeddings conflict with the lm_head LoRA target, and the theology mix on disk being 100% Spurgeon because data/puritans|confessions|bible are empty. Plan is phased: diagnostics → data v2 (chunking ≤7k chars, dedup, share-targeted weighting, held-out Heidelberg/Belgic) → training v2 (per-bucket eval, best-model, pinned env) → eval v2 (base/Phase-1 deltas, catechism MCQ metric) → stretch experiments.
+
+**Key decisions:**
+- Verify F1 truncation and F3 tied-embeddings via diagnostic cells before any long training run
+- Chunk all corpus docs to ≤7,000 chars at mix build (including Spurgeon loader) instead of relying on trainer packing
+- Pick spurgeon_weight from target 40–50% char share, not fixed 2.5
+- Hold Heidelberg Catechism + Belgic Confession out of training as doctrine-generalization eval
+- Catechism MCQ log-likelihood as quantitative doctrine metric
+- Single source of truth needed for *_sota notebooks vs _gen_sota_notebooks.py generator
+
+**Files changed:**
+- `[REDACTED_SECRET].md`
+
+<!-- memory-fabric:store/episodic/2026-07-13 -->
+---
+store_path: episodic/2026-07-13
+title: "Episodic Journal — 2026-07-13"
+summary: "Episodic Journal — 2026-07-13"
+priority: low
+tags: [episodic, session-journal]
+schema_version: 1.3
+last_updated: "2026-07-13T19:06:23-04:00"
+review_status: stale
+---
+
+## cpt-v2-model-selection
+
+Extended the CPT v2 plan with a web-verified base-model selection analysis (new §4.1): comparison table of 8 T4-viable candidates, two-tier verdict (Qwen3.5-4B-Base as v2 default, Qwen3.5-9B-Base as flagship, Mistral-7B-v0.3 fallback), M1 verification gate, and cross-base PPL comparability caveat. Surfaced that Qwen2.5-3B's research-only license is a commercial blocker. Updated TL;DR, Phase 0, E3, success criteria, checklist, risk register, and references for consistency.
+
+**Key decisions:**
+- v2 default base: Qwen3.5-4B-Base pending M1 gate (HF tie config, Unsloth 4-bit build, D4)
+- Flagship run on Qwen3.5-9B-Base after data v2 validates
+- Post-base-swap evals use %Δ-vs-own-base, not absolute PPL
+
+**Files changed:**
+- `[REDACTED_SECRET].md`
+
+## cpt-plan-4b-flagship-tiering
+
+Folded VRAM/tiering recommendation into PLAN_FABLE5_TO_IMPROVE_CPT.md: Qwen3.5-4B-Base is now the flagship (not just dev default); 9B demoted to concession-gated E3 with mandatory ~20-step VRAM probe (peak reserved < ~15 GB); T4×2 non-Unsloth escape hatch added to risk register. Updated TL;DR §0.6, M1 wording, E3, §4.1 table/verdict, target v2 config, checklist.
+
+- Flagship CPT base = Qwen3.5-4B-Base on single T4 Unsloth path
+- 9B requires empirical VRAM probe before multi-session; full recipe over-budget at seq 2048
+- T4×2 + drop Unsloth generally not worth it vs 4B
+
+## implement-cpt-v2-fable5
+
+Implemented PLAN_FABLE5_TO_IMPROVE_CPT.md in code: mix builder v2 (7k chunking, G2 guard, dedup, share targeting, bible cap), token verify --mix, PD fetch helper, catechism MCQ builder, full A/B/C sota notebook regeneration for Qwen3.5-4B flagship with diagnostics and eval v2. Seeded Bunyan+KJV+WSC and Heidelberg holdout; rebuilt multi-bucket mix. Kaggle train/M1 still operator-side.
+
+- G3: _gen_sota_notebooks.py is sole source of truth for *_sota notebooks
+- Flagship model in notebooks/config: unsloth/Qwen3.5-4B-Base
+- Bible capped at 4% share so KJV does not dominate thin Puritan sets
+- Heidelberg curated holdout; WSC curated for training + MCQ
+
+- `continued_pretrain/scripts/06_verify_tokens.py`
+- `continued_pretrain/scripts/08_fetch_pd_sources.py`
+- `continued_pretrain/scripts/09_build_catechism_mcq.py`
+
+## fetch-puritan-corpus
+
+Downloaded public-domain Puritan texts from Internet Archive (Owen, Watson, Sibbes, Brooks, Baxter, Flavel, Gurnall, Edwards) plus Bunyan extras into data/puritans/ (~18 MB). Added 10_fetch_puritans.py and PROVENANCE.md; rebuilt theology mix to ~22M chars with ~51% Puritan share.
+
+- Prefer Archive.org /download/ DjVuTXT over /stream/ HTML shells
+- Title-verify downloads; allow relaxed OCR match for Sibbes
+- Remove duplicate Owen temptation file identical to mortification volume
+
+- `data/puritans/`
+- `data/puritans/PROVENANCE.md`
+- `continued_pretrain/scripts/10_fetch_puritans.py`
+- `continued_pretrain/data/theology_mix_train.txt`
+- `continued_pretrain/data/theology_mix_manifest.json`
+
+## fetch-confessions-institutes
+
+Fetched WCF, Scottish WCF+catechisms edition, Calvin Institutes Beveridge vols 1–2, and curated 1689 LBCF into data/confessions/. Added 11_fetch_confessions.py and confession share cap (6%). Rebuilt mix: ~25M chars, confession ~5.6%, spurgeon 45%, puritan 45%, bible 4%.
+
+- Prefer Archive.org DjVuTXT for WCF and Beveridge Institutes
+- 1689 uses curated PD core chapters when IA lacks clean full text
+- Cap confession share at 6% so Institutes does not swamp mix
+
+- `data/confessions/`
+- `continued_pretrain/scripts/11_fetch_confessions.py`
+
+## cpt-v2-continue-kaggle-ready
+
+Continued Fable5 plan to Kaggle-ready state: M1 gate (tied embeddings, hybrid qwen3_5, TRAIN_LM_HEAD=False), Belgic holdout, 10% PD general replay (~8.7M chars), full mix rebuild (~27M chars, shares on target), D3 verified_tokens (~8.2M tok), regenerated notebooks, Kaggle package script + KAGGLE_RUNBOOK_V2.md. Remaining work is operator upload/train on T4.
+
+- M1: default TRAIN_LM_HEAD=False for Qwen3.5-4B-Base tied embeddings
+- Offline Gutenberg classics as replay instead of FineWeb (no datasets required)
+- Hybrid qwen3_5 architecture is a Kaggle risk — document fallback to Qwen2.5-3B
+
+- `continued_pretrain/data/holdouts_manual/belgic_confession.txt`
+- `continued_pretrain/data/replay/`
+- `continued_pretrain/scripts/12_package_kaggle_corpus.py`
+- `continued_pretrain/KAGGLE_RUNBOOK_V2.md`
+
+## cpt-v2-preflight-max-steps
+
+Added local preflight script (D1/D2-lite, G2, shares, holdouts) — PASS. Set MAX_STEPS=250 from D3 token math in B_sota/config. Regenerated notebooks, repackaged Kaggle zip. Plan checklist updated: all local gates done; remaining is Kaggle upload/train/eval only.
+
+- MAX_STEPS=250 for ~1 epoch given ~8.2M tokens and 32768 tok/step
+- Offline preflight required before Kaggle upload
+- D4 decision locked to TRAIN_LM_HEAD=False from M1 config
+
+- `continued_pretrain/scripts/13_local_preflight.py`
+- `continued_pretrain/data/preflight_report.json`
+
+<!-- memory-fabric:store/episodic/2026-07-14 -->
+---
+store_path: episodic/2026-07-14
+title: "Episodic Journal — 2026-07-14"
+summary: "Episodic Journal — 2026-07-14"
+priority: low
+tags: [episodic, session-journal]
+schema_version: 1.3
+last_updated: "2026-07-13T21:12:31-04:00"
+review_status: stale
+---
+
+## fn-sft-plan-fable5
+
+Reviewed the SFT pipeline (fine_tuning/notebooks D/E/F + spurgeon_qa_train_final.jsonl + serving config) and wrote PLAN_FABLE5_TO_IMPROVE_FN.md, the SFT counterpart to PLAN_FABLE5_TO_IMPROVE_CPT.md. The plan chains SFT on the CPT v2 output (theology_cpt_v2_merged_hf, Qwen3.5-4B-Base) behind a GATE-0 dependency, with dev runs allowed on stock Qwen3.5-4B-Base in parallel. Audit found the pipeline never actually trained on Spurgeon data: E_qa_training.ipynb is the stock Unsloth Alpaca demo whose recorded run trained 60 steps on yahma/alpaca-cleaned (51,760 examples), with a three-way template mismatch (D=ChatML, E=Alpaca, F=ChatML), no completion-only masking, a vocab-resized <|PAD_TOKEN|> id 151665 (the known GGUF corruption trigger), and an ungated GGUF export that uploaded a broken model to HF.
+
+**Key decisions:**
+- SFT v2 base model = CPT v2 merged output (GATE-0: CPT §5 gate passed + Kaggle dataset theology-cpt-v2/theology_cpt_v2_merged_hf); never chain shippable work on spurgeon_phase1_merged_hf (Qwen2.5-3B, non-commercial license, truncation-tainted)
+- One canonical ChatML template from the CPT-v2 tokenizer across data prep/training/eval/Modelfile; eos <|im_end|>; pad = existing token; never resize vocab
+- Training data must be serve-shaped: real retriever output with [Sermon ...] headers, k=1-5 chunks, canonical persona system prompt in config.py; app side drops similarity_top_k from 6 to 4 for the fine-tuned path; MAX_SEQ_LENGTH=4096
+- Data mix v2 ~5.5-6.5k examples: 60% serve-shaped grounded QA / 15% legacy refiltered / 12% refusals / 8% catechism QA / 3% persona redirects / 2-5% multi-turn; judge-filtered + deduped + manifest with empty-slice guard + frozen 100-question test set
+- train_on_responses_only mandatory with an S3 masking audit; LoRA r=32 a=32 attn+MLP, lr 1e-4 cosine, 2 epochs, load_best_model_at_end
+- GGUF/HF export gated on quantified eval (faithfulness >=4.0, refusal accuracy >=85%, echo rate <=2%, blind A/B >=60% vs Groq-70B path)
+
+**Files changed:**
+- `[REDACTED_SECRET].md`
+
+<!-- memory-fabric:store/episodic/2026-08-12 -->
+---
+store_path: episodic/2026-08-12
+title: "Episodic Journal — 2026-08-12"
+summary: "Episodic Journal — 2026-08-12"
+priority: low
+tags: [episodic, session-journal]
+schema_version: 1.3
+last_updated: "2026-08-12T09:00:43-04:00"
+---
+
+## opcua-scada-simulation-platform
+
+Created a full-featured OPC UA Industrial Engine Simulation & Web SCADA platform for learning OPC UA concepts, address space hierarchy, monitored items, RPC methods, and client integration (UaExpert/Node-RED).
+
+**Key decisions:**
+- Used Python asyncua for custom OPC UA server simulation with industrial physics model
+- Built FastAPI + WebSockets Web SCADA interface with live gauges and HTML5 canvas chart
+- Implemented both OPC UA RPC Methods and direct Node writing for comprehensive learning
+
+**Files changed:**
+- `opcua_simulation/server/engine_physics.py`
+- `opcua_simulation/server/opcua_server.py`
+- `opcua_simulation/scada_backend/app.py`
+- `opcua_simulation/static/index.html`
+- `opcua_simulation/static/style.css`
+- `opcua_simulation/static/app.js`
+- `opcua_simulation/run_all.py`
+- `opcua_simulation/README.md`
+
+## copy-plan-to-agy-customizations
+
+Copied implementation_plan.md, plan.md, and the complete opcua_simulation project files to ../agy-customizations as requested by the user.
+
+- Copied implementation plan and complete OPC UA simulation codebase to ../agy-customizations
+
+- `../agy-customizations/implementation_plan.md`
+- `../agy-customizations/plan.md`
+- `../agy-customizations/opcua_simulation/`
+
+<!-- memory-fabric:store/episodic/2026-08-23 -->
+---
+store_path: episodic/2026-08-23
+title: "Episodic Journal — 2026-08-23"
+summary: "Upgraded and configured memory-fabric / ai-memory to v1.4.0 with field diary enabled (counts+queries)"
+priority: low
+tags: [episodic, session-journal]
+schema_version: 1.3
+last_updated: "2026-08-23T10:13:30-04:00"
+---
+
+## upgrade-memory-fabric-diary
+
+Upgraded and configured memory-fabric / ai-memory to v1.4.0 with field diary enabled (counts+queries). Configured all MCP clients and synchronized agent instruction sets.
+
+**Key decisions:**
+- Upgraded memory-fabric via uv tool to v1.4.0
+- Approved and enabled field diary at level counts+queries
+- Configured all MCP clients to use direct binary execution
+- Ran ai-memory sync-agents to synchronize agent instructions
+
+**Files changed:**
+- `IMPLEMENTATION_SUMMARY.md`
 
 <!-- memory-fabric:local/debt -->
 ---

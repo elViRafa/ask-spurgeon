@@ -6,6 +6,7 @@ priority: medium
 tags: [bugs, lora, tokenizer, qwen]
 schema_version: 1.3
 last_updated: "2026-06-13T22:03:20-04:00"
+review_status: stale
 ---
 
 -----
