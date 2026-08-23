@@ -6,6 +6,7 @@ priority: high
 tags: [grok, mcp, memory-fabric, integration, docs, agents]
 schema_version: 1.3
 last_updated: "2026-06-05T09:41:35-04:00"
+review_status: stale
 ---
 
 # Grok + Memory Fabric Integration

@@ -6,6 +6,7 @@ tags: [framework, rules]
 schema_version: 1.3
 last_updated: "2026-06-03T08:33:33-04:00"
 summary_hash: f0dd594251d74f0ce1c3d34410c1767e
+review_status: stale
 ---
 
 # Framework Rules

@@ -1,0 +1,123 @@
+{
+  "name": "theology_cpt_sota_qwen35_4b_qlora_v2",
+  "description": "CPT v2 (Fable 5) for Spurgeon/Puritans/theology. Flagship Qwen3.5-4B-Base. Does not replace Phase-1 B_training.ipynb.",
+  "plan": "continued_pretrain/PLAN_FABLE5_TO_IMPROVE_CPT.md",
+  "baseline_notebook": "continued_pretrain/notebooks/B_training.ipynb",
+  "sota_notebook": "continued_pretrain/notebooks/B_training_sota.ipynb",
+  "data_prep_notebook": "continued_pretrain/notebooks/A_data_prep_sota.ipynb",
+  "eval_notebook": "continued_pretrain/notebooks/C_eval_sota.ipynb",
+  "mix_script": "continued_pretrain/scripts/07_build_theology_mix.py",
+  "notebook_source_of_truth": "continued_pretrain/scripts/_gen_sota_notebooks.py",
+  "model": {
+    "name": "unsloth/Qwen3.5-4B-Base",
+    "role": "flagship",
+    "fallback": "unsloth/Qwen2.5-3B",
+    "experiment_9b": "unsloth/Qwen3.5-9B-Base",
+    "experiment_9b_note": "Concession-gated E3 only; mandatory VRAM probe peak reserved < ~15 GB",
+    "load_in_4bit": true,
+    "max_seq_length": 2048,
+    "max_seq_length_optional": 4096,
+    "tie_word_embeddings": true,
+    "architecture_note": "Qwen3_5ForConditionalGeneration hybrid linear_attention+full_attention; vision_config present — verify Unsloth CPT on Kaggle",
+    "m1_gate": {
+      "status": "partial_pass_2026-07-13",
+      "hf_exists": true,
+      "unsloth_repo_exists": true,
+      "tie_word_embeddings": true,
+      "d4_kaggle_pending": true,
+      "default_train_lm_head": false,
+      "details": "continued_pretrain/data/M1_BASE_MODEL_GATE.md"
+    }
+  },
+  "lora": {
+    "r": 64,
+    "lora_alpha": 64,
+    "lora_dropout": 0,
+    "bias": "none",
+    "use_rslora": true,
+    "use_gradient_checkpointing": "unsloth",
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "gate_proj",
+      "up_proj",
+      "down_proj",
+      "embed_tokens"
+    ],
+    "lm_head": false,
+    "lm_head_note": "M1: tied embeddings on Qwen3.5-4B-Base — train embed_tokens only unless D4 proves otherwise"
+  },
+  "optim": {
+    "trainer": "UnslothTrainer",
+    "args_class": "UnslothTrainingArguments",
+    "learning_rate": 5e-5,
+    "embedding_learning_rate": 1e-5,
+    "embedding_learning_rate_fallback": 5e-6,
+    "lr_scheduler_type": "cosine",
+    "warmup_ratio": 0.03,
+    "warmup_steps": null,
+    "weight_decay": 0.01,
+    "optim": "adamw_8bit",
+    "per_device_train_batch_size": 2,
+    "gradient_accumulation_steps": 8,
+    "packing": true,
+    "num_train_epochs": 1.0,
+    "max_steps": 250,
+    "max_steps_note": "From D3 ~8.2M tokens / 32768 tok/step (2026-07-13). Reconfirm with D1 on Kaggle.",
+    "logging_steps": 10,
+    "eval_steps": 50,
+    "save_steps": 50,
+    "save_total_limit": 2,
+    "load_best_model_at_end": true,
+    "metric_for_best_model": "eval_mix_loss",
+    "seed": 42
+  },
+  "eval": {
+    "per_bucket_during_training": ["mix", "spurgeon", "puritan", "confession", "general"],
+    "eval_docs_per_bucket": 8,
+    "eval_base_default": true,
+    "probes_greedy_seed": 42,
+    "mcq": {
+      "wsc": "absorption",
+      "heidelberg": "generalization_holdout",
+      "builder": "continued_pretrain/scripts/09_build_catechism_mcq.py"
+    }
+  },
+  "data_mix": {
+    "max_chunk_chars": 7000,
+    "target_spurgeon_share": 0.45,
+    "spurgeon_weight": "auto_from_target_share",
+    "replay_frac": 0.1,
+    "allow_spurgeon_only": false,
+    "buckets": ["spurgeon", "puritan", "confession", "bible", "general"],
+    "target_char_shares": {
+      "spurgeon": "0.40-0.50",
+      "puritan": "0.30-0.40",
+      "confession": "0.03-0.06",
+      "bible": "0.02-0.04",
+      "general": "0.08-0.12"
+    },
+    "train_file": "continued_pretrain/data/theology_mix_train.txt",
+    "manifest": "continued_pretrain/data/theology_mix_manifest.json",
+    "holdouts_dir": "continued_pretrain/data/holdouts",
+    "holdouts_manual": "continued_pretrain/data/holdouts_manual",
+    "paragraph_dedup": true
+  },
+  "diagnostics": ["D1_truncation", "D2_eos", "D3_verified_tokens", "D4_tied_embeddings", "M1_base_gate", "E3_vram_probe_9b"],
+  "vram_fallbacks": [
+    "TRAIN_LM_HEAD=false if tied embeddings",
+    "TRAIN_EMBEDDINGS=false",
+    "LORA_RANK=32",
+    "MAX_SEQ_LENGTH=2048, PER_DEVICE_BATCH=1, GRAD_ACCUM=16"
+  ],
+  "success_criteria": [
+    "Manifest ≥4 buckets, shares in targets, verified_tokens, holdouts non-empty",
+    "Spurgeon holdout better than base (%Δ-vs-own-base after base swap)",
+    "Puritan/confession PPL ≥15% better than base",
+    "General holdout PPL ≤10% worse than base",
+    "Heidelberg MCQ ≥ +10 pts vs base; WSC near-ceiling",
+    "Greedy style preferred over base for Spurgeon-ness"
+  ]
+}

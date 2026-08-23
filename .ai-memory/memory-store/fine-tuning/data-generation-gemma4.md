@@ -6,6 +6,7 @@ priority: medium
 tags: [fine-tuning, gemma4, dataset, ollama]
 schema_version: 1.3
 last_updated: "2026-06-08T12:46:23-04:00"
+review_status: stale
 ---
 
 # Gemma 4 Local Dataset Generation Analysis

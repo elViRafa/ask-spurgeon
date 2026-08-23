@@ -6,6 +6,7 @@ tags: [debt, risk]
 schema_version: 1.3
 last_updated: "2026-06-03T08:33:16-04:00"
 summary_hash: 7afd302688cef326194440331d0c034f
+review_status: stale
 ---
 
 # Technical Debt & Roadmap

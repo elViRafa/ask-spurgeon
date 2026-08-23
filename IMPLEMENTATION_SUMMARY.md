@@ -1,3 +1,63 @@
+## 2026-08-23 10:13 - Installed & Upgraded AI-Memory (Memory-Fabric) with Diary Enabled
+
+**What was implemented:**
+- Installed and upgraded `memory-fabric` (CLI `ai-memory`) to version 1.4.0 via `uv tool`.
+- Enabled and approved the Memory Fabric local field diary at `counts+queries` level.
+- Configured MCP client settings across installed AI tools (Antigravity, Gemini CLI, Cursor, Windsurf, VS Code, Cline, Codex) to use the direct local binary `memory-fabric-mcp.exe`.
+- Synchronized all agent rules, skills, and platform instruction sets using `ai-memory sync-agents`.
+
+**Core files affected:**
+- [.gemini/config/mcp_config.json](file:///C:/Users/rafael/.gemini/config/mcp_config.json) — Updated MCP server configuration for `memory-fabric`.
+- [AGENTS.md](file:///c:/Users/rafael/Projetos/search-sermons/AGENTS.md) — Synchronized agent rules and ubiquitous directives.
+- [.agents/rules/memory-store.md](file:///c:/Users/rafael/Projetos/search-sermons/.agents/rules/memory-store.md) — Updated Memory Fabric semantic store instructions.
+
+**Key changes:**
+- Ran `uv tool install memory-fabric[mcp] --upgrade` installing `ai-memory` and `memory-fabric-mcp` v1.4.0.
+- Approved and verified field diary status with `ai-memory diary approve --level counts+queries --yes`.
+- Executed `ai-memory install --client all` and `ai-memory sync-agents`.
+
+**Status & Testing:**
+- Tested with `ai-memory status` and `ai-memory doctor`. Diary confirmed active (`approved: true`, `level: counts+queries`, `muted: false`), MCP tools and agent directives fully synchronized.
+
+## 2026-08-12 09:00 - Copied OPC UA Plan & Project Files to ../agy-customizations
+
+**What was implemented:**
+- Created the target directory `c:\Users\rafael\Projetos\agy-customizations`.
+- Copied the OPC UA simulation implementation plan (`implementation_plan.md` and `plan.md`) along with the full `opcua_simulation` project codebase to `../agy-customizations`.
+
+**Core files affected:**
+- `../agy-customizations/implementation_plan.md`
+- `../agy-customizations/plan.md`
+- `../agy-customizations/opcua_simulation/`
+
+**Key changes:**
+- Verified directory creation and recursive file copy operation.
+
+**Status & Testing:**
+- All plan documents and simulation source files successfully copied and verified.
+
+## 2026-08-12 08:59 - OPC UA Industrial Engine & Web SCADA Simulator
+
+**What was implemented:**
+- Built a complete, interactive OPC UA Industrial Engine & Web SCADA Simulation Platform for learning OPC UA concepts.
+- Developed an asynchronous OPC UA Server (`opc.tcp://0.0.0.0:4840/freeopcua/server/`) using Python `asyncua` with real-time physical simulation of engine RPM, coolant temperature, oil pressure, vibration harmonics, RPC methods, and alarm trips.
+- Created a modern Web SCADA Dashboard using FastAPI, WebSockets, circular SVG gauge dials, a multi-pen HTML5 Canvas oscilloscope, an OPC UA Node Inspector tree browser, and an event log.
+
+**Core files affected:**
+- [opcua_server.py](file:///c:/Users/rafael/Projetos/search-sermons/opcua_simulation/server/opcua_server.py) — OPC UA Server and Address Space definition.
+- [engine_physics.py](file:///c:/Users/rafael/Projetos/search-sermons/opcua_simulation/server/engine_physics.py) — Industrial engine physical model and trip logic.
+- [app.py](file:///c:/Users/rafael/Projetos/search-sermons/opcua_simulation/scada_backend/app.py) — FastAPI Web SCADA gateway with async OPC UA client & WebSockets.
+- [index.html](file:///c:/Users/rafael/Projetos/search-sermons/opcua_simulation/static/index.html) — Web SCADA HTML5 interface.
+- [README.md](file:///c:/Users/rafael/Projetos/search-sermons/opcua_simulation/README.md) — Step-by-step user guide and OPC UA learning tutorial.
+
+**Key changes:**
+- Created OPC UA Address Space hierarchy (`Objects/IndustrialEngine/` with Folders `Status`, `Sensors`, `Controls`, `Alarms`).
+- Implemented OPC UA RPC methods (`StartEngine`, `StopEngine`, `SetTargetSpeed`, `ResetFault`, `InjectFault`).
+- Added Web SCADA UI featuring real-time telemetry, direct OPC UA variable node writing, address space browsing, and UaExpert / Node-RED connection tutorials.
+
+**Status & Testing:**
+- Tested locally with Python 3.14. Server and FastAPI Web SCADA bridge initialize cleanly, handle method calls, and publish subscriptions without errors.
+
 ## 2026-06-19 09:30 - Restored Full Context Transmission to the LLM
 
 **What was implemented:**

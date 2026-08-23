@@ -5,12 +5,12 @@ summary: "Index of all semantic memory store files."
 priority: high
 tags: [index, memory-store]
 schema_version: 1.3
-last_updated: "2026-06-16T21:12:22-04:00"
+last_updated: "2026-07-09T20:56:16-04:00"
 ---
 
 # Memory Store Index
 
-Updated by Memory Fabric Dreaming mode `light` at 2026-06-16T21:12:22-04:00.
+Updated by Memory Fabric Dreaming mode `light`.
 
 | Path | Priority | Summary | Key Topics | Tags |
 | --- | --- | --- | --- | --- |
@@ -22,6 +22,7 @@ Updated by Memory Fabric Dreaming mode `light` at 2026-06-16T21:12:22-04:00.
 | `bugs/unsloth-fast-patching-warnings` | medium | Unsloth Training Warnings & Fast Patching Resolution | • 1. LoRA Dropout Performance Warning<br>• 2. Gemma 4 Audio Tower Hook Registration Warning | unsloth, lora, gemma4, bugfix |
 | `decisions/gemma4-finetuning` | medium | Guides the upgrade of fine-tuning pipelines from Gemma 2 to the efficient, newer Gemma 4 12B model. | • Rationale<br>• Configuration Details | gemma4, finetuning, decisions |
 | `decisions/gemma4-local-ollama` | medium | Gemma 4 Local Ollama Deployment | • 1. Tokenizer List Parsing Bug Fix<br>• 2. Remote Streaming Conversion & Double Quantization<br>• 3. Importing into Ollama<br>• 4. Local Disk Cleanup (8B f16 Reclaim) | gemma4, ollama, gguf, quantization, cleanup |
+| `decisions/map-notes-pending-review` | medium | Hand-written notes folded from decisions.md; split into granular memories and delete. | • Folded from `decisions.md` on 2026-07-09T20:55:33-04:00<br>• 1. Custom Model Fine-Tuning & Quantization (2026-06-01)<br>• 2. Memory Systems Integration (2026-06-01 to 2026-06-02)<br>• 3. Deployment & Performance Optimization (2026-06-02)<br>• 4. Local Execution Options (2026-06-02)<br>• 5. Grok + Memory Fabric Docs & Full Integration (2026-06-05)<br>• 6. Kaggle Model Saving Support (2026-06-05) | needs-review, legacy-map |
 | `fine-tuning/data-generation-gemma4` | medium | Gemma 4 Local Dataset Generation Analysis | • Evaluation Results<br>• Implementation | fine-tuning, gemma4, dataset, ollama |
 | `fine-tuning/gemma-support` | medium | Gemma 2 fine-tuning support scripts and configs. | • Updated train_spurgeon_qlora.py to read base model and ch...<br>• Configured launch_training.py to pass parameters dynamica...<br>• Added train_config_gemma.json configuration file. | gemma2, fine-tuning, ollama |
 | `fine-tuning/qwen-sft-alpaca-reversion` | medium | Reverting Custom Model, Weight Copying, and ChatML in Qwen 2.5 SFT | • Context<br>• Reversion Decision<br>• Implementation Details | finetuning, qwen2.5, unsloth, alpaca, reversion |

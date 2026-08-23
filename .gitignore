@@ -100,9 +100,14 @@ doctor_out.txt
 !continued_pretrain/
 !continued_pretrain/**
 !continued_pretrain/notebooks/*.ipynb
-# But still exclude large generated corpus files
+# But still exclude large generated corpus files, zip uploads, replay text, and pycache
+continued_pretrain/**/__pycache__/
 continued_pretrain/data/*.txt
 continued_pretrain/data/*.bin
+continued_pretrain/data/*.zip
+continued_pretrain/data/holdouts/
+continued_pretrain/data/replay/
+continued_pretrain/data/kaggle_upload/*.zip
 
 # Ignore model weight files in continued_pretrain/models/
 continued_pretrain/models/*
@@ -111,3 +116,4 @@ continued_pretrain/models/*
 # Scratch and local debug tools
 scratch/
 fine_tuning/data/ver.py
+opcua_simulation/

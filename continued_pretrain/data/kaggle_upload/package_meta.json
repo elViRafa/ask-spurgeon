@@ -1,0 +1,49 @@
+{
+  "created_at": "2026-07-13T23:06:01.809066+00:00",
+  "zip": "C:\\Users\\rafael\\Projetos\\search-sermons\\continued_pretrain\\data\\kaggle_upload\\theology-cpt-corpus.zip",
+  "zip_sha256": "f90686ca2deae89c32a443491d013cf7dc83fcc02aee3a0a379b67e3f27b84ba",
+  "zip_bytes": 11869955,
+  "files": {
+    "theology_mix_train.txt": {
+      "bytes": 27952489,
+      "sha256": "54cf29883207cdf73096140be2af0772c8a0ae6cbade6b4d3eea498a76ac5a31"
+    },
+    "theology_mix_manifest.json": {
+      "bytes": 3632,
+      "sha256": "4720fdda8b21f83f3f3d244da30c449869ca6b20f3f64cac26886e954dd7ca06"
+    },
+    "catechism_mcq.json": {
+      "bytes": 86302,
+      "sha256": "34c1be24580b18e4e38ae7d666e69fea43ba3eff63ffc68637b9e34827abfe55"
+    },
+    "M1_BASE_MODEL_GATE.md": {
+      "bytes": 1949,
+      "sha256": "c0841320c3f35597f76dc99e565508321811a5df63e3157aff39bc215abcb562"
+    },
+    "holdouts\\confession_holdout.txt": {
+      "bytes": 71012,
+      "sha256": "d62395f0cc07b434fecc1e28eeda535004aa176bbc4aa05f93d40a2f76e172ff"
+    },
+    "holdouts\\general_holdout.txt": {
+      "bytes": 66303,
+      "sha256": "26d1cb9a2ed8e4ae18aacc0c0a45cc780d8786e4c23d837fc7b9e52adee2513f"
+    },
+    "holdouts\\puritan_holdout.txt": {
+      "bytes": 121313,
+      "sha256": "4027982e00dd420090defce6ece4d41a6b747452f2b714d12f53400078b11b77"
+    },
+    "holdouts\\spurgeon_holdout.txt": {
+      "bytes": 1838828,
+      "sha256": "813e54c884e4c506f6d608b612a1e34940861cd797c10acbce8f33a19b5169e3"
+    }
+  },
+  "mix_buckets": {
+    "bible": 0.0361,
+    "confession": 0.0501,
+    "general": 0.1001,
+    "puritan": 0.4087,
+    "spurgeon": 0.4049
+  },
+  "train_docs": 4401,
+  "train_chars": 27362591
+}

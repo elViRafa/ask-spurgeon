@@ -6,6 +6,7 @@ priority: medium
 tags: [gemma4, chat-template, bugfix, unsloth]
 schema_version: 1.3
 last_updated: "2026-06-05T12:50:30-04:00"
+review_status: stale
 ---
 
 # Bug Fix: Gemma 4 Multimodal Chat Template Processor Error

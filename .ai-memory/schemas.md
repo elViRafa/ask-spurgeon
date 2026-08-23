@@ -6,6 +6,7 @@ tags: [schemas, contracts]
 schema_version: 1.3
 last_updated: "2026-06-03T08:33:40-04:00"
 summary_hash: e0fe7d0aa73fa2f3f2226b9a4b4b16f9
+review_status: stale
 ---
 
 # Schemas

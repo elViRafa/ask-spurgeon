@@ -6,6 +6,7 @@ priority: medium
 tags: [pretraining, schedule, evaluation, export, notebook-c, perplexity]
 schema_version: 1.3
 last_updated: "2026-06-08T07:34:40-04:00"
+review_status: stale
 ---
 
 # Pretraining Step 8 (Schedule) and Step 9 (Evaluation & Export)

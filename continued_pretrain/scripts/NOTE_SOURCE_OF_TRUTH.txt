@@ -1,0 +1,3 @@
+G3: scripts/_gen_sota_notebooks.py is the source of truth for *_sota.ipynb.
+Edit the generator, then run: python continued_pretrain/scripts/_gen_sota_notebooks.py
+Do not hand-edit notebooks and generator in parallel.

@@ -1,0 +1,131 @@
+{
+  "created_at": "2026-07-13T23:06:01.987986+00:00",
+  "plan": "PLAN_FABLE5_TO_IMPROVE_CPT v2",
+  "checks": {
+    "corpus": {
+      "train_chars": 27433007,
+      "n_docs": 4401,
+      "max_doc_chars": 7000,
+      "min_doc_chars": 532,
+      "p50_doc_chars": 6567,
+      "docs_over_8k": 0
+    },
+    "F1_chunking": "PASS \u2014 no doc > 8k chars (chunking applied at mix build)",
+    "D2_lite": {
+      "doc_separators": 4401,
+      "docs": 4401,
+      "note": "B_sota APPEND_EOS=True appends tokenizer.eos_token before packing; packed EOS proof still Kaggle D2",
+      "status": "PASS"
+    },
+    "G2": {
+      "domain_buckets": [
+        "spurgeon",
+        "puritan",
+        "confession",
+        "bible"
+      ],
+      "status": "PASS"
+    },
+    "shares": {
+      "spurgeon": {
+        "share": 0.4049,
+        "target": [
+          0.4,
+          0.5
+        ],
+        "status": "PASS"
+      },
+      "puritan": {
+        "share": 0.4087,
+        "target": [
+          0.3,
+          0.45
+        ],
+        "status": "PASS"
+      },
+      "confession": {
+        "share": 0.0501,
+        "target": [
+          0.03,
+          0.08
+        ],
+        "status": "PASS"
+      },
+      "bible": {
+        "share": 0.0361,
+        "target": [
+          0.02,
+          0.05
+        ],
+        "status": "PASS"
+      },
+      "general": {
+        "share": 0.1001,
+        "target": [
+          0.08,
+          0.12
+        ],
+        "status": "PASS"
+      }
+    },
+    "D3": {
+      "verified_tokens_present": true,
+      "train_estimated_tokens": 8181839,
+      "tokenizer": "gpt2",
+      "status": "PASS"
+    },
+    "session_budget": {
+      "tokens_per_step": 32768,
+      "steps_per_epoch_est": 250,
+      "recommended_MAX_STEPS": 250,
+      "note": "Measure s/step on Kaggle; if packing yields different row count, recompute from D1 tokens/epoch"
+    },
+    "holdouts": {
+      "spurgeon": {
+        "exists": true,
+        "bytes": 1838828,
+        "status": "PASS"
+      },
+      "puritan": {
+        "exists": true,
+        "bytes": 121313,
+        "status": "PASS"
+      },
+      "confession": {
+        "exists": true,
+        "bytes": 71012,
+        "status": "PASS"
+      },
+      "general": {
+        "exists": true,
+        "bytes": 66303,
+        "status": "PASS"
+      }
+    },
+    "holdouts_manual": {
+      "heidelberg": true,
+      "belgic": true
+    },
+    "mcq": {
+      "wsc": 50,
+      "heidelberg": 42
+    },
+    "kaggle_package": {
+      "exists": true,
+      "bytes": 11869955,
+      "path": "C:\\Users\\rafael\\Projetos\\search-sermons\\continued_pretrain\\data\\kaggle_upload\\theology-cpt-corpus.zip"
+    },
+    "M1_doc": true,
+    "Kaggle_only_remaining": [
+      "D1 packed-row token lengths after Unsloth packing",
+      "D2 EOS counts in packed train_dataset",
+      "D4 trainable embed/lm_head after get_peft_model",
+      "Unsloth hybrid qwen3_5 trainability on T4",
+      "G1 pin unsloth commit after first good session",
+      "Train 1 epoch + C_sota eval + merge gate"
+    ]
+  },
+  "errors": [],
+  "warnings": [],
+  "overall": "PASS"
+}

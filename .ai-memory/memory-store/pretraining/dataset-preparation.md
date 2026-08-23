@@ -6,6 +6,7 @@ priority: medium
 tags: [pretraining, dataset, kaggle, huggingface]
 schema_version: 1.3
 last_updated: "2026-06-06T19:38:20-04:00"
+review_status: stale
 ---
 
 Documents the environment settings, directory layout, code cells, and verification diagnostics for Step 6: Dataset Preparation of Phase 1 of the Charles Spurgeon continued pretraining pipeline.

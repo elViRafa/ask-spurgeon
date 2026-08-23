@@ -7,6 +7,7 @@ tags: [gemma2, fine-tuning, ollama]
 schema_version: 1.3
 last_updated: "2026-06-03T17:19:45-04:00"
 summary_hash: c6e3f7de5ff6c7d4b7d2b0101970513d
+review_status: stale
 ---
 
 # Gemma 2 Fine-Tuning Support

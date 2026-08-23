@@ -6,6 +6,7 @@ priority: medium
 tags: [unsloth, lora, gemma4, bugfix]
 schema_version: 1.3
 last_updated: "2026-06-06T12:04:12-04:00"
+review_status: stale
 ---
 
 # Unsloth Training Warnings & Fast Patching Resolution

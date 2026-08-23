@@ -6,6 +6,7 @@ priority: high
 tags: [pretraining, merge, export, gguf, huggingface, upload]
 schema_version: 1.3
 last_updated: "2026-06-08T10:18:26-04:00"
+review_status: stale
 ---
 
 # Pretraining Step 10 (Merge & Export to Hugging Face)

@@ -7,6 +7,7 @@ tags: [gemma4, finetuning, decisions]
 schema_version: 1.3
 last_updated: "2026-06-04T10:24:33-04:00"
 summary_hash: 58d9e4c42d7f3c068e76867ebfc3458f
+review_status: stale
 ---
 
 # Decision: Upgrade Fine-Tuning Pipeline to Gemma 4 12B

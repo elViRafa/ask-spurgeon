@@ -1,0 +1,127 @@
+{
+  "created_at": "2026-07-13T14:39:10.406245+00:00",
+  "seed": 42,
+  "plan": "PLAN_FABLE5_TO_IMPROVE_CPT v2",
+  "max_chunk_chars": 7000,
+  "spurgeon_weight": 0.086929,
+  "spurgeon_weight_mode": "target_share=0.45",
+  "target_spurgeon_share": 0.45,
+  "replay_frac_target": 0.1,
+  "allow_spurgeon_only": false,
+  "author_tags": false,
+  "doc_separator": "<|endoftext|>",
+  "train_path": "C:\\Users\\rafael\\Projetos\\search-sermons\\continued_pretrain\\data\\theology_mix_train.txt",
+  "train_docs": 4401,
+  "train_chars": 27362591,
+  "train_approx_tokens": 6840647,
+  "max_doc_chars": 7000,
+  "docs_over_8k_chars": 0,
+  "buckets": {
+    "bible": {
+      "docs": 144,
+      "chars": 987277,
+      "approx_tokens": 246819,
+      "char_share": 0.0361
+    },
+    "confession": {
+      "docs": 216,
+      "chars": 1371195,
+      "approx_tokens": 342798,
+      "char_share": 0.0501
+    },
+    "general": {
+      "docs": 426,
+      "chars": 2739980,
+      "approx_tokens": 684995,
+      "char_share": 0.1001
+    },
+    "puritan": {
+      "docs": 1786,
+      "chars": 11183721,
+      "approx_tokens": 2795930,
+      "char_share": 0.4087
+    },
+    "spurgeon": {
+      "docs": 1829,
+      "chars": 11080418,
+      "approx_tokens": 2770104,
+      "char_share": 0.4049
+    }
+  },
+  "domain_buckets_present": [
+    "spurgeon",
+    "puritan",
+    "confession",
+    "bible"
+  ],
+  "holdouts": {
+    "spurgeon": 298,
+    "puritan": 20,
+    "confession": 10,
+    "general": 10
+  },
+  "dedup": {
+    "dropped_duplicate_paragraphs": 0,
+    "dropped_docs_after_dedup": 0,
+    "docs_in": 4401,
+    "docs_out": 4401,
+    "unique_long_paragraphs": 30426,
+    "top_frequent_paragraphs": []
+  },
+  "sources": {
+    "spurgeon_train": "C:\\Users\\rafael\\Projetos\\search-sermons\\continued_pretrain\\data\\spurgeon_train.txt",
+    "puritans_dir": "C:\\Users\\rafael\\Projetos\\search-sermons\\data\\puritans",
+    "confessions_dir": "C:\\Users\\rafael\\Projetos\\search-sermons\\data\\confessions",
+    "bible_dir": "C:\\Users\\rafael\\Projetos\\search-sermons\\data\\bible",
+    "replay_txt": "continued_pretrain\\data\\replay\\general_replay.txt",
+    "replay_hf": null
+  },
+  "notes": [
+    "approx_tokens uses chars/4; run 06_verify_tokens.py --mix to fill verified_tokens.",
+    "Heidelberg Catechism + Belgic Confession belong in continued_pretrain/data/holdouts_manual/ (not training dirs).",
+    "Flagship base: Qwen3.5-4B-Base (see plan \u00a74.1). Baseline Spurgeon path remains B_training.ipynb."
+  ],
+  "verified_tokens": {
+    "tokenizer": "gpt2",
+    "method": "sample_ratio",
+    "sample_chars": 500000,
+    "token_char_ratio": 0.298248,
+    "train_estimated_tokens": 8181839,
+    "train_chars": 27433007,
+    "max_doc_chars": 7000,
+    "docs_over_8k_chars": 0,
+    "n_docs": 4401,
+    "buckets": {
+      "bible": {
+        "chars": 987277,
+        "estimated_tokens": 294453,
+        "char_share": 0.0361,
+        "docs": 144
+      },
+      "confession": {
+        "chars": 1371195,
+        "estimated_tokens": 408956,
+        "char_share": 0.0501,
+        "docs": 216
+      },
+      "general": {
+        "chars": 2739980,
+        "estimated_tokens": 817193,
+        "char_share": 0.1001,
+        "docs": 426
+      },
+      "puritan": {
+        "chars": 11183721,
+        "estimated_tokens": 3335522,
+        "char_share": 0.4087,
+        "docs": 1786
+      },
+      "spurgeon": {
+        "chars": 11080418,
+        "estimated_tokens": 3304712,
+        "char_share": 0.4049,
+        "docs": 1829
+      }
+    }
+  }
+}

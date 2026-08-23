@@ -6,6 +6,7 @@ priority: medium
 tags: [pretraining, training, lora, qlora, kaggle, unsloth]
 schema_version: 1.3
 last_updated: "2026-06-06T20:59:08-04:00"
+review_status: stale
 ---
 
 Documents the GPU settings, VRAM budget, hyperparameter configurations, and resumption logic for Step 7: Training Configuration of Phase 1 of the Charles Spurgeon continued pretraining pipeline.

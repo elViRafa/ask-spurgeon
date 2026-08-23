@@ -6,6 +6,7 @@ tags: [architecture]
 schema_version: 1.3
 last_updated: "2026-06-03T08:33:08-04:00"
 summary_hash: bfa6b46d9eb00a6552e658b497cc91ad
+review_status: stale
 ---
 
 # Architecture

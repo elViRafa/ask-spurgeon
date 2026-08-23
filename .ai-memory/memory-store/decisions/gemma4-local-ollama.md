@@ -6,6 +6,7 @@ priority: medium
 tags: [gemma4, ollama, gguf, quantization, cleanup]
 schema_version: 1.3
 last_updated: "2026-06-06T14:08:24-04:00"
+review_status: stale
 ---
 
 # Gemma 4 Local Ollama Deployment
