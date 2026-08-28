@@ -1,0 +1,2 @@
+G3: fine_tuning/scripts/_gen_sota_sft_notebooks.py is the source of truth for *_sota SFT notebooks.
+Edit the generator, then run: python fine_tuning/scripts/_gen_sota_sft_notebooks.py

@@ -27,7 +27,7 @@ TARGET_SHARES = {
     "bible": (0.02, 0.05),
     "general": (0.08, 0.12),
 }
-TOKENS_PER_STEP = 16 * 2048  # batch 2 × accum 8 × seq 2048
+TOKENS_PER_STEP = 16 * 2048  # batch 1 × accum 16 × seq 2048 (upper bound; PAD_TO_MAX=False)
 MAX_DOC_CHARS = 8000
 
 

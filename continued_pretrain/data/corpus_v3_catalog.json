@@ -1,0 +1,50 @@
+{
+  "plan": "continued_pretrain/CORPUS_V3_EXPANSION_PLAN.md",
+  "handoff": "continued_pretrain/CORPUS_V3_S5_HANDOFF.md",
+  "created": "2026-08-27",
+  "updated": "2026-08-27",
+  "status": "s4_complete_next_is_s5",
+  "next_session": "s5_runpod_b_needs_approval",
+  "train": false,
+  "fallback_adapter": {
+    "hub": "rafaelvieirar1r/qwen3.5-4b-theology-cpt-lora-v2",
+    "sha256": "319d17a39d193041528914cfb2f83c1decf21e55ffe76dfd2ca565f5e99e1478"
+  },
+  "exclude_from_mix": [
+    {
+      "path": "data/puritans/henry/exposition_vol5.txt",
+      "reason": "verse-by-verse biblical commentary; do not use as mix mass",
+      "status": "done"
+    }
+  ],
+  "do_not_scrape_bodies": ["banneroftruth.org", "heritagebooks.org", "puritanpublications.com"],
+  "preferred_fetch": ["ccel.org", "gutenberg.org", "github.com/textcreationpartnership", "archive.org"],
+  "commentary_cap_mb": 15,
+  "keep_all_spurgeon_max_other_weight": 1.5,
+  "packing_recipe": "one_doc_padded",
+  "s4": [
+    {"key": "gill_doctrinal", "status": "s4_done", "kind": "systematic"},
+    {"key": "dabney_syllabus", "status": "s4_done", "kind": "systematic"},
+    {"key": "shedd_dogmatic_vol1", "status": "s4_done", "kind": "systematic"},
+    {"key": "shedd_dogmatic_vol2", "status": "s4_done", "kind": "systematic"},
+    {"key": "shedd_dogmatic_vol3", "status": "s4_done", "kind": "systematic"},
+    {"key": "aa_hodge_outlines", "status": "s4_done", "kind": "systematic"},
+    {"key": "witsius_covenants_vol1", "status": "s4_done", "kind": "systematic"},
+    {"key": "witsius_covenants_vol2", "status": "s4_done", "kind": "systematic"},
+    {"key": "boyce_abstract", "status": "s4_done", "kind": "systematic"},
+    {"key": "second_helvetic", "status": "s4_done", "kind": "confession"},
+    {"key": "scots_confession", "status": "s4_done", "kind": "confession"},
+    {"key": "canons_of_dort", "status": "s4_done", "kind": "confession"},
+    {"key": "turretin_english", "status": "s4_skipped", "reason": "P&R/Dennison 1992-97 in copyright"}
+  ],
+  "wave3": [
+    {"author": "chaderton", "status": "s3_skipped"},
+    {"author": "john_rogers", "status": "s3_skipped"},
+    {"key": "hodge_commentary_romans", "status": "s3_done", "kind": "commentary"},
+    {"key": "hodge_commentary_1cor", "status": "s3_done", "kind": "commentary"},
+    {"key": "hodge_commentary_2cor", "status": "s3_done", "kind": "commentary"},
+    {"key": "hodge_commentary_ephesians", "status": "s3_done", "kind": "commentary"},
+    {"key": "calvin_commentary_selected", "status": "s3_done", "kind": "commentary"}
+  ],
+  "notes": "Full per-author on_disk/wave1/wave2 lists lived in the pre-S4 catalog; S1-S3 statuses remain done. S4 did not re-fetch waves 1-3. Mix: continued_pretrain/data/theology_mix_manifest.json"
+}

@@ -1,3 +1,4 @@
-G3: scripts/_gen_sota_notebooks.py is the source of truth for *_sota.ipynb.
+G3: scripts/_gen_sota_notebooks.py is the source of truth for *_sota.ipynb
+and scripts/train_cpt_sota.py / scripts/eval_cpt_sota.py.
 Edit the generator, then run: python continued_pretrain/scripts/_gen_sota_notebooks.py
-Do not hand-edit notebooks and generator in parallel.
+Do not hand-edit notebooks/train_cpt_sota.py/eval_cpt_sota.py and generator in parallel.

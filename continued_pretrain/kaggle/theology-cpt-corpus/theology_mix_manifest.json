@@ -1,0 +1,133 @@
+{
+  "created_at": "2026-08-25T02:49:28.776992+00:00",
+  "seed": 42,
+  "plan": "PLAN_FABLE5_TO_IMPROVE_CPT v2",
+  "max_chunk_chars": 7000,
+  "spurgeon_weight": 0.163689,
+  "spurgeon_weight_mode": "target_share=0.45",
+  "target_spurgeon_share": 0.45,
+  "replay_frac_target": 0.1,
+  "allow_spurgeon_only": false,
+  "author_tags": false,
+  "doc_separator": "<|endoftext|>",
+  "train_path": "C:\\Users\\rafael\\Projetos\\search-sermons\\continued_pretrain\\data\\theology_mix_train.txt",
+  "train_docs": 8245,
+  "train_chars": 51522408,
+  "train_approx_tokens": 12880602,
+  "max_doc_chars": 7000,
+  "docs_over_8k_chars": 0,
+  "buckets": {
+    "bible": {
+      "docs": 271,
+      "chars": 1859757,
+      "approx_tokens": 464939,
+      "char_share": 0.0361
+    },
+    "confession": {
+      "docs": 404,
+      "chars": 2579148,
+      "approx_tokens": 644787,
+      "char_share": 0.0501
+    },
+    "general": {
+      "docs": 775,
+      "chars": 5154140,
+      "approx_tokens": 1288535,
+      "char_share": 0.1
+    },
+    "puritan": {
+      "docs": 3358,
+      "chars": 21061172,
+      "approx_tokens": 5265293,
+      "char_share": 0.4088
+    },
+    "spurgeon": {
+      "docs": 3437,
+      "chars": 20868191,
+      "approx_tokens": 5217047,
+      "char_share": 0.405
+    }
+  },
+  "domain_buckets_present": [
+    "spurgeon",
+    "puritan",
+    "confession",
+    "bible"
+  ],
+  "holdouts": {
+    "spurgeon": 298,
+    "puritan": 20,
+    "confession": 10,
+    "general": 10
+  },
+  "dedup": {
+    "dropped_duplicate_paragraphs": 1,
+    "dropped_docs_after_dedup": 0,
+    "docs_in": 8245,
+    "docs_out": 8245,
+    "unique_long_paragraphs": 56036,
+    "top_frequent_paragraphs": [
+      {
+        "preview": "first, it is an effective way. he that believes on the lord jesus christ shall be made clean. he shall be cleansed from all the foulness of the past--god will w",
+        "count": 2,
+        "chars": 1517
+      }
+    ]
+  },
+  "sources": {
+    "spurgeon_train": "C:\\Users\\rafael\\Projetos\\search-sermons\\continued_pretrain\\data\\spurgeon_train.txt",
+    "puritans_dir": "C:\\Users\\rafael\\Projetos\\search-sermons\\data\\puritans",
+    "confessions_dir": "C:\\Users\\rafael\\Projetos\\search-sermons\\data\\confessions",
+    "bible_dir": "C:\\Users\\rafael\\Projetos\\search-sermons\\data\\bible",
+    "replay_txt": "continued_pretrain\\data\\replay\\general_replay.txt",
+    "replay_hf": null
+  },
+  "notes": [
+    "approx_tokens uses chars/4; run 06_verify_tokens.py --mix to fill verified_tokens.",
+    "Heidelberg Catechism + Belgic Confession belong in continued_pretrain/data/holdouts_manual/ (not training dirs).",
+    "Flagship base: Qwen3.5-4B-Base (see plan \u00a74.1). Baseline Spurgeon path remains B_training.ipynb."
+  ],
+  "verified_tokens": {
+    "tokenizer": "Qwen/Qwen3.5-4B-Base",
+    "method": "sample_ratio",
+    "sample_chars": 500000,
+    "token_char_ratio": 0.30159,
+    "train_estimated_tokens": 15578428,
+    "train_chars": 51654328,
+    "max_doc_chars": 7000,
+    "docs_over_8k_chars": 0,
+    "n_docs": 8245,
+    "buckets": {
+      "bible": {
+        "chars": 1859757,
+        "estimated_tokens": 560884,
+        "char_share": 0.0361,
+        "docs": 271
+      },
+      "confession": {
+        "chars": 2579148,
+        "estimated_tokens": 777845,
+        "char_share": 0.0501,
+        "docs": 404
+      },
+      "general": {
+        "chars": 5154140,
+        "estimated_tokens": 1554437,
+        "char_share": 0.1,
+        "docs": 775
+      },
+      "puritan": {
+        "chars": 21061172,
+        "estimated_tokens": 6351838,
+        "char_share": 0.4088,
+        "docs": 3358
+      },
+      "spurgeon": {
+        "chars": 20868191,
+        "estimated_tokens": 6293637,
+        "char_share": 0.405,
+        "docs": 3437
+      }
+    }
+  }
+}

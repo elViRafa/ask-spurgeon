@@ -1,0 +1,13 @@
+{
+  "id": "rafaelvieira1/theology-cpt-v2-a-data-prep-sota",
+  "title": "Theology CPT v2 A Data Prep SOTA",
+  "code_file": "A_data_prep_sota.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": "true",
+  "enable_gpu": "false",
+  "enable_internet": "false",
+  "dataset_sources": [
+    "rafaelvieira1/theology-cpt-corpus"
+  ]
+}

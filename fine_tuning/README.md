@@ -1,8 +1,35 @@
 # Fine-Tuning Spurgeon — High Fidelity Generator
 
-This folder contains everything needed to fine-tune a model that generates answers in Spurgeon’s voice **while staying highly faithful** to the actual source text.
+This folder contains everything needed to fine-tune a model that generates answers in Spurgeon's voice **while staying highly faithful** to the actual source text.
 
-## Recommended Starting Point
+## Qwen3.5 SFT v2 on Kaggle (current path)
+
+SFT chains on **CPT v2** output (`theology_cpt_v2_merged_hf`). Dev runs use stock `unsloth/Qwen3.5-4B-Base`.
+
+```bash
+# Data mix (from legacy JSONL v1)
+python fine_tuning/scripts/build_qa_mix.py
+python fine_tuning/scripts/12_package_kaggle_qa_mix.py
+
+# Regenerate SOTA notebooks (source of truth: _gen_sota_sft_notebooks.py)
+python fine_tuning/scripts/_gen_sota_sft_notebooks.py
+```
+
+Operator runbook: [`KAGGLE_RUNBOOK_SFT_V2.md`](KAGGLE_RUNBOOK_SFT_V2.md)  
+CPT runbook (run first): [`../continued_pretrain/KAGGLE_RUNBOOK_V2.md`](../continued_pretrain/KAGGLE_RUNBOOK_V2.md)
+
+Notebooks: `D_qa_data_prep_sota.ipynb`, `E_qa_training_sota.ipynb`, `F_qa_eval_sota.ipynb`
+
+After gated export:
+
+```bash
+ollama create spurgeon-qa-v2 -f fine_tuning/models/Modelfile.qwen35-spurgeon-qa-v2
+python fine_tuning/scripts/smoke_test_ollama.py --model spurgeon-qa-v2
+```
+
+Legacy Llama/Colab/1500-example notebooks remain for reference only.
+
+## Recommended Starting Point (legacy)
 
 **Use the Google Colab notebook:**
 

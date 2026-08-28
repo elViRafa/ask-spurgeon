@@ -13,9 +13,13 @@ Two parallel tracks:
 **9B:** concession-gated experiment only (VRAM probe required).  
 **Plan:** [`PLAN_FABLE5_TO_IMPROVE_CPT.md`](PLAN_FABLE5_TO_IMPROVE_CPT.md)  
 **Kaggle steps:** [`KAGGLE_RUNBOOK_V2.md`](KAGGLE_RUNBOOK_V2.md)  
+**Runpod (current train path):** [`RUNPOD_RUNBOOK.md`](RUNPOD_RUNBOOK.md)  
+**Keepable fallback LoRA (v2, best-400):** [`kaggle/runpod_cpt_v2/README.md`](kaggle/runpod_cpt_v2/README.md)  
+**S5 B adapter (best-325, C not run):** [`kaggle/runpod_cpt_v3/README.md`](kaggle/runpod_cpt_v3/README.md) — C checklist: [`CORPUS_V3_S5_C_CHECKLIST.md`](CORPUS_V3_S5_C_CHECKLIST.md)  
+**After C, more-tokens continue (if warranted):** [`NEXT_CPT_MORE_TOKENS.md`](NEXT_CPT_MORE_TOKENS.md)  
 **M1 gate:** [`data/M1_BASE_MODEL_GATE.md`](data/M1_BASE_MODEL_GATE.md)
 
-**Notebook source of truth (G3):** edit `scripts/_gen_sota_notebooks.py`, then regenerate — do not dual-edit notebooks and generator.
+**Notebook source of truth (G3):** edit `scripts/_gen_sota_notebooks.py`, then regenerate — do not dual-edit notebooks / `train_cpt_sota.py` / `eval_cpt_sota.py` and the generator.
 
 ---
 
@@ -24,6 +28,8 @@ Two parallel tracks:
 ```text
 continued_pretrain/
 ├── PLAN_FABLE5_TO_IMPROVE_CPT.md
+├── KAGGLE_RUNBOOK_V2.md
+├── RUNPOD_RUNBOOK.md
 ├── README.md
 ├── configs/
 │   └── train_config_cpt_theology_sota.json
@@ -33,7 +39,10 @@ continued_pretrain/
 │   ├── 07_build_theology_mix.py    # multi-source mix (v2 chunk/dedup/share)
 │   ├── 08_fetch_pd_sources.py      # optional PD downloads
 │   ├── 09_build_catechism_mcq.py   # WSC / Heidelberg MCQ JSON
-│   └── _gen_sota_notebooks.py      # regenerates *_sota notebooks
+│   ├── 18_prep_hf_dataset.py       # local A: mix txt -> kaggle/a_output_v3
+│   ├── cpt_runtime.py              # path / GPU / resume helpers
+│   ├── train_cpt_sota.py           # generated B train script (Runpod)
+│   └── _gen_sota_notebooks.py      # regenerates *_sota notebooks + train_cpt_sota.py
 ├── notebooks/
 │   ├── B_training.ipynb            # Phase 1 (freeze)
 │   ├── A_data_prep_sota.ipynb
@@ -75,7 +84,7 @@ Kaggle: `A_data_prep` → `B_training` → `C_eval_and_merge`.
 | Mix guard | Spurgeon-only OK | **≥2 domain buckets** (G2) |
 | Spurgeon weight | 2.5 fixed | **share-targeted** (~0.45) |
 | Dedup | file prefix only | + **paragraph dedup** + top-20 report |
-| Training | warmup_steps=100, emb_lr=5e-6 | **warmup_ratio=0.03**, emb_lr=**1e-5** |
+| Training | warmup_steps=100, emb_lr=5e-6 | **warmup_ratio=0.03**, emb_lr=**5e-6** |
 | Eval during train | mix 1% only | **per-bucket dict** |
 | Eval notebook | sampled probes, EVAL_BASE=False | **greedy probes**, EVAL_BASE=True, **MCQ** |
 | 9B | “flagship” | **VRAM-probe gated experiment** |
@@ -119,11 +128,28 @@ Upload to Kaggle: `theology_mix_train.txt`, `theology_mix_manifest.json`, `holdo
 
 Config mirror: `configs/train_config_cpt_theology_sota.json`
 
+### Runpod (current GPU train path)
+
+Kaggle B v14 ERROR — do not push another Kaggle B. See [`RUNPOD_RUNBOOK.md`](RUNPOD_RUNBOOK.md). Keepable LoRA (best-400) lives at [`kaggle/runpod_cpt_v2/`](kaggle/runpod_cpt_v2/README.md). Detached train script:
+
+```bash
+python continued_pretrain/scripts/_gen_sota_notebooks.py   # after generator edits
+# on the pod:
+export CPT_WORK_ROOT=/workspace
+export PREV_RUN_CHECKPOINT=    # first run: fresh (no Kaggle 4-bit resume)
+python continued_pretrain/scripts/train_cpt_sota.py --install   # first boot only; exits after pip
+nohup python continued_pretrain/scripts/train_cpt_sota.py > /workspace/cpt_train.log 2>&1 &
+```
+
+`GPU_PROFILE` auto-detects sm_80+ (4090/L4/A100) → Ampere bf16, including with embed LoRA.
+
+A Running GPU pod bills even when idle. After abort/finish, **delete the pod** and keep the network volume. Details: [`RUNPOD_RUNBOOK.md`](RUNPOD_RUNBOOK.md) § Do not burn GPU credits.
+
 ### VRAM fallbacks (T4 16 GB)
 
 1. `TRAIN_LM_HEAD = False` if D4 tied  
-2. `TRAIN_EMBEDDINGS = False`  
-3. `LORA_RANK = 32`  
+2. Drop `EVAL_DOCS_PER_BUCKET` to 2 and/or eval only mix+spurgeon  
+3. `TRAIN_EMBEDDINGS = False` only if batch-1 embed LoRA still OOMs (will not hit −15% PPL)  
 4. `PER_DEVICE_BATCH = 1`, raise grad accum  
 
 ### 9B (E3)
@@ -138,6 +164,8 @@ T4×2 without Unsloth is documented in the plan risk register — generally not 
 See plan §5. Headline:
 
 - ≥4 buckets, shares in range, `verified_tokens`, non-empty holdouts  
-- Domain PPL ≥15% better than base; general ≤10% worse  
+- Domain PPL ≥15% better than base; general ≤10% worse  (**long-term** bar; the $15 Runpod job is a ~15.6M-token **probe** — do not expect −15%)  
 - Heidelberg MCQ ≥ +10 pts vs base  
 - Greedy style preferred over base  
+
+This probe ships later only if holdout PPL **beats base** and `eval_spurgeon` did not rise by step 50.

@@ -113,6 +113,32 @@ continued_pretrain/data/kaggle_upload/*.zip
 continued_pretrain/models/*
 !continued_pretrain/models/Modelfile
 
+# CPT adapter / checkpoint blobs (keep local + optional Hugging Face)
+continued_pretrain/**/*.safetensors
+continued_pretrain/kaggle/**/*.arrow
+continued_pretrain/kaggle/**/hf_home/
+
+# Kaggle / Runpod local run outputs (keep kernel notebooks + poll scripts only)
+continued_pretrain/kaggle/a_output/
+continued_pretrain/kaggle/a_output_v*/
+continued_pretrain/kaggle/b_output/
+continued_pretrain/kaggle/b_output_v*/
+continued_pretrain/kaggle/b_out_partial/
+continued_pretrain/kaggle/c_output/
+continued_pretrain/kaggle/**/unsloth_compiled_cache/
+continued_pretrain/kaggle/**/checkpoints_sota/
+continued_pretrain/kaggle/**/theology_cpt_lora/
+continued_pretrain/kaggle/**/optimizer.pt
+continued_pretrain/kaggle/**/scheduler.pt
+continued_pretrain/kaggle/**/rng_state.pth
+continued_pretrain/kaggle/**/training_args.bin
+continued_pretrain/kaggle/**/*.log
+continued_pretrain/kaggle/**/b_logs*.txt
+continued_pretrain/kaggle/**/c_logs*.txt
+continued_pretrain/kaggle/theology-cpt-corpus/holdouts/
+continued_pretrain/kaggle/theology-cpt-corpus/*.txt
+continued_pretrain/kaggle/runpod_cpt_v*/
+
 # Scratch and local debug tools
 scratch/
 fine_tuning/data/ver.py

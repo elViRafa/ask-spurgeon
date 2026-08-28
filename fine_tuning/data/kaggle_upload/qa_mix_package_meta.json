@@ -1,0 +1,11 @@
+{
+  "created_at": "2026-08-23T16:54:59.743397+00:00",
+  "dataset_name": "spurgeon-qa-mix-v1",
+  "files": [
+    "qa_mix_train.jsonl",
+    "qa_mix_val.jsonl",
+    "qa_test_frozen.jsonl",
+    "qa_mix_manifest.json"
+  ],
+  "zip_bytes": 1643914
+}

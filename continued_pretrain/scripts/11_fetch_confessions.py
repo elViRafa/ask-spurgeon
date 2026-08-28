@@ -5,11 +5,15 @@ Fetch public-domain confessions / systematic theology into data/confessions/.
 - Westminster Confession (+ larger editions with catechisms)
 - 1689 Second London Baptist Confession
 - Calvin Institutes (Beveridge)
+- S4: unique PD systematic (Gill, Dabney, Shedd, A.A. Hodge, Witsius, Boyce)
+  plus small Reformed symbols (Dort, Second Helvetic, Scots Confession)
 
 Heidelberg + Belgic stay in continued_pretrain/data/holdouts_manual/ (NOT training).
+Do not fetch more biblical commentary. Do not grow Puritan treatise mass.
 
 Usage:
   python continued_pretrain/scripts/11_fetch_confessions.py
+  python continued_pretrain/scripts/11_fetch_confessions.py --s4
   python continued_pretrain/scripts/11_fetch_confessions.py --rebuild-mix
 """
 
@@ -22,6 +26,7 @@ import re
 import ssl
 import subprocess
 import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -71,11 +76,49 @@ def clean(text: str) -> str:
     return text.strip()
 
 
+def ocr_quality_ok(text: str) -> tuple[bool, str]:
+    """Cheap OCR garbage gate (same thresholds as 10_fetch_puritans.py)."""
+    sample = text[:80_000]
+    if not sample:
+        return False, "empty"
+    letters = sum(ch.isalpha() for ch in sample)
+    spaces = sample.count(" ")
+    weird = sum(1 for ch in sample if ord(ch) < 32 and ch not in "\n\t\r")
+    letter_ratio = letters / max(len(sample), 1)
+    if letter_ratio < 0.45:
+        return False, f"letter_ratio={letter_ratio:.3f}"
+    if weird / max(len(sample), 1) > 0.02:
+        return False, f"control_chars={weird}"
+    if spaces / max(len(sample), 1) < 0.06 and letter_ratio > 0.5:
+        return False, f"space_ratio={spaces / len(sample):.3f}"
+    return True, "ok"
+
+
+def holdout_leak(text: str) -> str | None:
+    """Refuse Heidelberg / Belgic training dumps (eval holdouts)."""
+    head = text[:80_000].lower()
+    if "only comfort in life and death" in head and (
+        "lord's day 1" in head or "question 1." in head[:4000]
+    ):
+        return "heidelberg holdout leak"
+    if "we all believe with the heart" in head and "belgic" in head[:8000]:
+        return "belgic holdout leak"
+    return None
+
+
 def passes(text: str, keys_any: list[str] | None, keys_all: list[str] | None, min_chars: int) -> bool:
     if len(text) < min_chars:
         return False
+    leak = holdout_leak(text)
+    if leak:
+        print(f"    REJECT {leak}")
+        return False
+    ok, reason = ocr_quality_ok(text)
+    if not ok:
+        print(f"    REJECT OCR quality ({reason})")
+        return False
     head = text[:30_000].lower()
-    body = text[:100_000].lower()
+    body = text[:250_000].lower()
     if keys_all and not all(k in head or k in body for k in keys_all):
         return False
     if keys_any and not any(k in head or k in body for k in keys_any):
@@ -96,6 +139,7 @@ def try_urls(
     keys_all: list[str] | None = None,
     min_chars: int = 3000,
     force: bool = False,
+    sleep: float = 1.2,
 ) -> bool:
     if dest.exists() and dest.stat().st_size > 2000 and not force:
         print(f"  skip exists: {dest} ({dest.stat().st_size:,} bytes)")
@@ -107,6 +151,8 @@ def try_urls(
         except Exception as e:
             print(f"    ERR {e}")
             continue
+        if sleep:
+            time.sleep(sleep)
         print(f"    got {len(text):,} chars; head={text[:100]!r}")
         if not passes(text, keys_any, keys_all, min_chars):
             print("    REJECT verification")
@@ -299,6 +345,145 @@ CATALOG = [
 ]
 
 
+def ccel_cache(letter: str, author: str, work: str) -> str:
+    return f"https://ccel.org/ccel/{letter}/{author}/{work}/cache/{work}.txt"
+
+
+# Unique PD confession/ST for share-band lift. Not commentary. Not Puritan treatises.
+# Not Turretin English (P&R/Dennison 1992–97 is in copyright). Not Heidelberg/Belgic.
+S4_CATALOG = [
+    {
+        "key": "gill_doctrinal",
+        "dest": "data/confessions/systematic/gill_body_of_doctrinal_divinity.txt",
+        "title": "John Gill, Body of Doctrinal Divinity",
+        "urls": [
+            ccel_cache("g", "gill", "doctrinal"),
+            "https://ccel.org/ccel/g/gill/doctrinal/cache/doctrinal.txt",
+        ],
+        "keys_any": ["gill", "doctrinal divinity", "body of doctrinal"],
+        "min_chars": 80_000,
+    },
+    {
+        "key": "dabney_syllabus",
+        "dest": "data/confessions/systematic/dabney_systematic_theology.txt",
+        "title": "R.L. Dabney, Syllabus and Notes of Systematic and Polemic Theology",
+        "urls": [ia_download("syllabusnotesofc00dabn")],
+        "keys_all": ["dabney"],
+        "keys_any": ["systematic", "polemic", "syllabus", "theology"],
+        "min_chars": 400_000,
+    },
+    {
+        "key": "shedd_dogmatic_vol1",
+        "dest": "data/confessions/systematic/shedd_dogmatic_theology_vol1.txt",
+        "title": "W.G.T. Shedd, Dogmatic Theology vol. 1",
+        "urls": [
+            ia_download("dogmatictheology01shed"),
+            ia_download("cu31924092342538"),
+        ],
+        "keys_any": ["shedd", "dogmatic"],
+        "min_chars": 200_000,
+    },
+    {
+        "key": "shedd_dogmatic_vol2",
+        "dest": "data/confessions/systematic/shedd_dogmatic_theology_vol2.txt",
+        "title": "W.G.T. Shedd, Dogmatic Theology vol. 2",
+        "urls": [
+            ia_download("dogmatictheology02shed"),
+            ia_download("cu31924092342546"),
+        ],
+        "keys_any": ["shedd", "dogmatic"],
+        "min_chars": 200_000,
+    },
+    {
+        "key": "shedd_dogmatic_vol3",
+        "dest": "data/confessions/systematic/shedd_dogmatic_theology_vol3.txt",
+        "title": "W.G.T. Shedd, Dogmatic Theology vol. 3",
+        "urls": [
+            ia_download("dogmatictheology03shed"),
+            ia_download("cu31924092342553"),
+        ],
+        "keys_any": ["shedd", "dogmatic"],
+        "min_chars": 200_000,
+    },
+    {
+        "key": "aa_hodge_outlines",
+        "dest": "data/confessions/systematic/aa_hodge_outlines_of_theology.txt",
+        "title": "A.A. Hodge, Outlines of Theology (1878 rewritten)",
+        "urls": [
+            ia_download("outlinesoftheolo1878hodg"),
+            ia_download("outlinesoftheolo1860hodg"),
+        ],
+        "keys_all": ["hodge"],
+        "keys_any": ["outlines", "archibald"],
+        "min_chars": 300_000,
+    },
+    {
+        "key": "witsius_covenants_vol1",
+        "dest": "data/confessions/systematic/witsius_economy_of_the_covenants_vol1.txt",
+        "title": "Herman Witsius, Economy of the Covenants vol. 1 (Crookshank)",
+        "urls": [
+            ia_download("oeconomyofcovena01wits"),
+            ia_download("oeconomyofcovena176201wits"),
+        ],
+        "keys_any": ["witsius", "covenant", "oeconomy", "economy of the covenants"],
+        "min_chars": 200_000,
+    },
+    {
+        "key": "witsius_covenants_vol2",
+        "dest": "data/confessions/systematic/witsius_economy_of_the_covenants_vol2.txt",
+        "title": "Herman Witsius, Economy of the Covenants vol. 2 (Crookshank)",
+        "urls": [
+            ia_download("oeconomyofcovena02wits"),
+            ia_download("oeconomyofcovena176202wits"),
+        ],
+        "keys_any": ["witsius", "covenant", "oeconomy", "economy of the covenants"],
+        "min_chars": 200_000,
+    },
+    {
+        "key": "boyce_abstract",
+        "dest": "data/confessions/systematic/boyce_abstract_of_systematic_theology.txt",
+        "title": "J.P. Boyce, Abstract of Systematic Theology",
+        "urls": [ia_download("abstractofsystem00boyc")],
+        "keys_any": ["boyce", "abstract of systematic"],
+        "min_chars": 200_000,
+    },
+    {
+        "key": "second_helvetic",
+        "dest": "data/confessions/reformed/second_helvetic_confession.txt",
+        "title": "Second Helvetic Confession (Bullinger)",
+        "urls": [
+            "https://www.ccel.org/ccel/schaff/creeds3.v.ix.html",
+            "https://ccel.org/ccel/schaff/creeds3.v.ix.html",
+            ccel_cache("a", "anonymous", "helvetic"),
+        ],
+        "keys_any": ["helvetic", "bullinger"],
+        "min_chars": 8_000,
+    },
+    {
+        "key": "scots_confession",
+        "dest": "data/confessions/reformed/scots_confession_1560.txt",
+        "title": "Scots Confession (1560)",
+        "urls": [
+            ccel_cache("a", "anonymous", "scotconf"),
+            "https://ccel.org/ccel/a/anonymous/scotconf/cache/scotconf.txt",
+        ],
+        "keys_any": ["scotland", "knox", "scots confession", "scottish confession"],
+        "min_chars": 8_000,
+    },
+    {
+        "key": "canons_of_dort",
+        "dest": "data/confessions/reformed/canons_of_dort.txt",
+        "title": "Canons of Dort (Schaff English; not Heidelberg/Belgic)",
+        "urls": [
+            "https://www.ccel.org/ccel/schaff/creeds3.iv.xvi.html",
+            "https://ccel.org/ccel/schaff/creeds3.iv.xvi.html",
+        ],
+        "keys_any": ["dort", "dordt", "dordrecht", "remonstrant"],
+        "min_chars": 8_000,
+    },
+]
+
+
 def try_fetch_1689(repo: Path, force: bool) -> bool:
     dest = repo / "data" / "confessions" / "1689" / "second_london_confession.txt"
     if dest.exists() and dest.stat().st_size > 2000 and not force:
@@ -353,17 +538,74 @@ def try_fetch_1689(repo: Path, force: bool) -> bool:
     return True
 
 
+PROVENANCE = """# Confessions / Institutes provenance
+
+| Work | Path | Source |
+|------|------|--------|
+| WCF (with proofs) | `westminster/westminster_confession.txt` | IA `confessionoffa00west` |
+| WCF + catechisms (1756) | `westminster/wcf_catechisms_1756.txt` | IA Scottish edition |
+| WSC (curated earlier) | `westminster/westminster_shorter_catechism.txt` | curated PD |
+| 1689 LBCF | `1689/second_london_confession.txt` | IA if found, else curated PD core chapters |
+| Hodge ST vol.1–3 | `systematic/systematic_theology_vol*.txt` | IA `systematictheolo0{1,2,3}hodg` (moved from puritans/) |
+| Calvin Institutes Beveridge vol.1–2 | `institutes/institutes_beveridge_vol*.txt` | IA Beveridge scans |
+| Gill Body of Doctrinal Divinity | `systematic/gill_body_of_doctrinal_divinity.txt` | CCEL `g/gill/doctrinal` (S4) |
+| Dabney Syllabus and Notes | `systematic/dabney_systematic_theology.txt` | IA `syllabusnotesofc00dabn` (S4) |
+| Shedd Dogmatic Theology vol.1–3 | `systematic/shedd_dogmatic_theology_vol*.txt` | IA `dogmatictheology0{1,2,3}shed` (S4) |
+| A.A. Hodge Outlines of Theology | `systematic/aa_hodge_outlines_of_theology.txt` | IA `outlinesoftheolo1878hodg` (S4) |
+| Witsius Economy of the Covenants vol.1–2 | `systematic/witsius_economy_of_the_covenants_vol*.txt` | IA `oeconomyofcovena0{1,2}wits` (S4) |
+| Boyce Abstract of Systematic Theology | `systematic/boyce_abstract_of_systematic_theology.txt` | IA `abstractofsystem00boyc` (S4) |
+| Second Helvetic Confession | `reformed/second_helvetic_confession.txt` | CCEL Schaff Creeds III English appendix `creeds3.v.ix.html` (S4; anonymous/helvetic cache 404) |
+| Scots Confession 1560 | `reformed/scots_confession_1560.txt` | CCEL `a/anonymous/scotconf` (S4) |
+| Canons of Dort | `reformed/canons_of_dort.txt` | CCEL Schaff Creeds III Dort page only (S4) |
+
+**Held out (do not train):** `continued_pretrain/data/holdouts_manual/heidelberg_catechism.txt` and `belgic_confession.txt`.
+
+Calvin **treatises/sermons** (not Institutes) live under `data/puritans/calvin/` so they do not blow the 6% confession cap. Hodge/Calvin **biblical commentary** is Wave 3, under `data/puritans/`, capped, not this fetcher.
+
+Do **not** add Turretin English (P&R/Dennison 1992–97 is in copyright). Latin Turretin is not useful for this English mix.
+
+Re-fetch S4 only: `python continued_pretrain/scripts/11_fetch_confessions.py --s4`
+"""
+
+
 def main(argv: list[str] | None = None) -> None:
-    p = argparse.ArgumentParser(description="Fetch PD confessions for CPT")
+    p = argparse.ArgumentParser(description="Fetch PD confessions / systematic for CPT")
     p.add_argument("--repo-root", default=str(Path(__file__).resolve().parent.parent.parent))
     p.add_argument("--force", action="store_true")
-    p.add_argument("--rebuild-mix", action="store_true")
+    p.add_argument("--s4", action="store_true", help="Fetch only S4 unique confession/ST (skip WCF/Institutes/1689)")
+    p.add_argument("--only", default=None, help="Comma-separated S4 keys (implies --s4)")
+    p.add_argument("--list", action="store_true")
+    p.add_argument("--sleep", type=float, default=1.2)
+    p.add_argument(
+        "--rebuild-mix",
+        action="store_true",
+        help="Run 07 after fetch with --keep-all-spurgeon --max-other-weight 1.5",
+    )
     args = p.parse_args(argv)
+
+    if args.list:
+        print("base:")
+        for item in CATALOG:
+            print(f"  {item['dest']:55s}  {item['title']}")
+        print("s4:")
+        for item in S4_CATALOG:
+            print(f"  {item['key']:24s}  {item['dest']}")
+        return
+
     repo = Path(args.repo_root).resolve()
+    s4_only = bool(args.s4 or args.only)
+    items = list(S4_CATALOG) if s4_only else list(CATALOG) + list(S4_CATALOG)
+    if args.only:
+        wanted = {x.strip().lower() for x in args.only.split(",") if x.strip()}
+        items = [it for it in items if it.get("key", "").lower() in wanted]
+        if not items:
+            print(f"ERROR: no catalog keys matched {sorted(wanted)}")
+            sys.exit(2)
 
     ok = fail = 0
-    for item in CATALOG:
-        print(f"[{item['title']}]")
+    for item in items:
+        key = item.get("key") or item["dest"]
+        print(f"[{key}] {item['title']}")
         dest = repo / item["dest"]
         if try_urls(
             dest,
@@ -372,18 +614,19 @@ def main(argv: list[str] | None = None) -> None:
             keys_all=item.get("keys_all"),
             min_chars=item.get("min_chars", 3000),
             force=args.force,
+            sleep=args.sleep,
         ):
             ok += 1
         else:
             fail += 1
 
-    print("[1689 Second London Confession]")
-    if try_fetch_1689(repo, args.force):
-        ok += 1
-    else:
-        fail += 1
+    if not s4_only:
+        print("[1689 Second London Confession]")
+        if try_fetch_1689(repo, args.force):
+            ok += 1
+        else:
+            fail += 1
 
-    # Inventory
     root = repo / "data" / "confessions"
     total = 0
     print("\nInventory data/confessions:")
@@ -391,28 +634,10 @@ def main(argv: list[str] | None = None) -> None:
         n = path.stat().st_size
         total += n
         print(f"  {path.relative_to(repo)}  {n:,} bytes")
-    print(f"  TOTAL {total:,} bytes ({total/1e6:.1f} MB)")
+    print(f"  TOTAL {total:,} bytes ({total / 1e6:.1f} MB)")
     print(f"Done ok={ok} fail={fail}")
 
-    # Provenance note
-    prov = root / "PROVENANCE.md"
-    prov.write_text(
-        """# Confessions / Institutes provenance
-
-| Work | Path | Source |
-|------|------|--------|
-| WCF (with proofs) | `westminster/westminster_confession.txt` | IA `confessionoffa00west` |
-| WCF + catechisms (1756) | `westminster/wcf_catechisms_1756.txt` | IA Scottish edition |
-| WSC (curated earlier) | `westminster/westminster_shorter_catechism.txt` | curated PD |
-| 1689 LBCF | `1689/second_london_confession.txt` | IA if found, else curated PD core chapters |
-| Calvin Institutes Beveridge vol.1–2 | `institutes/institutes_beveridge_vol*.txt` | IA Beveridge scans |
-
-**Held out (do not train):** `continued_pretrain/data/holdouts_manual/heidelberg_catechism.txt` (+ Belgic when present).
-
-Re-fetch: `python continued_pretrain/scripts/11_fetch_confessions.py`
-""",
-        encoding="utf-8",
-    )
+    (root / "PROVENANCE.md").write_text(PROVENANCE, encoding="utf-8")
 
     if args.rebuild_mix:
         cmd = [
@@ -421,9 +646,14 @@ Re-fetch: `python continued_pretrain/scripts/11_fetch_confessions.py`
             "--target-spurgeon-share",
             "0.45",
             "--replay-frac",
-            "0.0",
+            "0.10",
+            "--replay-txt",
+            str(repo / "continued_pretrain" / "data" / "replay" / "general_replay.txt"),
+            "--keep-all-spurgeon",
+            "--max-other-weight",
+            "1.5",
         ]
-        print("Rebuilding mix...")
+        print("Rebuilding mix:", " ".join(cmd))
         subprocess.check_call(cmd, cwd=str(repo))
 
     if fail:

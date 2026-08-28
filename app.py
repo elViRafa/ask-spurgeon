@@ -41,6 +41,7 @@ from config import (
     APP_TITLE, APP_SUBTITLE, APP_SUBTITLE_PT, PAGE_ICON,
     GROQ_API_KEY, PRIMARY_MODEL, FALLBACK_MODEL,
     LLM_PROVIDER, CUSTOM_LLM_BASE_URL, CUSTOM_LLM_API_KEY, CUSTOM_LLM_MODEL,
+    FINE_TUNED_SIMILARITY_TOP_K,
     VECTOR_STORE,
     QDRANT_URL, QDRANT_API_KEY, QDRANT_COLLECTION,
     CHROMA_HOST, CHROMA_PORT, CHROMA_COLLECTION,
@@ -574,9 +575,10 @@ def generate_response(
         except Exception:
             search_question = question  # fallback to original
 
-    # Retrieval with filters
+    # Retrieval with filters (fine-tuned path uses fewer chunks to fit seq 4096)
+    retrieval_top_k = FINE_TUNED_SIMILARITY_TOP_K if LLM_PROVIDER == "openai" else 6
     retriever = index.as_retriever(
-        similarity_top_k=6,
+        similarity_top_k=retrieval_top_k,
         filters=filters,
     )
     nodes = retriever.retrieve(search_question)

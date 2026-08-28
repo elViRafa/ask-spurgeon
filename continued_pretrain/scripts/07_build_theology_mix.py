@@ -19,6 +19,8 @@ v2 changes (PLAN_FABLE5_TO_IMPROVE_CPT.md):
   - Guard: refuse Spurgeon-only mixes unless --allow-spurgeon-only (G2)
   - Cross-mix exact paragraph dedup + top-20 frequent paragraphs in manifest
   - --target-spurgeon-share auto-computes spurgeon_weight from other buckets
+  - --keep-all-spurgeon (default): never subsample Spurgeon when weight<1; oversample
+    other domain buckets to hold the share target (cap --max-other-weight)
   - Optional --author-tags for E1 conditioning headers
 
 Does not overwrite spurgeon_train.txt or B_training.ipynb artifacts.
@@ -32,6 +34,7 @@ Usage (from repo root):
 from __future__ import annotations
 
 import argparse
+import fnmatch
 import html
 import json
 import random
@@ -42,6 +45,13 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterator
+
+# Mix denylist (relative to a bucket root, or **/glob). Henry commentary stays on disk
+# for RAG but must not enter theology_mix train. See corpus_v3_catalog.json.
+DEFAULT_EXCLUDE_GLOBS = [
+    "henry/exposition*",
+    "**/henry/exposition*",
+]
 
 
 DOC_SEP = "<|endoftext|>"
@@ -215,13 +225,32 @@ class MixStats:
 def iter_text_files(root: Path) -> Iterator[Path]:
     if not root.exists():
         return
+    skip_names = {"readme.md", "license", "license.md", ".gitkeep", "provenance.md"}
     for path in sorted(root.rglob("*")):
         if not path.is_file():
             continue
-        if path.name.lower() in {"readme.md", "license", "license.md", ".gitkeep"}:
+        if path.name.lower() in skip_names:
             continue
         if path.suffix.lower() in {".md", ".txt"}:
             yield path
+
+
+def path_excluded(path: Path, root: Path, globs: list[str]) -> bool:
+    """Match exclude globs against filename, path-relative-to-bucket, and posix path."""
+    if not globs:
+        return False
+    rel = path.relative_to(root).as_posix() if root in path.parents or path.parent == root else path.name
+    candidates = [path.name, rel, path.as_posix().replace("\\", "/")]
+    for g in globs:
+        pat = g.replace("\\", "/")
+        for c in candidates:
+            if fnmatch.fnmatch(c, pat):
+                return True
+            if pat.startswith("**/") and fnmatch.fnmatch(c, pat[3:]):
+                return True
+            if "/" in c and fnmatch.fnmatch(c.split("/", 1)[-1], pat):
+                return True
+    return False
 
 
 def load_spurgeon_from_concat(
@@ -252,6 +281,7 @@ def load_tree(
     cleaner,
     default_author: str = "unknown",
     max_chunk_chars: int = DEFAULT_MAX_CHUNK_CHARS,
+    exclude_globs: list[str] | None = None,
 ) -> list[Doc]:
     if not root.exists():
         print(f"NOTE: optional source dir missing (skipping): {root}")
@@ -259,7 +289,12 @@ def load_tree(
 
     docs: list[Doc] = []
     seen: set[str] = set()
+    skipped = 0
     for path in iter_text_files(root):
+        if path_excluded(path, root, exclude_globs or []):
+            skipped += 1
+            print(f"  exclude from mix: {path}")
+            continue
         raw = path.read_text(encoding="utf-8", errors="replace")
         try:
             rel = path.relative_to(root)
@@ -291,6 +326,8 @@ def load_tree(
                     work=str(work),
                 )
             )
+    if skipped:
+        print(f"  excluded {skipped} file(s) under {root} via denylist")
     return docs
 
 
@@ -390,7 +427,11 @@ def subsample_by_chars(docs: list[Doc], target_chars: int, rng: random.Random) -
 
 
 def oversample(docs: list[Doc], weight: float, rng: random.Random) -> list[Doc]:
-    """Repeat list floor(weight) times, then sample fractional remainder. weight<1 subsamples by chars."""
+    """Repeat list floor(weight) times, then sample fractional remainder.
+
+    ``weight<1`` subsamples by chars (drops most of the list). Prefer
+    ``--keep-all-spurgeon`` for the Spurgeon bucket so sermons are not silently dropped.
+    """
     if not docs:
         return []
     if weight <= 0:
@@ -431,6 +472,32 @@ def compute_spurgeon_weight(
     # Allow deep undersampling when other buckets are still small (no artificial 0.05 floor
     # that would blow past the target share). Cap upside only.
     return max(0.01, min(w, 10.0))
+
+
+def other_weight_for_keep_all_spurgeon(
+    spurgeon_chars: int,
+    other_chars: int,
+    target_share: float,
+    max_weight: float = 5.0,
+) -> tuple[float, bool]:
+    """Weight for non-Spurgeon domain buckets so S / (S + w*O) ≈ target_share.
+
+    Used when we refuse to subsample Spurgeon (weight would have been < 1). Repeating
+    others holds the share target instead of silently dropping ~84% of sermons.
+    Returns (weight, capped). If others are too small, weight is capped and actual
+    Spurgeon share will exceed ``target_share``.
+    """
+    if spurgeon_chars <= 0 or other_chars <= 0:
+        return 1.0, False
+    if not (0.05 < target_share < 0.95):
+        raise ValueError(f"target_spurgeon_share must be in (0.05, 0.95), got {target_share}")
+    needed_other = spurgeon_chars * (1.0 - target_share) / target_share
+    w = needed_other / other_chars
+    if w <= 1.0:
+        return 1.0, False
+    if w > max_weight:
+        return float(max_weight), True
+    return float(w), False
 
 
 def take_holdout(docs: list[Doc], n: int, rng: random.Random) -> tuple[list[Doc], list[Doc]]:
@@ -561,18 +628,46 @@ def build_mix(args: argparse.Namespace) -> None:
     puritan_root = Path(args.puritans_dir) if args.puritans_dir else base / "data" / "puritans"
     confession_root = Path(args.confessions_dir) if args.confessions_dir else base / "data" / "confessions"
     bible_root = Path(args.bible_dir) if args.bible_dir else base / "data" / "bible"
+    hymns_root = Path(args.hymns_dir) if args.hymns_dir else base / "data" / "hymns"
     replay_txt = Path(args.replay_txt) if args.replay_txt else None
+    exclude_globs = list(DEFAULT_EXCLUDE_GLOBS) + list(args.exclude_glob or [])
 
     # --- Load domain buckets (all chunked) ---
     spurgeon_docs = load_spurgeon_from_concat(spurgeon_train, max_chunk_chars=max_chunk)
     puritan_docs = load_tree(
-        puritan_root, "puritan", clean_generic_text, default_author="puritan", max_chunk_chars=max_chunk
+        puritan_root,
+        "puritan",
+        clean_generic_text,
+        default_author="puritan",
+        max_chunk_chars=max_chunk,
+        exclude_globs=exclude_globs,
     )
+    hymn_docs = load_tree(
+        hymns_root,
+        "puritan",
+        clean_generic_text,
+        default_author="hymns",
+        max_chunk_chars=max_chunk,
+        exclude_globs=exclude_globs,
+    )
+    if hymn_docs:
+        print(f"Folded {len(hymn_docs)} hymn docs into puritan bucket from {hymns_root}")
+        puritan_docs.extend(hymn_docs)
     confession_docs = load_tree(
-        confession_root, "confession", clean_generic_text, default_author="confession", max_chunk_chars=max_chunk
+        confession_root,
+        "confession",
+        clean_generic_text,
+        default_author="confession",
+        max_chunk_chars=max_chunk,
+        exclude_globs=exclude_globs,
     )
     bible_docs = load_tree(
-        bible_root, "bible", clean_generic_text, default_author="scripture", max_chunk_chars=max_chunk
+        bible_root,
+        "bible",
+        clean_generic_text,
+        default_author="scripture",
+        max_chunk_chars=max_chunk,
+        exclude_globs=exclude_globs,
     )
 
     print(
@@ -635,7 +730,7 @@ def build_mix(args: argparse.Namespace) -> None:
         if cur > max_chars > 0:
             capped = subsample_by_chars(docs, max_chars, rng)
             print(
-                f"Capped {label}: {cur:,} → {sum(d.n_chars for d in capped):,} chars "
+                f"Capped {label}: {cur:,} -> {sum(d.n_chars for d in capped):,} chars "
                 f"(max_{label}_share={m})"
             )
             return capped
@@ -679,7 +774,38 @@ def build_mix(args: argparse.Namespace) -> None:
         f"spurgeon_chars={spurgeon_chars:,} other_domain_chars={other_chars:,}"
     )
 
-    spurgeon_weighted = oversample(spurgeon_train_docs, spurgeon_weight, rng)
+    other_bucket_weight = 1.0
+    other_weight_capped = False
+    spurgeon_keep_all = False
+
+    if args.spurgeon_weight is not None:
+        spurgeon_weighted = oversample(spurgeon_train_docs, spurgeon_weight, rng)
+    elif args.keep_all_spurgeon and spurgeon_weight < 1.0:
+        spurgeon_keep_all = True
+        spurgeon_weighted = list(spurgeon_train_docs)
+        other_bucket_weight, other_weight_capped = other_weight_for_keep_all_spurgeon(
+            spurgeon_chars,
+            other_chars,
+            float(args.target_spurgeon_share),
+            max_weight=float(args.max_other_weight),
+        )
+        print(
+            f"keep-all Spurgeon: keeping {len(spurgeon_weighted)} docs / {spurgeon_chars:,} chars; "
+            f"other_bucket_weight={other_bucket_weight:.4f}"
+            + (" (CAPPED — Spurgeon share will exceed target)" if other_weight_capped else "")
+        )
+        if other_bucket_weight > 1.0:
+            puritan_train = oversample(puritan_train, other_bucket_weight, rng)
+            capped_confession = oversample(capped_confession, other_bucket_weight, rng)
+            capped_bible = oversample(capped_bible, other_bucket_weight, rng)
+    else:
+        if spurgeon_weight < 1.0:
+            print(
+                f"WARNING: Spurgeon weight={spurgeon_weight:.4f} < 1 subsamples by chars "
+                "(~most sermons dropped). Pass --keep-all-spurgeon to keep every chunk "
+                "and oversample others instead."
+            )
+        spurgeon_weighted = oversample(spurgeon_train_docs, spurgeon_weight, rng)
     domain_pool = spurgeon_weighted + puritan_train + capped_confession + capped_bible
     if not domain_pool:
         print("ERROR: no domain documents found. Build spurgeon_train.txt and/or add data under data/puritans etc.")
@@ -728,7 +854,7 @@ def build_mix(args: argparse.Namespace) -> None:
     # --- Paragraph dedup (1d) ---
     train_docs, dedup_report = dedup_paragraphs(train_docs)
     print(
-        f"Paragraph dedup: {dedup_report['docs_in']} → {dedup_report['docs_out']} docs, "
+        f"Paragraph dedup: {dedup_report['docs_in']} -> {dedup_report['docs_out']} docs, "
         f"dropped_paras={dedup_report['dropped_duplicate_paragraphs']}"
     )
 
@@ -787,6 +913,9 @@ def build_mix(args: argparse.Namespace) -> None:
         "max_chunk_chars": max_chunk,
         "spurgeon_weight": round(spurgeon_weight, 6),
         "spurgeon_weight_mode": weight_mode,
+        "spurgeon_keep_all": spurgeon_keep_all,
+        "other_bucket_weight": round(other_bucket_weight, 6),
+        "other_weight_capped": other_weight_capped,
         "target_spurgeon_share": args.target_spurgeon_share,
         "replay_frac_target": args.replay_frac,
         "allow_spurgeon_only": bool(args.allow_spurgeon_only),
@@ -807,6 +936,8 @@ def build_mix(args: argparse.Namespace) -> None:
             "puritans_dir": str(puritan_root),
             "confessions_dir": str(confession_root),
             "bible_dir": str(bible_root),
+            "hymns_dir": str(hymns_root),
+            "exclude_globs": exclude_globs,
             "replay_txt": str(replay_txt) if replay_txt else None,
             "replay_hf": args.replay_hf if not replay_txt else None,
         },
@@ -864,6 +995,25 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=DEFAULT_TARGET_SPURGEON_SHARE,
         help="Target Spurgeon char share after weighting (default 0.45). Ignored if --spurgeon-weight set.",
     )
+    p.add_argument(
+        "--keep-all-spurgeon",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help=(
+            "Keep every Spurgeon train chunk when computed weight<1; oversample other "
+            "domain buckets to hold --target-spurgeon-share (default True). "
+            "--no-keep-all-spurgeon restores the old subsample-by-chars path."
+        ),
+    )
+    p.add_argument(
+        "--max-other-weight",
+        type=float,
+        default=5.0,
+        help=(
+            "Cap on other-bucket oversample when --keep-all-spurgeon (default 5). "
+            "If hit, Spurgeon share will exceed the target."
+        ),
+    )
     p.add_argument("--replay-frac", type=float, default=DEFAULT_REPLAY_FRAC, help="Target general-data fraction of final mix")
     p.add_argument("--replay-txt", default=None, help="Local general replay .txt (preferred offline)")
     p.add_argument(
@@ -902,6 +1052,20 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         type=float,
         default=0.06,
         help="Cap confession/systematic share (default 0.06; Institutes can dominate). Set 0 to disable.",
+    )
+    p.add_argument(
+        "--hymns-dir",
+        default=None,
+        help="Optional hymns/psalter dir (folded into puritan bucket; default data/hymns)",
+    )
+    p.add_argument(
+        "--exclude-glob",
+        action="append",
+        default=[],
+        help=(
+            "Skip files matching this glob (repeatable). Matched against filename and "
+            "path relative to the bucket root. Defaults already skip henry/exposition*."
+        ),
     )
     return p.parse_args(argv)
 

@@ -1,0 +1,25 @@
+{
+  "created_at": "2026-08-23T16:54:56.218220+00:00",
+  "version": "qa_mix_v1",
+  "source": "fine_tuning\\data\\spurgeon_qa_train_final.jsonl",
+  "source_sha256": "2ab239fe83ba9982bf7e1bf532f6725883563493a0448ac0e0567d10bd0d44c9",
+  "system_prompt": "config.SPURGEON_SFT_SYSTEM_PROMPT",
+  "counts": {
+    "raw": 2787,
+    "normalized": 2787,
+    "deduped_dropped": 0,
+    "skipped": 0,
+    "train": 2553,
+    "val": 134,
+    "test_frozen": 100
+  },
+  "slices_train": {
+    "answerable": 2539,
+    "refusal": 14
+  },
+  "test_composition": {
+    "answerable": 87,
+    "refusal": 13
+  },
+  "seed": 3407
+}

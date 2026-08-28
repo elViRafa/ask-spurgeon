@@ -1,0 +1,18 @@
+{
+  "id": "rafaelvieira1/theology-cpt-v2-b-training-sota",
+  "title": "Theology CPT v2 B Training SOTA",
+  "code_file": "B_training_sota.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": "true",
+  "enable_gpu": "true",
+  "enable_internet": "true",
+  "machine_shape": "NvidiaTeslaT4",
+  "dataset_sources": [
+    "rafaelvieira1/theology-cpt-corpus",
+    "rafaelvieira1/theology-cpt-dataset"
+  ],
+  "kernel_sources": [
+    "rafaelvieira1/theology-cpt-v2-b-training-sota"
+  ]
+}

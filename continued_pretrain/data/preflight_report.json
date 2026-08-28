@@ -1,19 +1,19 @@
 {
-  "created_at": "2026-07-13T23:06:01.987986+00:00",
+  "created_at": "2026-08-27T20:00:03.135205+00:00",
   "plan": "PLAN_FABLE5_TO_IMPROVE_CPT v2",
   "checks": {
     "corpus": {
-      "train_chars": 27433007,
-      "n_docs": 4401,
+      "train_chars": 317343366,
+      "n_docs": 51937,
       "max_doc_chars": 7000,
-      "min_doc_chars": 532,
-      "p50_doc_chars": 6567,
+      "min_doc_chars": 501,
+      "p50_doc_chars": 6543,
       "docs_over_8k": 0
     },
     "F1_chunking": "PASS \u2014 no doc > 8k chars (chunking applied at mix build)",
     "D2_lite": {
-      "doc_separators": 4401,
-      "docs": 4401,
+      "doc_separators": 51937,
+      "docs": 51937,
       "note": "B_sota APPEND_EOS=True appends tokenizer.eos_token before packing; packed EOS proof still Kaggle D2",
       "status": "PASS"
     },
@@ -28,7 +28,7 @@
     },
     "shares": {
       "spurgeon": {
-        "share": 0.4049,
+        "share": 0.4023,
         "target": [
           0.4,
           0.5
@@ -36,15 +36,15 @@
         "status": "PASS"
       },
       "puritan": {
-        "share": 0.4087,
+        "share": 0.4572,
         "target": [
           0.3,
           0.45
         ],
-        "status": "PASS"
+        "status": "WARN"
       },
       "confession": {
-        "share": 0.0501,
+        "share": 0.0552,
         "target": [
           0.03,
           0.08
@@ -52,32 +52,32 @@
         "status": "PASS"
       },
       "bible": {
-        "share": 0.0361,
+        "share": 0.0137,
         "target": [
           0.02,
           0.05
         ],
-        "status": "PASS"
+        "status": "WARN"
       },
       "general": {
-        "share": 0.1001,
+        "share": 0.0716,
         "target": [
           0.08,
           0.12
         ],
-        "status": "PASS"
+        "status": "WARN"
       }
     },
     "D3": {
       "verified_tokens_present": true,
-      "train_estimated_tokens": 8181839,
-      "tokenizer": "gpt2",
+      "train_estimated_tokens": 91307937,
+      "tokenizer": "Qwen/Qwen3.5-4B-Base",
       "status": "PASS"
     },
     "session_budget": {
       "tokens_per_step": 32768,
-      "steps_per_epoch_est": 250,
-      "recommended_MAX_STEPS": 250,
+      "steps_per_epoch_est": 2787,
+      "recommended_MAX_STEPS": 2787,
       "note": "Measure s/step on Kaggle; if packing yields different row count, recompute from D1 tokens/epoch"
     },
     "holdouts": {
@@ -88,17 +88,17 @@
       },
       "puritan": {
         "exists": true,
-        "bytes": 121313,
+        "bytes": 118788,
         "status": "PASS"
       },
       "confession": {
         "exists": true,
-        "bytes": 71012,
+        "bytes": 67031,
         "status": "PASS"
       },
       "general": {
         "exists": true,
-        "bytes": 66303,
+        "bytes": 69848,
         "status": "PASS"
       }
     },
@@ -112,7 +112,7 @@
     },
     "kaggle_package": {
       "exists": true,
-      "bytes": 11869955,
+      "bytes": 21372901,
       "path": "C:\\Users\\rafael\\Projetos\\search-sermons\\continued_pretrain\\data\\kaggle_upload\\theology-cpt-corpus.zip"
     },
     "M1_doc": true,
@@ -126,6 +126,10 @@
     ]
   },
   "errors": [],
-  "warnings": [],
-  "overall": "PASS"
+  "warnings": [
+    "share puritan=0.4572 outside [0.3,0.45]",
+    "share bible=0.0137 outside [0.02,0.05]",
+    "share general=0.0716 outside [0.08,0.12]"
+  ],
+  "overall": "PASS_WITH_WARNINGS"
 }

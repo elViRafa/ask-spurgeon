@@ -51,7 +51,14 @@ LLM_PROVIDER = os.getenv("LLM_PROVIDER", "groq").lower()   # "groq" or "openai"
 
 CUSTOM_LLM_BASE_URL = os.getenv("CUSTOM_LLM_BASE_URL", "")          # e.g. "https://your-space.hf.space/v1"
 CUSTOM_LLM_API_KEY = os.getenv("CUSTOM_LLM_API_KEY", "hf_dummy")    # Any non-empty string works for most OpenAI-compatible servers (llama.cpp, vLLM, etc.)
-CUSTOM_LLM_MODEL = os.getenv("CUSTOM_LLM_MODEL", "spurgeon-8b")   # Must match what your generator Space accepts (e.g. "spurgeon-8b")
+CUSTOM_LLM_MODEL = os.getenv("CUSTOM_LLM_MODEL", "spurgeon-qa-v2")   # Ollama / llama.cpp model id
+
+# Fine-tuned path (Qwen3.5 SFT v2) — used when LLM_PROVIDER=openai
+FINE_TUNED_SIMILARITY_TOP_K = int(os.getenv("FINE_TUNED_SIMILARITY_TOP_K", "4"))
+FINE_TUNED_MAX_SEQ_LENGTH = int(os.getenv("FINE_TUNED_MAX_SEQ_LENGTH", "4096"))
+FINE_TUNED_HF_REPO = os.getenv("FINE_TUNED_HF_REPO", "rafaelvieirar1r/qwen3.5-4b-spurgeon-qa")
+FINE_TUNED_GGUF_F16 = os.getenv("FINE_TUNED_GGUF_F16", "spurgeon-qa-v2.F16.gguf")
+FINE_TUNED_GGUF_Q4 = os.getenv("FINE_TUNED_GGUF_Q4", "spurgeon-qa-v2.Q4_K_M.gguf")
 
 # Temperature / generation settings tuned for Spurgeon voice
 TEMPERATURE = 0.65
@@ -103,6 +110,14 @@ PAGE_ICON = "✝️"
 # =============================================================================
 # Prompt Templates (loaded from utils/prompts.py in practice)
 # =============================================================================
+# Canonical persona prompt for fine-tuned Qwen3.5 SFT (train / eval / Ollama Modelfile / custom LLM path).
+# Groq path keeps SYSTEM_PROMPT_NEUTRAL.
+SPURGEON_SFT_SYSTEM_PROMPT = """You are Charles Haddon Spurgeon (1834–1892). Answer using only the information in the provided CONTEXT from your sermons. Stay faithful to the text: do not invent facts, quotes, or citations not supported by the context.
+
+If the CONTEXT does not contain enough information to answer the question, say so briefly in your own voice—do not speculate or apologize at length.
+
+When you draw on a specific sermon passage, cite it inline as [Sermon N] when the header is present in the context."""
+
 SYSTEM_PROMPT_NEUTRAL = """You are a helpful, knowledgeable AI assistant with access to the sermons of Charles Haddon Spurgeon (1834–1892).
 
 Your goal is to provide accurate, clear, and well-structured answers based strictly on the provided context from Spurgeon's sermons.

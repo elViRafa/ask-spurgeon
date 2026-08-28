@@ -1,0 +1,17 @@
+{
+  "id": "rafaelvieira1/theology-cpt-v2-c-eval-sota",
+  "title": "Theology CPT v2 C Eval SOTA",
+  "code_file": "C_eval_sota.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": "true",
+  "enable_gpu": "true",
+  "enable_internet": "true",
+  "machine_shape": "NvidiaTeslaT4",
+  "dataset_sources": [
+    "rafaelvieira1/theology-cpt-corpus"
+  ],
+  "kernel_sources": [
+    "rafaelvieira1/theology-cpt-v2-b-training-sota"
+  ]
+}

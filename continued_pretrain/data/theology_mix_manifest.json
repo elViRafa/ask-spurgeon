@@ -1,51 +1,54 @@
 {
-  "created_at": "2026-07-13T14:39:10.406245+00:00",
+  "created_at": "2026-08-27T19:58:31.279219+00:00",
   "seed": 42,
   "plan": "PLAN_FABLE5_TO_IMPROVE_CPT v2",
   "max_chunk_chars": 7000,
-  "spurgeon_weight": 0.086929,
+  "spurgeon_weight": 1.068846,
   "spurgeon_weight_mode": "target_share=0.45",
+  "spurgeon_keep_all": false,
+  "other_bucket_weight": 1.0,
+  "other_weight_capped": false,
   "target_spurgeon_share": 0.45,
   "replay_frac_target": 0.1,
   "allow_spurgeon_only": false,
   "author_tags": false,
   "doc_separator": "<|endoftext|>",
   "train_path": "C:\\Users\\rafael\\Projetos\\search-sermons\\continued_pretrain\\data\\theology_mix_train.txt",
-  "train_docs": 4401,
-  "train_chars": 27362591,
-  "train_approx_tokens": 6840647,
+  "train_docs": 51937,
+  "train_chars": 316512374,
+  "train_approx_tokens": 79128093,
   "max_doc_chars": 7000,
   "docs_over_8k_chars": 0,
   "buckets": {
     "bible": {
-      "docs": 144,
-      "chars": 987277,
-      "approx_tokens": 246819,
-      "char_share": 0.0361
+      "docs": 630,
+      "chars": 4330884,
+      "approx_tokens": 1082721,
+      "char_share": 0.0137
     },
     "confession": {
-      "docs": 216,
-      "chars": 1371195,
-      "approx_tokens": 342798,
-      "char_share": 0.0501
+      "docs": 2762,
+      "chars": 17465945,
+      "approx_tokens": 4366486,
+      "char_share": 0.0552
     },
     "general": {
-      "docs": 426,
-      "chars": 2739980,
-      "approx_tokens": 684995,
-      "char_share": 0.1001
+      "docs": 4298,
+      "chars": 22673731,
+      "approx_tokens": 5668432,
+      "char_share": 0.0716
     },
     "puritan": {
-      "docs": 1786,
-      "chars": 11183721,
-      "approx_tokens": 2795930,
-      "char_share": 0.4087
+      "docs": 23258,
+      "chars": 144711625,
+      "approx_tokens": 36177906,
+      "char_share": 0.4572
     },
     "spurgeon": {
-      "docs": 1829,
-      "chars": 11080418,
-      "approx_tokens": 2770104,
-      "char_share": 0.4049
+      "docs": 20989,
+      "chars": 127330189,
+      "approx_tokens": 31832547,
+      "char_share": 0.4023
     }
   },
   "domain_buckets_present": [
@@ -61,18 +64,124 @@
     "general": 10
   },
   "dedup": {
-    "dropped_duplicate_paragraphs": 0,
-    "dropped_docs_after_dedup": 0,
-    "docs_in": 4401,
-    "docs_out": 4401,
-    "unique_long_paragraphs": 30426,
-    "top_frequent_paragraphs": []
+    "dropped_duplicate_paragraphs": 29366,
+    "dropped_docs_after_dedup": 2166,
+    "docs_in": 54103,
+    "docs_out": 51937,
+    "unique_long_paragraphs": 317257,
+    "top_frequent_paragraphs": [
+      {
+        "preview": "what do sermons and discourses mean but, \"come sinner, come!\"? and those secret motions of power upon the conscience. those times when the heart grows calm, eve",
+        "count": 3,
+        "chars": 598
+      },
+      {
+        "preview": "the church is always saying, \"come!\" this is, indeed, the meaning of her sabbath gatherings, of her testimony in the pulpit, of her teaching in the schools, of ",
+        "count": 3,
+        "chars": 684
+      },
+      {
+        "preview": "the next giver of the invitation is spoken of as, \"him that hears.\" if you have had an ear to hear and have heard the gospel to your own salvation, the very nex",
+        "count": 3,
+        "chars": 857
+      },
+      {
+        "preview": "because you have heard the message and proved its truth, go and call in others to the feast of love! oh, if there were more of these individual proclaimers, wha",
+        "count": 3,
+        "chars": 895
+      },
+      {
+        "preview": "now, notice the remarkably encouraging character of this, \"come!\" which is given by the spirit of the bride. one part of it is directed to the thirsty--\"let him",
+        "count": 3,
+        "chars": 651
+      },
+      {
+        "preview": "whether you are thirsty or not, yet have you a will to drink? have you a will to be saved? have you a will to be cleansed from sin? a will to be made a new crea",
+        "count": 3,
+        "chars": 471
+      },
+      {
+        "preview": "\"whoever\" is the first door. \"whoever\"--then what man dares have the impudence to say that he is shut out? if you say that you cannot come in under, \"whoever,\" ",
+        "count": 3,
+        "chars": 651
+      },
+      {
+        "preview": "\"whoever will.\" there is no hindrance whatever in your way. and then, \"freely.\" god's gifts are given without any expectation or recompense, or any requirements",
+        "count": 3,
+        "chars": 660
+      },
+      {
+        "preview": "observe how the invitation sums up the work the sinner is called upon to do. first, he is bid to come. \"whoever will, let him come.\" now, to come to christ mean",
+        "count": 3,
+        "chars": 574
+      },
+      {
+        "preview": "\"for if the blood of bulls and of goats, and the ashes of an heifer sprinkling the unclean, sanctifies to the purifying of the flesh: how much more shall the bl",
+        "count": 3,
+        "chars": 323
+      },
+      {
+        "preview": "the dearest idol i have known, whatever that idol be, help me to tear it from your throne, and worship only thee! so shall my walk be close with god, calm and s",
+        "count": 3,
+        "chars": 237
+      },
+      {
+        "preview": "the priesthood of the christian church is common to all the saints! there is no other true priesthood but that of the lord jesus christ. i cannot discharge any ",
+        "count": 3,
+        "chars": 835
+      },
+      {
+        "preview": "so, to your personal redeemer render your personal service. give liberally of your substance to help others to do their part of the work, but give yourself--spi",
+        "count": 3,
+        "chars": 241
+      },
+      {
+        "preview": "some of you have to live in places where you are not comfortable. perhaps you are not in a neighborhood that you like. possibly in the very house where you live",
+        "count": 3,
+        "chars": 1965
+      },
+      {
+        "preview": "perhaps, however, you are a member of an ungodly family. now, you had no hand in that matter. you were not responsible for your birth and you cannot get out of ",
+        "count": 3,
+        "chars": 1126
+      },
+      {
+        "preview": "it may be that you are persecuted, that you live in places where you are sneered at, where the doctrines that are dearer than life to you, are regarded with con",
+        "count": 3,
+        "chars": 1503
+      },
+      {
+        "preview": "brothers and sisters, i think our text furnishes sweet consolation to any who have been engaged in very arduous service. have you a great deal to do for christ-",
+        "count": 3,
+        "chars": 445
+      },
+      {
+        "preview": "or on the other hand, are you passing through a very trying experience? if so, you are being qualified for greater usefulness. your dark experience will only te",
+        "count": 3,
+        "chars": 499
+      },
+      {
+        "preview": "25, 26. while you are on the way with him, lest at any time the adversary deliver you to the judge, and the judge deliver you to the officer, and you be cast in",
+        "count": 3,
+        "chars": 563
+      },
+      {
+        "preview": "_walt whitman has somewhere a fine and just distinction between \u201cloving by allowance\u201d and \u201cloving with personal love.\u201d this distinction applies to books as well",
+        "count": 3,
+        "chars": 1700
+      }
+    ]
   },
   "sources": {
     "spurgeon_train": "C:\\Users\\rafael\\Projetos\\search-sermons\\continued_pretrain\\data\\spurgeon_train.txt",
     "puritans_dir": "C:\\Users\\rafael\\Projetos\\search-sermons\\data\\puritans",
     "confessions_dir": "C:\\Users\\rafael\\Projetos\\search-sermons\\data\\confessions",
     "bible_dir": "C:\\Users\\rafael\\Projetos\\search-sermons\\data\\bible",
+    "hymns_dir": "C:\\Users\\rafael\\Projetos\\search-sermons\\data\\hymns",
+    "exclude_globs": [
+      "henry/exposition*",
+      "**/henry/exposition*"
+    ],
     "replay_txt": "continued_pretrain\\data\\replay\\general_replay.txt",
     "replay_hf": null
   },
@@ -82,45 +191,45 @@
     "Flagship base: Qwen3.5-4B-Base (see plan \u00a74.1). Baseline Spurgeon path remains B_training.ipynb."
   ],
   "verified_tokens": {
-    "tokenizer": "gpt2",
+    "tokenizer": "Qwen/Qwen3.5-4B-Base",
     "method": "sample_ratio",
     "sample_chars": 500000,
-    "token_char_ratio": 0.298248,
-    "train_estimated_tokens": 8181839,
-    "train_chars": 27433007,
+    "token_char_ratio": 0.287726,
+    "train_estimated_tokens": 91307937,
+    "train_chars": 317343366,
     "max_doc_chars": 7000,
     "docs_over_8k_chars": 0,
-    "n_docs": 4401,
+    "n_docs": 51937,
     "buckets": {
       "bible": {
-        "chars": 987277,
-        "estimated_tokens": 294453,
-        "char_share": 0.0361,
-        "docs": 144
+        "chars": 4330884,
+        "estimated_tokens": 1246107,
+        "char_share": 0.0137,
+        "docs": 630
       },
       "confession": {
-        "chars": 1371195,
-        "estimated_tokens": 408956,
-        "char_share": 0.0501,
-        "docs": 216
+        "chars": 17465945,
+        "estimated_tokens": 5025406,
+        "char_share": 0.0552,
+        "docs": 2762
       },
       "general": {
-        "chars": 2739980,
-        "estimated_tokens": 817193,
-        "char_share": 0.1001,
-        "docs": 426
+        "chars": 22673731,
+        "estimated_tokens": 6523821,
+        "char_share": 0.0716,
+        "docs": 4298
       },
       "puritan": {
-        "chars": 11183721,
-        "estimated_tokens": 3335522,
-        "char_share": 0.4087,
-        "docs": 1786
+        "chars": 144711625,
+        "estimated_tokens": 41637297,
+        "char_share": 0.4572,
+        "docs": 23258
       },
       "spurgeon": {
-        "chars": 11080418,
-        "estimated_tokens": 3304712,
-        "char_share": 0.4049,
-        "docs": 1829
+        "chars": 127330189,
+        "estimated_tokens": 36636205,
+        "char_share": 0.4023,
+        "docs": 20989
       }
     }
   }
