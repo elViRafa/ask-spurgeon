@@ -6,7 +6,7 @@ priority: high
 tags: [cpt, corpus-v3, s5, runpod, training]
 schema_version: 1.3
 last_updated: "2026-08-27T22:06:43-04:00"
-evidence: [continued_pretrain/kaggle/runpod_cpt_v3/cpt_train.log, continued_pretrain/kaggle/runpod_cpt_v3/theology_cpt_run_config.json, continued_pretrain/CORPUS_V3_S5_C_CHECKLIST.md]
+evidence: [continued_pretrain/kaggle/runpod_cpt_v3/cpt_train.log, continued_pretrain/kaggle/runpod_cpt_v3/theology_cpt_run_config.json, [REDACTED_SECRET].md]
 ---
 
 # CPT corpus v3 S5 B COMPLETE (2026-08-27/28)

@@ -1,4 +1,4 @@
-# Python
+.tools/
 __pycache__/
 *.py[cod]
 *$py.class
@@ -143,3 +143,20 @@ continued_pretrain/kaggle/runpod_cpt_v*/
 scratch/
 fine_tuning/data/ver.py
 opcua_simulation/
+
+# Local GPU run outputs (Vast / Runpod / Vultr) — weights, merges, logs, session snaps
+fine_tuning/kaggle/**/*.safetensors
+fine_tuning/kaggle/**/*.gguf
+fine_tuning/kaggle/**/*.bin
+fine_tuning/kaggle/**/*.pt
+fine_tuning/kaggle/**/*.pth
+fine_tuning/kaggle/**/*.log
+fine_tuning/kaggle/**/*.pid
+fine_tuning/kaggle/**/theology_cpt_v2_merged_hf/
+fine_tuning/kaggle/**/theology_cpt_v2_merged_hf.incomplete.bak/
+fine_tuning/kaggle/**/spurgeon_qa_merged_hf/
+fine_tuning/kaggle/**/spurgeon_qa_gguf/
+fine_tuning/kaggle/**/spurgeon_qa_lora_v2/
+fine_tuning/eval_results/**/*.jsonl
+fine_tuning/eval_results/**/*.json
+!fine_tuning/eval_results/**/.gitkeep

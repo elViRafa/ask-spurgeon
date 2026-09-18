@@ -6,7 +6,7 @@ priority: high
 tags: [cpt, corpus, s1, mix, no-train]
 schema_version: 1.3
 last_updated: "2026-08-27T11:06:09-04:00"
-evidence: [continued_pretrain/data/theology_mix_manifest.json, continued_pretrain/CORPUS_V3_EXPANSION_PLAN.md, continued_pretrain/CPT_V2_KAGGLE_STATUS.md, data/confessions/systematic/systematic_theology_vol1.txt]
+evidence: [continued_pretrain/data/theology_mix_manifest.json, [REDACTED_SECRET].md, continued_pretrain/CPT_V2_KAGGLE_STATUS.md, data/confessions/systematic/systematic_theology_vol1.txt]
 ---
 
 # CPT corpus v3 S1 complete (2026-08-27 follow-up verify)

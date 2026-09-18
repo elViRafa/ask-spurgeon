@@ -1,11 +1,26 @@
 {
-  "created_at": "2026-08-23T16:54:59.743397+00:00",
+  "created_at": "2026-09-04T02:59:47.071181+00:00",
   "dataset_name": "spurgeon-qa-mix-v1",
+  "mix_version": "qa_mix_v2",
   "files": [
     "qa_mix_train.jsonl",
     "qa_mix_val.jsonl",
     "qa_test_frozen.jsonl",
     "qa_mix_manifest.json"
   ],
-  "zip_bytes": 1643914
+  "zip_bytes": 12232908,
+  "counts": {
+    "raw": 2787,
+    "skipped": 0,
+    "answerable_wrapped": 2757,
+    "original_refusals": 30,
+    "synth_refusals": 389,
+    "sermons_indexed": 3536,
+    "match_hits": 2755,
+    "match_rate": 0.9993,
+    "train": 3264,
+    "val": 153,
+    "test_frozen": 100
+  },
+  "train_refusal_pct": 11.34
 }

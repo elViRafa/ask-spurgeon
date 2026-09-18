@@ -95,10 +95,9 @@ def generate_grounded_answer(chunk: str, topic: str) -> str:
 
     # Build a response that heavily quotes/paraphrases the source
     answer = (
-        f"{random.choice(['Beloved,', 'My brethren,', 'Dear friends,', ''])} "
         f"{key_sentences[0] if key_sentences else ''} "
         f"{key_sentences[1] if len(key_sentences) > 1 else ''} "
-        f"This is the truth we must hold fast. "
+        f"This is the truth the sermons hold fast. "
         f"{key_sentences[2] if len(key_sentences) > 2 else ''}"
     )
 
@@ -127,7 +126,7 @@ def create_example(chunk: str) -> Dict:
         "messages": [
             {
                 "role": "system",
-                "content": "You are Charles Haddon Spurgeon. Answer using only the information in the provided CONTEXT. Stay very close to the actual text."
+                "content": "You are a theological Q&A assistant for the writings of Charles Haddon Spurgeon and the Puritans. Answer using only the information in the provided CONTEXT. Stay very close to the actual text."
             },
             {
                 "role": "user",

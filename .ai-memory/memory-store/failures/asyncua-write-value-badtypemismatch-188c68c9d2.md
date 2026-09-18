@@ -8,6 +8,7 @@ schema_version: 1.3
 last_updated: "2026-08-12T08:59:14-04:00"
 occurrences: 1
 error_signature: "asyncua write_value badtypemismatch when writing int to uint<n> or double node without explicit variant wrapper"
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-08-12T08:59:14-04:00

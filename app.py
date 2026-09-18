@@ -53,7 +53,7 @@ from config import (
 )
 from utils.bible_refs import get_bible_book_filter_values, extract_bible_references
 import requests
-from utils.prompts import get_system_prompt
+from utils.prompts import get_system_prompt, build_user_prompt
 from utils.language import (
     get_language_options,
     get_language,
@@ -614,17 +614,9 @@ def generate_response(
 
     context_str = "\n\n".join(context_blocks)
 
-    # === Always generate the core answer in neutral modern English first ===
-    # This ensures best grounding, best Spurgeon citation quality, and no role-play leakage.
+    # Generate in English first (translate at the end). Grounding + no character roleplay.
     system = get_system_prompt(DEFAULT_AUTHOR)
-    user_msg = (
-        f"CONTEXT (excerpts from Charles Haddon Spurgeon's sermons):\n\n{context_str}\n\n"
-        f"QUESTION: {search_question}\n\n"
-        "Answer based ONLY on the context above. "
-        "Be clear, direct, and objective. Use modern neutral professional language. "
-        "Cite specific sermons by number and title when you use material from them. "
-        "If the context is insufficient, clearly state the limitation."
-    )
+    user_msg = build_user_prompt(search_question, context_str, DEFAULT_AUTHOR)
 
     messages = [
         ChatMessage(role=MessageRole.SYSTEM, content=system),

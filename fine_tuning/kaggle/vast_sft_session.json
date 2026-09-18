@@ -1,0 +1,18 @@
+{
+    "name":  "cpt-unsloth-conda-smoke",
+    "export":  false,
+    "created_at":  "2026-09-16T13:22:09.3934249Z",
+    "image":  "nvidia/cuda:12.4.1-devel-ubuntu22.04",
+    "gpu_profile":  "4090",
+    "use_cpt_merge":  true,
+    "disk_gb":  60,
+    "ssh_host":  null,
+    "offer_id":  "40113383",
+    "max_wall_hours":  10,
+    "ssh_url":  null,
+    "ssh_port":  null,
+    "status":  "destroyed",
+    "destroyed_at":  "2026-09-16T13:28:08.2085427Z",
+    "ssh_user":  "root",
+    "instance_id":  null
+}

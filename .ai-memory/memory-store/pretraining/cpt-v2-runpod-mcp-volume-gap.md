@@ -6,7 +6,7 @@ priority: high
 tags: [cpt, runpod, mcp, volume]
 schema_version: 1.3
 last_updated: "2026-08-27T23:44:56-04:00"
-evidence: [continued_pretrain/kaggle/runpod_cpt_v3/README.md, continued_pretrain/RUNPOD_RUNBOOK.md]
+evidence: [[REDACTED_SECRET].md, continued_pretrain/RUNPOD_RUNBOOK.md]
 ---
 
 # Runpod CPT: MCP create-pod 400 objectMounts; REST v1 works

@@ -21,6 +21,5 @@ Manifest `created_at` 2026-08-27T19:58:31Z:
 
 Confession **5.5%** is in the 3-6% band (S3 was 1.8%). Mix rebuilt with `--keep-all-spurgeon --max-other-weight 1.5`. Henry exposition still denylisted. Packing `one_doc_padded`. Puritans unchanged 221.1 MB / 150 files. `data/confessions/` 30.7 MB / 21 files. Preflight PASS_WITH_WARNINGS (Puritan 45.7% just over 45%; Bible/general still low).
 
-Fallback LoRA: rafaelvieirar1r/qwen3.5-4b-theology-cpt-lora-v2 SHA256 319d17a39d193041528914cfb2f83c1decf21e55ffe76dfd2ca565f5e99e1478
 
 Next = S5 Runpod B with operator approval. Handoff: `continued_pretrain/CORPUS_V3_S5_HANDOFF.md`.

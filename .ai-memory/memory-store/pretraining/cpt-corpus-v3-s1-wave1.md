@@ -38,5 +38,3 @@ Largest new shelves: Manton 41.7 MB (20/22 vols), Owen Goold remaining 27 MB, Si
 | Henry in mix | yes | **no** |
 
 Shares: Spurgeon 41.3%, Puritan 45.7% (above 30–40 band until more Spurgeon is kept), confession 2.7%, Bible 2.1%, general 8.2%. `keep-all` other_weight would be ~1.52 (>1.5) — correctly not used.
-
-Do not train until operator approval (plan S5).

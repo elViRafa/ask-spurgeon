@@ -1,0 +1,131 @@
+{
+  "results": [
+    {
+      "gpu": "3090",
+      "cloud": "COMMUNITY",
+      "http_status": 500,
+      "available": false,
+      "error": "create pod: could not find any pods with required specifications"
+    },
+    {
+      "gpu": "3090",
+      "cloud": "SECURE",
+      "http_status": 500,
+      "available": false,
+      "error": "create pod: could not find any pods with required specifications"
+    },
+    {
+      "gpu": "4090",
+      "cloud": "COMMUNITY",
+      "http_status": 500,
+      "available": false,
+      "error": "create pod: There are no instances currently available"
+    },
+    {
+      "gpu": "4090",
+      "cloud": "SECURE",
+      "http_status": 500,
+      "available": false,
+      "error": "create pod: There are no instances currently available"
+    },
+    {
+      "gpu": "A6000",
+      "cloud": "COMMUNITY",
+      "http_status": 500,
+      "available": false,
+      "error": "create pod: could not find any pods with required specifications"
+    },
+    {
+      "gpu": "A6000",
+      "cloud": "SECURE",
+      "http_status": 500,
+      "available": false,
+      "error": "create pod: could not find any pods with required specifications"
+    },
+    {
+      "gpu": "L40S",
+      "cloud": "COMMUNITY",
+      "http_status": 500,
+      "available": false,
+      "error": "create pod: There are no instances currently available"
+    },
+    {
+      "gpu": "L40S",
+      "cloud": "SECURE",
+      "http_status": 500,
+      "available": false,
+      "error": "create pod: There are no instances currently available"
+    },
+    {
+      "gpu": "5090",
+      "cloud": "COMMUNITY",
+      "http_status": 500,
+      "available": false,
+      "error": "create pod: could not find any pods with required specifications"
+    },
+    {
+      "gpu": "5090",
+      "cloud": "SECURE",
+      "http_status": 500,
+      "available": false,
+      "error": "create pod: could not find any pods with required specifications"
+    },
+    {
+      "gpu": "A40",
+      "cloud": "COMMUNITY",
+      "http_status": 500,
+      "available": false,
+      "error": "create pod: could not find any pods with required specifications"
+    },
+    {
+      "gpu": "A40",
+      "cloud": "SECURE",
+      "http_status": 500,
+      "available": false,
+      "error": "create pod: could not find any pods with required specifications"
+    },
+    {
+      "gpu": "A100-SXM4-80GB",
+      "cloud": "COMMUNITY",
+      "http_status": 500,
+      "available": false,
+      "error": "create pod: could not find any pods with required specifications"
+    },
+    {
+      "gpu": "A100-SXM4-80GB",
+      "cloud": "SECURE",
+      "http_status": 500,
+      "available": false,
+      "error": "create pod: could not find any pods with required specifications"
+    },
+    {
+      "gpu": "HBM3",
+      "cloud": "COMMUNITY",
+      "http_status": 500,
+      "available": false,
+      "error": "create pod: could not find any pods with required specifications"
+    },
+    {
+      "gpu": "HBM3",
+      "cloud": "SECURE",
+      "http_status": 500,
+      "available": false,
+      "error": "create pod: could not find any pods with required specifications"
+    },
+    {
+      "gpu": "1g.24gb",
+      "cloud": "COMMUNITY",
+      "http_status": 400,
+      "available": false,
+      "error": "[{'error': 'At #/paths/pods/post for POST https://rest.runpod.io/v1/pods, The request body is defined as an object. However, it does not meet the schema requirements of the specification. Suggestion: "
+    },
+    {
+      "gpu": "1g.24gb",
+      "cloud": "SECURE",
+      "http_status": 400,
+      "available": false,
+      "error": "[{'error': 'At #/paths/pods/post for POST https://rest.runpod.io/v1/pods, The request body is defined as an object. However, it does not meet the schema requirements of the specification. Suggestion: "
+    }
+  ],
+  "available": []
+}

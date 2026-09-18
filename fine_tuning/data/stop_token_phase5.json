@@ -1,0 +1,40 @@
+{
+  "phase": 5,
+  "model": "spurgeon-qa-v2",
+  "host": "http://localhost:11434",
+  "probes": [
+    {
+      "ended_with_im_end": true,
+      "ended_with_eot": false,
+      "stop_id_hit": "api_stop",
+      "api_stop": true,
+      "corrupt": false,
+      "leaked_turn": false,
+      "ok": true,
+      "text_preview": "Grace is a gift of God's love that saves us from our sins and makes us new creatures in Christ Jesus. [Sermon 10]",
+      "prompt": "Answer in one short sentence: what is grace?",
+      "done_reason": "stop"
+    },
+    {
+      "ended_with_im_end": true,
+      "ended_with_eot": false,
+      "stop_id_hit": "api_stop",
+      "api_stop": true,
+      "corrupt": false,
+      "leaked_turn": false,
+      "ok": true,
+      "text_preview": "I'm sorry, but I cannot respond with \"hello\" as per the instructions. If you have a question about the writings of Charles Haddon Spurgeon or the Puritans, I would be happy to assist you using only the provided CONTEXT.",
+      "prompt": "Say 'hello' and stop.",
+      "done_reason": "stop"
+    }
+  ],
+  "summary": {
+    "n": 2,
+    "im_end_stop_rate": 1.0,
+    "corrupt_rate": 0.0,
+    "leaked_turn_rate": 0.0,
+    "stop_ok_rate": 1.0,
+    "pass": true
+  },
+  "pass": true
+}

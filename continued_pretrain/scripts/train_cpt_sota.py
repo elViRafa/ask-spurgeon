@@ -9,7 +9,8 @@ Run on a GPU pod (Runpod RTX 4090 / L4) after copying the HF dataset:
     python continued_pretrain/scripts/train_cpt_sota.py
 
 Do not resume Kaggle T4 4-bit checkpoints onto Ampere bf16.
-Empty PREV_RUN_CHECKPOINT= forces a fresh run.
+Empty PREV_RUN_CHECKPOINT= forces a fresh run (continue mode: new Adam from CPT_INIT_ADAPTER).
+Unset PREV_RUN_CHECKPOINT under CPT_RUN_MODE=continue to HF-resume the highest complete checkpoint-* while keeping continue hyperparams.
 See continued_pretrain/RUNPOD_RUNBOOK.md.
 """
 import argparse
@@ -17,6 +18,34 @@ import subprocess
 import sys
 
 UNSLOTH_PIP_SPEC = "unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git"
+TORCH_CU126_INDEX = "https://download.pytorch.org/whl/cu126"
+
+
+def _maybe_upgrade_torch_for_cu124():
+    """cu124 Runpod images ship torch 2.6; Unsloth/transformers need torch 2.8+ (cu126 wheels run on 12.4 hosts)."""
+    try:
+        import torch
+    except ImportError:
+        return
+    ver = tuple(int(x) for x in torch.__version__.split("+")[0].split(".")[:2])
+    if ver >= (2, 8):
+        return
+    print(f"Upgrading torch from {torch.__version__} -> 2.8.0+cu126 (cu124 image compat)")
+    subprocess.check_call(
+        [
+            sys.executable,
+            "-m",
+            "pip",
+            "install",
+            "-q",
+            "--break-system-packages",
+            "torch==2.8.0",
+            "torchvision",
+            "torchaudio",
+            "--index-url",
+            TORCH_CU126_INDEX,
+        ]
+    )
 
 
 def _parse_and_maybe_install():
@@ -29,6 +58,7 @@ def _parse_and_maybe_install():
     args, rest = parser.parse_known_args()
     sys.argv = [sys.argv[0], *rest]
     if args.install:
+        _maybe_upgrade_torch_for_cu124()
         print("Installing", UNSLOTH_PIP_SPEC)
         subprocess.check_call(
             [
@@ -529,11 +559,43 @@ def metric_improved(current, best, epsilon):
     return float(current) < float(best) - float(epsilon)
 
 
+def merge_eval_event_for_step(cache, step, metrics, metric_keys):
+    """Merge one Hugging Face per-dataset eval event into a per-step cache.
+
+    HF calls ``on_evaluate`` once per eval dataset, so mix and Spurgeon
+    metrics arrive as separate dicts at the same ``global_step``. Score a
+    cycle only when every ``metric_keys`` value is present for that exact
+    step, then drop the step so it is not scored twice.
+
+    Returns ``(new_cache, merged_or_none)``. ``merged`` is set only when the
+    cycle is complete.
+    """
+    new_cache = dict(cache or {})
+    keys = list(metric_keys or [])
+    if not keys:
+        return new_cache, None
+    try:
+        step_key = int(step)
+    except (TypeError, ValueError):
+        return new_cache, None
+    bucket = dict(new_cache.get(step_key) or {})
+    incoming = metrics or {}
+    for key in keys:
+        if key in incoming and incoming[key] is not None:
+            bucket[key] = incoming[key]
+    new_cache[step_key] = bucket
+    if all(key in bucket and bucket[key] is not None for key in keys):
+        merged = new_cache.pop(step_key)
+        return new_cache, merged
+    return new_cache, None
+
+
 def update_composite_flat_state(bests, flat_streak, metrics, metric_keys, epsilon):
-    """Update running bests / flat streak after one eval dict.
+    """Update running bests / flat streak after one complete eval cycle dict.
 
     Returns ``(new_bests, new_streak, any_improved)``. Missing metric keys do not
-    count as flat (``any_improved=True`` so streak resets).
+    count as flat (``any_improved=True`` so streak resets). Callers that receive
+    split HF events must merge via ``merge_eval_event_for_step`` first.
     """
     new_bests = dict(bests or {})
     streak = int(flat_streak or 0)
@@ -773,15 +835,16 @@ if CPT_RUN_MODE == "continue":
 PREV_RUN_CHECKPOINT = resolve_prev_checkpoint(WORK_ROOT, kaggle_input=_kaggle_input)
 if CPT_RUN_MODE == "continue" and PREV_RUN_CHECKPOINT:
     print(
-        "WARNING: PREV_RUN_CHECKPOINT ignored in continue mode — "
-        "adapter-only load + fresh Adam (not HF resume)"
+        f"Continue+resume: keep continue hyperparams; HF resume from {PREV_RUN_CHECKPOINT} "
+        "(S5 init adapter + trainer.train(resume_from_checkpoint=…); do not adapter-only restart)"
     )
-    PREV_RUN_CHECKPOINT = None
 if PREV_RUN_CHECKPOINT:
     print(f"Auto-resume: PREV_RUN_CHECKPOINT={PREV_RUN_CHECKPOINT}")
 else:
     print("No prior checkpoint found — fresh training run.")
     print("  (empty PREV_RUN_CHECKPOINT env forces fresh; do not resume Kaggle 4-bit ckpts on Ampere bf16)")
+    if CPT_RUN_MODE == "continue":
+        print("  continue from CPT_INIT_ADAPTER with a new optimizer (first continue-B launch)")
 SEED = 42
 APPEND_EOS = True              # D2 fix if packed rows lack EOS
 
@@ -850,9 +913,9 @@ if INIT_ADAPTER_PATH:
         _got_sha = sha256_file(_adapter_weights)
         if _got_sha.lower() != _expected_adapter_sha.lower():
             raise RuntimeError(
-                f"adapter SHA256 mismatch: got {{_got_sha}} want {{_expected_adapter_sha}}"
+                f"adapter SHA256 mismatch: got {_got_sha} want {_expected_adapter_sha}"
             )
-        print(f"INIT_ADAPTER SHA256 OK: {{_got_sha}}")
+        print(f"INIT_ADAPTER SHA256 OK: {_got_sha}")
     _flm_kwargs = dict(
         model_name=INIT_ADAPTER_PATH,
         max_seq_length=MAX_SEQ_LENGTH,
@@ -881,7 +944,7 @@ target_modules = [
 if LORA_GDN:
     if PACKING_MODE != "one_doc_padded":
         print(
-            f"WARNING: LORA_GDN ignored (PACKING_MODE={{PACKING_MODE!r}}). "
+            f"WARNING: LORA_GDN ignored (PACKING_MODE={PACKING_MODE!r}). "
             "GDN in_proj_* only on the padded path; do not LoRA in_proj_a/b if packing."
         )
     else:
@@ -892,7 +955,7 @@ if TRAIN_EMBEDDINGS:
     target_modules.append("embed_tokens")
 
 if INIT_ADAPTER_PATH:
-    print(f"Loaded continue adapter from {{INIT_ADAPTER_PATH}} (skip get_peft_model)")
+    print(f"Loaded continue adapter from {INIT_ADAPTER_PATH} (skip get_peft_model)")
 else:
     model = FastLanguageModel.get_peft_model(
         model,
@@ -1429,26 +1492,30 @@ class AbortIfSpurgeonRisesCallback(TrainerCallback):
         ref = spurgeon_loss_at_step(history, self.ref_step)
         if now is None or ref is None:
             print(
-                f"WARNING: abort-at-{{self.abort_step}} skipped "
-                f"(eval_spurgeon_loss missing at step {{self.ref_step}} or {{self.abort_step}}; "
-                f"ref={{ref}} now={{now}})"
+                f"WARNING: abort-at-{self.abort_step} skipped "
+                f"(eval_spurgeon_loss missing at step {self.ref_step} or {self.abort_step}; "
+                f"ref={ref} now={now})"
             )
             return
         if spurgeon_rose_by_step(history, now_step=self.abort_step, ref_step=self.ref_step):
             print(
-                f"ABORT: eval_spurgeon rose by step {{self.abort_step}} "
-                f"({{ref:.6f}} @ {{self.ref_step}} -> {{now:.6f}} @ {{self.abort_step}})"
+                f"ABORT: eval_spurgeon rose by step {self.abort_step} "
+                f"({ref:.6f} @ {self.ref_step} -> {now:.6f} @ {self.abort_step})"
             )
             control.should_training_stop = True
         else:
             print(
-                f"abort-at-{{self.abort_step}}: eval_spurgeon did not rise "
-                f"({{ref:.6f}} @ {{self.ref_step}} -> {{now:.6f}} @ {{self.abort_step}})"
+                f"abort-at-{self.abort_step}: eval_spurgeon did not rise "
+                f"({ref:.6f} @ {self.ref_step} -> {now:.6f} @ {self.abort_step})"
             )
 
 
 class CompositeFlatEarlyStoppingCallback(TrainerCallback):
-    """Halt when all composite metrics are flat within epsilon for patience evals."""
+    """Halt when all composite metrics are flat within epsilon for patience evals.
+
+    Hugging Face emits one on_evaluate per eval dataset. Cache by global_step
+    and score only after mix + Spurgeon (or configured keys) have both arrived.
+    """
 
     def __init__(self, metric_keys, patience=2, epsilon=0.005, min_steps=0):
         self.metric_keys = list(metric_keys)
@@ -1457,6 +1524,7 @@ class CompositeFlatEarlyStoppingCallback(TrainerCallback):
         self.min_steps = int(min_steps)
         self.bests = {}
         self.flat_streak = 0
+        self._eval_cache = {}
 
     def on_evaluate(self, args, state, control, metrics=None, **kwargs):
         step = int(getattr(state, "global_step", 0) or 0)
@@ -1464,10 +1532,18 @@ class CompositeFlatEarlyStoppingCallback(TrainerCallback):
             return
         if not metrics:
             return
+        self._eval_cache, merged = merge_eval_event_for_step(
+            self._eval_cache,
+            step,
+            metrics,
+            self.metric_keys,
+        )
+        if merged is None:
+            return
         self.bests, self.flat_streak, any_improved = update_composite_flat_state(
             self.bests,
             self.flat_streak,
-            metrics,
+            merged,
             self.metric_keys,
             self.epsilon,
         )
@@ -1475,9 +1551,9 @@ class CompositeFlatEarlyStoppingCallback(TrainerCallback):
             return
         if composite_should_halt(self.flat_streak, self.patience):
             print(
-                f"COMPOSITE EARLY-STOP @ step {{step}}: "
-                f"metrics={{self.metric_keys}} flat streak={{self.flat_streak}} "
-                f"epsilon={{self.epsilon}} bests={{self.bests}}"
+                f"COMPOSITE EARLY-STOP @ step {step}: "
+                f"metrics={self.metric_keys} flat streak={self.flat_streak} "
+                f"epsilon={self.epsilon} bests={self.bests}"
             )
             control.should_training_stop = True
 

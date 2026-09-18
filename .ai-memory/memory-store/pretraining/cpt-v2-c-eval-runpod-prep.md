@@ -17,7 +17,6 @@ Execute C on the **Runpod B** adapter. Do not C Kaggle 4-bit ckpts. Do not merge
 B abort-at-50 **passed** (`eval_spurgeon` 2.288 @ 25 → 2.286 @ 50) and kept falling to 2.248 @ 400. Runbook: C only after complete B with stable/falling eval through 50.
 
 ## Score this file
-`continued_pretrain/kaggle/runpod_cpt_v2/theology_cpt_lora`
 - `adapter_model.safetensors` ~1445 MB
 - SHA256 `319d17a39d193041528914cfb2f83c1decf21e55ffe76dfd2ca565f5e99e1478`
 - `find_adapter` looks for `theology_cpt_lora/adapter_config.json` under `CPT_WORK_ROOT`

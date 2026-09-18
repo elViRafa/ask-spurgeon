@@ -243,6 +243,102 @@ def test_composite_flat_state_both_flat_halts() -> None:
     assert cr.composite_should_halt(streak, patience=2) is True
 
 
+def test_merge_eval_event_split_hf_cycle() -> None:
+    """Mix then Spurgeon at the same step become one complete cycle."""
+    keys = ["eval_spurgeon_loss", "eval_mix_loss"]
+    cache = {}
+    cache, merged = cr.merge_eval_event_for_step(
+        cache, 25, {"eval_mix_loss": 2.085}, keys
+    )
+    assert merged is None
+    assert cache[25]["eval_mix_loss"] == 2.085
+    cache, merged = cr.merge_eval_event_for_step(
+        cache, 25, {"eval_spurgeon_loss": 2.292}, keys
+    )
+    assert merged == {"eval_mix_loss": 2.085, "eval_spurgeon_loss": 2.292}
+    assert 25 not in cache
+
+
+def test_merge_eval_event_combined_dict_completes_immediately() -> None:
+    keys = ["eval_spurgeon_loss", "eval_mix_loss"]
+    cache, merged = cr.merge_eval_event_for_step(
+        {},
+        50,
+        {"eval_spurgeon_loss": 2.29, "eval_mix_loss": 2.07},
+        keys,
+    )
+    assert merged["eval_spurgeon_loss"] == 2.29
+    assert merged["eval_mix_loss"] == 2.07
+    assert cache == {}
+
+
+def test_composite_split_events_s5_like_no_halt() -> None:
+    """S5-like: sequential HF events; mix still falling so composite must not halt."""
+    keys = ["eval_spurgeon_loss", "eval_mix_loss"]
+    events = [
+        (325, {"eval_mix_loss": 2.085}),
+        (325, {"eval_spurgeon_loss": 2.254}),
+        (350, {"eval_mix_loss": 2.050}),
+        (350, {"eval_spurgeon_loss": 2.254}),
+        (375, {"eval_mix_loss": 2.029}),
+        (375, {"eval_spurgeon_loss": 2.255}),
+    ]
+    cache = {}
+    bests = {}
+    streak = 0
+    for step, metrics in events:
+        cache, merged = cr.merge_eval_event_for_step(cache, step, metrics, keys)
+        if merged is None:
+            continue
+        bests, streak, _improved = cr.update_composite_flat_state(
+            bests, streak, merged, keys, epsilon=0.005
+        )
+    assert streak == 0
+    assert cr.composite_should_halt(streak, patience=2) is False
+
+
+def test_composite_split_events_both_flat_halts() -> None:
+    keys = ["eval_spurgeon_loss", "eval_mix_loss"]
+    events = [
+        (2000, {"eval_mix_loss": 2.029}),
+        (2000, {"eval_spurgeon_loss": 2.254}),
+        (2025, {"eval_mix_loss": 2.028}),
+        (2025, {"eval_spurgeon_loss": 2.254}),
+        (2050, {"eval_mix_loss": 2.027}),
+        (2050, {"eval_spurgeon_loss": 2.255}),
+    ]
+    cache = {}
+    bests = {}
+    streak = 0
+    for step, metrics in events:
+        cache, merged = cr.merge_eval_event_for_step(cache, step, metrics, keys)
+        if merged is None:
+            continue
+        bests, streak, _improved = cr.update_composite_flat_state(
+            bests, streak, merged, keys, epsilon=0.005
+        )
+    assert streak == 2
+    assert cr.composite_should_halt(streak, patience=2) is True
+
+
+def test_split_events_without_merge_never_halt() -> None:
+    """Document the old bug: feeding one bucket at a time never completes a cycle."""
+    keys = ["eval_spurgeon_loss", "eval_mix_loss"]
+    bests = {}
+    streak = 0
+    for metrics in (
+        {"eval_mix_loss": 2.029},
+        {"eval_spurgeon_loss": 2.254},
+        {"eval_mix_loss": 2.028},
+        {"eval_spurgeon_loss": 2.254},
+    ):
+        bests, streak, improved = cr.update_composite_flat_state(
+            bests, streak, metrics, keys, epsilon=0.005
+        )
+        assert improved is True
+    assert cr.composite_should_halt(streak, patience=2) is False
+
+
 def test_metric_improved() -> None:
     assert cr.metric_improved(2.20, 2.25, 0.005) is True
     assert cr.metric_improved(2.246, 2.25, 0.005) is False
@@ -312,6 +408,11 @@ def main() -> None:
         test_resolve_continue_training_config()
         test_composite_flat_state_s5_like()
         test_composite_flat_state_both_flat_halts()
+        test_merge_eval_event_split_hf_cycle()
+        test_merge_eval_event_combined_dict_completes_immediately()
+        test_composite_split_events_s5_like_no_halt()
+        test_composite_split_events_both_flat_halts()
+        test_split_events_without_merge_never_halt()
         test_metric_improved()
         test_resolve_init_adapter_env_and_local(tmp_path)
         test_dataset_search_includes_a_output_v3(tmp_path)
@@ -336,6 +437,11 @@ def main() -> None:
     print("PASS: continue training config")
     print("PASS: composite flat S5-like (mix still improving)")
     print("PASS: composite flat both-flat halt")
+    print("PASS: merge split HF eval events")
+    print("PASS: merge combined eval dict")
+    print("PASS: composite split-event S5-like no halt")
+    print("PASS: composite split-event both-flat halt")
+    print("PASS: unmerged split events never halt")
     print("PASS: metric_improved epsilon")
     print("PASS: resolve_init_adapter env/local")
     print("PASS: a_output_v3 dataset search")

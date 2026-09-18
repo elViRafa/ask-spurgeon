@@ -19,7 +19,6 @@ Fresh Ampere bf16 LoRA (not a Kaggle 4-bit resume). GPU pod `3aift60lb2tr68` **d
 - Abort-at-50: **pass** — eval_spurgeon 2.28797 @ 25 → 2.28556 @ 50
 - Early-stop patience 2 at **450**. Best **400**, metric 2.248331
 - Train loss 1.989; ~0.98 h; ~7.4 s/step on 4090; ~20 GB VRAM
-- SHA256 `319d17a39d193041528914cfb2f83c1decf21e55ffe76dfd2ca565f5e99e1478`
 - Local: `continued_pretrain/kaggle/runpod_cpt_v2/` (lora, `cpt_train.log`, `theology_cpt_run_config.json`, `checkpoint-400-trainer_state.json` only — **no optimizer ckpts**)
 
 ## eval_spurgeon by step

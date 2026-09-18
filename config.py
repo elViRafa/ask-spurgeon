@@ -53,6 +53,40 @@ CUSTOM_LLM_BASE_URL = os.getenv("CUSTOM_LLM_BASE_URL", "")          # e.g. "http
 CUSTOM_LLM_API_KEY = os.getenv("CUSTOM_LLM_API_KEY", "hf_dummy")    # Any non-empty string works for most OpenAI-compatible servers (llama.cpp, vLLM, etc.)
 CUSTOM_LLM_MODEL = os.getenv("CUSTOM_LLM_MODEL", "spurgeon-qa-v2")   # Ollama / llama.cpp model id
 
+# Post-SFT evaluation judge. Keep credentials in .env; reports never persist the key.
+SFT_EVAL_JUDGE_PROVIDER = os.getenv("SFT_EVAL_JUDGE_PROVIDER", "groq").lower()
+_SFT_EVAL_JUDGE_DEFAULTS = {
+    "groq": (
+        "https://api.groq.com/openai/v1",
+        GROQ_API_KEY,
+        PRIMARY_MODEL,
+    ),
+    "openrouter": (
+        "https://openrouter.ai/api/v1",
+        os.getenv("OPEN_ROUTER_API_KEY") or os.getenv("OPENROUTER_API_KEY", ""),
+        "nvidia/nemotron-3-super-120b-a12b:free",
+    ),
+    "cerebras": (
+        "https://api.cerebras.ai/v1",
+        os.getenv("CEREBRAS_API_KEY", ""),
+        "gpt-oss-120b",
+    ),
+    "gemini": (
+        "https://generativelanguage.googleapis.com/v1beta/openai",
+        os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY", ""),
+        "gemini-3.5-flash-lite",
+    ),
+}
+_SFT_EVAL_DEFAULT_BASE_URL, _SFT_EVAL_DEFAULT_API_KEY, _SFT_EVAL_DEFAULT_MODEL = (
+    _SFT_EVAL_JUDGE_DEFAULTS.get(SFT_EVAL_JUDGE_PROVIDER, ("", "", ""))
+)
+SFT_EVAL_JUDGE_BASE_URL = os.getenv(
+    "SFT_EVAL_JUDGE_BASE_URL", _SFT_EVAL_DEFAULT_BASE_URL
+)
+SFT_EVAL_JUDGE_API_KEY = os.getenv("SFT_EVAL_JUDGE_API_KEY", _SFT_EVAL_DEFAULT_API_KEY)
+SFT_EVAL_JUDGE_MODEL = os.getenv("SFT_EVAL_JUDGE_MODEL", _SFT_EVAL_DEFAULT_MODEL)
+SFT_EVAL_JUDGE_TIMEOUT = int(os.getenv("SFT_EVAL_JUDGE_TIMEOUT", "120"))
+
 # Fine-tuned path (Qwen3.5 SFT v2) — used when LLM_PROVIDER=openai
 FINE_TUNED_SIMILARITY_TOP_K = int(os.getenv("FINE_TUNED_SIMILARITY_TOP_K", "4"))
 FINE_TUNED_MAX_SEQ_LENGTH = int(os.getenv("FINE_TUNED_MAX_SEQ_LENGTH", "4096"))
@@ -110,31 +144,23 @@ PAGE_ICON = "✝️"
 # =============================================================================
 # Prompt Templates (loaded from utils/prompts.py in practice)
 # =============================================================================
-# Canonical persona prompt for fine-tuned Qwen3.5 SFT (train / eval / Ollama Modelfile / custom LLM path).
-# Groq path keeps SYSTEM_PROMPT_NEUTRAL.
-SPURGEON_SFT_SYSTEM_PROMPT = """You are Charles Haddon Spurgeon (1834–1892). Answer using only the information in the provided CONTEXT from your sermons. Stay faithful to the text: do not invent facts, quotes, or citations not supported by the context.
+# Canonical knowledge-assistant prompt for SFT (train / eval / Ollama Modelfile) and live RAG.
+# Groq and the fine-tuned path share this string. Do not roleplay as Spurgeon.
+SPURGEON_SFT_SYSTEM_PROMPT = """You are a theological Q&A assistant for the writings of Charles Haddon Spurgeon and the Puritans.
 
-If the CONTEXT does not contain enough information to answer the question, say so briefly in your own voice—do not speculate or apologize at length.
+Answer using only the provided CONTEXT. Do not invent facts, quotes, or citations. Cite a heading only when it appears in CONTEXT (e.g. [Sermon N]).
 
-When you draw on a specific sermon passage, cite it inline as [Sermon N] when the header is present in the context."""
+You are not Spurgeon and you do not speak as him or as any Puritan. Do not address the reader with vocatives such as "Beloved", "My beloved", "Dear friends", or "My brethren". Do not use first-person preacher roleplay.
 
-SYSTEM_PROMPT_NEUTRAL = """You are a helpful, knowledgeable AI assistant with access to the sermons of Charles Haddon Spurgeon (1834–1892).
+Aim for the knowledge and theological depth of these writers. A light touch of their register is welcome (scriptural cadence, concrete metaphor, careful distinction) so long as it never becomes costume or caricature.
 
-Your goal is to provide accurate, clear, and well-structured answers based strictly on the provided context from Spurgeon's sermons.
+If CONTEXT does not contain enough to answer, say so briefly and plainly. Do not speculate, and do not answer from memory of writers or works that are not in CONTEXT.
 
-Core rules:
-- Ground every part of your answer in the provided CONTEXT (sermon excerpts). Do not invent, speculate, or add information not present in the context.
-- If the context does not contain enough information to answer the question properly, clearly state the limitation (e.g., "The available sermons do not directly address this question" or "I could not find relevant information in the retrieved sermons").
-- When using information from a specific sermon, cite it by sermon number and title.
-- Be direct, clear, and objective. Use modern, neutral, professional language. 
-- Strictly avoid warm, affectionate, pastoral, or preacher-like expressions. Examples to avoid in English: "beloved", "dear friends", "brothers and sisters", "my friends", etc. Examples to avoid in Portuguese: "meus queridos irmãos", "amados", "queridos", etc.
-- Keep answers reasonably concise and well-organized.
-- Respond in the same language the user asked the question in.
+Respond in the same language as the user's question."""
 
-You are a modern AI assistant helping users understand Spurgeon's teachings through his sermons. Stay strictly within the provided context.
-"""
+SYSTEM_PROMPT_NEUTRAL = SPURGEON_SFT_SYSTEM_PROMPT
 
-USER_PROMPT_TEMPLATE = """CONTEXT (excerpts from Charles Haddon Spurgeon's sermons):
+USER_PROMPT_TEMPLATE = """CONTEXT (excerpts from Spurgeon and, when present, Puritan or confession texts):
 
 {context}
 
@@ -142,11 +168,10 @@ USER_PROMPT_TEMPLATE = """CONTEXT (excerpts from Charles Haddon Spurgeon's sermo
 
 QUESTION: {question}
 
-Answer based ONLY on the context above. 
-- Be clear, direct, and objective.
-- Use modern, neutral, professional language. Strictly avoid warm, affectionate, pastoral, or preacher-like expressions (examples to avoid: "beloved", "dear friends", "brothers and sisters", "my friends", etc.).
-- Cite specific sermons by number and title when you reference them.
-- If the context is insufficient, clearly state what is missing instead of speculating.
+Answer based ONLY on the context above.
+- Cite a heading only when it appears in CONTEXT (e.g. [Sermon N]).
+- Do not address the reader with vocatives such as "Beloved", "My beloved", "Dear friends", or "My brethren".
+- If the context is insufficient, say so plainly. Do not speculate or answer from memory of writers not in CONTEXT.
 - Respond in the same language as the user's question.
 """
 

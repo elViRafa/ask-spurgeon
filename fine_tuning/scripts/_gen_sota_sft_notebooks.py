@@ -10,7 +10,14 @@ Generator for SOTA SFT notebooks (v2 / Fable 5 FN plan).
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
+
+_REPO = Path(__file__).resolve().parent.parent.parent
+if str(_REPO) not in sys.path:
+    sys.path.insert(0, str(_REPO))
+
+from config import SPURGEON_SFT_SYSTEM_PROMPT  # noqa: E402
 
 UNSLOTH_GIT_REF = ""
 UNSLOTH_INSTALL = (
@@ -20,17 +27,79 @@ UNSLOTH_INSTALL = (
 )
 
 STOCK_MODEL = "unsloth/Qwen3.5-4B-Base"
-GATE0_MERGED = "/kaggle/input/datasets/rafaelvieira1/theology-cpt-v2/theology_cpt_v2_merged_hf"
-
-CANONICAL_SYSTEM = (
-    "You are Charles Haddon Spurgeon (1834–1892). Answer using only the information in the "
-    "provided CONTEXT from your sermons. Stay faithful to the text: do not invent facts, "
-    "quotes, or citations not supported by the context.\n\n"
-    "If the CONTEXT does not contain enough information to answer the question, say so briefly "
-    "in your own voice—do not speculate or apologize at length.\n\n"
-    "When you draw on a specific sermon passage, cite it inline as [Sermon N] when the header "
-    "is present in the context."
+KAGGLE_GATE0_MERGED = (
+    "/kaggle/input/datasets/rafaelvieira1/theology-cpt-v2/theology_cpt_v2_merged_hf"
 )
+RUNPOD_GATE0_MERGED = "/workspace/theology_cpt_v2_merged_hf"
+# Notebooks default to Kaggle path; RunPod/train_sft_sota.py use SFT_GATE0_MERGED env.
+GATE0_MERGED = KAGGLE_GATE0_MERGED
+
+CANONICAL_SYSTEM = SPURGEON_SFT_SYSTEM_PROMPT
+
+# Plain ChatML for Base (HF Base tokenizer has no chat_template). No thinking/vision/tools.
+QWEN35_SFT_CHATML = (
+    "{%- for message in messages %}"
+    "{%- if message['role'] == 'system' %}"
+    "{{- '<|im_start|>system\\n' + message['content'] + '<|im_end|>\\n' }}"
+    "{%- elif message['role'] == 'user' %}"
+    "{{- '<|im_start|>user\\n' + message['content'] + '<|im_end|>\\n' }}"
+    "{%- elif message['role'] == 'assistant' %}"
+    "{{- '<|im_start|>assistant\\n' + message['content'] + '<|im_end|>\\n' }}"
+    "{%- endif %}"
+    "{%- endfor %}"
+    "{%- if add_generation_prompt %}"
+    "{{- '<|im_start|>assistant\\n' }}"
+    "{%- endif %}"
+)
+
+S2_HELPER = f'''
+def text_tokenizer(tok):
+    """Unwrap VL Processor → inner tokenizer (Qwen3.5 is multimodal)."""
+    inner = tok
+    for _ in range(4):
+        nxt = getattr(inner, "tokenizer", None)
+        if nxt is None or nxt is inner:
+            break
+        inner = nxt
+    return inner
+
+IM_START, IM_END, EOT = "<|im_start|>", "<|im_end|>", "<|endoftext|>"
+QWEN35_SFT_CHATML = {QWEN35_SFT_CHATML!r}
+
+def apply_sft_special_token_contract(tok):
+    tok = text_tokenizer(tok)
+    n0 = len(tok)
+    tok.padding_side = "right"
+    if tok.pad_token is None or tok.pad_token == IM_END:
+        tok.pad_token = EOT
+    tok.pad_token_id = tok.convert_tokens_to_ids(tok.pad_token)
+    if not getattr(tok, "chat_template", None):
+        tok.chat_template = QWEN35_SFT_CHATML
+    for t in (IM_START, IM_END, EOT):
+        ids = tok(t, add_special_tokens=False)["input_ids"]
+        if hasattr(ids, "tolist"):
+            ids = ids.tolist()
+        if ids and isinstance(ids[0], (list, tuple)):
+            ids = list(ids[0])
+        assert len(ids) == 1, f"{{t}} not atomic: {{ids}}"
+        print(t, "->", ids[0], "(atomic)")
+    im_end_id = tok.convert_tokens_to_ids(IM_END)
+    eot_id = tok.convert_tokens_to_ids(EOT)
+    assert tok.pad_token_id != im_end_id, "pad must not be <|im_end|>"
+    assert 0 <= tok.pad_token_id < len(tok)
+    assert len(tok) == n0, "vocab resize during S2 — abort"
+    print("eos (native, do not reassign):", tok.eos_token, tok.eos_token_id)
+    print("pad:", tok.pad_token, tok.pad_token_id)
+    print("im_end_id:", im_end_id, "eot_id:", eot_id, "len:", len(tok), "vocab_size:", tok.vocab_size)
+    demo = tok.apply_chat_template(
+        [{{"role": "system", "content": "S"}}, {{"role": "user", "content": "U"}},
+         {{"role": "assistant", "content": "A"}}],
+        tokenize=False, add_generation_prompt=False,
+    )
+    print(demo)
+    assert IM_END in demo and IM_START in demo
+    return tok, im_end_id, eot_id
+'''.lstrip()
 
 
 def lines(s: str) -> list[str]:
@@ -85,8 +154,8 @@ def gen_d_qa_data_prep_sota(path: Path) -> None:
 Plan: `fine_tuning/notebooks/PLAN_FABLE5_TO_IMPROVE_FN.md`
 
 - Input: `qa_mix_train.jsonl` / `qa_mix_val.jsonl` from `build_qa_mix.py`
-- Template: ChatML via tokenizer-native `apply_chat_template`
-- **No vocab resize** — pad with existing token only
+- Template: plain ChatML (`<|im_end|>` turn stop). Base has no `chat_template` — we inject one (no thinking/vision).
+- **No vocab resize** — keep stock specials; pad = existing token, never `<|im_end|>`
 - Outputs `qa_dataset_train/` + `qa_dataset_val/` via `save_to_disk`
 """
         ),
@@ -115,23 +184,15 @@ CANONICAL_SYSTEM = {CANONICAL_SYSTEM!r}
             f'''import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
-from unsloth import FastLanguageModel
+# Tokenizer-only: FastLanguageModel.get_tokenizer is not a public Unsloth API.
+# D is data-prep — do not load the model / GPU weights here.
+from transformers import AutoTokenizer
+
+{S2_HELPER}
 
 MODEL_NAME = "{STOCK_MODEL}"
-tokenizer = FastLanguageModel.get_tokenizer(MODEL_NAME)
-
-# F2: never resize vocab
-assert len(tokenizer) == tokenizer.vocab_size, "vocab resize detected — abort"
-tokenizer.padding_side = "right"
-if tokenizer.pad_token is None:
-    tokenizer.pad_token = tokenizer.eos_token
-tokenizer.pad_token_id = tokenizer.convert_tokens_to_ids(tokenizer.pad_token)
-
-for t in ["<|im_start|>", "<|im_end|>", "<|endoftext|>"]:
-    ids = tokenizer(t, add_special_tokens=False)["input_ids"]
-    print(t, "->", ids, "(atomic)" if len(ids) == 1 else "(NOT ATOMIC)")
-print("eos:", tokenizer.eos_token, tokenizer.eos_token_id)
-print("pad:", tokenizer.pad_token, tokenizer.pad_token_id)
+tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, trust_remote_code=True)
+tokenizer, im_end_id, eot_id = apply_sft_special_token_contract(tokenizer)
 '''
         ),
         md("## 3. Build ChatML dataset + S1 token audit"),
@@ -213,13 +274,13 @@ os.makedirs(OFFLOAD_DIR, exist_ok=True)
         code(UNSLOTH_INSTALL),
         md("## 3. Config"),
         code(
-            f'''import json, hashlib
+            f'''import json, hashlib, os
 from pathlib import Path
 from datetime import datetime, timezone
 
 USE_CPT_MERGE = False  # GATE-0: set True for final run on CPT merged HF
 STOCK_MODEL = "{STOCK_MODEL}"
-GATE0_PATH = "{GATE0_MERGED}"
+GATE0_PATH = os.environ.get("SFT_GATE0_MERGED", "{GATE0_MERGED}")
 BASE_MODEL = GATE0_PATH if USE_CPT_MERGE else STOCK_MODEL
 
 DATA_TRAIN = Path("/kaggle/working/qa_dataset_train")
@@ -247,10 +308,13 @@ print("USE_CPT_MERGE:", USE_CPT_MERGE)
         ),
         md("## 4. Load model + S2 special-token audit"),
         code(
-            '''from unsloth import FastLanguageModel
+            f'''from unsloth import FastLanguageModel
 from unsloth.chat_templates import train_on_responses_only
 from datasets import load_from_disk
 from trl import SFTTrainer, SFTConfig
+from transformers import DataCollatorForSeq2Seq
+
+{S2_HELPER}
 
 model, tokenizer = FastLanguageModel.from_pretrained(
     model_name=BASE_MODEL,
@@ -258,14 +322,7 @@ model, tokenizer = FastLanguageModel.from_pretrained(
     dtype=None,
     load_in_4bit=True,
 )
-
-# S2 — no vocab resize
-assert len(tokenizer) == tokenizer.vocab_size
-for t in ["<|im_start|>", "<|im_end|>"]:
-    ids = tokenizer(t, add_special_tokens=False)["input_ids"]
-    assert len(ids) == 1, f"{{t}} not atomic: {{ids}}"
-if tokenizer.pad_token is None:
-    tokenizer.pad_token = tokenizer.eos_token
+tokenizer, im_end_id, eot_id = apply_sft_special_token_contract(tokenizer)
 
 model = FastLanguageModel.get_peft_model(
     model,
@@ -285,14 +342,12 @@ print("Loaded", len(train_ds), len(val_ds))
         ),
         md("## 5. Trainer + S3 masking audit"),
         code(
-            '''trainer = SFTTrainer(
+            '''# TRL >=0.18: dataset_text_field lives on SFTConfig only (not SFTTrainer kwargs).
+trainer = SFTTrainer(
     model=model,
-    tokenizer=tokenizer,
+    processing_class=tokenizer,
     train_dataset=train_ds,
     eval_dataset=val_ds,
-    dataset_text_field="text",
-    max_seq_length=MAX_SEQ_LENGTH,
-    packing=False,
     args=SFTConfig(
         per_device_train_batch_size=PER_DEVICE_BATCH,
         gradient_accumulation_steps=GRAD_ACCUM,
@@ -313,6 +368,11 @@ print("Loaded", len(train_ds), len(val_ds))
         seed=SEED,
         report_to="none",
         output_dir=str(OUT_DIR / "checkpoints"),
+        dataset_text_field="text",
+        packing=False,
+        max_length=MAX_SEQ_LENGTH,
+        eos_token="<|endoftext|>",
+        pad_token="<|endoftext|>",
     ),
 )
 
@@ -322,11 +382,23 @@ trainer = train_on_responses_only(
     response_part="<|im_start|>assistant\\n",
 )
 
-# S3 — supervised fraction should be well below 50%
-sample = train_ds[0]["text"]
-enc = tokenizer(sample, return_tensors="pt")
-labels = trainer.train_dataset[0] if hasattr(trainer, "train_dataset") else None
-print("S3: train_on_responses_only applied. Spot-check one batch in logs (supervised << prompt).")
+# pad==eot must not clone labels / zero stop-token CE
+trainer.data_collator = DataCollatorForSeq2Seq(
+    tokenizer, padding=True, label_pad_token_id=-100,
+)
+
+# S3 — supervised tokens must be assistant + <|im_end|> only
+row = trainer.train_dataset[0]
+ids, labs = row["input_ids"], row["labels"]
+if hasattr(ids, "tolist"):
+    ids, labs = ids.tolist(), labs.tolist()
+kept = [t for t, l in zip(ids, labs) if l != -100]
+decoded = tokenizer.decode(kept)
+print(decoded)
+frac = len(kept) / max(1, len(ids))
+print(f"supervised fraction: {frac:.1%}")
+assert im_end_id in kept, "S3 FAIL: <|im_end|> not in supervised labels"
+assert "<|im_start|>user" not in decoded, "S3 FAIL: user turn leaked into labels"
 '''
         ),
         md("## 6. Train + save run config"),
@@ -385,7 +457,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 USE_CPT_MERGE = False
 STOCK_MODEL = "{STOCK_MODEL}"
-GATE0_PATH = "{GATE0_MERGED}"
+GATE0_PATH = os.environ.get("SFT_GATE0_MERGED", "{GATE0_MERGED}")
 BASE_MODEL = GATE0_PATH if USE_CPT_MERGE else STOCK_MODEL
 
 LORA_DIR = Path("/kaggle/working/spurgeon_qa_lora_v2/lora")
@@ -407,8 +479,10 @@ CORRUPT_RE = re.compile(r"pist|spep|RGAR|据", re.I)
         ),
         md("## 2. Load model for inference"),
         code(
-            '''from unsloth import FastLanguageModel
+            f'''from unsloth import FastLanguageModel
 from datasets import Dataset
+
+{S2_HELPER}
 
 model, tokenizer = FastLanguageModel.from_pretrained(
     model_name=BASE_MODEL,
@@ -416,6 +490,7 @@ model, tokenizer = FastLanguageModel.from_pretrained(
     dtype=None,
     load_in_4bit=True,
 )
+tokenizer, im_end_id, eot_id = apply_sft_special_token_contract(tokenizer)
 if LORA_DIR.exists():
     from peft import PeftModel
     model = PeftModel.from_pretrained(model, str(LORA_DIR))
@@ -423,18 +498,19 @@ FastLanguageModel.for_inference(model)
 
 def generate(messages, max_new_tokens=400):
     prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-    inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+    inputs = tokenizer(text=prompt, return_tensors="pt")
+    inputs = {{k: v.to(model.device) for k, v in inputs.items() if hasattr(v, "to")}}
     out = model.generate(
         **inputs,
         max_new_tokens=max_new_tokens,
         do_sample=False,
         temperature=0.0,
-        eos_token_id=tokenizer.convert_tokens_to_ids("<|im_end|>"),
+        eos_token_id=[im_end_id, eot_id],
         pad_token_id=tokenizer.pad_token_id,
     )
     text = tokenizer.decode(out[0][inputs["input_ids"].shape[1]:], skip_special_tokens=False)
-    if "<|im_end|>" in text:
-        text = text.split("<|im_end|>")[0]
+    if IM_END in text:
+        text = text.split(IM_END)[0]
     return text.strip()
 '''
         ),

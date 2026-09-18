@@ -1,6 +1,6 @@
 # Next CPT — use more of the mix (after C)
 
-**Do not run this instead of S5 C.** Next GPU session is C. This file is the playbook **if** C says more tokens are worth it.
+**S5 C is complete** (probe PASS, §5 FAIL). Next GPU session is **S6 continue-B** when approved — see [`CORPUS_V3_S6_CONTINUE_CHECKLIST.md`](CORPUS_V3_S6_CONTINUE_CHECKLIST.md). This file is the playbook for the lower-LR continue from the S5 LoRA.
 
 S5 B early-stop at **375 / 4128** (~8.2M of ~90M tokens). The 2-doc Spurgeon probe flattened; `eval_mix` was still falling. Lower LR can make it *safe* to walk the rest of the mix. It does not replace unread tokens.
 
@@ -27,11 +27,13 @@ Gains will not scale 11× with tokens. Expect a few more PPL points, not 11× th
 
 **Load S5 LoRA weights, new optimizer, lower LR, early-stop floor.**
 
-Why not `trainer.train(resume_from_checkpoint=…)`:
+Why not `trainer.train(resume_from_checkpoint=…)` **for the first S5→S6 continue**:
 
-- Pod `pul3xia882ub5r` was deleted. Volume was never mounted.
-- Local copy is **adapter only** (`kaggle/runpod_cpt_v3/theology_cpt_lora`). No `optimizer.pt` / `trainer_state.json`.
-- `PREV_RUN_CHECKPOINT` resume **cannot** be used for this continue until someone implements PEFT-load-adapter (code change, approval).
+- S5 pod `pul3xia882ub5r` was deleted. Volume was never mounted for that B.
+- Local S5 copy is **adapter only** (`kaggle/runpod_cpt_v3/theology_cpt_lora`). No `optimizer.pt` / `trainer_state.json`.
+- First continue-B: **`CPT_RUN_MODE=continue`** + **`CPT_INIT_ADAPTER`** + empty **`PREV_RUN_CHECKPOINT=`** (new Adam).
+
+**After S6 was interrupted at ~2110:** volume `7hb931c5oe` holds `checkpoint-2100`. Resume with the **same continue hyperparams** and **HF** `PREV_RUN_CHECKPOINT` (or unset to auto-pick the highest complete ckpt). Do not adapter-only restart from S5.
 
 Practical start: `unsloth/Qwen3.5-4B-Base` + this LoRA (SHA256 `ef4df3a31c9d17f7ba8741e80df6d764bca19a6d535f0a33c210e547f486c303`), Ampere bf16, same pack recipe.
 

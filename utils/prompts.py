@@ -1,9 +1,9 @@
 """
-Prompt engineering for Spurgeon-style RAG.
+Prompt engineering for grounded theological RAG.
 
 These prompts are carefully tuned to:
 - Force grounding in retrieved context
-- Evoke Spurgeon's voice without hallucinating his style
+- Carry a light register from the sources without character roleplay
 - Handle "I don't know" gracefully
 - Support future multi-author queries
 """
@@ -17,7 +17,7 @@ def get_system_prompt(author: str = "Charles Haddon Spurgeon", variant: str = "d
     """Return the system prompt for the RAG assistant.
 
     Available variants:
-        - "default": Normal, clear, modern AI assistant style (recommended)
+        - "default": Knowledge assistant grounded in CONTEXT (recommended)
         - "strict": Very strict about staying in context and citing sources
         - "concise": Shorter, more direct answers
     """
@@ -42,11 +42,9 @@ ADDITIONAL RULES (Concise Variant):
 """
 
     if author != "Charles Haddon Spurgeon":
-        base = f"""You are a helpful AI assistant answering questions based on the writings of {author}.
+        base += f"""
 
-Ground every claim strictly in the provided CONTEXT. Quote or closely paraphrase when possible.
-If the context does not contain the answer, say so plainly and do not speculate.
-Cite specific works by title when available.
+ADDITIONAL SOURCE RULE: The retrieved CONTEXT is attributed to {author}. Still do not speak as that writer. Cite headings that appear in CONTEXT. Do not answer from memory of works that are not in CONTEXT.
 """
 
     return base
@@ -61,28 +59,31 @@ def format_context(nodes: List) -> str:
     """
     Turn retrieved LlamaIndex nodes into a clean, attributed context block.
 
-    Each node is expected to have:
-        - node.metadata["sermon_number"]
-        - node.metadata["title"]
-        - node.metadata["volume"]
-        - node.metadata["primary_scripture"]
-        - node.get_content()
+    Sermon nodes use sermon_number/title/volume/primary_scripture.
+    Catechism nodes use doc_type=catechism + catechism_number/title/work.
     """
     blocks = []
     for i, node in enumerate(nodes, 1):
         meta = node.metadata or {}
-        sermon_num = meta.get("sermon_number", "?")
-        title = meta.get("title", "Untitled Sermon")
-        vol = meta.get("volume")
-        scripture = meta.get("primary_scripture", "")
         text = node.get_content().strip()
+        doc_type = (meta.get("doc_type") or "").lower()
 
-        header = f"[Sermon {sermon_num} — \"{title}\""
-        if vol:
-            header += f", Volume {vol}"
-        if scripture:
-            header += f" | Text: {scripture}"
-        header += "]"
+        if doc_type == "catechism":
+            n = meta.get("catechism_number", "?")
+            work = meta.get("work") or "Catechism"
+            title = meta.get("title") or f"{work} Q.{n}"
+            header = f'[{work} Q.{n} — "{title}"]'
+        else:
+            sermon_num = meta.get("sermon_number", "?")
+            title = meta.get("title", "Untitled Sermon")
+            vol = meta.get("volume")
+            scripture = meta.get("primary_scripture", "")
+            header = f"[Sermon {sermon_num} — \"{title}\""
+            if vol:
+                header += f", Volume {vol}"
+            if scripture:
+                header += f" | Text: {scripture}"
+            header += "]"
 
         blocks.append(f"{header}\n{text}\n")
 
@@ -132,12 +133,12 @@ Your task is to score the ANSWER on the following four dimensions (1-5 scale):
    - 1 = Makes claims without citing sources or cites incorrectly.
 
 3. **Honesty / Humility** (1-5)
-   - 5 = Appropriately admits when the retrieved context is insufficient ("I do not find...", "the sermons before me do not address...").
+   - 5 = Appropriately admits when the retrieved context is insufficient ("I do not find...", "these excerpts do not address...").
    - 1 = Overconfidently answers questions the context cannot support.
 
-4. **Helpfulness & Pastoral Tone** (1-5)
-   - 5 = The answer is pastorally warm, biblically rich, and useful in the style of Spurgeon.
-   - 1 = Cold, unhelpful, or stylistically poor.
+4. **Helpfulness & Depth** (1-5)
+   - 5 = Theologically deep, faithful to the sources, and free of caricature (no vocatives, no preacher roleplay).
+   - 1 = Shallow, unhelpful, or costume/persona.
 
 Output **only valid JSON** in this exact format (no extra text):
 

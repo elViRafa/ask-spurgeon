@@ -1,0 +1,18 @@
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/spurgeon_qa_lora_v2: No such file or directory
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/sft_run_config.json: No such file or directory
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/stop_token_s3_audit.json: No such file or directory
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/stop_token_phase2.json: No such file or directory

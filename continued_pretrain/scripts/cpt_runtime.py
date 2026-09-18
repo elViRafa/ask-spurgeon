@@ -479,11 +479,43 @@ def metric_improved(current, best, epsilon):
     return float(current) < float(best) - float(epsilon)
 
 
+def merge_eval_event_for_step(cache, step, metrics, metric_keys):
+    """Merge one Hugging Face per-dataset eval event into a per-step cache.
+
+    HF calls ``on_evaluate`` once per eval dataset, so mix and Spurgeon
+    metrics arrive as separate dicts at the same ``global_step``. Score a
+    cycle only when every ``metric_keys`` value is present for that exact
+    step, then drop the step so it is not scored twice.
+
+    Returns ``(new_cache, merged_or_none)``. ``merged`` is set only when the
+    cycle is complete.
+    """
+    new_cache = dict(cache or {})
+    keys = list(metric_keys or [])
+    if not keys:
+        return new_cache, None
+    try:
+        step_key = int(step)
+    except (TypeError, ValueError):
+        return new_cache, None
+    bucket = dict(new_cache.get(step_key) or {})
+    incoming = metrics or {}
+    for key in keys:
+        if key in incoming and incoming[key] is not None:
+            bucket[key] = incoming[key]
+    new_cache[step_key] = bucket
+    if all(key in bucket and bucket[key] is not None for key in keys):
+        merged = new_cache.pop(step_key)
+        return new_cache, merged
+    return new_cache, None
+
+
 def update_composite_flat_state(bests, flat_streak, metrics, metric_keys, epsilon):
-    """Update running bests / flat streak after one eval dict.
+    """Update running bests / flat streak after one complete eval cycle dict.
 
     Returns ``(new_bests, new_streak, any_improved)``. Missing metric keys do not
-    count as flat (``any_improved=True`` so streak resets).
+    count as flat (``any_improved=True`` so streak resets). Callers that receive
+    split HF events must merge via ``merge_eval_event_for_step`` first.
     """
     new_bests = dict(bests or {})
     streak = int(flat_streak or 0)

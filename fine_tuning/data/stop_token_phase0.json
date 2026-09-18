@@ -1,0 +1,18 @@
+{
+  "phase": 0,
+  "model": "unsloth/Qwen3.5-4B-Base",
+  "required_ids": {
+    "<|im_start|>": 248045,
+    "<|im_end|>": 248046,
+    "<|endoftext|>": 248044
+  },
+  "eos_token": "<|endoftext|>",
+  "eos_token_id": 248044,
+  "pad_token": "<|vision_pad|>",
+  "pad_token_id": 248055,
+  "im_end_id": 248046,
+  "eot_id": 248044,
+  "demo": "<|im_start|>system\nS<|im_end|>\n<|im_start|>user\nU<|im_end|>\n<|im_start|>assistant\nA<|im_end|>\n",
+  "errors": [],
+  "pass": true
+}

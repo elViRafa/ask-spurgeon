@@ -1,0 +1,19 @@
+monitor_start 50011937 interval_sec 300 max_wall_h 10.0
+ssh root@75.129.99.99:5250
+[2026-09-06 00:41:48] pipeline=True train=True stale=0
+   
+     0%|          | 0/408 [00:00<?, ?it/s]
+     0%|          | 1/408 [01:23<9:24:25, 83.21s/it]Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+   Have fun!
+Skip GATE-0 merged HF (already local with tokenizer)
+Fetching /workspace/spurgeon_qa_lora_v2 ...
+  (not present yet)
+Fetching /workspace/sft_train.log ...
+Fetching /workspace/sft_launch.log ...
+Fetching /workspace/sft_run_config.json ...
+  (not present yet)
+Fetching /workspace/stop_token_s3_audit.json ...
+  (not present yet)
+Fetching /workspace/stop_token_phase2.json ...
+  (not present yet)
+Artifact fetch done (2) paths -> C:\Users\rafael\Projetos\search-sermons\fine_tuning\kaggle\vast_sft_gate0

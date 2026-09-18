@@ -1,0 +1,35 @@
+{
+  "phase": 2,
+  "base": "/workspace/theology_cpt_v2_merged_hf",
+  "probes": [
+    {
+      "ended_with_im_end": false,
+      "ended_with_eot": false,
+      "stop_id_hit": "<|im_end|>",
+      "corrupt": false,
+      "leaked_turn": false,
+      "ok": false,
+      "text_preview": "Grace is the free and unmerited favor of God toward sinners, enabling them to trust in Christ and receive salvation. [Sermon 1234]",
+      "prompt": "Answer in one short sentence: what is grace?"
+    },
+    {
+      "ended_with_im_end": false,
+      "ended_with_eot": false,
+      "stop_id_hit": "<|im_end|>",
+      "corrupt": false,
+      "leaked_turn": false,
+      "ok": false,
+      "text_preview": "Hello.",
+      "prompt": "Say 'hello' and stop."
+    }
+  ],
+  "summary": {
+    "n": 2,
+    "im_end_stop_rate": 0.0,
+    "corrupt_rate": 0.0,
+    "leaked_turn_rate": 0.0,
+    "stop_ok_rate": 0.0,
+    "pass": false
+  },
+  "pass": false
+}

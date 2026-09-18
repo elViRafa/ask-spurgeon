@@ -1,0 +1,17 @@
+{
+  "created_at": "2026-08-31T02:04:35.787018+00:00",
+  "source": "data/catechism/puritan_catechism.json",
+  "rows": 151,
+  "answerable": 136,
+  "refusal": 15,
+  "warnings": 0,
+  "seed": 3407,
+  "variants_per_q": 2,
+  "target_new": 151,
+  "merge_into_train": true,
+  "reason": "Merge only after ingest_catechism.py indexes the same docs for RAG parity.",
+  "output": "fine_tuning/data/qa_catechism_variants.jsonl",
+  "ingest": "python fine_tuning/scripts/ingest_catechism.py",
+  "merged_at": "2026-08-31T02:05:19.609333+00:00",
+  "rows_added": 0
+}

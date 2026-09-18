@@ -6,7 +6,7 @@ priority: high
 tags: [cpt, corpus, puritans, mix, plan]
 schema_version: 1.3
 last_updated: "2026-08-27T10:10:45-04:00"
-evidence: [continued_pretrain/CORPUS_V3_EXPANSION_PLAN.md, continued_pretrain/data/corpus_v3_catalog.json, continued_pretrain/data/theology_mix_manifest.json, continued_pretrain/CPT_V2_KAGGLE_STATUS.md]
+evidence: [[REDACTED_SECRET].md, continued_pretrain/data/corpus_v3_catalog.json, continued_pretrain/data/theology_mix_manifest.json, continued_pretrain/CPT_V2_KAGGLE_STATUS.md]
 ---
 
 # CPT corpus v3 expansion plan (2026-08-27)
@@ -28,6 +28,5 @@ Same packing (`one_doc_padded`). Different sampling. Do **not** `--keep-all-spur
 
 ## Files
 - `[REDACTED_SECRET].md`
-- `continued_pretrain/data/corpus_v3_catalog.json`
 
 ## Next session = S1 fetch Wave 1. Still no training without approval.

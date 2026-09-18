@@ -1,0 +1,327 @@
+monitor_start 49999424 interval_sec 300 max_wall_h 10.0
+ssh root@137.175.76.24:49007
+[2026-09-05 23:51:20] pipeline=False train=False stale=1
+   Using gradient accumulation will be very slightly less accurate.
+   Read more on gradient accumulation issues here: https://unsloth.ai/blog/gradient
+   Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+   Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Skip GATE-0 merged HF (already local with tokenizer)
+Fetching /workspace/spurgeon_qa_lora_v2 ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/spurgeon_qa_lora_v2: No such file or directory
+  (not present yet)
+Fetching /workspace/sft_train.log ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Fetching /workspace/sft_launch.log ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Fetching /workspace/sft_run_config.json ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/sft_run_config.json: No such file or directory
+  (not present yet)
+Fetching /workspace/stop_token_s3_audit.json ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/stop_token_s3_audit.json: No such file or directory
+  (not present yet)
+Fetching /workspace/stop_token_phase2.json ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/stop_token_phase2.json: No such file or directory
+  (not present yet)
+Artifact fetch done (2) paths -> C:\Users\rafael\Projetos\search-sermons\fine_tuning\kaggle\vast_sft_gate0
+[2026-09-05 23:57:47] pipeline=False train=False stale=2
+   Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+   Have fun!
+   Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+   Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Skip GATE-0 merged HF (already local with tokenizer)
+Fetching /workspace/spurgeon_qa_lora_v2 ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/spurgeon_qa_lora_v2: No such file or directory
+  (not present yet)
+Fetching /workspace/sft_train.log ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/sft_train.log: No such file or directory
+  (not present yet)
+Fetching /workspace/sft_launch.log ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/sft_launch.log: No such file or directory
+  (not present yet)
+Fetching /workspace/sft_run_config.json ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/sft_run_config.json: No such file or directory
+  (not present yet)
+Fetching /workspace/stop_token_s3_audit.json ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/stop_token_s3_audit.json: No such file or directory
+  (not present yet)
+Fetching /workspace/stop_token_phase2.json ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/stop_token_phase2.json: No such file or directory
+  (not present yet)
+Artifact fetch done (0) paths -> C:\Users\rafael\Projetos\search-sermons\fine_tuning\kaggle\vast_sft_gate0
+[2026-09-06 00:04:11] pipeline=False train=False stale=3
+   banner exchange: Connection to UNKNOWN port -1: Connection refused
+   banner exchange: Connection to UNKNOWN port -1: Connection refused
+banner exchange: Connection to UNKNOWN port -1: Connection refused
+Skip merged HF fetch (remote incomplete)
+Fetching /workspace/spurgeon_qa_lora_v2 ...
+ssh: connect to host ssh8.vast.ai port 11142: Connection refused
+C:\Windows\System32\OpenSSH\scp.exe: Connection closed
+  (not present yet)
+Fetching /workspace/sft_train.log ...
+ssh: connect to host ssh8.vast.ai port 11142: Connection refused
+C:\Windows\System32\OpenSSH\scp.exe: Connection closed
+  (not present yet)
+Fetching /workspace/sft_launch.log ...
+ssh: connect to host ssh8.vast.ai port 11142: Connection refused
+C:\Windows\System32\OpenSSH\scp.exe: Connection closed
+  (not present yet)
+Fetching /workspace/sft_run_config.json ...
+ssh: connect to host ssh8.vast.ai port 11142: Connection refused
+C:\Windows\System32\OpenSSH\scp.exe: Connection closed
+  (not present yet)
+Fetching /workspace/stop_token_s3_audit.json ...
+ssh: connect to host ssh8.vast.ai port 11142: Connection refused
+C:\Windows\System32\OpenSSH\scp.exe: Connection closed
+  (not present yet)
+Fetching /workspace/stop_token_phase2.json ...
+ssh: connect to host ssh8.vast.ai port 11142: Connection refused
+C:\Windows\System32\OpenSSH\scp.exe: Connection closed
+  (not present yet)
+Artifact fetch done (0) paths -> C:\Users\rafael\Projetos\search-sermons\fine_tuning\kaggle\vast_sft_gate0
+[2026-09-06 00:09:58] pipeline=True train=False stale=0
+   Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+   Have fun!
+   Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+   Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Skip GATE-0 merged HF (already local with tokenizer)
+Fetching /workspace/spurgeon_qa_lora_v2 ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/spurgeon_qa_lora_v2: No such file or directory
+  (not present yet)
+Fetching /workspace/sft_train.log ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/sft_train.log: No such file or directory
+  (not present yet)
+Fetching /workspace/sft_launch.log ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Fetching /workspace/sft_run_config.json ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/sft_run_config.json: No such file or directory
+  (not present yet)
+Fetching /workspace/stop_token_s3_audit.json ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/stop_token_s3_audit.json: No such file or directory
+  (not present yet)
+Fetching /workspace/stop_token_phase2.json ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/stop_token_phase2.json: No such file or directory
+  (not present yet)
+Artifact fetch done (1) paths -> C:\Users\rafael\Projetos\search-sermons\fine_tuning\kaggle\vast_sft_gate0
+[2026-09-06 00:16:03] pipeline=False train=False stale=1
+   Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+   Have fun!
+   Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+   Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Skip GATE-0 merged HF (already local with tokenizer)
+Fetching /workspace/spurgeon_qa_lora_v2 ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/spurgeon_qa_lora_v2: No such file or directory
+  (not present yet)
+Fetching /workspace/sft_train.log ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/sft_train.log: No such file or directory
+  (not present yet)
+Fetching /workspace/sft_launch.log ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/sft_launch.log: No such file or directory
+  (not present yet)
+Fetching /workspace/sft_run_config.json ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/sft_run_config.json: No such file or directory
+  (not present yet)
+Fetching /workspace/stop_token_s3_audit.json ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/stop_token_s3_audit.json: No such file or directory
+  (not present yet)
+Fetching /workspace/stop_token_phase2.json ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/stop_token_phase2.json: No such file or directory
+  (not present yet)
+Artifact fetch done (0) paths -> C:\Users\rafael\Projetos\search-sermons\fine_tuning\kaggle\vast_sft_gate0
+[2026-09-06 00:21:47] pipeline=True train=False stale=0
+   Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+   Have fun!
+   Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+   Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Skip GATE-0 merged HF (already local with tokenizer)
+Fetching /workspace/spurgeon_qa_lora_v2 ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/spurgeon_qa_lora_v2: No such file or directory
+  (not present yet)
+Fetching /workspace/sft_train.log ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/sft_train.log: No such file or directory
+  (not present yet)
+Fetching /workspace/sft_launch.log ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Fetching /workspace/sft_run_config.json ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/sft_run_config.json: No such file or directory
+  (not present yet)
+Fetching /workspace/stop_token_s3_audit.json ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/stop_token_s3_audit.json: No such file or directory
+  (not present yet)
+Fetching /workspace/stop_token_phase2.json ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/stop_token_phase2.json: No such file or directory
+  (not present yet)
+Artifact fetch done (1) paths -> C:\Users\rafael\Projetos\search-sermons\fine_tuning\kaggle\vast_sft_gate0
+[2026-09-06 00:27:43] pipeline=False train=False stale=1
+    "-____-"     Trainable parameters = 42,467,328 of 4,581,732,864 (0.93% trained)
+   
+     0%|          | 0/408 [00:00<?, ?it/s]Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+   Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Skip GATE-0 merged HF (already local with tokenizer)
+Fetching /workspace/spurgeon_qa_lora_v2 ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/spurgeon_qa_lora_v2: No such file or directory
+  (not present yet)
+Fetching /workspace/sft_train.log ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Fetching /workspace/sft_launch.log ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Fetching /workspace/sft_run_config.json ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/sft_run_config.json: No such file or directory
+  (not present yet)
+Fetching /workspace/stop_token_s3_audit.json ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/stop_token_s3_audit.json: No such file or directory
+  (not present yet)
+Fetching /workspace/stop_token_phase2.json ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/stop_token_phase2.json: No such file or directory
+  (not present yet)
+Artifact fetch done (2) paths -> C:\Users\rafael\Projetos\search-sermons\fine_tuning\kaggle\vast_sft_gate0
+[2026-09-06 00:33:32] pipeline=False train=False stale=2
+    "-____-"     Trainable parameters = 42,467,328 of 4,581,732,864 (0.93% trained)
+   
+     0%|          | 0/408 [00:00<?, ?it/s]Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+   Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Skip GATE-0 merged HF (already local with tokenizer)
+Fetching /workspace/spurgeon_qa_lora_v2 ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/spurgeon_qa_lora_v2: No such file or directory
+  (not present yet)
+Fetching /workspace/sft_train.log ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Fetching /workspace/sft_launch.log ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Fetching /workspace/sft_run_config.json ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/sft_run_config.json: No such file or directory
+  (not present yet)
+Fetching /workspace/stop_token_s3_audit.json ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/stop_token_s3_audit.json: No such file or directory
+  (not present yet)
+Fetching /workspace/stop_token_phase2.json ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/stop_token_phase2.json: No such file or directory
+  (not present yet)
+Artifact fetch done (2) paths -> C:\Users\rafael\Projetos\search-sermons\fine_tuning\kaggle\vast_sft_gate0
+[2026-09-06 00:39:22] pipeline=True train=True stale=0
+   Map:   0%|          | 0/3264 [00:00<?, ? examples/s]
+   [2026-09-06 00:39:22] monitor_error 'charmap' codec can't encode characters in position 10-12: character maps to <undefined>
+[2026-09-06 00:44:37] pipeline=True train=True stale=0
+     0%|          | 1/408 [01:23<9:24:25, 83.21s/it]
+     0%|          | 2/408 [02:40<8:58:03, 79.52s/it]
+     1%|          | 3/408 [04:01<9:03:01, 80.45s/it]Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+   Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Skip GATE-0 merged HF (already local with tokenizer)
+Fetching /workspace/spurgeon_qa_lora_v2 ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/spurgeon_qa_lora_v2: No such file or directory
+  (not present yet)
+Fetching /workspace/sft_train.log ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Fetching /workspace/sft_launch.log ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Fetching /workspace/sft_run_config.json ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/sft_run_config.json: No such file or directory
+  (not present yet)
+Fetching /workspace/stop_token_s3_audit.json ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/stop_token_s3_audit.json: No such file or directory
+  (not present yet)
+Fetching /workspace/stop_token_phase2.json ...
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+C:\Windows\System32\OpenSSH\scp.exe: /workspace/stop_token_phase2.json: No such file or directory
+  (not present yet)
+Artifact fetch done (2) paths -> C:\Users\rafael\Projetos\search-sermons\fine_tuning\kaggle\vast_sft_gate0

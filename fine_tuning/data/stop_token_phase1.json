@@ -1,0 +1,9 @@
+{
+  "phase": 1,
+  "train_text_ends_with_im_end": true,
+  "im_end_id": 248046,
+  "eot_id": 248044,
+  "seq_len": 1007,
+  "tail": "ule over the Great White Throne assembly, reading the names of the redeemed and executing righteous judgment.<|im_end|>\n",
+  "pass": true
+}

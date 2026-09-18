@@ -1,0 +1,13 @@
+{
+  "phase": 3,
+  "metrics_path": "fine_tuning\\eval_results\\post_sft_eval.json",
+  "summary": {
+    "n": 100,
+    "im_end_stop_rate": 1.0,
+    "corrupt_rate": 0.0,
+    "leaked_turn_rate": 0.0,
+    "stop_ok_rate": 1.0,
+    "pass": true
+  },
+  "pass": true
+}

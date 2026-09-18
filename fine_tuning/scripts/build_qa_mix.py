@@ -14,6 +14,10 @@ Outputs under fine_tuning/data/:
 Usage (repo root):
   python fine_tuning/scripts/build_qa_mix.py
   python fine_tuning/scripts/build_qa_mix.py --input fine_tuning/data/spurgeon_qa_train_final.jsonl
+
+Serve-shaped v2 (multi-chunk headers + 10–15% refusals):
+  python fine_tuning/scripts/build_qa_mix_v2.py
+  python fine_tuning/scripts/12_package_kaggle_qa_mix.py
 """
 
 from __future__ import annotations
@@ -30,11 +34,18 @@ from pathlib import Path
 
 REFUSAL_PATTERNS = (
     re.compile(r"does not contain", re.I),
+    re.compile(r"do not contain", re.I),
     re.compile(r"could not find", re.I),
+    re.compile(r"do not find", re.I),
     re.compile(r"not contain enough", re.I),
     re.compile(r"cannot answer", re.I),
     re.compile(r"no relevant", re.I),
     re.compile(r"insufficient", re.I),
+    re.compile(r"do not (?:address|treat)", re.I),
+    re.compile(r"does not (?:address|treat)", re.I),
+    re.compile(r"text is silent", re.I),
+    re.compile(r"context is silent", re.I),
+    re.compile(r"will not invent", re.I),
 )
 
 
@@ -50,8 +61,8 @@ def load_system_prompt() -> str:
         return SPURGEON_SFT_SYSTEM_PROMPT
     except Exception:
         return (
-            "You are Charles Haddon Spurgeon (1834–1892). Answer using only the "
-            "information in the provided CONTEXT from your sermons."
+            "You are a theological Q&A assistant for the writings of Charles Haddon Spurgeon "
+            "and the Puritans."
         )
 
 

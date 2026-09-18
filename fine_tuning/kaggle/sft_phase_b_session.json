@@ -1,0 +1,19 @@
+{
+  "pod_id": "47zu29u0yth5a3",
+  "name": "sft-phase-b-dry",
+  "status": "terminated",
+  "terminated_at": "2026-08-29T00:31:00+00:00",
+  "terminate_method": "runpod-mcp delete-pod",
+  "cloud_type": "COMMUNITY",
+  "image_name": "runpod/pytorch:0.7.0-cu1241-torch260-ubuntu2204",
+  "network_volume_id": null,
+  "network_volume_preserved": "7hb931c5oe",
+  "ssh_mode": "direct",
+  "ssh_host": "38.65.239.56",
+  "ssh_port": 22046,
+  "ssh_user": "root",
+  "use_cpt_merge": false,
+  "base_model": "unsloth/Qwen3.5-4B-Base",
+  "export": false,
+  "note": "Pod deleted via Runpod MCP. list-pods returned 0 items. Network volume 7hb931c5oe was not mounted on this pod and was not deleted (CPT S6 resume)."
+}

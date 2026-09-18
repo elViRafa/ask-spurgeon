@@ -23,6 +23,5 @@ Henry exposition still denylisted. Packing `one_doc_padded`. Mix rebuilt with `-
 
 Windows: mix print used Unicode → and crashed cp1252; prints now ASCII `->`. Fetcher `--rebuild-mix` now passes `--max-other-weight 1.5`.
 
-Fallback LoRA: rafaelvieirar1r/qwen3.5-4b-theology-cpt-lora-v2 SHA256 319d17a39d193041528914cfb2f83c1decf21e55ffe76dfd2ca565f5e99e1478
 
 Next = S4 optional confession lift (mix+verify already ran). Handoff: `continued_pretrain/CORPUS_V3_S4_HANDOFF.md`.

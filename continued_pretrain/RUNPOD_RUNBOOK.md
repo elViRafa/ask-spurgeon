@@ -1,6 +1,6 @@
 # Runpod runbook — CPT (Qwen3.5-4B bf16 LoRA)
 
-**S5 B is complete** (2026-08-27/28, best step 325, early-stop 375/4128). Next GPU = **C only with approval**: [`CORPUS_V3_S5_C_CHECKLIST.md`](CORPUS_V3_S5_C_CHECKLIST.md). Adapter: [`kaggle/runpod_cpt_v3/README.md`](kaggle/runpod_cpt_v3/README.md). Do **not** retrain. Do **not** create a GPU until C is the active approved session.
+**S5 B+C are complete** (2026-08-27/28). Next GPU = **S6 continue-B** with operator approval: [`CORPUS_V3_S6_CONTINUE_CHECKLIST.md`](CORPUS_V3_S6_CONTINUE_CHECKLIST.md). S5 adapter: [`kaggle/runpod_cpt_v3/README.md`](kaggle/runpod_cpt_v3/README.md). Do **not** re-C S5. Do **not** create a GPU until the operator approves.
 
 **v2 B and C are complete** (2026-08-27, best step 400). Keepable fallback: [`kaggle/runpod_cpt_v2/README.md`](kaggle/runpod_cpt_v2/README.md). Do **not** merge, do **not** re-C that adapter, no Hub overwrite, no Kaggle push.
 
@@ -10,7 +10,7 @@ Source of truth: [`scripts/_gen_sota_notebooks.py`](scripts/_gen_sota_notebooks.
 
 ## S6 — continue B (more mix tokens; operator approval required)
 
-S5 C is complete (probe PASS, §5 FAIL). **Do not re-C S5.** When approved for more tokens, use [`CORPUS_V3_S6_CONTINUE_CHECKLIST.md`](CORPUS_V3_S6_CONTINUE_CHECKLIST.md): `CPT_RUN_MODE=continue`, load S5 LoRA, composite early-stop, no `PREV_RUN_CHECKPOINT` resume.
+S5 C is complete (probe PASS, §5 FAIL). **Do not re-C S5.** When approved: [`CORPUS_V3_S6_CONTINUE_CHECKLIST.md`](CORPUS_V3_S6_CONTINUE_CHECKLIST.md). `CPT_RUN_MODE=continue` keeps low LR / 16-doc eval / composite halt. **Interrupted S6:** HF-resume `checkpoint-2100` under continue mode (do **not** clear `PREV_RUN_CHECKPOINT` and restart from S5). Monitor must see a log completion marker before deleting the pod.
 
 ## S5 — corpus v3 B (already ran; do not repeat)
 
@@ -37,7 +37,7 @@ On this machine, `kaggle/a_output_v3` is a junction to `D:\search-sermons-cpt\a_
 
 Prefer community 4090 (~$0.34/hr). US-IL-1 community stock is often LOW; fallback **Secure same DC** (~$0.74/hr). Do not create a second volume in EU-RO-1 for this run.
 
-B actually ran: packed 66045 rows, `MAX_STEPS=4128`, abort-at-50 **pass**, early-stop **375**, best **325**, ~8.2M of ~90M tokens. Adapter SHA256 `ef4df3a31c9d17f7ba8741e80df6d764bca19a6d535f0a33c210e547f486c303` in `kaggle/runpod_cpt_v3/`. GPU deleted. Volume unused (MCP dropped the mount). **C next**, with approval — see [`CORPUS_V3_S5_C_CHECKLIST.md`](CORPUS_V3_S5_C_CHECKLIST.md). Keep Hub `…-cpt-lora-v2` if the new C is worse.
+B actually ran: packed 66045 rows, `MAX_STEPS=4128`, abort-at-50 **pass**, early-stop **375**, best **325**, ~8.2M of ~90M tokens. Adapter SHA256 `ef4df3a31c9d17f7ba8741e80df6d764bca19a6d535f0a33c210e547f486c303` in `kaggle/runpod_cpt_v3/`. GPU deleted. Volume unused (MCP dropped the mount). **S5 C complete** (probe PASS, §5 FAIL). **S6 continue-B next** with approval — see [`CORPUS_V3_S6_CONTINUE_CHECKLIST.md`](CORPUS_V3_S6_CONTINUE_CHECKLIST.md). Keep Hub `…-cpt-lora-v2` if the new C is worse.
 
 ## Why a script, not Jupyter
 

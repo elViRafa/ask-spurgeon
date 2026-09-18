@@ -1,0 +1,14 @@
+{
+  "created_at": "2026-08-31T02:05:20.532386+00:00",
+  "source_train": "fine_tuning/data/qa_mix_train.jsonl",
+  "rows": 100,
+  "target": 100,
+  "skipped_no_quote": 0,
+  "seed": 3407,
+  "shape": "system,user(bare),assistant,user(CONTEXT+QUESTION),assistant",
+  "serve_mirror": "utils.prompts.build_chat_messages + Streamlit bare-question history",
+  "merge_into_train": true,
+  "output": "fine_tuning/data/qa_multiturn_slice.jsonl",
+  "merged_at": "2026-08-31T02:05:21.261100+00:00",
+  "rows_added": 100
+}

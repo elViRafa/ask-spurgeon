@@ -1,0 +1,30 @@
+{
+  "model": "unsloth/Qwen3.5-4B-Base",
+  "vocab_size": 248044,
+  "len_tokenizer": 248077,
+  "len_unchanged": true,
+  "eos_token": "<|endoftext|>",
+  "eos_token_id": 248044,
+  "pad_token": "<|vision_pad|>",
+  "pad_token_id": 248055,
+  "chat_template_injected": true,
+  "required_ids": {
+    "<|im_start|>": 248045,
+    "<|im_end|>": 248046,
+    "<|endoftext|>": 248044
+  },
+  "optional_ids": {
+    "<|fim_pad|>": 248063,
+    "<|fim_prefix|>": 248060,
+    "<|fim_middle|>": 248061,
+    "<|fim_suffix|>": 248062,
+    "<|vision_start|>": 248053,
+    "<|vision_end|>": 248054,
+    "<|image_pad|>": 248056,
+    "<|video_pad|>": 248057,
+    "<|object_ref_start|>": 248047,
+    "<|object_ref_end|>": 248048
+  },
+  "errors": [],
+  "requested_model": "unsloth/Qwen3.5-4B-Base"
+}
