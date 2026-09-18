@@ -160,3 +160,5 @@ fine_tuning/kaggle/**/spurgeon_qa_lora_v2/
 fine_tuning/eval_results/**/*.jsonl
 fine_tuning/eval_results/**/*.json
 !fine_tuning/eval_results/**/.gitkeep
+# Large local rewrite intermediates (GitHub 100MB limit)
+fine_tuning/data/qa_rewrite_pilot/bulk_pending.jsonl
