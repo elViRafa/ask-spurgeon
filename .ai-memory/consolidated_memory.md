@@ -59,9 +59,9 @@ summary: "Map of available project memory sections."
 priority: high
 tags: [index, memory]
 schema_version: 1.3
-last_updated: "2026-09-18T06:51:11-03:00"
+last_updated: "2026-09-21T07:09:57-03:00"
 consolidation_hash: 5a5b4dae7f0bf8a48f4d6fb8c7dc80bf
-contradictions: ["`fine-tuning/hf-spurgeon-qa-v2-gguf` and `fine-tuning/plans/ollama-merge-gguf` cover similar content but state different numbers (2.71 vs 07) - review for conflict [heuristic]", "`pretraining/cpt-b-eval-strategy` and `pretraining/cpt-eval-unify-vs-buckets` cover similar content but state different numbers (0 / 1650 / 17 vs 0.2 / 1.2 / 18) - review for conflict [heuristic]", "`pretraining/cpt-corpus-v3-s1-complete` and `pretraining/cpt-corpus-v3-s1-wave1` cover similar content but state different numbers (0.282874 / 0.658552 / 0.7 vs 0.10 / 0.164 / 0.45) - review for conflict [heuristic]", "`pretraining/cpt-corpus-v3-s2-handoff` and `pretraining/cpt-corpus-v3-s3-handoff` cover similar content but state different numbers (2 vs -) - review for conflict [heuristic]", "`pretraining/cpt-corpus-v3-s2-handoff` and `pretraining/cpt-corpus-v3-s4-handoff` cover similar content but state different numbers (2 vs 4) - review for conflict [heuristic]", "`pretraining/cpt-corpus-v3-s3-handoff` and `pretraining/cpt-corpus-v3-s4-handoff` cover similar content but state different numbers (- vs 4) - review for conflict [heuristic]", "`architecture/ask-spurgeon-rag` and `fine-tuning/runpod-sft-gate0-decisions` disagree about `cpt` (neg vs pos) - review for conflict [polarity]", "`architecture/ask-spurgeon-rag` and `fine-tuning/runpod-sft-gate0-implementation` disagree about `sft` (neg vs pos) - review for conflict [polarity]", "`architecture/ask-spurgeon-rag` and `fine-tuning/sft-phase-b-dry-terminated` disagree about `cpt` (neg vs pos) - review for conflict [polarity]", "`architecture/ask-spurgeon-rag` and `fine-tuning/sft-prep-after-cpt` disagree about `cpt` (neg vs pos) - review for conflict [polarity]", "`architecture/ask-spurgeon-rag` and `pretraining/cpt-current` disagree about `sft` (neg vs pos) - review for conflict [polarity]", "`architecture/ask-spurgeon-rag` and `pretraining/cpt-eval-unify-vs-buckets` disagree about `cpt` (neg vs pos) - review for conflict [polarity]", "`architecture/ask-spurgeon-rag` and `pretraining/cpt-v3-s6-handoff` disagree about `cpt` (neg vs pos) - review for conflict [polarity]", "`bugs/gemma4-chat-template-fix` and `fine-tuning/sft-prep-after-cpt` disagree about `from_pretrained` (neg vs pos) - review for conflict [polarity]", "`bugs/lora-frozen-embeddings-special-tokens` and `bugs/sft-tokenizer-mismatch-vinfos-spepacer` disagree about `im_start` (pos vs neg) - review for conflict [polarity]", "`bugs/lora-frozen-embeddings-special-tokens` and `bugs/unsloth-fast-patching-warnings` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/lora-frozen-embeddings-special-tokens` and `fine-tuning/sft-prep-after-cpt` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/lora-frozen-embeddings-special-tokens` and `pretraining/cpt-eval-unify-vs-buckets` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/lora-frozen-embeddings-special-tokens` and `pretraining/cpt-s6-phase0-prepared` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/lora-frozen-embeddings-special-tokens` and `pretraining/cpt-v2-qwen35-upstream-recipes` disagree about `mlp` (pos vs neg) - review for conflict [polarity]", "`bugs/ollama-tokenizer-corruption-fix` and `decisions/gemma4-local-ollama` disagree about `gguf` (neg vs pos) - review for conflict [polarity]", "`bugs/ollama-tokenizer-corruption-fix` and `pretraining/merge-and-export` disagree about `gguf` (neg vs pos) - review for conflict [polarity]", "`bugs/sft-tokenizer-mismatch-vinfos-spepacer` and `bugs/unsloth-fast-patching-warnings` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/sft-tokenizer-mismatch-vinfos-spepacer` and `fine-tuning/sft-prep-after-cpt` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/sft-tokenizer-mismatch-vinfos-spepacer` and `fine-tuning/vultr-sft-planning` disagree about `peft` (pos vs neg) - review for conflict [polarity]", "`bugs/sft-tokenizer-mismatch-vinfos-spepacer` and `pretraining/cpt-eval-unify-vs-buckets` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/sft-tokenizer-mismatch-vinfos-spepacer` and `pretraining/cpt-s6-phase0-prepared` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `fine-tuning/qwen35-sft-special-tokens` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `fine-tuning/runpod-sft-gate0-implementation` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `fine-tuning/vultr-sft-planning` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/bugs/b-training-sota-known-issues` disagree about `vram` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/cpt-corpus-v3-s2-complete` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/cpt-corpus-v3-s4-complete` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/cpt-future-b-early-stop-scale` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/cpt-v2-c-eval-gate-verdict` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/cpt-v2-c-eval-runpod-prep` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/cpt-v2-next-steps-after-v13` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/cpt-v2-qwen35-upstream-recipes` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/cpt-v3-s6-handoff` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/environment-setup` disagree about `cuda` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/model-choice` disagree about `vram` (pos vs neg) - review for conflict [polarity]", "`decisions/gemma4-local-ollama` and `fine-tuning/qa-gold-rewrite-pilot` disagree about `fine_tuning` (pos vs neg) - review for conflict [polarity]", "`decisions/gemma4-local-ollama` and `fine-tuning/runpod-sft-gate0-implementation` disagree about `fine_tuning` (pos vs neg) - review for conflict [polarity]", "`decisions/gemma4-local-ollama` and `fine-tuning/sft-prep-after-cpt` disagree about `gguf` (pos vs neg) - review for conflict [polarity]", "`decisions/gemma4-local-ollama` and `fine-tuning/sft-stop-token-phases` disagree about `fine_tuning` (pos vs neg) - review for conflict [polarity]", "`decisions/gemma4-local-ollama` and `fine-tuning/vultr-sft-planning` disagree about `gb` (pos vs neg) - review for conflict [polarity]", "`decisions/gemma4-local-ollama` and `pretraining/c-drive-cleanup-2026-09-16` disagree about `gb` (pos vs neg) - review for conflict [polarity]", "`decisions/gemma4-local-ollama` and `pretraining/cpt-next-session-handoff` disagree about `gb` (pos vs neg) - review for conflict [polarity]", "`fine-tuning/next-session-handoff` and `fine-tuning/runpod-sft-gate0-decisions` disagree about `gpu` (neg vs pos) - review for conflict [polarity]", "`fine-tuning/next-session-handoff` and `fine-tuning/vast-gate0-candidate` disagree about `scalingtype` (pos vs neg) - review for conflict [polarity]"]
+contradictions: ["`fine-tuning/hf-spurgeon-qa-v2-gguf` and `fine-tuning/plans/ollama-merge-gguf` cover similar content but state different numbers (2.71 vs 07) - review for conflict [heuristic]", "`pretraining/cpt-b-eval-strategy` and `pretraining/cpt-eval-unify-vs-buckets` cover similar content but state different numbers (0 / 1650 / 17 vs 0.2 / 1.2 / 18) - review for conflict [heuristic]", "`pretraining/cpt-corpus-v3-s1-complete` and `pretraining/cpt-corpus-v3-s1-wave1` cover similar content but state different numbers (0.282874 / 0.658552 / 0.7 vs 0.10 / 0.164 / 0.45) - review for conflict [heuristic]", "`pretraining/cpt-corpus-v3-s2-handoff` and `pretraining/cpt-corpus-v3-s3-handoff` cover similar content but state different numbers (2 vs -) - review for conflict [heuristic]", "`pretraining/cpt-corpus-v3-s2-handoff` and `pretraining/cpt-corpus-v3-s4-handoff` cover similar content but state different numbers (2 vs 4) - review for conflict [heuristic]", "`pretraining/cpt-corpus-v3-s3-handoff` and `pretraining/cpt-corpus-v3-s4-handoff` cover similar content but state different numbers (- vs 4) - review for conflict [heuristic]", "`architecture/ask-spurgeon-rag` and `fine-tuning/runpod-sft-gate0-decisions` disagree about `cpt` (neg vs pos) - review for conflict [polarity]", "`architecture/ask-spurgeon-rag` and `fine-tuning/runpod-sft-gate0-implementation` disagree about `sft` (neg vs pos) - review for conflict [polarity]", "`architecture/ask-spurgeon-rag` and `fine-tuning/sft-phase-b-dry-terminated` disagree about `cpt` (neg vs pos) - review for conflict [polarity]", "`architecture/ask-spurgeon-rag` and `fine-tuning/sft-prep-after-cpt` disagree about `cpt` (neg vs pos) - review for conflict [polarity]", "`architecture/ask-spurgeon-rag` and `pretraining/cpt-eval-stack-pin-s5` disagree about `cpt` (neg vs pos) - review for conflict [polarity]", "`architecture/ask-spurgeon-rag` and `pretraining/cpt-eval-unify-vs-buckets` disagree about `cpt` (neg vs pos) - review for conflict [polarity]", "`architecture/ask-spurgeon-rag` and `pretraining/cpt-v3-s6-handoff` disagree about `cpt` (neg vs pos) - review for conflict [polarity]", "`bugs/gemma4-chat-template-fix` and `fine-tuning/sft-prep-after-cpt` disagree about `from_pretrained` (neg vs pos) - review for conflict [polarity]", "`bugs/lora-frozen-embeddings-special-tokens` and `bugs/sft-tokenizer-mismatch-vinfos-spepacer` disagree about `im_start` (pos vs neg) - review for conflict [polarity]", "`bugs/lora-frozen-embeddings-special-tokens` and `bugs/unsloth-fast-patching-warnings` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/lora-frozen-embeddings-special-tokens` and `fine-tuning/sft-prep-after-cpt` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/lora-frozen-embeddings-special-tokens` and `pretraining/cpt-eval-stack-pin-s5` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/lora-frozen-embeddings-special-tokens` and `pretraining/cpt-eval-unify-vs-buckets` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/lora-frozen-embeddings-special-tokens` and `pretraining/cpt-s6-c-eval-next-session` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/lora-frozen-embeddings-special-tokens` and `pretraining/cpt-s6-phase0-prepared` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/lora-frozen-embeddings-special-tokens` and `pretraining/cpt-v2-qwen35-upstream-recipes` disagree about `mlp` (pos vs neg) - review for conflict [polarity]", "`bugs/lora-frozen-embeddings-special-tokens` and `pretraining/vast-cpt-s6-early-stop-handoff` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/lora-frozen-embeddings-special-tokens` and `pretraining/vast-cpt-s6-resume-spike-analysis` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/ollama-tokenizer-corruption-fix` and `decisions/gemma4-local-ollama` disagree about `gguf` (neg vs pos) - review for conflict [polarity]", "`bugs/ollama-tokenizer-corruption-fix` and `pretraining/merge-and-export` disagree about `gguf` (neg vs pos) - review for conflict [polarity]", "`bugs/sft-tokenizer-mismatch-vinfos-spepacer` and `bugs/unsloth-fast-patching-warnings` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/sft-tokenizer-mismatch-vinfos-spepacer` and `fine-tuning/sft-prep-after-cpt` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/sft-tokenizer-mismatch-vinfos-spepacer` and `fine-tuning/vultr-sft-planning` disagree about `peft` (pos vs neg) - review for conflict [polarity]", "`bugs/sft-tokenizer-mismatch-vinfos-spepacer` and `pretraining/cpt-eval-stack-pin-s5` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/sft-tokenizer-mismatch-vinfos-spepacer` and `pretraining/cpt-eval-unify-vs-buckets` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/sft-tokenizer-mismatch-vinfos-spepacer` and `pretraining/cpt-s6-c-eval-next-session` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/sft-tokenizer-mismatch-vinfos-spepacer` and `pretraining/cpt-s6-phase0-prepared` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/sft-tokenizer-mismatch-vinfos-spepacer` and `pretraining/vast-cpt-s6-early-stop-handoff` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/sft-tokenizer-mismatch-vinfos-spepacer` and `pretraining/vast-cpt-s6-resume-spike-analysis` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `fine-tuning/qwen35-sft-special-tokens` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `fine-tuning/runpod-sft-gate0-implementation` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `fine-tuning/vultr-sft-planning` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/bugs/b-training-sota-known-issues` disagree about `vram` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/cpt-corpus-v3-s2-complete` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/cpt-corpus-v3-s4-complete` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/cpt-future-b-early-stop-scale` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/cpt-v2-c-eval-gate-verdict` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/cpt-v2-c-eval-runpod-prep` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/cpt-v2-next-steps-after-v13` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/cpt-v2-qwen35-upstream-recipes` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/cpt-v3-s6-handoff` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/environment-setup` disagree about `cuda` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/model-choice` disagree about `vram` (pos vs neg) - review for conflict [polarity]", "`decisions/gemma4-local-ollama` and `fine-tuning/qa-gold-rewrite-pilot` disagree about `fine_tuning` (pos vs neg) - review for conflict [polarity]"]
 consolidation_warnings: []
 summary_hash: c81ed9efe309125e42b693ba950f4f04
 ---
@@ -76,12 +76,12 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `bugs` | medium | Generated map of memory-store/bugs/ (7 entries). | • **Bug Fix: GGUF Vocab Shift and Alignment (具有战士/ _Parms)*...<br>• **Qwen3.5 processor text-as-image in C_eval** (`bugs/qwen...<br>• **Bug Fix: Unsloth Embedding Offload on Read-Only Filesys... |
 | `debt` | low | App debt (hybrid search, rate limits) plus 2026-08-29 memory-fabric LLM/host hygiene notes. | • Known Technical Debt & Limits<br>• Roadmap & Pending Features |
 | `decisions` | medium | Generated map of memory-store/decisions/ (2 entries). | • **Gemma 4 Fine-Tuning Transition** (`decisions/gemma4-fin...<br>• **Gemma 4 Local Ollama Deployment** (`decisions/gemma4-lo... |
-| `episodic` | medium | Generated map of memory-store/episodic/ (23 entries). | • **Episodic Journal — 2026-07-11** (`episodic/2026-07-11`,...<br>• **Episodic Journal — 2026-07-12** (`episodic/2026-07-12`,...<br>• **Episodic Journal — 2026-07-13** (`episodic/2026-07-13`,... |
-| `failures` | medium | Generated map of memory-store/failures/ (26 entries). | • **Vast official Unsloth image smoke blocked; LD_LIBRARY_P...<br>• **asyncua write_value BadTypeMismatch when writing int to...<br>• **B_training_sota: EarlyStopping disabled — metric_for_be... |
+| `episodic` | medium | Generated map of memory-store/episodic/ (26 entries). | • **Episodic Journal — 2026-07-11** (`episodic/2026-07-11`,...<br>• **Episodic Journal — 2026-07-12** (`episodic/2026-07-12`,...<br>• **Episodic Journal — 2026-07-13** (`episodic/2026-07-13`,... |
+| `failures` | medium | Generated map of memory-store/failures/ (30 entries). | • **Vast official Unsloth image smoke blocked; LD_LIBRARY_P...<br>• **asyncua write_value BadTypeMismatch when writing int to...<br>• **B_training_sota: EarlyStopping disabled — metric_for_be... |
 | `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (39 entries). | • **Fine-tuning next session handoff** (`fine-tuning/next-s...<br>• **SFT QA gold rewrite pilot (20 rows, merged)** (`fine-tu...<br>• **SFT/serve: knowledge assistant, not Spurgeon persona** ... |
 | `framework-rules` | medium | Defines coding standards, required libraries (Streamlit, LlamaIndex), environment setup (.env), and database rules for the codebase. | • 1. Runtime Environment<br>• 2. Core Libraries & Packages<br>• 3. Vector Database Rules<br>• 4. Agent Memory Guidelines |
 | `grok` | medium | Generated map of memory-store/grok/ (1 entries). | • **Grok Integration with Memory Fabric (MCP + Docs + Nativ... |
-| `pretraining` | medium | Generated map of memory-store/pretraining/ (59 entries). | • **CPT B_training_sota known issues (P1 closed — log spam)...<br>• **Composite CPT early stop merges split HF eval events** ...<br>• **Confessions + Institutes corpus (WCF, 1689, Calvin)** (... |
+| `pretraining` | medium | Generated map of memory-store/pretraining/ (66 entries). | • **CPT B_training_sota known issues (P1 closed — log spam)...<br>• **Composite CPT early stop merges split HF eval events** ...<br>• **Confessions + Institutes corpus (WCF, 1689, Calvin)** (... |
 | `schemas` | high | Defines data contracts, metadata schemas for ingested texts, and environment variable configurations. | • 1. Document & Chunk Metadata Schema<br>• 2. Ingestion Parameters<br>• 3. Environment Variables (Configuration Schema) |
 | `ubiquitous-language` | medium | Defines consistent domain language used throughout the codebase for clarity and shared understanding. | None recorded |
 
@@ -694,6 +694,41 @@ Spurgeon 13.34 vs v2 13.28 and puritan 5.72 vs 5.68 are noise-level. Confession/
 
 This is the playbook’s **preferred continue** case (near v2, far from §5). Repo: `continued_pretrain/NEXT_CPT_MORE_TOKENS.md`. Operator said they will continue in the next question about training and eval. Do not start GPU until that chat says go. Do not fresh 1e-5 from base.
 
+<!-- memory-fabric:store/pretraining/cpt-eval-stack-pin-s5 -->
+---
+store_path: pretraining/cpt-eval-stack-pin-s5
+title: "CPT C-eval must use Unsloth 2026.8.22 + torch 2.8"
+summary: "Recovered from S5 `continued_pretrain/kaggle/runpod_cpt_v3/cpt_eval.log`:"
+priority: high
+tags: [cpt, eval, unsloth, torch, pin, s5, hub-v2]
+schema_version: 1.3
+last_updated: "2026-09-20T19:01:29-03:00"
+---
+
+# CPT C-eval stack pin (S5 / Hub-v2 parity)
+
+## Required for trustworthy CPT C of Qwen3.5-4B embed-FT LoRA
+Recovered from S5 `continued_pretrain/kaggle/runpod_cpt_v3/cpt_eval.log`:
+
+| Package | Pin |
+|---------|-----|
+| Unsloth | **2026.8.22** (`unsloth[colab-new]==2026.8.22`; Hub-v2 C used 2026.8.21) |
+| torch | **2.8.0+cu126** (or image `2.8.0+cu128`) |
+| torchvision | **0.23.0** (must match torch 2.8; 0.26 expects 2.11) |
+| torchaudio | **2.8.0** |
+| xformers | **omit** when pinning torch 2.8 (Unsloth 2026.8.22 may pull xformers wanting torch≥2.10) |
+| Env | `UNSLOTH_SKIP_TORCHVISION_CHECK=1` if needed; `REQUIRE_AMPERE=1`; `load_in_4bit=False` |
+
+## Do not use for C of S6 SHA `6aab…`
+Unsloth **2026.9.6** + torch **2.11** produced false FAIL spurgeon **18.31 (+27.9%)**. Same weights on the pin above: **12.85 (−10.2%)**.
+
+## Automation
+- Env override: `UNSLOTH_PIP_SPEC` in `eval_cpt_sota.py`
+- Train-probe slice: `CPT_EVAL_TRAIN_PROBE_DOCS=16`
+- Scripts: `vast_remote_stack_isolation_c.sh`, `runpod_remote_stack_isolation_c.sh`
+
+Evidence: `pretraining/cpt-s6-stack-isolation-c`.
+
 <!-- memory-fabric:store/pretraining/cpt-eval-unify-vs-buckets -->
 ---
 store_path: pretraining/cpt-eval-unify-vs-buckets
@@ -850,40 +885,40 @@ Do not: mix-only stop; collapsed Reformed PPL; 2-doc Spurgeon stop; fresh 1e-5 f
 <!-- memory-fabric:store/pretraining/cpt-next-session-handoff -->
 ---
 store_path: pretraining/cpt-next-session-handoff
-title: "Next session: Vast S6 full-corpus continue-B"
-summary: "**Do not smoke again.** Miniforge Unsloth CPT is proven"
+title: "Next session: S6 LoRA good; Hub overwrite needs approve"
+summary: "S6 SHA `6aab…` on Unsloth 2026.8.22 / torch 2.8: spurgeon **12.85 (−10.2%)**"
 priority: high
-tags: [cpt, s6, vast, handoff]
+tags: [cpt, s6, handoff]
 schema_version: 1.3
-last_updated: "2026-09-16T11:02:02-03:00"
-evidence: [continued_pretrain/VAST_RUNBOOK_CPT.md, continued_pretrain/scripts/vast_cpt_orchestrate.ps1]
+last_updated: "2026-09-20T19:04:21-03:00"
+evidence: [pretraining/cpt-s6-c-eval-regression-diagnosis]
 ---
 
-# Next session handoff — Vast CPT S6 continue-B (full corpus)
+# Next session — after stack-isolation flip
 
-**Do not smoke again.** Miniforge Unsloth CPT is proven. Next GPU work is **S6 continue-B on full `a_output_v3`**.
+S6 SHA `6aab…` on Unsloth 2026.8.22 / torch 2.8: spurgeon **12.85 (−10.2%)**. Vast +27.9% was **eval-stack false FAIL**. See `pretraining/cpt-s6-stack-isolation-c`.
 
-## Ready
-- Local readiness PASS (51417/520, mix SHA `23dd3820…`, S5 SHA `ef4df3a3…`, complete `checkpoint-2050`)
-- Scripts: `continued_pretrain/scripts/vast_cpt_orchestrate.ps1` + `VAST_RUNBOOK_CPT.md`
-- Payload: `D:\search-sermons-cpt\vast_cpt_s6\payload.tar` (~4.6 GB)
-- Recipe: CUDA 12.4 image + Miniforge `unsloth_cpt` + torch 2.11+cu126 **pip-in-env** (`unset LD_LIBRARY_PATH`)
-- Fetch to **D:** only (C: ~2 GB free)
+## Do
+1. Keep Hub v2 until operator **explicitly** approves overwrite (S6 beats Hub v2 13.28 on this scorecard but overwrite is a separate session).
+2. Prefer confirmatory Runpod C of same SHA when Runpod has funds (this C was Vast host + S5 software pin).
+3. Optional: Hub overwrite of `…-theology-cpt-lora-v2` with nested `6aab…` after approve.
+4. Do **not** start a blind continue-B to “fix C”.
 
-## Not ready without operator money/GPU pick
-- Vast credit was ~$3.31 at prepare time; 4090 ~$0.54/hr needs ~$5+ for 8–12 h
-- `-Go` blocks credit < $5 unless `-AllowLowCredit`
-- 3090 TW ~$0.24/hr is the credit-safe Ampere fallback
-- Runpod volume `7hb931c5oe` still 404 / funds; Vast has no network volume so checkpoint sync to D: is the backup
+## Do not
+- Treat Vast C 18.31 as ground truth for these weights
+- Merge / Hub overwrite without operator go
+- Re-rent Vast C on torch 2.11 / Unsloth 2026.9.x for this SHA
 
-## On go
+## Paste
 ```
-cd continued_pretrain\scripts
-.\vast_cpt_orchestrate.ps1 -Go -StartMonitor
+S6 stack-isolation: SHA 6aab on Unsloth 2026.8.22/torch 2.8 → spurgeon 12.85 (−10.2%).
+Vast +27.9% was false FAIL. Hub overwrite needs separate approve.
 ```
-Walk away only after log shows `cpt_run_mode=continue`, `Resuming from .../checkpoint-2050`, `packed_epoch_steps=4128`, `INIT_ADAPTER SHA256 OK`, conda python under `unsloth_cpt`.
 
-Keep Hub v2 until finished B + winning C. No `S6_FRESH_START`.
+## Clarification (side-chat 2026-09-20)
+- False FAIL was **C stack**, not “B early-stop was wrong because of C”.
+- C artifact = ckpt-**2050** / SHA `6aab…` (stop was 2400; ignore 2400 adapters).
+- S6@2050 beats Hub v2 on PPL scorecard; overwrite still explicit approve only.
 
 <!-- memory-fabric:store/pretraining/cpt-s6-gpu-blocked-volume-balance -->
 ---
@@ -942,6 +977,85 @@ Local code+docs only. **No pod, no train, no monitor, no C eval.**
 - Hub v2 stays until a finished B + winning C.
 
 Checklists: `[REDACTED_SECRET].md`, `CORPUS_V3_S6_RERUN_SAFE.md`.
+
+<!-- memory-fabric:store/pretraining/cpt-s6-stack-isolation-c -->
+---
+store_path: pretraining/cpt-s6-stack-isolation-c
+title: "S6 stack-isolation C: PPL flips on S5 Unsloth/torch pin"
+summary: "Same SHA `6aab91940ce3e854f72a5308ae41e8ce1ae4c457752ff76390581f09ba436f0c` on **Unsloth 2026.8.22 + torch 2.8.0+cu126** scores spurgeon **12.85 (−10.2% vs base 14.31)**"
+priority: high
+tags: [cpt, s6, c-eval, stack-isolation, early-stop, hub-v2]
+schema_version: 1.3
+last_updated: "2026-09-20T19:04:21-03:00"
+evidence: [continued_pretrain/kaggle/runpod_cpt_v3/stack_isolation_c/theology_cpt_eval_metrics.json, continued_pretrain/kaggle/runpod_cpt_v3/cpt_eval.log, pretraining/vast-cpt-s6-resume-spike-analysis]
+---
+
+# S6 stack-isolation C COMPLETE (2026-09-20)
+
+## Bottom line
+Same SHA `6aab91940ce3e854f72a5308ae41e8ce1ae4c457752ff76390581f09ba436f0c` on **Unsloth 2026.8.22 + torch 2.8.0+cu126** scores spurgeon **12.85 (−10.2% vs base 14.31)**. Vast C on Unsloth 2026.9.6 / torch 2.11 was a **false FAIL** (+27.9%). Weights are not bad.
+
+## Pins (from S5 `runpod_cpt_v3/cpt_eval.log`)
+- Unsloth **2026.8.22** (Hub-v2 C used 2026.8.21)
+- torch **2.8.0+cu126** + torchvision **0.23.0**
+- `UNSLOTH_SKIP_TORCHVISION_CHECK=1` after dropping xformers (pulls torch≥2.10)
+
+## Host note
+Runpod unpaid (402). Ran on **Vast RTX 4090** with the S5/Hub-v2 **software** pin. Residual host confound remains; Unsloth/torch were the controlled variables. Prefer a confirmatory Runpod C when funded.
+
+## Scorecard (a_output_v3 holdouts, Ampere bf16)
+
+| Bucket | Base | Adapter | Δ% |
+|--------|------|---------|-----|
+| spurgeon | 14.31 | **12.85** | **−10.2%** |
+| puritan | 6.03 | 5.60 | −7.2% |
+| confession | 5.61 | 5.27 | −6.0% |
+| general | 12.05 | 11.83 | −1.8% |
+
+Probe vs base: **PASS**. §5 −15%: still FAIL.
+
+## 16-doc train probe (same C)
+- Adapter spurgeon@16: ppl **12.13** loss **2.495** (matches train `eval_spurgeon_loss=2.4987`)
+- Base@16: ppl 13.30 → Δ **−8.85%**
+- So 16-doc vs 50-doc was **not** the Vast regression cause; both look good on the pinned stack.
+
+## vs Hub v2 / S5 (same holdouts family)
+- Hub v2: spurgeon 13.28 (−7.2%)
+- S5: spurgeon 13.34 (−6.8%)
+- This S6: spurgeon **12.85 (−10.2%)** — **better** on this scorecard
+
+## Interpretation (plan table)
+- **Flip** → Vast **C-eval** stack untrustworthy (not proof train stack is buggy).
+- Hub overwrite is a **separate approve** — numbers favor overwrite vs Hub v2, but do not auto-overwrite.
+- Do **not** start a blind new B to “fix C”.
+
+## Artifacts
+Scripts: `vast_remote_stack_isolation_c.sh`, `vast_stack_isolation_c.ps1`, `runpod_stack_isolation_c.ps1`, `runpod_remote_stack_isolation_c.sh`.
+Eval: `CPT_EVAL_TRAIN_PROBE_DOCS` + `UNSLOTH_PIP_SPEC` env in `eval_cpt_sota.py`.
+
+## Operator Q&A clarifications (2026-09-20)
+
+### What was broken
+- **Proven:** full holdout **C** on Unsloth **2026.9.6** / torch **2.11** inflated adapter PPL (base stayed ~14.31; adapter → 18.31).
+- **Not proven as a single package:** Unsloth vs torch alone (both changed in the isolation flip).
+- **Rejected:** wrong SHA, 16-vs-50 overfit as the Vast +28% cause, embed→lm_head tying sync.
+
+### Do NOT conflate with B early-stop
+- Bug proven = **post-train C** on the new stack.
+- S6 B halt = composite early-stop after **resume spike** (train loss also jumped 1.92→2.33) — real train dynamics, not the 50-doc C liar.
+- In-train **16-doc** spurgeon loss (~2.4987) **matches** good-stack train probe (2.495) → B’s probe metric was trustworthy.
+- Blind new B is **not** required to “undo” the false C.
+
+### Step timeline (C scored best, not last)
+| Phase | Steps |
+|-------|-------|
+| S5 initial v3 | stop ~**375**/4128, best ~**325** |
+| S6 continue | HF best **2050** (SHA `6aab…`) |
+| S6 last resume session | resume **2050** → stop **2400** (spike; never beat 2050) |
+| **C scored** | **2050** only — not 2400 |
+
+### Improvement claim
+On good-stack C (v3 holdouts): S6@2050 spurgeon **12.85 (−10.2%)** beats Hub v2 **13.28 (−7.2%)** and S5 **13.34 (−6.8%)**. §5 −15% still FAIL. Hub overwrite still needs **separate operator approve**.
 
 <!-- memory-fabric:store/pretraining/cpt-sota-assessment-2026-07 -->
 ---
@@ -3009,6 +3123,54 @@ if getattr(model, "config", None) is not None:
 
 This guarantees that Unsloth offloaded buffers are saved under a directory where the Python process has active write permissions on all execution targets (Kaggle VMs, Colab VMs, and local Windows/Linux development environments), bypassing the absolute path join bug.
 
+<!-- memory-fabric:store/pretraining/vast-cpt-s6-resume-spike-analysis -->
+---
+store_path: pretraining/vast-cpt-s6-resume-spike-analysis
+title: "Vast S6 resume spike + flat composite analysis"
+summary: "- Instance **51416115** destroyed; `vastai show instances` → `[]`"
+priority: high
+tags: [cpt, s6, vast, early-stop, resume, analysis]
+schema_version: 1.3
+last_updated: "2026-09-18T09:30:54-03:00"
+evidence: [continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s6/fetch/theology_cpt_run_config.json, continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s6/fetch/checkpoints_sota/checkpoint-2400/trainer_state.json, continued_pretrain/scripts/cpt_runtime.py, continued_pretrain/scripts/train_cpt_sota.py]
+---
+
+# Vast S6 continue-B — resume spike + flat early-stop (2026-09-18)
+
+## Outcome
+- Instance **51416115** destroyed; `vastai show instances` → `[]`.
+- Artifacts: `continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s6/fetch/`
+- **Canonical finished LoRA:** `fetch/theology_cpt_lora/theology_cpt_lora/` SHA256 `6aab91940ce3e854f72a5308ae41e8ce1ae4c457752ff76390581f09ba436f0c` (= best ckpt-2050). Outer `fetch/theology_cpt_lora/adapter_model.safetensors` is **stale S5** (`ef4df3a3…`) from mid-run scp — ignore it.
+- HF `best_model_checkpoint` = `checkpoint-2050`, `best_metric` = **2.4987235**. Log: `OK: saved LoRA matches best_model_checkpoint`.
+- Hub v2: **keep** (no overwrite). No new B yet.
+
+## What happened
+Full pack 51417→4128. Resume 2050 → COMPOSITE EARLY-STOP @ **2400** (patience=2, ε=0.005, min_steps=1652).
+
+| step | eval_spurgeon | eval_mix | notes |
+|------|---------------|----------|-------|
+| 2050 | **2.4987** | 2.0208 | HF best (pre-resume last save) |
+| 2075 | **2.6185** | 2.1157 | first eval after resume — spike |
+| 2325 | 2.5115 | 2.0322 | composite local bests seeded post-spike |
+| 2350–2400 | ≤ε gains | ≤ε | flat streak=2 → halt |
+| 2400 | 2.5084 | 2.0276 | still **worse** than 2050 spurgeon |
+
+All holdouts spiked together (puritan 1.751→1.834, confession 1.668→1.755). Train loss 2050→2060: **1.92→2.33**. Not Spurgeon-only eval noise.
+
+## Why the resume spike (most likely)
+1. **Real weight degradation in first ~25 post-resume steps**, not measurement noise — multi-bucket + train-loss jump.
+2. LR schedule looked continuous (~2.05e-6 at 2050 → ~2.02e-6 at 2070); not a warmup restart.
+3. Continue mode loads S5 init adapter then `trainer.train(resume_from_checkpoint=2050)`. HF best tracking correctly kept 2050; continued Adam steps walked **out** of that basin and never returned below 2.4987.
+4. Plausible contributors: late-stage LR still too high for a near-flat Spurgeon probe; dataloader/RNG discontinuity after process restart; Unsloth+PEFT resume friction. **Not** proven as a single root bug without a controlled A/B.
+
+## Why flat composite (working as designed)
+`CompositeFlatEarlyStoppingCallback` starts with **empty `bests`** on each process. After resume it is already past `min_steps=1652`, so the **first** complete cycle at 2075 **seeds** composite bests at the spiked values. Recovery 2075→2325 counts as improvement; then spurgeon/mix moves &lt; 0.005 for 2 evals → halt at 2400. Composite never compared against HF best 2.4987 — by design it tracks live flatness, while `load_best_model_at_end` restores 2050 for the saved LoRA.
+
+## Decisions / next
+- Do **not** treat 2375/2400 adapters as better than 2050.
+- Next GPU work: **C-eval** of `6aab9194…` (2050 LoRA) vs Ampere base **and** Hub v2 — only then decide Hub overwrite.
+- Optional later B: lower continue LR and/or seed composite bests from resumed `trainer.state.best_metric`; do not re-rent until C plan is approved.
+
 <!-- memory-fabric:store/fine-tuning/vast-gate0-live -->
 ---
 store_path: fine-tuning/vast-gate0-live
@@ -3452,28 +3614,68 @@ Not a crash. For a future B that must consume the large mix: add min_steps/min_t
 <!-- memory-fabric:store/pretraining/cpt-current -->
 ---
 store_path: pretraining/cpt-current
-title: "CPT current pointer — Vast S6 prepare"
-summary: "**Canonical live handoff:** `pretraining/cpt-next-session-handoff`"
+title: "CPT current — S6 LoRA good on S5 stack; Hub overwrite pending approve"
+summary: "**Stack isolation:** `pretraining/cpt-s6-stack-isolation-c`"
 priority: medium
-tags: [cpt, s6, vast]
+tags: [cpt, s6, hub-v2, stack-isolation]
 schema_version: 1.3
-last_updated: "2026-09-16T11:02:12-03:00"
+last_updated: "2026-09-20T18:17:21-03:00"
 summary_hash: ae50844218c68cf398ceb1a89e8e955d
-evidence: [continued_pretrain/VAST_RUNBOOK_CPT.md]
+evidence: [pretraining/cpt-s6-c-eval-regression-diagnosis, pretraining/cpt-s6-c-eval-complete]
 ---
 
-# CPT — current pointer (2026-09-16)
+# CPT — current pointer (2026-09-20)
 
-**Canonical live handoff:** `pretraining/cpt-next-session-handoff`
-**Vast prepare snapshot:** `pretraining/vast-cpt-s6-prepare`
+**Stack isolation:** `pretraining/cpt-s6-stack-isolation-c`  
+**Prior Vast C (false FAIL):** `pretraining/cpt-s6-c-eval-regression-diagnosis`
 
 | Item | Status |
 |------|--------|
-| S6 continue-B | **INCOMPLETE** at **2050/4128** locally (complete HF ckpt + optimizer). Volume `7hb931c5oe` 404 |
-| Next GPU | **Vast** Miniforge Unsloth, full `a_output_v3`. Scripts ready. **Do not train until operator -Go** |
-| Credit gate | ~$3.31 at prepare; `-Go` needs ≥$5 or `-AllowLowCredit` + 3090 |
-| Hub production | keep `…-theology-cpt-lora-v2` until finished B + winning C |
-| SFT lane | separate |
+| S6 B (Vast) | DONE — best ckpt-2050 SHA `6aab9194…` |
+| S6 C Vast torch 2.11 | DONE ×2 — **false FAIL** (+27.9%) |
+| Stack-isolation C (Unsloth 2026.8.22 / torch 2.8) | DONE — spurgeon **12.85 (−10.2%)** |
+| Hub production | still `…-theology-cpt-lora-v2` until **separate** overwrite approve |
+| New B | not needed to “fix C”; optional only for §5 −15% |
+| SFT | still on Hub-v2-merged path until Hub decision |
+
+<!-- memory-fabric:store/pretraining/cpt-s6-c-eval-regression-diagnosis -->
+---
+store_path: pretraining/cpt-s6-c-eval-regression-diagnosis
+title: "S6 Vast C +27.9% was false FAIL (stack); tying not cause"
+summary: "**False FAIL.** Same SHA `6aab91940ce3e854f72a5308ae41e8ce1ae4c457752ff76390581f09ba436f0c` on Unsloth **2026.8.22 / torch 2.8.0** scores spurgeon **12.85 (−10.2%)**"
+priority: medium
+tags: [cpt, s6, c-eval, regression, stack-isolation, hub-v2]
+schema_version: 1.3
+last_updated: "2026-09-20T19:01:23-03:00"
+evidence: [continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s6/c_eval/cpt_eval.log, continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s6/c_eval/theology_cpt_eval_metrics.json, continued_pretrain/scripts/eval_cpt_sota.py]
+---
+
+# S6 C-eval regression diagnosis — SUPERSEDED by stack isolation (2026-09-20)
+
+## Resolution
+**False FAIL.** Same SHA `6aab91940ce3e854f72a5308ae41e8ce1ae4c457752ff76390581f09ba436f0c` on Unsloth **2026.8.22 / torch 2.8.0** scores spurgeon **12.85 (−10.2%)**. Canonical write-up: `pretraining/cpt-s6-stack-isolation-c`.
+
+Vast C **18.31 (+27.9%)** under Unsloth 2026.9.6 / torch 2.11 is **not** trustworthy for these weights. Tying sync remains rejected as the cause of that inflated PPL (still useful negative result).
+
+## Original diagnosis (2026-09-19) — historical
+Vast C of ckpt-2050 LoRA scored spurgeon **18.31 (+27.9% vs Ampere base ~14.31)**. Embed→lm_head sync did **not** change PPL.
+
+### Controlled tying test (still valid)
+- Patch: `maybe_sync_tied_lm_head` in `eval_cpt_sota.py` (`CPT_EVAL_SYNC_TIED_HEAD`).
+- Re-C: Vast RTX 4090 Kentucky, instance **51500745** (destroyed).
+- Before sync: `same_storage=0`, `max_abs_delta≈0.00195`.
+- After sync: `embed_to_lm_head_synced=1`, spurgeon still **18.31 (+27.9%)**.
+
+### Ranked causes — updated
+1. **Confirmed** — Vast C-eval stack (Unsloth 2026.9.6 / torch 2.11) mis-scores this embed-FT LoRA. Fixed by re-C on S5 pin.
+2. **Meta** — Aug-28 “6aab → 13.34” still unproven as that SHA; stack-isolation now gives **12.85** for `6aab…`.
+3. **Rejected as regression cause** — 16-doc vs 50-doc (train probe loss 2.495 matches train 2.4987 on good stack).
+4. **Rejected** — Wrong SHA / 4-bit / outer stale S5 LoRA / simple tying copy.
+
+## Policy (post-isolation)
+- Do **not** treat Vast +27.9% as ground truth.
+- Hub `…-theology-cpt-lora-v2` stays until **explicit** overwrite approve (S6 12.85 beats Hub v2 13.28 on this scorecard).
+- No blind new B to “fix C”. Eval CPT only on Unsloth ~2026.8.22 + torch 2.8 for parity with Hub-v2/S5.
 
 <!-- memory-fabric:store/failures/cuda-oom-during-mid-ffcb775074 -->
 ---
@@ -3647,15 +3849,15 @@ Execution configurations and dependency management rules for continued pretraini
 <!-- memory-fabric:local/episodic -->
 ---
 section: episodic
-summary: "Generated map of memory-store/episodic/ (23 entries)."
+summary: "Generated map of memory-store/episodic/ (26 entries)."
 priority: medium
 tags: [episodic]
 schema_version: 1.3
-last_updated: "2026-09-16T07:21:49-03:00"
+last_updated: "2026-09-20T18:17:25-03:00"
 generated: true
 generated_from: memory-store/episodic
-store_fingerprint: 776f022298f177736676c884ea860b03
-body_hash: 9507ddd6884e9d4c033e7dfb2a634839
+store_fingerprint: 1c2072df874c0015e78171a9b37528ed
+body_hash: a663b00c4f0e5b38d76353015d9cec36
 ---
 
 # Episodic Map
@@ -3677,7 +3879,7 @@ Generated by Memory Fabric from `memory-store/episodic/` — do not edit by hand
 - **Episodic Journal — 2026-08-30** (`episodic/2026-08-30`, low) — Resolved parallel Groq+Cerebras rewrite conflict: stopped Cerebras, let Groq finish, deduped bulk_pending.jsonl (648→637, 11 dupes removed), re-ran full pipeline
 - **Episodic Journal — 2026-08-31** (`episodic/2026-08-31`, low) — Verified live QA mix against serve contract and F5 targets
 - **Episodic Journal — 2026-09-01** (`episodic/2026-09-01`, low) — Verified QA teacher rewrite resume point (line 1786 per handoff, confirmed live)
-- …and 8 more entries — see `memory-store/index.md`.
+- …and 11 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:store/pretraining/eval-and-export -->
 ---
@@ -3701,15 +3903,15 @@ Following the successful execution of Notebook B (Epoch 1 & 2) up to step 432:
 <!-- memory-fabric:local/failures -->
 ---
 section: failures
-summary: "Generated map of memory-store/failures/ (26 entries)."
+summary: "Generated map of memory-store/failures/ (30 entries)."
 priority: medium
 tags: [failures]
 schema_version: 1.3
-last_updated: "2026-09-16T11:02:02-03:00"
+last_updated: "2026-09-20T18:17:11-03:00"
 generated: true
 generated_from: memory-store/failures
-store_fingerprint: 11475d163791e640618ed9dd6a708cae
-body_hash: 0b2b85389245e9c7cd6fa01cf39c6f93
+store_fingerprint: 8027e2ad9ea607575cf177b190752683
+body_hash: 00a555c8e81a6b9fc4b68ba069c00044
 ---
 
 # Failures Map
@@ -3724,7 +3926,7 @@ Generated by Memory Fabric from `memory-store/failures/` — do not edit by hand
 - **CUDA OOM on Kaggle T4 during CPT B v5 after manual pack (float32 Qwen3.5, batch ** (`failures/cuda-oom-on-kaggle-e64e9b60ce`, medium) — CUDA OOM on Kaggle T4 during CPT B v5 after manual pack (float32 Qwen3.5, batch 2, TRAIN_EMBEDDINGS=True)
 - **CUDA out of memory during first eval of Qwen3.5 embed LoRA CPT: tried to allocat** (`failures/cuda-out-of-memory-849d59401d`, medium) — CUDA out of memory during first eval of Qwen3.5 embed LoRA CPT: tried to allocate 6.81 GiB on T4 while evaluating mix+4 holdout buckets at EVAL_DOCS_PER_BUCKET=8 (logits for 248k vocab)
 - **Full semantic judge run stalled or failed due Groq/Cerebras 403, OpenRouter dail** (`failures/full-semantic-judge-run-2188a7bf04`, medium) — Full semantic judge run stalled or failed due Groq/Cerebras 403, OpenRouter daily quota 429, and transient Gemini 503 responses
-- …and 18 more entries — see `memory-store/index.md`.
+- …and 22 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:local/fine-tuning -->
 ---
@@ -3991,6 +4193,27 @@ Contains:
 ## Related
 - LoRA-only: `rafaelvieirar1r/qwen3.5-4b-spurgeon-qa-lora-v2`
 - Rebuild script: `fine_tuning/scripts/merge_sft_lora_local.py`
+
+<!-- memory-fabric:store/failures/hypothesis-vast-s-n-e324f2c659 -->
+---
+store_path: failures/hypothesis-vast-s-n-e324f2c659
+title: "Hypothesis: Vast S6 C +27.9% spurgeon PPL caused by untied embed/lm_head (ensure"
+summary: "Hypothesis: Vast S6 C +27.9% spurgeon PPL caused by untied embed/lm_head (ensure_weight_tying=false)"
+priority: medium
+tags: [c-eval, cpt, failure, fix, peft, s6, tying]
+schema_version: 1.3
+last_updated: "2026-09-18T20:31:31-03:00"
+occurrences: 1
+error_signature: "hypothesis: vast s<n> c +<n>.<n>% spurgeon ppl caused by untied embed<path> (ensure_weight_tying=false)."
+---
+
+## Occurrence 1 — 2026-09-18T20:31:31-03:00
+
+**Error:**
+Hypothesis: Vast S6 C +27.9% spurgeon PPL caused by untied embed/lm_head (ensure_weight_tying=false).
+
+**Fix:**
+Added maybe_sync_tied_lm_head to eval_cpt_sota.py; re-C showed same_storage=0 but max_abs_delta≈0.002; after embed→lm_head copy PPL still 18.31 (+27.9%). Tying is NOT the regression cause. Keep Hub v2; treat Aug-28 13.34-for-6aab as unproven.
 
 <!-- memory-fabric:store/bugs/lora-frozen-embeddings-special-tokens -->
 ---
@@ -4314,15 +4537,15 @@ Use ASCII -- in PowerShell scripts instead of Unicode em-dashes. Windows PowerSh
 <!-- memory-fabric:local/pretraining -->
 ---
 section: pretraining
-summary: "Generated map of memory-store/pretraining/ (59 entries)."
+summary: "Generated map of memory-store/pretraining/ (66 entries)."
 priority: medium
 tags: [pretraining]
 schema_version: 1.3
-last_updated: "2026-09-16T11:17:08-03:00"
+last_updated: "2026-09-20T19:01:32-03:00"
 generated: true
 generated_from: memory-store/pretraining
-store_fingerprint: 59b15507e5f873584292fbbc35976b68
-body_hash: f98d823b9f309c0e5d4a25c8c172c104
+store_fingerprint: 0e30dea5fefc59a2e2fbef053fa16c2d
+body_hash: 6844ec073fc5d4e013be1459075b7639
 ---
 
 # Pretraining Map
@@ -4341,7 +4564,7 @@ Generated by Memory Fabric from `memory-store/pretraining/` — do not edit by h
 - **CPT corpus v3 S2 complete (fetch + mix, no training)** (`pretraining/cpt-corpus-v3-s2-complete`, high) — S2 fetch + mix rebuild finished 2026-08-27
 - **CPT corpus v3 S2 is done — next is S3** (`pretraining/cpt-corpus-v3-s2-handoff`, high) — S2 done; pointer to s2-complete.
 - **CPT corpus v3 S3 complete (Wave 3 + mix, no training)** (`pretraining/cpt-corpus-v3-s3-complete`, high) — S3 fetch + mix rebuild finished 2026-08-27
-- …and 47 more entries — see `memory-store/index.md`.
+- …and 54 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:store/fine-tuning/qwen-sft-alpaca-reversion -->
 ---
@@ -4373,6 +4596,28 @@ The user requested to revert these changes. The notebook was re-configured to:
   - Assistant responses are mapped to the **Response**.
 - **SFT Trainer Delimiters:** The `train_on_responses_only` function masks the labels up to `"### Response:\n"` to focus training only on response generations.
 
+<!-- memory-fabric:store/failures/runtimeerror-adapter-sha-n-b83673b4f0 -->
+---
+store_path: failures/runtimeerror-adapter-sha-n-b83673b4f0
+title: "RuntimeError: adapter SHA256 mismatch: got ef4df3a3… (S5 LoRA) want 319d17a3… (H"
+summary: "RuntimeError: adapter SHA256 mismatch: got ef4df3a3… (S5 LoRA) want 319d17a3… (Hub v2)"
+priority: medium
+tags: [cpt, failure, fix, s6, sft_env, sha256, vast]
+schema_version: 1.3
+last_updated: "2026-09-18T07:38:55-03:00"
+occurrences: 1
+error_signature: "runtimeerror: adapter sha<n> mismatch: got <hex>… (s<n> lora) want <hex>… (hub v<n>). vast cpt continue-b crashed immediately because vast_inject_hf_token.ps<n> writes expected_adapter_sha<n>=hub-v<n> into <path>, and vast_cpt_remote_continue_b.sh sourced .sft_env after exporting the s<n> sha, overw"
+failure_key: runtimeerror
+---
+
+## Occurrence 1 — 2026-09-18T07:38:55-03:00
+
+**Error:**
+RuntimeError: adapter SHA256 mismatch: got ef4df3a3… (S5 LoRA) want 319d17a3… (Hub v2). Vast CPT continue-B crashed immediately because vast_inject_hf_token.ps1 writes EXPECTED_ADAPTER_SHA256=Hub-v2 into /workspace/.sft_env, and vast_cpt_remote_continue_b.sh sourced .sft_env after exporting the S5 SHA, overwriting it.
+
+**Fix:**
+Re-export EXPECTED_ADAPTER_SHA256=S5 (ef4df3a3…) AFTER sourcing .sft_env in vast_cpt_remote_continue_b.sh. On the live pod also sed-fixed .sft_env, moved the failed log aside, and relaunched. Training then passed INIT_ADAPTER SHA256 OK and resumed checkpoint-2050.
+
 <!-- memory-fabric:store/failures/runtimeerror-expected-mat-n-e21431291d -->
 ---
 store_path: failures/runtimeerror-expected-mat-n-e21431291d
@@ -4394,6 +4639,27 @@ RuntimeError: expected mat1 and mat2 to have the same dtype, but got: float != c
 
 **Fix:**
 Register a forward pre-hook on get_output_embeddings() that casts lm_head inputs to weight.dtype. Keep trainer fp16/bf16 off when TRAIN_EMBEDDINGS=True. Do not upcast the full lm_head table (VRAM).
+
+<!-- memory-fabric:store/failures/s-n-vast-c-b0dd9b03d4 -->
+---
+store_path: failures/s-n-vast-c-b0dd9b03d4
+title: "S6 Vast C-eval FAIL: SHA256 mismatch — EXPECTED was Hub-v2 319d17a3… after sourc"
+summary: "S6 Vast C-eval FAIL: SHA256 mismatch — EXPECTED was Hub-v2 319d17a3… after sourcing /workspace/.sft_env from vast_inject_hf_token, while GOT was S6 ckpt-2050 6aab9194…"
+priority: medium
+tags: [c-eval, cpt, failure, fix, s6, sha256, vast]
+schema_version: 1.3
+last_updated: "2026-09-18T11:46:03-03:00"
+occurrences: 1
+error_signature: "s<n> vast c-eval fail: sha<n> mismatch — expected was hub-v<n> <hex>… after sourcing <path> from vast_inject_hf_token, while got was s<n> ckpt-<n> <hex>…"
+---
+
+## Occurrence 1 — 2026-09-18T11:46:03-03:00
+
+**Error:**
+S6 Vast C-eval FAIL: SHA256 mismatch — EXPECTED was Hub-v2 319d17a3… after sourcing /workspace/.sft_env from vast_inject_hf_token, while GOT was S6 ckpt-2050 6aab9194…
+
+**Fix:**
+In vast_remote_c_eval.sh, capture PINNED_ADAPTER_SHA256 before sourcing .sft_env, then unconditionally export EXPECTED_ADAPTER_SHA256=$PINNED_ADAPTER_SHA256 afterward (:- default does not override a set Hub-v2 value). Also wrap fetch scp in ErrorActionPreference Continue so Vast SSH banner on stderr does not abort before destroy.
 
 <!-- memory-fabric:store/failures/segmentation-fault-exit-n-0bc8cb8155 -->
 ---
@@ -4539,6 +4805,27 @@ To resolve this:
        trl.SFTConfig = trainer.args.__class__
    ```
 This aligns the module entries with the instantiated class object, allowing the pickler to locate it successfully.
+
+<!-- memory-fabric:store/failures/stack-isolation-c-install-da57762e21 -->
+---
+store_path: failures/stack-isolation-c-install-da57762e21
+title: "Stack-isolation C install failed: Unsloth 2026.8.22 pulls torchvision/xformers f"
+summary: "Stack-isolation C install failed: Unsloth 2026.8.22 pulls torchvision/xformers for torch 2.11; re-pinning torch 2.8 with --no-deps left torchvision 0.26 operators broken (torchvision::nms)"
+priority: medium
+tags: [failure, fix]
+schema_version: 1.3
+last_updated: "2026-09-20T18:17:11-03:00"
+occurrences: 1
+error_signature: "stack-isolation c install failed: unsloth <n>.<n>.<n> pulls torchvision<path> for torch <n>.<n>; re-pinning torch <n>.<n> with --no-deps left torchvision <n>.<n> operators broken (torchvision::nms)"
+---
+
+## Occurrence 1 — 2026-09-20T18:17:11-03:00
+
+**Error:**
+Stack-isolation C install failed: Unsloth 2026.8.22 pulls torchvision/xformers for torch 2.11; re-pinning torch 2.8 with --no-deps left torchvision 0.26 operators broken (torchvision::nms)
+
+**Fix:**
+Force-reinstall torch==2.8.0 + torchvision==0.23.0 + torchaudio==2.8.0 from cu126 index; uninstall xformers; set UNSLOTH_SKIP_TORCHVISION_CHECK=1. Encoded in vast_remote_stack_isolation_c.sh / vast_stack_isolation_rerun.sh.
 
 <!-- memory-fabric:store/pretraining/training-configuration -->
 ---
@@ -6901,6 +7188,126 @@ Moved S5 LoRA and Vast CPT payload onto C: with the corpus and checkpoint-2050. 
 - `continued_pretrain/scripts/vast_cpt_common.ps1`
 - `continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s6`
 
+<!-- memory-fabric:store/episodic/2026-09-18 -->
+---
+store_path: episodic/2026-09-18
+title: "Episodic Journal — 2026-09-18"
+summary: "Finished Vast CPT S6 continue-B cleanup: re-fetched artifacts to vast_cpt_s6/fetch, destroyed idle instance 51416115 (instances=[]), and documented why resume spiked spurgeon 2.4987→2.618 then composi"
+priority: low
+tags: [episodic, session-journal]
+schema_version: 1.3
+last_updated: "2026-09-18T20:31:32-03:00"
+---
+
+## vast-cpt-s6-fetch-destroy-analyse
+
+Finished Vast CPT S6 continue-B cleanup: re-fetched artifacts to vast_cpt_s6/fetch, destroyed idle instance 51416115 (instances=[]), and documented why resume spiked spurgeon 2.4987→2.618 then composite early-stopped at 2400 without beating best-2050. Canonical saved LoRA is the nested theology_cpt_lora path matching SHA 6aab9194….
+
+**Key decisions:**
+- Destroyed idle Vast 51416115 after fetch — stop credit burn
+- Best LoRA remains checkpoint-2050 (SHA 6aab9194…); ignore outer stale S5 fetch copy
+- No Hub overwrite; next session is C-eval only
+- Resume spike is real multi-bucket degradation; composite early-stop behaved as designed on post-spike plateau
+
+**Files changed:**
+- `continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s6/fetch/`
+
+## cpt-s6-c-eval-handoff
+
+Saved CPT memories so the next session runs S6 C-eval only on the Vast best LoRA (checkpoint-2050, SHA 6aab9194…), compares vs Ampere base and Hub v2, and does not start a new B or Hub overwrite.
+
+- Best continue-B adapter remains checkpoint-2050 / nested fetch LoRA SHA 6aab9194…
+- Next GPU work is C-eval only; Hub v2 kept until winning C
+- No new B / no merge in the C session
+
+- `pretraining/cpt-next-session-handoff`
+- `pretraining/cpt-current`
+- `pretraining/cpt-s6-c-eval-next-session`
+- `pretraining/vast-cpt-s6-early-stop-handoff`
+
+## s6-c-eval-vast
+
+Ran fresh Vast S6 C-eval of ckpt-2050 LoRA (SHA 6aab9194…). Probe FAIL vs Ampere base (spurgeon +27.9% PPL); keep Hub v2. Shipped vast_cpt_c_eval.ps1 + vast_remote_c_eval.sh; fixed Hub-v2 SHA overwrite from HF inject. Instance 51446613 destroyed; metrics in vast_cpt_s6/c_eval/.
+
+- Keep Hub v2 — S6 C probe FAIL (all buckets worse than Ampere base)
+- No Hub overwrite, no merge
+- Vast Miniforge C automation: pin EXPECTED_ADAPTER_SHA256 after .sft_env inject
+
+- `continued_pretrain/scripts/vast_cpt_c_eval.ps1`
+- `continued_pretrain/scripts/vast_remote_c_eval.sh`
+- `continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s6/c_eval/theology_cpt_eval_metrics.json`
+- `continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s6/c_eval/cpt_eval.log`
+
+## s6-c-regression-diagnosis
+
+Diagnosed S6 C +27.9% spurgeon regression. Added post-load tie_diag + embed→lm_head sync; confirmatory Vast re-C (US 4090) synced heads but PPL stayed 18.31. Tying hypothesis rejected. Hub v2 stays. Hardened vast_cpt_c_eval (geo filter, nohup poll).
+
+- Embed→lm_head sync does not fix S6 C regression (max_abs_delta≈0.002, PPL unchanged)
+- Keep Hub v2; Aug-28 same-SHA win is unproven
+- CPT_EVAL_SYNC_TIED_HEAD kept as default-on hygiene
+
+<!-- memory-fabric:store/episodic/2026-09-19 -->
+---
+store_path: episodic/2026-09-19
+title: "Episodic Journal — 2026-09-19"
+summary: "Operator asked to save memories"
+priority: low
+tags: [episodic, session-journal]
+schema_version: 1.3
+last_updated: "2026-09-19T11:03:52-03:00"
+---
+
+## save-cpt-c-eval-memories
+
+Operator asked to save memories. Refreshed canonical CPT store entries for S6 C-eval scorecard, regression diagnosis (tying rejected), current pointer, and next-session handoff. Hub v2 stays; no new GPU work.
+
+**Key decisions:**
+- Keep Hub v2 after S6 C probe FAIL
+- Tying sync rejected as regression root cause
+- Aug-28 same-SHA 13.34 treated as unproven
+
+<!-- memory-fabric:store/episodic/2026-09-20 -->
+---
+store_path: episodic/2026-09-20
+title: "Episodic Journal — 2026-09-20"
+summary: "Implemented stack-isolation C for S6 SHA 6aab"
+priority: low
+tags: [episodic, session-journal]
+schema_version: 1.3
+last_updated: "2026-09-20T19:01:32-03:00"
+---
+
+## s6-stack-isolation-c
+
+Implemented stack-isolation C for S6 SHA 6aab. Recovered S5 pins (Unsloth 2026.8.22 / torch 2.8). Added CPT_EVAL_TRAIN_PROBE_DOCS + UNSLOTH_PIP_SPEC to eval. Runpod had no balance; ran on Vast with the S5 software pin. Result: spurgeon 12.85 (−10.2%) vs Vast false FAIL +27.9%. Train probe 16-doc loss 2.495 matches training. Hub v2 stays until separate overwrite approve.
+
+**Key decisions:**
+- S5 pin = Unsloth 2026.8.22 + torch 2.8.0 (from cpt_eval.log)
+- Runpod unpaid → Vast host with same software pin
+- Flip: Vast C-eval false FAIL; S6 LoRA spurgeon 12.85 (−10.2%)
+- 16-doc train probe matches train loss; not the regression cause
+- Hub overwrite still requires separate operator approve
+
+**Files changed:**
+- `continued_pretrain/scripts/vast_remote_stack_isolation_c.sh`
+- `continued_pretrain/scripts/vast_stack_isolation_c.ps1`
+- `continued_pretrain/scripts/vast_stack_isolation_rerun.sh`
+- `continued_pretrain/scripts/runpod_remote_stack_isolation_c.sh`
+- `continued_pretrain/scripts/runpod_stack_isolation_c.ps1`
+- `continued_pretrain/kaggle/runpod_cpt_v3/stack_isolation_c/`
+
+## memory-stack-isolation
+
+Persisted and cross-linked stack-isolation findings: updated regression diagnosis as false FAIL, added durable S5 eval stack pin memory, refreshed S6 C-eval complete scorecard to point at isolation PASS (spurgeon 12.85).
+
+- Vast +27.9% superseded as false FAIL
+- CPT C must use Unsloth 2026.8.22 + torch 2.8 + torchvision 0.23.0
+- Hub overwrite still needs explicit approve
+
+- `.ai-memory/memory-store/pretraining/cpt-s6-c-eval-regression-diagnosis.md`
+- `.ai-memory/memory-store/pretraining/cpt-eval-stack-pin-s5.md`
+- `.ai-memory/memory-store/pretraining/cpt-s6-c-eval-complete.md`
+
 <!-- memory-fabric:store/fine-tuning/cpt-merged-hf-local-complete -->
 ---
 store_path: fine-tuning/cpt-merged-hf-local-complete
@@ -6930,6 +7337,81 @@ Complete CPT merge HF is now local (scp from Vast instance `50011937`).
 - HF still has LoRA adapter only, not merged HF
 - Training/instance not interrupted
 
+<!-- memory-fabric:store/pretraining/cpt-s6-c-eval-complete -->
+---
+store_path: pretraining/cpt-s6-c-eval-complete
+title: "S6 C-eval: Vast false FAIL; isolation PASS 12.85"
+summary: "Path: `vast_cpt_s6/fetch/theology_cpt_lora/theology_cpt_lora/`"
+priority: low
+tags: [cpt, s6, c-eval, hub-v2, stack-isolation]
+schema_version: 1.3
+last_updated: "2026-09-20T19:01:32-03:00"
+evidence: [continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s6/c_eval/theology_cpt_eval_metrics.json, pretraining/cpt-s6-c-eval-regression-diagnosis]
+---
+
+# S6 C-eval COMPLETE — Vast false FAIL; stack-isolation PASS
+
+## Adapter
+Path: `vast_cpt_s6/fetch/theology_cpt_lora/theology_cpt_lora/`  
+SHA256: `6aab91940ce3e854f72a5308ae41e8ce1ae4c457752ff76390581f09ba436f0c` (ckpt-2050)
+
+## Vast C (Unsloth 2026.9.6 / torch 2.11) — do not trust for Hub decision
+spurgeon 18.31 (**+27.9%**). Probe FAIL. Artifacts: `vast_cpt_s6/c_eval/`.
+
+## Stack-isolation C (Unsloth 2026.8.22 / torch 2.8) — canonical for this SHA
+spurgeon **12.85 (−10.2%)**, puritan −7.2%, confession −6.0%, general −1.8%. Probe **PASS**. §5 −15% still FAIL.  
+Full: `pretraining/cpt-s6-stack-isolation-c`. Artifacts: `kaggle/runpod_cpt_v3/stack_isolation_c/`.
+
+## Hub
+Still keep `…-theology-cpt-lora-v2` until **explicit** overwrite approve (S6 beats Hub v2 13.28 on isolation scorecard).
+
+<!-- memory-fabric:store/pretraining/cpt-s6-c-eval-next-session -->
+---
+store_path: pretraining/cpt-s6-c-eval-next-session
+title: "S6 C-eval session playbook (post-Vast B)"
+summary: "Score the finished Vast S6 best LoRA (HF best **checkpoint-2050**) against Ampere bf16 base and Hub v2"
+priority: low
+tags: [cpt, s6, c-eval]
+schema_version: 1.3
+last_updated: "2026-09-18T11:59:01-03:00"
+evidence: [continued_pretrain/scripts/eval_cpt_sota.py, continued_pretrain/scripts/s6_run_c_eval.ps1, "[REDACTED_SECRET].md", continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s6/fetch/theology_cpt_run_config.json]
+---
+
+# S6 C-eval — next-session playbook
+
+## Goal
+Score the finished Vast S6 best LoRA (HF best **checkpoint-2050**) against Ampere bf16 base and Hub v2. Decide keep-vs-replace Hub. **No training.**
+
+## Pin
+- Adapter dir: `continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s6/fetch/theology_cpt_lora/theology_cpt_lora/`
+- Adapter digest (full): `6aab91940ce3e854f72a5308ae41e8ce1ae4c457752ff76390581f09ba436f0c`
+- Set env `EXPECTED_ADAPTER_SHA256` to that digest before `eval_cpt_sota.py` (script default is Hub v2 — wrong for this C).
+- Hub v2 reference digest prefix: `319d17a3…1478`
+- Verify with `sha256sum` on `adapter_model.safetensors` before load.
+- Outer `fetch/theology_cpt_lora/` without nested folder is **stale S5** — do not evaluate that.
+
+## How
+1. Provision short-lived Ampere 24 GB (Vast or Runpod). Prefer proven Miniforge/Unsloth stack if on Vast.
+2. Sync adapter + holdouts (`a_output_v3/theology_holdouts`) + `eval_cpt_sota.py`.
+3. Export `EXPECTED_ADAPTER_SHA256` to the **6aab9194…** digest above.
+4. Run C; save metrics under e.g. `kaggle/runpod_cpt_v3/vast_cpt_s6/c_eval/`.
+5. Destroy GPU immediately after fetch.
+
+Automation hint: `continued_pretrain/scripts/s6_run_c_eval.ps1` (adapt paths/SHA for Vast fetch tree). Checklist pattern: `CORPUS_V3_S5_C_CHECKLIST.md`.
+
+## Success criteria / policy
+- Report PPL Δ on spurgeon / puritan / confession / general vs base **and** vs Hub v2 numbers.
+- **Keep Hub v2** unless this C clearly wins the scorecard.
+- Merge still blocked until §5 −15% on puritan+confession (do not merge in the C session).
+- Optional: note Aug-28 partial C of same digest (`s6_c_eval/theology_cpt_eval_metrics.json`) for comparison, but ship a fresh post-Vast run.
+
+## After C
+- If worse/tie → Hub v2 stays; optional later B with lower continue LR (see `vast-cpt-s6-resume-spike-analysis`).
+- If wins → Hub overwrite is a **separate** approved session.
+
+## Outcome (2026-09-18)
+Done on Vast RTX 4090 instance 51446613 (destroyed). Probe **FAIL** — adapter worse than Ampere base on all buckets (spurgeon +27.9%). **Keep Hub v2.** Metrics under `vast_cpt_s6/c_eval/`. Scripts: `vast_cpt_c_eval.ps1` + `vast_remote_c_eval.sh`. Full scorecard: `pretraining/cpt-s6-c-eval-complete`.
+
 <!-- memory-fabric:local/debt -->
 ---
 section: debt
@@ -6958,3 +7440,59 @@ This section tracks outstanding technical debt, limitations, and future developm
 - **Multi-Author Interface**: Schema is author-aware; UI/prompts still assume Spurgeon-only.
 - **Weekly Automated Ingestion**: Pull updates from `lyteword/chspurgeon-sermons` on a schedule.
 - **Mobile Styling**: Extra CSS for Streamlit sidebar/readability on small screens.
+
+<!-- memory-fabric:store/pretraining/vast-cpt-s6-early-stop-handoff -->
+---
+store_path: pretraining/vast-cpt-s6-early-stop-handoff
+title: "Vast S6 early-stop — analyse + destroy (from side chat)"
+summary: "Operator asked side chat to notify the **waiting principal CPT session**: analyse why continue-B stopped improving, and **destroy the idle Vast pod** if that makes sense (it does)"
+priority: low
+tags: [cpt, s6, vast, resolved]
+schema_version: 1.3
+last_updated: "2026-09-18T11:16:07-03:00"
+evidence: [continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_session.json, continued_pretrain/scripts/train_cpt_sota.py, continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s6/vast_cpt_monitor.log]
+---
+
+# Principal session — act now (side-chat handoff 2026-09-18)
+
+Operator asked side chat to notify the **waiting principal CPT session**: analyse why continue-B stopped improving, and **destroy the idle Vast pod** if that makes sense (it does).
+
+## Live facts
+- Instance **51416115** (`cpt-s6-continue-b`) still **running / billed** ~$0.59/hr — GPU **idle** (0% / 0 MiB).
+- Training **finished** via `COMPOSITE EARLY-STOP @ step 2400/4128` (not a crash, not half-corpus).
+- Full corpus was packed: 51417 docs → `packed_epoch_steps=4128`. Resume from **2050**; stop at **2400**.
+- Best saved adapter = **checkpoint-2050** (`eval_spurgeon_loss` **2.4987**). Post-2050 steps did **not** beat that.
+- Local fetch path: `continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s6/fetch/` — monitor was mid-scp after stop; **re-fetch LoRA + run_config + log before destroy** (local `theology_cpt_lora` mtime may predate the finish).
+
+## Why it stopped / why not improving (analyse this)
+Continue-B composite early-stop (on by design):
+- metrics: `eval_spurgeon_loss` + `eval_mix_loss`
+- patience=2, epsilon=0.005, min_steps≈0.4×4128≈1652
+
+After HF resume from 2050, Spurgeon holdout **spiked** then only partially recovered:
+- 2050: **2.4987** (best overall / what was saved)
+- 2075: **2.618** (spike right after resume)
+- 2325: 2.5115 (composite window “best”)
+- 2350–2400: gains &lt; epsilon → flat streak=2 → halt
+
+So: full-corpus schedule, intentional early-stop; continued steps after 2050 did not improve the kept LoRA.
+
+## Required principal actions (in order)
+1. Confirm remote log still shows early-stop + `OK: saved LoRA matches best_model_checkpoint`.
+2. `vast_cpt_fetch.ps1` (or finish monitor fetch) — ensure `fetch/theology_cpt_lora`, `cpt_train.log`, `theology_cpt_run_config.json`, complete ckpts.
+3. **Destroy instance 51416115** (`fine_tuning/scripts/vast_destroy.ps1`) — stop credit burn. Do not leave idle 4090 up for analysis.
+4. Write analysis: resume spike root cause (optimizer/state, LR continue, eval noise, composite vs HF best at 2050); decide C-eval vs keep Hub v2; **no Hub overwrite** yet.
+5. Update `pretraining/cpt-current` + session journal.
+
+## Do not
+- Re-rent / resume another B until analysis recorded.
+- `S6_FRESH_START`.
+- Overwrite Hub v2.
+
+## Resolved 2026-09-18 (principal)
+1. Re-ran `vast_cpt_fetch.ps1` — complete.
+2. Destroyed **51416115**; `instances=[]`.
+3. Analysis written: `pretraining/vast-cpt-s6-resume-spike-analysis`. Canonical LoRA nested path SHA `6aab9194…` (=2050). Next = C-eval; Hub v2 kept.
+
+## Closed for next session
+Fetch + destroy + analysis done. **Do not** re-open destroy/fetch. Next session follows `pretraining/cpt-next-session-handoff` → **C-eval only**.

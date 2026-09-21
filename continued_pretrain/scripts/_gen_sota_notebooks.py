@@ -1622,7 +1622,9 @@ import shutil
 import subprocess
 import sys
 
-UNSLOTH_PIP_SPEC = "{UNSLOTH_PIP_SPEC_RUNPOD}"
+_DEFAULT_UNSLOTH_PIP_SPEC = "{UNSLOTH_PIP_SPEC_RUNPOD}"
+# Override for stack isolation (e.g. UNSLOTH_PIP_SPEC='unsloth[colab-new]==2026.8.22').
+UNSLOTH_PIP_SPEC = (os.environ.get("UNSLOTH_PIP_SPEC") or "").strip() or _DEFAULT_UNSLOTH_PIP_SPEC
 EXPECTED_ADAPTER_SHA256_DEFAULT = "{RUNPOD_CPT_ADAPTER_SHA256}"
 TORCH_CU126_INDEX = "https://download.pytorch.org/whl/cu126"
 
@@ -2116,6 +2118,75 @@ print("Loaded adapter from", ADAPTER_PATH)
 print("tokenizer", type(tokenizer).__name__)
 
 
+def maybe_sync_tied_lm_head(model, modules_to_save=None, label="adapter"):
+    """Diagnose + optionally copy embed_tokens → lm_head after embed-FT LoRA load.
+
+    Qwen3.5 has tie_word_embeddings=True. Unsloth/PEFT with modules_to_save=['embed_tokens']
+    and ensure_weight_tying=false can leave lm_head untied/stale at inference, inflating PPL.
+    Env CPT_EVAL_SYNC_TIED_HEAD: default ON when embed_tokens is in modules_to_save;
+    set 0/false/off to disable.
+    """
+    mts = list(modules_to_save or [])
+    env = (os.environ.get("CPT_EVAL_SYNC_TIED_HEAD") or "").strip().lower()
+    if env in ("0", "false", "no", "off"):
+        want = False
+    elif env in ("1", "true", "yes", "on"):
+        want = True
+    else:
+        want = "embed_tokens" in mts
+
+    emb = model.get_input_embeddings() if hasattr(model, "get_input_embeddings") else None
+    head = model.get_output_embeddings() if hasattr(model, "get_output_embeddings") else None
+    cfg = getattr(model, "config", None)
+    tie = getattr(cfg, "tie_word_embeddings", None) if cfg is not None else None
+    same = None
+    max_delta = None
+    if (
+        emb is not None
+        and head is not None
+        and hasattr(emb, "weight")
+        and hasattr(head, "weight")
+        and emb.weight is not None
+        and head.weight is not None
+    ):
+        same = int(emb.weight.data_ptr() == head.weight.data_ptr())
+        if not same and tuple(emb.weight.shape) == tuple(head.weight.shape):
+            max_delta = float(
+                (emb.weight.detach().float() - head.weight.detach().float()).abs().max().item()
+            )
+    print(
+        f"tie_diag label={label} tie_word_embeddings={tie} same_storage={same} "
+        f"max_abs_delta={max_delta} modules_to_save={mts} sync_wanted={want}"
+    )
+    synced = 0
+    if (
+        want
+        and same == 0
+        and emb is not None
+        and head is not None
+        and hasattr(emb, "weight")
+        and hasattr(head, "weight")
+        and tuple(emb.weight.shape) == tuple(head.weight.shape)
+    ):
+        with torch.no_grad():
+            head.weight.copy_(emb.weight)
+        synced = 1
+        max_after = float(
+            (emb.weight.detach().float() - head.weight.detach().float()).abs().max().item()
+        )
+        same_after = int(emb.weight.data_ptr() == head.weight.data_ptr())
+        print(
+            f"embed_to_lm_head_synced={synced} same_storage_after={same_after} "
+            f"max_abs_delta_after={max_after}"
+        )
+    else:
+        print(f"embed_to_lm_head_synced={synced}")
+    return synced
+
+
+maybe_sync_tied_lm_head(model, modules_to_save=_mts, label="v2")
+
+
 def text_tokenizer(tok):
     """Unwrap VL Processor → inner PreTrainedTokenizer (Qwen3.5 is multimodal)."""
     inner = tok
@@ -2227,6 +2298,28 @@ for name in buckets:
     if m["ppl"] is not None:
         print(f"  v2 {name}: ppl={m['ppl']:.2f} loss={m['loss']:.4f} tokens={m['tokens']:,}")
 
+# Optional: score first N Spurgeon holdout docs (train-eval protocol). Env CPT_EVAL_TRAIN_PROBE_DOCS.
+_train_probe_n = 0
+try:
+    _train_probe_n = int((os.environ.get("CPT_EVAL_TRAIN_PROBE_DOCS") or "0").strip() or "0")
+except ValueError:
+    _train_probe_n = 0
+if _train_probe_n > 0:
+    _sp = load_holdout("spurgeon")
+    if _sp is not None:
+        print(f"Evaluating train-probe Spurgeon PPL (first {_train_probe_n} docs)...")
+        metrics["train_probe_spurgeon"] = eval_ppl(
+            model, tokenizer, _sp, max_docs=_train_probe_n
+        )
+        _tp = metrics["train_probe_spurgeon"]
+        if _tp.get("ppl") is not None:
+            print(
+                f"  train_probe spurgeon@{_train_probe_n}: "
+                f"ppl={_tp['ppl']:.2f} loss={_tp['loss']:.4f} tokens={_tp['tokens']:,} docs={_tp['docs']}"
+            )
+    else:
+        print("train_probe skip: spurgeon holdout missing")
+
 def option_logprob(model, tok, prompt, option):
     full = tokenize_text(tok, prompt + " " + option, add_special_tokens=True)
     p_len = len(ids_for_text(tok, prompt, add_special_tokens=True))
@@ -2264,6 +2357,14 @@ def score_model(label, model_name_or_path, also_mcq=False):
         load_in_4bit=LOAD_IN_4BIT,
     )
     FastLanguageModel.for_inference(m)
+    _score_mts = []
+    _score_cfg = os.path.join(str(model_name_or_path), "adapter_config.json")
+    if os.path.isfile(_score_cfg):
+        try:
+            _score_mts = json.load(open(_score_cfg, encoding="utf-8")).get("modules_to_save") or []
+        except Exception:
+            _score_mts = []
+    maybe_sync_tied_lm_head(m, modules_to_save=_score_mts, label=label)
     out = {}
     for name in buckets:
         ds = load_holdout(name)
@@ -2272,6 +2373,16 @@ def score_model(label, model_name_or_path, also_mcq=False):
         out[name] = eval_ppl(m, t, ds, max_docs=MAX_DOCS_PER_BUCKET)
         if out[name]["ppl"] is not None:
             print(f"  {label} {name}: ppl={out[name]['ppl']:.2f}")
+    if _train_probe_n > 0:
+        _sp = load_holdout("spurgeon")
+        if _sp is not None:
+            _tp = eval_ppl(m, t, _sp, max_docs=_train_probe_n)
+            out["_train_probe_spurgeon"] = _tp
+            if _tp.get("ppl") is not None:
+                print(
+                    f"  {label} train_probe spurgeon@{_train_probe_n}: "
+                    f"ppl={_tp['ppl']:.2f} loss={_tp['loss']:.4f} docs={_tp['docs']}"
+                )
     mcq_out = {}
     if also_mcq:
         sets = load_mcq_sets()
@@ -2289,8 +2400,18 @@ metrics["mcq"] = {}
 if EVAL_BASE:
     metrics["base"], _base_mcq = score_model("base", MODEL_NAME, also_mcq=True)
     metrics["mcq"].update(_base_mcq)
+    _tpb = (metrics["base"] or {}).pop("_train_probe_spurgeon", None)
+    if _tpb is not None:
+        metrics["train_probe_spurgeon_base"] = _tpb
 if EVAL_PHASE1 and PHASE1_ADAPTER_PATH:
     metrics["phase1"], _ = score_model("phase1", PHASE1_ADAPTER_PATH, also_mcq=False)
+
+_tpa = (metrics.get("train_probe_spurgeon") or {}).get("ppl")
+_tpb_ppl = (metrics.get("train_probe_spurgeon_base") or {}).get("ppl")
+if _tpa and _tpb_ppl:
+    _tp_pct = 100.0 * (_tpa - _tpb_ppl) / _tpb_ppl
+    metrics["train_probe_spurgeon_delta_pct"] = round(_tp_pct, 2)
+    print(f"train_probe spurgeon Δ% vs base@{_train_probe_n}: {_tp_pct:+.1f}%")
 
 # Δ table vs base
 print("\\n=== Δ PPL vs base (% lower is better absorption for domain buckets) ===")

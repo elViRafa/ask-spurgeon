@@ -10,7 +10,6 @@ export PYTHONUNBUFFERED=1
 export DEBIAN_FRONTEND=noninteractive
 export CPT_RUN_MODE=continue
 export CPT_INIT_ADAPTER=/workspace/theology_cpt_lora
-export EXPECTED_ADAPTER_SHA256=ef4df3a31c9d17f7ba8741e80df6d764bca19a6d535f0a33c210e547f486c303
 export EVAL_DOCS_PER_BUCKET=16
 export GPU_PROFILE="${GPU_PROFILE:-ampere}"
 
@@ -20,6 +19,8 @@ if [[ -f /workspace/.sft_env ]]; then
   # shellcheck disable=SC1091
   source /workspace/.sft_env
 fi
+# Must follow .sft_env: SFT inject pins Hub-v2 SHA; S6 continue-B needs S5 LoRA SHA.
+export EXPECTED_ADAPTER_SHA256=ef4df3a31c9d17f7ba8741e80df6d764bca19a6d535f0a33c210e547f486c303
 if [[ -n "${HF_TOKEN:-}" ]]; then
   export HUGGING_FACE_HUB_TOKEN="$HF_TOKEN"
 fi

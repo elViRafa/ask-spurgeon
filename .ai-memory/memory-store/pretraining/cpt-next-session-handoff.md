@@ -1,36 +1,36 @@
 ---
 store_path: pretraining/cpt-next-session-handoff
-title: "Next session: Vast S6 full-corpus continue-B"
-summary: "**Do not smoke again.** Miniforge Unsloth CPT is proven"
+title: "Next session: S6 LoRA good; Hub overwrite needs approve"
+summary: "S6 SHA `6aab…` on Unsloth 2026.8.22 / torch 2.8: spurgeon **12.85 (−10.2%)**"
 priority: high
-tags: [cpt, s6, vast, handoff]
+tags: [cpt, s6, handoff]
 schema_version: 1.3
-last_updated: "2026-09-16T11:02:02-03:00"
-evidence: [continued_pretrain/VAST_RUNBOOK_CPT.md, continued_pretrain/scripts/vast_cpt_orchestrate.ps1]
+last_updated: "2026-09-20T19:04:21-03:00"
+evidence: [pretraining/cpt-s6-c-eval-regression-diagnosis]
 ---
 
-# Next session handoff — Vast CPT S6 continue-B (full corpus)
+# Next session — after stack-isolation flip
 
-**Do not smoke again.** Miniforge Unsloth CPT is proven. Next GPU work is **S6 continue-B on full `a_output_v3`**.
+S6 SHA `6aab…` on Unsloth 2026.8.22 / torch 2.8: spurgeon **12.85 (−10.2%)**. Vast +27.9% was **eval-stack false FAIL**. See `pretraining/cpt-s6-stack-isolation-c`.
 
-## Ready
-- Local readiness PASS (51417/520, mix SHA `23dd3820…`, S5 SHA `ef4df3a3…`, complete `checkpoint-2050`)
-- Scripts: `continued_pretrain/scripts/vast_cpt_orchestrate.ps1` + `VAST_RUNBOOK_CPT.md`
-- Payload: `D:\search-sermons-cpt\vast_cpt_s6\payload.tar` (~4.6 GB)
-- Recipe: CUDA 12.4 image + Miniforge `unsloth_cpt` + torch 2.11+cu126 **pip-in-env** (`unset LD_LIBRARY_PATH`)
-- Fetch to **D:** only (C: ~2 GB free)
+## Do
+1. Keep Hub v2 until operator **explicitly** approves overwrite (S6 beats Hub v2 13.28 on this scorecard but overwrite is a separate session).
+2. Prefer confirmatory Runpod C of same SHA when Runpod has funds (this C was Vast host + S5 software pin).
+3. Optional: Hub overwrite of `…-theology-cpt-lora-v2` with nested `6aab…` after approve.
+4. Do **not** start a blind continue-B to “fix C”.
 
-## Not ready without operator money/GPU pick
-- Vast credit was ~$3.31 at prepare time; 4090 ~$0.54/hr needs ~$5+ for 8–12 h
-- `-Go` blocks credit < $5 unless `-AllowLowCredit`
-- 3090 TW ~$0.24/hr is the credit-safe Ampere fallback
-- Runpod volume `7hb931c5oe` still 404 / funds; Vast has no network volume so checkpoint sync to D: is the backup
+## Do not
+- Treat Vast C 18.31 as ground truth for these weights
+- Merge / Hub overwrite without operator go
+- Re-rent Vast C on torch 2.11 / Unsloth 2026.9.x for this SHA
 
-## On go
+## Paste
 ```
-cd continued_pretrain\scripts
-.\vast_cpt_orchestrate.ps1 -Go -StartMonitor
+S6 stack-isolation: SHA 6aab on Unsloth 2026.8.22/torch 2.8 → spurgeon 12.85 (−10.2%).
+Vast +27.9% was false FAIL. Hub overwrite needs separate approve.
 ```
-Walk away only after log shows `cpt_run_mode=continue`, `Resuming from .../checkpoint-2050`, `packed_epoch_steps=4128`, `INIT_ADAPTER SHA256 OK`, conda python under `unsloth_cpt`.
 
-Keep Hub v2 until finished B + winning C. No `S6_FRESH_START`.
+## Clarification (side-chat 2026-09-20)
+- False FAIL was **C stack**, not “B early-stop was wrong because of C”.
+- C artifact = ckpt-**2050** / SHA `6aab…` (stop was 2400; ignore 2400 adapters).
+- S6@2050 beats Hub v2 on PPL scorecard; overwrite still explicit approve only.

@@ -1,24 +1,25 @@
 ---
 store_path: pretraining/cpt-current
-title: "CPT current pointer — Vast S6 prepare"
-summary: "**Canonical live handoff:** `pretraining/cpt-next-session-handoff`"
+title: "CPT current — S6 LoRA good on S5 stack; Hub overwrite pending approve"
+summary: "**Stack isolation:** `pretraining/cpt-s6-stack-isolation-c`"
 priority: medium
-tags: [cpt, s6, vast]
+tags: [cpt, s6, hub-v2, stack-isolation]
 schema_version: 1.3
-last_updated: "2026-09-16T11:02:12-03:00"
+last_updated: "2026-09-20T18:17:21-03:00"
 summary_hash: ae50844218c68cf398ceb1a89e8e955d
-evidence: [continued_pretrain/VAST_RUNBOOK_CPT.md]
+evidence: [pretraining/cpt-s6-c-eval-regression-diagnosis, pretraining/cpt-s6-c-eval-complete]
 ---
 
-# CPT — current pointer (2026-09-16)
+# CPT — current pointer (2026-09-20)
 
-**Canonical live handoff:** `pretraining/cpt-next-session-handoff`
-**Vast prepare snapshot:** `pretraining/vast-cpt-s6-prepare`
+**Stack isolation:** `pretraining/cpt-s6-stack-isolation-c`  
+**Prior Vast C (false FAIL):** `pretraining/cpt-s6-c-eval-regression-diagnosis`
 
 | Item | Status |
 |------|--------|
-| S6 continue-B | **INCOMPLETE** at **2050/4128** locally (complete HF ckpt + optimizer). Volume `7hb931c5oe` 404 |
-| Next GPU | **Vast** Miniforge Unsloth, full `a_output_v3`. Scripts ready. **Do not train until operator -Go** |
-| Credit gate | ~$3.31 at prepare; `-Go` needs ≥$5 or `-AllowLowCredit` + 3090 |
-| Hub production | keep `…-theology-cpt-lora-v2` until finished B + winning C |
-| SFT lane | separate |
+| S6 B (Vast) | DONE — best ckpt-2050 SHA `6aab9194…` |
+| S6 C Vast torch 2.11 | DONE ×2 — **false FAIL** (+27.9%) |
+| Stack-isolation C (Unsloth 2026.8.22 / torch 2.8) | DONE — spurgeon **12.85 (−10.2%)** |
+| Hub production | still `…-theology-cpt-lora-v2` until **separate** overwrite approve |
+| New B | not needed to “fix C”; optional only for §5 −15% |
+| SFT | still on Hub-v2-merged path until Hub decision |
