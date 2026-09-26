@@ -1,0 +1,10 @@
+{
+  "sha256": "0289f1c9af70615ef4dca58b3e2d7dabc3eefef96c8bdf92bff0933689adeb55",
+  "adapter_dir": "fetch/theology_cpt_lora_s5best",
+  "checkpoint": "checkpoint-550",
+  "c_metrics": "../vast_cpt_s7_replay_c/theology_cpt_eval_metrics.json",
+  "section5_fail": true,
+  "hub_pin": "06354dfc5a720143617ee2ffeef38faa48200811bed89e71561ff357ed547432",
+  "written_at": "2026-09-26T20:31:48-03:00",
+  "note": "next CPT init = this adapter, new Adam"
+}

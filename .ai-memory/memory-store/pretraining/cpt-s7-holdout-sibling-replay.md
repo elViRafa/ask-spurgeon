@@ -5,7 +5,7 @@ summary: "Phase B isolation C on nested s5best `ddbbee3a` missed §5: Spurgeon 1
 priority: high
 tags: [cpt, s7, mix-v6, replay, vast]
 schema_version: 1.3
-last_updated: "2026-09-23T18:15:47-03:00"
+last_updated: "2026-09-26T20:31:48-03:00"
 evidence: [[REDACTED_SECRET].json, continued_pretrain/data/mix_v6/theology_mix_manifest.json, continued_pretrain/scripts/vast_cpt_s7_common.ps1, continued_pretrain/NEXT_CPT_S7.md]
 ---
 
@@ -29,3 +29,7 @@ Do not retrain `a_output_v5`. Next CPT is a new pack:
 - Session/results: `vast_cpt_s7_replay` (do not overwrite Phase B fetch)
 
 No GPU until operator go. Do not overwrite v3/v4/v5 or Hub.
+
+## Replay B+C complete (2026-09-26)
+
+Replay Phase B early-stopped at **checkpoint-550** / `theology_cpt_lora_s5best` SHA `0289f1c9…`. Isolation C: Spurgeon 12.35 (−13.69%), Puritan 5.48 (−9.22%), confession 5.22 (−6.88%) — §5 FAIL; hair better than Phase B C. Continue-from marker written at `vast_cpt_s7_replay/CONTINUE_FROM.json`. Hub stays Phase A `06354dfc…`. Instance `52830244` destroyed. Mix pin after new_authors: `e050787e…`. **Next init = `0289f1c9`, new Adam (needs go).**

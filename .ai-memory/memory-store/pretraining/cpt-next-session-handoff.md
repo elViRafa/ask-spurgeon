@@ -1,34 +1,43 @@
 ---
 store_path: pretraining/cpt-next-session-handoff
-title: "Next CPT: v6 replay from ddbbee3a; Hub stays Phase A"
-summary: "- `rafaelvieirar1r/qwen3.5-4b-theology-cpt-lora-v2` = Phase A s5best `06354dfc…`"
+title: "Next CPT: continue from replay 0289f1c9; Hub stays Phase A"
+summary: "- Next init SHA `0289f1c9…` from replay s5best (checkpoint-550); Hub stays Phase A `06354dfc…`"
 priority: high
-tags: [cpt, s7, handoff, replay, v6]
+tags: [cpt, s7, handoff, replay, v6, continue-from]
 schema_version: 1.3
-last_updated: "2026-09-26T08:12:16-03:00"
-evidence: [pretraining/cpt-s7-holdout-sibling-replay, pretraining/cpt-s7-phase-b-isolation-c, pretraining/cpt-hub-keep-phase-a]
+last_updated: "2026-09-26T20:31:48-03:00"
+evidence: [pretraining/cpt-s7-replay-isolation-c-complete, pretraining/cpt-s7-holdout-sibling-replay, pretraining/cpt-hub-keep-phase-a, continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7_replay/CONTINUE_FROM.json]
 ---
 
-## Next session — isolation C done; replay pack ready; no GPU until go
+## Next session — replay B+C done; continue from 0289f1c9; no GPU until go
 
 ### Production Hub (unchanged)
 - `rafaelvieirar1r/qwen3.5-4b-theology-cpt-lora-v2` = Phase A s5best `06354dfc…`
-- Operator 2026-09-26: do **not** promote `ddbbee3a`
+- Do **not** promote `0289f1c9` or `ddbbee3a`
+
+### Continue-from pin (local)
+- SHA256: `0289f1c9af70615ef4dca58b3e2d7dabc3eefef96c8bdf92bff0933689adeb55`
+- Checkpoint: `checkpoint-550` / `theology_cpt_lora_s5best`
+- Marker: `continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7_replay/CONTINUE_FROM.json`
+- Adapter: `vast_cpt_s7_replay/fetch/theology_cpt_lora_s5best/`
+- **Next CPT init = this adapter, new Adam** (do not HF-resume optimizer)
 
 ### Done
-- Phase B plateaued 750/955. Nested s5best `ddbbee3a` (step 600). HF best `6d003041` (step 700).
-- Isolation C on `ddbbee3a`: 12.39 / 5.50 / 5.25 (§5 FAIL). Instance `52296492` destroyed.
-- Holdout-sibling pack ready: `mix_v6` / `a_output_v6` SHA `2d5a99c1…`
+- Holdout-sibling replay Phase B early-stopped at step 550 (`0289f1c9`).
+- Isolation C on replay s5best: Spurgeon 12.35 (−13.69%), Puritan 5.48 (−9.22%), confession 5.22 (−6.88%) — §5 FAIL; hair better than Phase B C.
+- Instance `52830244` destroyed after C; **0 instances**. Standing rule: after C, save adapter locally + destroy pod.
 
 ### Do next (operator go)
-1. `vast_cpt_s7_orchestrate.ps1` then `-Go -StartMonitor` — copies v6, inits nested `ddbbee3a`, new Adam, halt without mix-val.
-2. Session/results: `vast_cpt_s7_replay` (do not overwrite Phase B fetch).
-3. After train: isolation C on the replay winner. Promote Hub only if Puritan+confession hit −15% and Spurgeon stays under ~13.3.
+1. Continue CPT from `0289f1c9` (local continue-from), **new Adam**, mix `a_output_v6` SHA `e050787e…`.
+2. Prefer `0289f1c9` as init — **not** Hub `06354dfc`, **not** init LoRA `ddbbee3a` at `fetch/theology_cpt_lora/`.
+3. After train: isolation C. Promote Hub only if Puritan+confession hit −15% and Spurgeon stays under ~13.3.
+4. After C: save adapter locally + destroy pod (no Hub overwrite without go).
 
 ### Do not
+- Rent GPU / Cloud Agents without explicit operator go.
+- Hub-push / overwrite Phase A `06354dfc`.
+- Copy 1.45GB weights into git; marker only.
 - Retrain `a_output_v5`. Raise LR. HF-resume. New-authors-only. Redraw holdouts. Fetch Shaw/SSK.
-- Overwrite Hub / v3 / v4 / v5.
-- Treat top-level `fetch/theology_cpt_lora_s5best/` as Phase B (that file is still `06354dfc`).
 
 ## Pending
-Replay GPU is **blocked on operator go**. Pack and wiring exist; do not rent until then.
+Next continue-from CPT is **blocked on operator go**. Marker + memories saved 2026-09-26.
