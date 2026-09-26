@@ -941,6 +941,32 @@ def build_mix(args: argparse.Namespace) -> None:
             confession_docs, max(5, args.holdout_per_bucket // 2), rng
         )
 
+    # Diagnostic new-authors holdout: exclude fingerprints from train only.
+    # Do not write into live holdouts/ (monitor-only; separate dir via 19_build_*).
+    new_authors_holdout_src = (
+        Path(args.new_authors_holdout) if getattr(args, "new_authors_holdout", None) else None
+    )
+    new_authors_holdout_n = 0
+    if new_authors_holdout_src and new_authors_holdout_src.exists():
+        na_docs = load_spurgeon_from_concat(
+            new_authors_holdout_src,
+            bucket="puritan",
+            max_chunk_chars=max_chunk,
+            author="new_authors",
+            work="holdout",
+        )
+        na_fps = {d.text[:200] for d in na_docs if d.text}
+        before = len(puritan_train)
+        puritan_train = [d for d in puritan_train if d.text[:200] not in na_fps]
+        new_authors_holdout_n = len(na_docs)
+        print(
+            f"Excluded new-authors diagnostic holdout from train "
+            f"({new_authors_holdout_src}; {new_authors_holdout_n} docs; "
+            f"puritan_train {before} -> {len(puritan_train)})"
+        )
+    elif new_authors_holdout_src:
+        print(f"WARNING: --new-authors-holdout missing: {new_authors_holdout_src}")
+
     # --- Cap secondary buckets (plan: bible 2–4%, confessions 3–6%), then size Spurgeon ---
     spurgeon_chars = sum(d.n_chars for d in spurgeon_train_docs)
     puritan_chars = sum(d.n_chars for d in puritan_train)
@@ -1217,6 +1243,12 @@ def build_mix(args: argparse.Namespace) -> None:
             "puritan": str(puritan_holdout_src) if puritan_holdout_src.exists() else None,
             "confession": str(confession_holdout_src) if confession_holdout_src.exists() else None,
             "spurgeon": str(spurgeon_holdout_src) if spurgeon_holdout_src.exists() else None,
+            "new_authors_diagnostic": (
+                str(new_authors_holdout_src)
+                if new_authors_holdout_src and new_authors_holdout_src.exists()
+                else None
+            ),
+            "new_authors_diagnostic_docs": new_authors_holdout_n or None,
         },
         "sources": {
             "spurgeon_train": str(spurgeon_train),
@@ -1402,6 +1434,16 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         type=float,
         default=0.05,
         help="Max Downame/wave-5 char share inside a holdout-sibling replay (default 0.05).",
+    )
+    p.add_argument(
+        "--new-authors-holdout",
+        default=None,
+        help=(
+            "Diagnostic new-authors holdout concat (e.g. "
+            "data/holdouts_new_authors/new_authors_holdout.txt). Fingerprints are "
+            "excluded from train only; file is NOT written into live holdouts/ or "
+            "holdouts_pinned_v3. Monitor-only for v6 (not COMPOSITE / not §5)."
+        ),
     )
     return p.parse_args(argv)
 

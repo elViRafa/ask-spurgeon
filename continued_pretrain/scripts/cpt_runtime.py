@@ -36,6 +36,17 @@ S7_DEFAULT_ABORT_SPURGEON_DELTA = 0.12
 S7_DEFAULT_S5_SPURGEON_GUARDRAIL = 0.01
 S7_DEFAULT_GENERAL_WARN_DELTA = 0.15
 
+# S7 eval buckets: gate metrics stay spurgeon/puritan/confession (composite + §5/Hub).
+# general + new_authors are monitor-only (loaded/reported; not in COMPOSITE_EARLY_STOP_METRICS).
+S7_GATE_EVAL_BUCKETS = ["spurgeon", "puritan", "confession"]
+S7_MONITOR_EVAL_BUCKETS = ["general", "new_authors"]
+S7_DEFAULT_EVAL_BUCKETS = S7_GATE_EVAL_BUCKETS + S7_MONITOR_EVAL_BUCKETS
+# Isolation C preflight requires these HF buckets; new_authors stays optional (report if present).
+C_REQUIRED_HOLDOUT_BUCKETS = ["spurgeon", "puritan", "confession", "general"]
+C_MONITOR_HOLDOUT_BUCKETS = ["new_authors"]
+# Train/eval discovery tries these HF subdirs under theology_holdouts/.
+HOLDOUT_EVAL_CANDIDATES = C_REQUIRED_HOLDOUT_BUCKETS + C_MONITOR_HOLDOUT_BUCKETS
+
 
 def posix_path(path):
     return str(path).replace("\\", "/")
@@ -556,9 +567,9 @@ def resolve_continue_training_config(env=None, packed_epoch_steps=None):
             continue_max = int(max_steps_env)
         work_root = resolve_work_root(env)
         layout = layout_paths(work_root, env=env)
-        # Default S7 buckets include general (monitor-only); composite metrics stay 4.
+        # Default S7 buckets include general + new_authors (monitor-only); composite stays gate-only.
         if not buckets_raw:
-            buckets = ["spurgeon", "puritan", "confession", "general"]
+            buckets = list(S7_DEFAULT_EVAL_BUCKETS)
         return {
             "run_mode": "continue",
             "continue_profile": "s7",

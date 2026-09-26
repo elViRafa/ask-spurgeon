@@ -864,7 +864,7 @@ if holdout_src and os.path.exists(holdout_src):
         holdout_src = LOCAL_HOLDOUT_PATH
     elif os.path.exists(LOCAL_HOLDOUT_PATH) and is_hf_holdout_root(LOCAL_HOLDOUT_PATH):
         holdout_src = LOCAL_HOLDOUT_PATH
-    for name in ["spurgeon", "puritan", "confession", "general"]:
+    for name in ["spurgeon", "puritan", "confession", "general", "new_authors"]:
         p = os.path.join(holdout_src, name)
         if os.path.exists(p) and (
             os.path.isfile(os.path.join(p, "dataset_info.json"))
@@ -1954,6 +1954,14 @@ def _preflight():
             or os.path.isfile(os.path.join(bucket, "state.json"))
         ):
             raise SystemExit("preflight FAIL: missing holdout " + bucket)
+    # new_authors is monitor-only: report if present, never a preflight / §5 gate.
+    _na = os.path.join(holdouts, "new_authors")
+    if os.path.isfile(os.path.join(_na, "dataset_info.json")) or os.path.isfile(
+        os.path.join(_na, "state.json")
+    ):
+        print("preflight note: new_authors diagnostic holdout present (monitor-only)")
+    else:
+        print("preflight note: new_authors diagnostic holdout absent (optional)")
     print("preflight holdouts OK", holdouts)
     mcq = os.path.join(work, "catechism_mcq.json")
     if not os.path.isfile(mcq):
@@ -2068,7 +2076,7 @@ Refuses to build if the mix is Spurgeon-only (single domain bucket) unless
 
 ### Outputs
 - `/kaggle/working/theology_dataset` (train/test)
-- `/kaggle/working/theology_holdouts/{spurgeon,puritan,confession,general}`
+- `/kaggle/working/theology_holdouts/{spurgeon,puritan,confession,general}` (+ optional `new_authors` monitor)
 """
         ),
         md("## 1. Install"),
@@ -2136,7 +2144,7 @@ print(f"train={len(split['train'])} val={len(split['test'])}")'''
         ),
         md("## 4. Parse multi-holdouts"),
         code(
-            '''holdout_names = ["spurgeon", "puritan", "confession", "general"]
+            '''holdout_names = ["spurgeon", "puritan", "confession", "general"]  # new_authors via extra dir / 19_build
 holdouts = {}
 
 for name in holdout_names:
@@ -2510,7 +2518,18 @@ if len(_smoke) < 2:
     avg = total_loss / total_tokens
     return {"tokens": total_tokens, "loss": avg, "ppl": math.exp(avg), "docs": n}
 
-buckets = ["spurgeon", "puritan", "confession", "general"]
+# §5 / Hub gate: spurgeon + puritan + confession (pinned v3). general + new_authors = monitor-only.
+_gate_buckets = ["spurgeon", "puritan", "confession", "general"]
+_monitor_buckets = ["new_authors"]
+buckets = list(_gate_buckets)
+for _mb in _monitor_buckets:
+    _mp = os.path.join(HOLDOUT_ROOT, _mb)
+    if os.path.isfile(os.path.join(_mp, "dataset_info.json")) or os.path.isfile(
+        os.path.join(_mp, "state.json")
+    ):
+        buckets.append(_mb)
+    else:
+        print("Isolation C: skip missing monitor holdout", _mb)
 metrics = {"v2": {}, "base": {}, "phase1": {}, "delta_vs_base_pct": {}}
 
 def load_holdout(name):

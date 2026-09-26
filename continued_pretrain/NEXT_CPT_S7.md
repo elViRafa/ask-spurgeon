@@ -47,7 +47,7 @@ without repeating the S6 HF-resume spike, and without a fresh 1e-5 from base.
 | Checkpoints | `/workspace/checkpoints_s7` (never auto-resume `checkpoints_sota`) |
 | §5 export | `theology_cpt_lora_s5best/` when mean(puritan, confession) improves and spurgeon ≤ seed+0.01 |
 | Spike abort | spurgeon ≥ seed+0.12 on **two** consecutive complete cycles |
-| Eval buckets | spurgeon, puritan, confession, **general** (monitor-only; not in composite) |
+| Eval buckets | spurgeon, puritan, confession, **general**, **new_authors** (monitor-only; not in composite) |
 | Stack | Unsloth **2026.8.22** + torch **2.8** + torchvision **0.23**; omit xformers |
 | Mix | `kaggle/a_output_v3` SHA `23dd3820baa0b657cb6528e4fdf1b2d4813c3cfa7b7c982805b4a7ff34990973` |
 
@@ -205,7 +205,7 @@ Puritan and confession without Spurgeon past ~13.3. No GPU until operator go.
 | Spurgeon floor | **35.0%** |
 | New-author cap | **5.0%** (Downame / wave 5 leftover) |
 | Shares | puritan 49.5% / spurgeon 35.0% / confession 9.2% / general 5.4% / bible 0.9% |
-| Holdouts | pinned v3 (puritan 20, confession 10, spurgeon 298) |
+| Holdouts | pinned v3 (puritan 20, confession 10, spurgeon 298); optional **new_authors** monitor under `holdouts_new_authors/` |
 | Init | nested Phase B s5best `ddbbee3ac9ef7baf6cca21dcdb844d027d39f5f6a4b88ba10fcf8a43fa7c8214` |
 | Halt composite | spurgeon + puritan + confession (**no mix-val**) |
 | `CONTINUE_MAX_STEPS` | **955** |
@@ -231,8 +231,12 @@ py -3.13 continued_pretrain/scripts/18_prep_hf_dataset.py ^
   --train-txt continued_pretrain/data/mix_v6/theology_mix_train.txt ^
   --manifest continued_pretrain/data/mix_v6/theology_mix_manifest.json ^
   --holdout-dir continued_pretrain/data/holdouts_pinned_v3 ^
+  --extra-holdout-dir continued_pretrain/data/holdouts_new_authors ^
   --out-dir continued_pretrain/kaggle/a_output_v6 --allow-continue-reweight
 ```
+
+(Optional `--extra-holdout-dir` packs the diagnostic `new_authors` monitor bucket when
+`19_build_new_authors_holdout.py` has been run. Omit if that dir has no concat yet.)
 
 ### Frozen continue pack `a_output_v5` (2026-09-23)
 
@@ -291,7 +295,46 @@ would still risk evicting existing S4 confession under a later rebuild. Leave S5
 - Live probes: `continued_pretrain/data/holdouts/{puritan,confession}_holdout.txt`
 - Snapshot: `continued_pretrain/data/holdouts_pinned_v3/` (SHA backup before v4)
 - `07_build_theology_mix.py` now **pins** those files when present (same fingerprint
-  rule as Spurgeon). New Downame and wave 5 docs stay in **train**.
+  rule as Spurgeon). New Downame and wave 5 docs stay in **train** unless excluded
+  via the diagnostic holdout below.
+
+### Diagnostic holdout — new authors (monitor-only, 2026-09-26)
+
+Separate probe for Downame + wave 5 (Ambrose, Swinnock, Venning, Binning, Preston,
+Durham, Vincent, Guthrie). **Not** mixed into pinned v3 Spurgeon/Puritan/confession
+holdouts. **Not** in live `holdouts/` or frozen a_output_v3/v4/v5. Wired like
+`general`: S7 train eval + Isolation C **report** it; COMPOSITE / §5 / Hub promote
+stay spurgeon + puritan + confession on pinned v3.
+
+```text
+python continued_pretrain/scripts/19_build_new_authors_holdout.py
+
+# Optional: pack HF bucket into existing a_output_v6 without rewriting theology_dataset
+python continued_pretrain/scripts/19_build_new_authors_holdout.py ^
+  --hf-out-dir continued_pretrain/kaggle/a_output_v6/theology_holdouts
+
+# Rebuild mix_v6 so fingerprints stay train-excluded (does not touch mix_v3/v4/v5)
+python continued_pretrain/scripts/07_build_theology_mix.py ^
+  --target-spurgeon-share 0.45 --keep-all-spurgeon --max-other-weight 1.5 ^
+  --max-confession-share 0.06 --replay-frac 0.10 ^
+  --replay-txt continued_pretrain/data/replay/general_replay.txt ^
+  --puritan-holdout continued_pretrain/data/holdouts_pinned_v3/puritan_holdout.txt ^
+  --confession-holdout continued_pretrain/data/holdouts_pinned_v3/confession_holdout.txt ^
+  --spurgeon-holdout continued_pretrain/data/holdouts_pinned_v3/spurgeon_holdout.txt ^
+  --new-authors-holdout continued_pretrain/data/holdouts_new_authors/new_authors_holdout.txt ^
+  --holdout-sibling-share 0.25 --out-dir continued_pretrain/data/mix_v6
+
+py -3.13 continued_pretrain/scripts/18_prep_hf_dataset.py ^
+  --train-txt continued_pretrain/data/mix_v6/theology_mix_train.txt ^
+  --manifest continued_pretrain/data/mix_v6/theology_mix_manifest.json ^
+  --holdout-dir continued_pretrain/data/holdouts_pinned_v3 ^
+  --extra-holdout-dir continued_pretrain/data/holdouts_new_authors ^
+  --out-dir continued_pretrain/kaggle/a_output_v6 --allow-continue-reweight
+```
+
+Outputs: `data/holdouts_new_authors/{new_authors_holdout.txt,MANIFEST.json}` (SHA in
+manifest). Box checkouts without `data/puritans/{downame,...}` only get the wiring;
+operator builds the artifact locally after corpus fetch.
 
 ### Mix rebuild (v4 uniform 2026-09-23; v5 reweight same day)
 

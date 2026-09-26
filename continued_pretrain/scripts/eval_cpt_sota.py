@@ -105,6 +105,14 @@ def _preflight():
             or os.path.isfile(os.path.join(bucket, "state.json"))
         ):
             raise SystemExit("preflight FAIL: missing holdout " + bucket)
+    # new_authors is monitor-only: report if present, never a preflight / §5 gate.
+    _na = os.path.join(holdouts, "new_authors")
+    if os.path.isfile(os.path.join(_na, "dataset_info.json")) or os.path.isfile(
+        os.path.join(_na, "state.json")
+    ):
+        print("preflight note: new_authors diagnostic holdout present (monitor-only)")
+    else:
+        print("preflight note: new_authors diagnostic holdout absent (optional)")
     print("preflight holdouts OK", holdouts)
     mcq = os.path.join(work, "catechism_mcq.json")
     if not os.path.isfile(mcq):
@@ -201,16 +209,30 @@ SKIP_WALK_DIRS = {"hf_home", "unsloth_compiled_cache", ".cache", "hub", "__pycac
 # (EVAL_DOCS_PER_BUCKET=16). Do NOT replace with isolation-C full-holdout CE
 # (puritan 20 / confession 10 docs) — those are a different measurement and
 # make the seed unreachable on the in-train eval set.
+# Holdout seeds stay (pinned v3 probes). Do not seed eval_mix_loss — mix-val
+# is a different split and is not the §5 gate. Replay halt is holdouts only.
 S7_DEFAULT_COMPOSITE_SEED_BESTS = {
     "eval_spurgeon_loss": 2.4987,
     "eval_puritan_loss": 1.751,
     "eval_confession_loss": 1.668,
 }
+# Continue budget: 955 steps (one packed epoch of v5; ~0.67 epoch of v6).
 S7_DEFAULT_CONTINUE_MAX_STEPS = 955
 S7_DEFAULT_EARLY_STOP_MIN_STEPS = 400
 S7_DEFAULT_ABORT_SPURGEON_DELTA = 0.12
 S7_DEFAULT_S5_SPURGEON_GUARDRAIL = 0.01
 S7_DEFAULT_GENERAL_WARN_DELTA = 0.15
+
+# S7 eval buckets: gate metrics stay spurgeon/puritan/confession (composite + §5/Hub).
+# general + new_authors are monitor-only (loaded/reported; not in COMPOSITE_EARLY_STOP_METRICS).
+S7_GATE_EVAL_BUCKETS = ["spurgeon", "puritan", "confession"]
+S7_MONITOR_EVAL_BUCKETS = ["general", "new_authors"]
+S7_DEFAULT_EVAL_BUCKETS = S7_GATE_EVAL_BUCKETS + S7_MONITOR_EVAL_BUCKETS
+# Isolation C preflight requires these HF buckets; new_authors stays optional (report if present).
+C_REQUIRED_HOLDOUT_BUCKETS = ["spurgeon", "puritan", "confession", "general"]
+C_MONITOR_HOLDOUT_BUCKETS = ["new_authors"]
+# Train/eval discovery tries these HF subdirs under theology_holdouts/.
+HOLDOUT_EVAL_CANDIDATES = C_REQUIRED_HOLDOUT_BUCKETS + C_MONITOR_HOLDOUT_BUCKETS
 
 
 def posix_path(path):
@@ -692,6 +714,16 @@ def parse_composite_seed_bests(env=None, default=None):
     return out if out else dict(default or {})
 
 
+def resolve_composite_early_stop_metrics(env=None, default=None):
+    """Parse COMPOSITE_EARLY_STOP_METRICS CSV. Empty/invalid → default list."""
+    env = os.environ if env is None else env
+    raw = (env.get("COMPOSITE_EARLY_STOP_METRICS") or "").strip()
+    if not raw:
+        return list(default or [])
+    keys = [part.strip() for part in raw.split(",") if part.strip()]
+    return keys if keys else list(default or [])
+
+
 def resolve_continue_training_config(env=None, packed_epoch_steps=None):
     """Overrides for CPT_RUN_MODE=continue. Empty dict when not in continue mode.
 
@@ -722,9 +754,9 @@ def resolve_continue_training_config(env=None, packed_epoch_steps=None):
             continue_max = int(max_steps_env)
         work_root = resolve_work_root(env)
         layout = layout_paths(work_root, env=env)
-        # Default S7 buckets include general (monitor-only); composite metrics stay 4.
+        # Default S7 buckets include general + new_authors (monitor-only); composite stays gate-only.
         if not buckets_raw:
-            buckets = ["spurgeon", "puritan", "confession", "general"]
+            buckets = list(S7_DEFAULT_EVAL_BUCKETS)
         return {
             "run_mode": "continue",
             "continue_profile": "s7",
@@ -751,12 +783,14 @@ def resolve_continue_training_config(env=None, packed_epoch_steps=None):
             "early_stop_min_steps": min_steps,
             "early_stop_epsilon": _env_float(env, "EARLY_STOP_EPSILON", 0.003),
             "early_stop_patience": _env_int(env, "EARLY_STOPPING_PATIENCE", 4),
-            "composite_early_stop_metrics": [
-                "eval_spurgeon_loss",
-                "eval_mix_loss",
-                "eval_puritan_loss",
-                "eval_confession_loss",
-            ],
+            "composite_early_stop_metrics": resolve_composite_early_stop_metrics(
+                env,
+                [
+                    "eval_spurgeon_loss",
+                    "eval_puritan_loss",
+                    "eval_confession_loss",
+                ],
+            ),
             "use_composite_early_stop": True,
             "continue_max_steps": continue_max,
             "output_dir": layout["output_dir"],
@@ -785,7 +819,9 @@ def resolve_continue_training_config(env=None, packed_epoch_steps=None):
         "early_stop_min_steps": min_steps,
         "early_stop_epsilon": _env_float(env, "EARLY_STOP_EPSILON", 0.005),
         "early_stop_patience": _env_int(env, "EARLY_STOPPING_PATIENCE", 2),
-        "composite_early_stop_metrics": ["eval_spurgeon_loss", "eval_mix_loss"],
+        "composite_early_stop_metrics": resolve_composite_early_stop_metrics(
+            env, ["eval_spurgeon_loss", "eval_mix_loss"]
+        ),
         "use_composite_early_stop": True,
         "continue_max_steps": None,
         "output_dir": None,
@@ -1232,7 +1268,18 @@ def eval_ppl(model, tokenizer, dataset, max_docs=None, max_seq=MAX_SEQ_LENGTH):
     avg = total_loss / total_tokens
     return {"tokens": total_tokens, "loss": avg, "ppl": math.exp(avg), "docs": n}
 
-buckets = ["spurgeon", "puritan", "confession", "general"]
+# §5 / Hub gate: spurgeon + puritan + confession (pinned v3). general + new_authors = monitor-only.
+_gate_buckets = ["spurgeon", "puritan", "confession", "general"]
+_monitor_buckets = ["new_authors"]
+buckets = list(_gate_buckets)
+for _mb in _monitor_buckets:
+    _mp = os.path.join(HOLDOUT_ROOT, _mb)
+    if os.path.isfile(os.path.join(_mp, "dataset_info.json")) or os.path.isfile(
+        os.path.join(_mp, "state.json")
+    ):
+        buckets.append(_mb)
+    else:
+        print("Isolation C: skip missing monitor holdout", _mb)
 metrics = {"v2": {}, "base": {}, "phase1": {}, "delta_vs_base_pct": {}}
 
 def load_holdout(name):
