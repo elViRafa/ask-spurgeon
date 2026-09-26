@@ -8,6 +8,7 @@ schema_version: 1.3
 last_updated: "2026-08-26T01:22:24-04:00"
 occurrences: 1
 error_signature: "cuda out of memory during first eval of qwen<n>.<n> embed lora cpt: tried to allocate <n>.<n> gib on t<n> while evaluating mix+<n> holdout buckets at eval_docs_per_bucket=<n> (logits for <n>k vocab). train steps at batch <n>x<n> with train_embeddings=true succeeded."
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-08-26T01:22:24-04:00

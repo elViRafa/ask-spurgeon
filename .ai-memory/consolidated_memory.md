@@ -59,9 +59,9 @@ summary: "Map of available project memory sections."
 priority: high
 tags: [index, memory]
 schema_version: 1.3
-last_updated: "2026-09-21T08:19:23-03:00"
+last_updated: "2026-09-26T07:46:07-03:00"
 consolidation_hash: acd058fab27bf79aa31f9bd2e3dc7172
-contradictions: ["`fine-tuning/hf-spurgeon-qa-v2-gguf` and `fine-tuning/plans/ollama-merge-gguf` cover similar content but state different numbers (2.71 vs 07) - review for conflict [heuristic]", "`pretraining/cpt-b-eval-strategy` and `pretraining/cpt-eval-unify-vs-buckets` cover similar content but state different numbers (0 / 1650 / 17 vs 0.2 / 1.2 / 18) - review for conflict [heuristic]", "`pretraining/cpt-corpus-v3-s1-complete` and `pretraining/cpt-corpus-v3-s1-wave1` cover similar content but state different numbers (0.282874 / 0.658552 / 0.7 vs 0.10 / 0.164 / 0.45) - review for conflict [heuristic]", "`bugs/lora-frozen-embeddings-special-tokens` and `bugs/sft-tokenizer-mismatch-vinfos-spepacer` disagree about `im_start` (pos vs neg) - review for conflict [polarity]", "`fine-tuning/next-session-handoff` and `fine-tuning/vast-gate0-candidate` disagree about `scalingtype` (pos vs neg) - review for conflict [polarity]"]
+contradictions: ["`fine-tuning/hf-spurgeon-qa-v2-gguf` and `fine-tuning/plans/ollama-merge-gguf` cover similar content but state different numbers (2.71 vs 07) - review for conflict [heuristic]", "`pretraining/cpt-b-eval-strategy` and `pretraining/cpt-eval-unify-vs-buckets` cover similar content but state different numbers (0 / 1650 / 17 vs 0.2 / 1.2 / 18) - review for conflict [heuristic]", "`pretraining/cpt-corpus-v3-s1-complete` and `pretraining/cpt-corpus-v3-s1-wave1` cover similar content but state different numbers (0.282874 / 0.658552 / 0.7 vs 0.10 / 0.164 / 0.45) - review for conflict [heuristic]", "`pretraining/cpt-next-session-handoff` and `pretraining/cpt-s7-vast-phase-b` cover similar content but state different numbers (1 / 2 / 256 vs 0 / 0.003 / 0030418) - review for conflict [heuristic]", "`pretraining/cpt-phase-b-mix-a-output-v4` and `pretraining/cpt-phase-b-v5-reweight-ready` cover similar content but state different numbers (0.2848 / 251 / 38.4 vs 0.2701 / 029 / 096) - review for conflict [heuristic]"]
 consolidation_warnings: []
 summary_hash: c81ed9efe309125e42b693ba950f4f04
 contradiction_count: 50
@@ -77,12 +77,12 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `bugs` | medium | Generated map of memory-store/bugs/ (7 entries). | • **Bug Fix: GGUF Vocab Shift and Alignment (具有战士/ _Parms)*...<br>• **Qwen3.5 processor text-as-image in C_eval** (`bugs/qwen...<br>• **Bug Fix: Unsloth Embedding Offload on Read-Only Filesys... |
 | `debt` | low | App debt (hybrid search, rate limits) plus 2026-08-29 memory-fabric LLM/host hygiene notes. | • Known Technical Debt & Limits<br>• Roadmap & Pending Features |
 | `decisions` | medium | Generated map of memory-store/decisions/ (2 entries). | • **Gemma 4 Fine-Tuning Transition** (`decisions/gemma4-fin...<br>• **Gemma 4 Local Ollama Deployment** (`decisions/gemma4-lo... |
-| `episodic` | medium | Generated map of memory-store/episodic/ (27 entries). | • **Episodic Journal — 2026-07-11** (`episodic/2026-07-11`,...<br>• **Episodic Journal — 2026-07-12** (`episodic/2026-07-12`,...<br>• **Episodic Journal — 2026-07-13** (`episodic/2026-07-13`,... |
-| `failures` | medium | Generated map of memory-store/failures/ (30 entries). | • **Vast official Unsloth image smoke blocked; LD_LIBRARY_P...<br>• **asyncua write_value BadTypeMismatch when writing int to...<br>• **B_training_sota: EarlyStopping disabled — metric_for_be... |
+| `episodic` | medium | Generated map of memory-store/episodic/ (30 entries). | • **Episodic Journal — 2026-07-11** (`episodic/2026-07-11`,...<br>• **Episodic Journal — 2026-07-12** (`episodic/2026-07-12`,...<br>• **Episodic Journal — 2026-07-13** (`episodic/2026-07-13`,... |
+| `failures` | medium | Generated map of memory-store/failures/ (32 entries). | • **Vast official Unsloth image smoke blocked; LD_LIBRARY_P...<br>• **asyncua write_value BadTypeMismatch when writing int to...<br>• **B_training_sota: EarlyStopping disabled — metric_for_be... |
 | `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (39 entries). | • **Fine-tuning next session handoff** (`fine-tuning/next-s...<br>• **SFT QA gold rewrite pilot (20 rows, merged)** (`fine-tu...<br>• **SFT/serve: knowledge assistant, not Spurgeon persona** ... |
 | `framework-rules` | medium | Defines coding standards, required libraries (Streamlit, LlamaIndex), environment setup (.env), and database rules for the codebase. | • 1. Runtime Environment<br>• 2. Core Libraries & Packages<br>• 3. Vector Database Rules<br>• 4. Agent Memory Guidelines |
 | `grok` | medium | Generated map of memory-store/grok/ (1 entries). | • **Grok Integration with Memory Fabric (MCP + Docs + Nativ... |
-| `pretraining` | medium | Generated map of memory-store/pretraining/ (66 entries). | • **CPT B_training_sota known issues (P1 closed — log spam)...<br>• **Composite CPT early stop merges split HF eval events** ...<br>• **Confessions + Institutes corpus (WCF, 1689, Calvin)** (... |
+| `pretraining` | medium | Generated map of memory-store/pretraining/ (83 entries). | • **CPT B_training_sota known issues (P1 closed — log spam)...<br>• **Composite CPT early stop merges split HF eval events** ...<br>• **Confessions + Institutes corpus (WCF, 1689, Calvin)** (... |
 | `schemas` | high | Defines data contracts, metadata schemas for ingested texts, and environment variable configurations. | • 1. Document & Chunk Metadata Schema<br>• 2. Ingestion Parameters<br>• 3. Environment Variables (Configuration Schema) |
 | `ubiquitous-language` | medium | Defines consistent domain language used throughout the codebase for clarity and shared understanding. | None recorded |
 
@@ -120,6 +120,7 @@ tags: [pretraining, cpt, kaggle, bugs, unsloth, qwen35, p1]
 schema_version: 1.3
 last_updated: "2026-08-25T10:20:30-04:00"
 evidence: [continued_pretrain/kaggle/b_output_v6/checkpoints_sota/checkpoint-75/trainer_state.json, continued_pretrain/kaggle/c_output/theology_cpt_lora_final/adapter_model.safetensors, continued_pretrain/scripts/_gen_sota_notebooks.py, continued_pretrain/kaggle/c_output/C_EVAL_GATE_REPORT.md]
+review_status: stale
 ---
 
 # CPT B_training_sota known issues (fix next)
@@ -305,6 +306,42 @@ One-liner: **Train on one mix; during B log separate holdout buckets with 16–3
 ## Infra (when GPU approved)
 Volume `7hb931c5oe` via REST v1 (MCP `create-pod` drops `objectMounts`). Scp optimizer + checkpoints. Community 4090 was empty; Secure US-IL-1 worked. SSH `~/.ssh/runpod_cpt`.
 
+<!-- memory-fabric:store/pretraining/cpt-best-adapter-leaderboard -->
+---
+store_path: pretraining/cpt-best-adapter-leaderboard
+title: "Best CPT + Hub: S7 s5best spurgeon 12.45"
+summary: "**S7 s5best is best measured CPT LoRA** and **is now on production Hub** (operator overwrite)"
+priority: high
+tags: [cpt, s7, best, scorecard, leaderboard, hub]
+schema_version: 1.3
+last_updated: "2026-09-22T17:55:53-03:00"
+evidence: [continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7_c/theology_cpt_eval_metrics.json, pretraining/cpt-hub-s7-overwrite, pretraining/cpt-s6-stack-isolation-c]
+---
+
+# Best CPT adapter + Hub production (2026-09-22)
+
+**S7 s5best is best measured CPT LoRA** and **is now on production Hub** (operator overwrite).
+
+## Identity
+- SHA256: `06354dfc5a720143617ee2ffeef38faa48200811bed89e71561ff357ed547432` (step 1200)
+- Local: `continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7/fetch/theology_cpt_lora_s5best/`
+- Hub: https://huggingface.co/rafaelvieirar1r/qwen3.5-4b-theology-cpt-lora-v2 (private)
+- C metrics: `continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7_c/`
+
+## Isolation-C leaderboard (Unsloth 2026.8.22 + torch 2.8, a_output_v3)
+
+| Adapter | Spurgeon | Δ% | Puritan | Confession | General |
+|---------|----------|-----|---------|------------|--------|
+| **S7 s5best (Hub now)** | **12.45** | **−13.0%** | **5.52 (−8.6%)** | 5.27 (−6.0%) | 11.95 (−0.8%) |
+| S6 `6aab…` (prior Hub) | 12.85 | −10.2% | 5.60 (−7.2%) | 5.27 (−6.0%) | 11.83 (−1.8%) |
+| Hub v2 / S5 | ~13.3 | ~−7% | — | — | — |
+
+## Caveats
+- §5 −15% still FAIL
+- Prefer s5best over final LoRA `1381e5ee…`
+- Never trust C on Unsloth 2026.9.x / torch 2.11
+- No merge/GGUF/public yet
+
 <!-- memory-fabric:store/pretraining/cpt-corpus-expansion-2026-08 -->
 ---
 store_path: pretraining/cpt-corpus-expansion-2026-08
@@ -315,6 +352,7 @@ tags: [pretraining, cpt, corpus, puritans, edwards]
 schema_version: 1.3
 last_updated: "2026-08-24T22:54:43-04:00"
 evidence: [data/puritans/PROVENANCE.md, continued_pretrain/data/theology_mix_manifest.json, continued_pretrain/CPT_V2_KAGGLE_STATUS.md]
+review_status: stale
 ---
 
 # CPT corpus expansion (2026-08-24)
@@ -695,6 +733,34 @@ Spurgeon 13.34 vs v2 13.28 and puritan 5.72 vs 5.68 are noise-level. Confession/
 
 This is the playbook’s **preferred continue** case (near v2, far from §5). Repo: `continued_pretrain/NEXT_CPT_MORE_TOKENS.md`. Operator said they will continue in the next question about training and eval. Do not start GPU until that chat says go. Do not fresh 1e-5 from base.
 
+<!-- memory-fabric:store/pretraining/cpt-current -->
+---
+store_path: pretraining/cpt-current
+title: "CPT current status"
+summary: "| **Hub production** | private `rafaelvieirar1r/qwen3.5-4b-theology-cpt-lora-v2` = S7 s5best `06354dfc…` |"
+priority: high
+tags: [cpt, s7, status, hub, v5]
+schema_version: 1.3
+last_updated: "2026-09-23T11:47:14-03:00"
+summary_hash: ae50844218c68cf398ceb1a89e8e955d
+evidence: [pretraining/cpt-hub-s7-overwrite, pretraining/cpt-best-adapter-leaderboard]
+---
+
+## Status (canonical)
+
+| Item | Value |
+|------|--------|
+| **Hub production** | private `rafaelvieirar1r/qwen3.5-4b-theology-cpt-lora-v2` = S7 s5best `06354dfc…` |
+| Spurgeon C | **12.45 (−13%)** vs base 14.31 |
+| Local best | `vast_cpt_s7/fetch/theology_cpt_lora_s5best/` |
+| Prior Hub S6 | `6aab…` still on disk `vast_cpt_s6/fetch/` |
+| §5 −15% | FAIL |
+| Next | Phase B GPU on `a_output_v5` SHA `61e83057…` (operator go) |
+| C pin | Unsloth 2026.8.22 + torch 2.8 |
+| Eval default SHA | `06354dfc…` in `eval_cpt_sota.py` |
+
+Frozen: v4 uniform `37a3ba50…`; v3 `23dd…`. Do not overwrite Hub until winning C.
+
 <!-- memory-fabric:store/pretraining/cpt-eval-stack-pin-s5 -->
 ---
 store_path: pretraining/cpt-eval-stack-pin-s5
@@ -883,43 +949,187 @@ New `train()` reshuffles. Volume `7hb931c5oe` via REST v1. Scp optimizer + ckpts
 
 Do not: mix-only stop; collapsed Reformed PPL; 2-doc Spurgeon stop; fresh 1e-5 from base; rebuild mix; T4 4-bit; overwrite Hub v2 until new C wins.
 
+<!-- memory-fabric:store/pretraining/cpt-next-cpt-improvements-prep -->
+---
+store_path: pretraining/cpt-next-cpt-improvements-prep
+title: "S7 Phase A improvements applied; GPU still blocked on go"
+summary: "**No GPU B until operator says go.** Production Hub is S6 SHA `6aab91940ce3e854f72a5308ae41e8ce1ae4c457752ff76390581f09ba436f0c`"
+priority: high
+tags: [cpt, s7, continue, adam, prep, ready]
+schema_version: 1.3
+last_updated: "2026-09-21T11:05:35-03:00"
+evidence: [continued_pretrain/scripts/cpt_runtime.py, continued_pretrain/scripts/s7_remote_continue_b.sh, continued_pretrain/scripts/s7_remote_c_eval.sh, continued_pretrain/NEXT_CPT_S7.md, continued_pretrain/scripts/test_cpt_runtime.py]
+---
+
+# S7 CPT improvements — Phase A prep + post-audit fixes (2026-09-21)
+
+**No GPU B until operator says go.** Production Hub is S6 SHA `6aab91940ce3e854f72a5308ae41e8ce1ae4c457752ff76390581f09ba436f0c`.
+Canonical C: Unsloth **2026.8.22 + torch 2.8**.
+
+## Code ready
+- `CPT_CONTINUE_PROFILE=s7`: body **2e-6**, emb **8e-7**, warmup **0.04**, max_steps **2064**, min_steps **500**
+- patience **4**, ε **0.003**, eval/save **50**, `cosine_with_min_lr` min_lr_rate **0.1**
+- Seeded bests = S6 **in-train** @ 2050 (spurgeon 2.4987 / mix 2.0208 / puritan **1.751** / confession **1.668**) — not isolation-C CE
+- `theology_cpt_lora_s5best` exporter + `AbortOnSeedRegressionCallback` (seed+0.12 × 2 cycles)
+- general bucket monitor-only; `CPT_TRAIN_EMBEDDINGS` env ablation
+- Launchers: `s7_remote_continue_b.sh`, `s7_remote_c_eval.sh`; monitor `--total-steps` / `CPT_TOTAL_STEPS`
+- Playbook: `continued_pretrain/NEXT_CPT_S7.md`
+
+## Goal
+§5 −15% on puritan + confession (isolation C: −7.2% / −6.0%).
+
+## Do on GPU go
+1. Copy a_output_v3 + nested 6aab LoRA + train/eval + s7 launchers
+2. `bash s7_remote_continue_b.sh`; monitor with `-TotalSteps 2064`
+3. C via `s7_remote_c_eval.sh` with explicit SHA; keep Hub S6 unless win
+
+## Do not
+- HF-resume 2050/2100/2400; unset PREV with leftover sota
+- Seed with isolation-C full-holdout CE
+- Fresh 1e-5; 4e-6 S6 clone; C on torch 2.11
+- Mix rebuild / merge / Hub overwrite without winning C
+
 <!-- memory-fabric:store/pretraining/cpt-next-session-handoff -->
 ---
 store_path: pretraining/cpt-next-session-handoff
-title: "Next session: S6 LoRA good; Hub overwrite needs approve"
-summary: "S6 SHA `6aab…` on Unsloth 2026.8.22 / torch 2.8: spurgeon **12.85 (−10.2%)**"
+title: "Phase B done; next is isolation C"
+summary: "- `rafaelvieirar1r/qwen3.5-4b-theology-cpt-lora-v2` = S7 Phase A s5best SHA `06354dfc…`"
 priority: high
-tags: [cpt, s6, handoff]
+tags: [cpt, s7, handoff, phase-b, eval-c]
 schema_version: 1.3
-last_updated: "2026-09-20T19:04:21-03:00"
-evidence: [pretraining/cpt-s6-c-eval-regression-diagnosis]
+last_updated: "2026-09-23T16:49:44-03:00"
+evidence: [pretraining/cpt-s7-vast-phase-b, continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7/fetch/theology_cpt_run_config.json]
 ---
 
-# Next session — after stack-isolation flip
+## Next session — Phase B finished (early-stop 750); run isolation C; Hub stays S7
 
-S6 SHA `6aab…` on Unsloth 2026.8.22 / torch 2.8: spurgeon **12.85 (−10.2%)**. Vast +27.9% was **eval-stack false FAIL**. See `pretraining/cpt-s6-stack-isolation-c`.
+### Production Hub (unchanged)
+- `rafaelvieirar1r/qwen3.5-4b-theology-cpt-lora-v2` = S7 Phase A s5best SHA `06354dfc…`
 
-## Do
-1. Keep Hub v2 until operator **explicitly** approves overwrite (S6 beats Hub v2 13.28 on this scorecard but overwrite is a separate session).
-2. Prefer confirmatory Runpod C of same SHA when Runpod has funds (this C was Vast host + S5 software pin).
-3. Optional: Hub overwrite of `…-theology-cpt-lora-v2` with nested `6aab…` after approve.
-4. Do **not** start a blind continue-B to “fix C”.
+### Phase B result
+- Vast `52264974` destroyed after fetch.
+- COMPOSITE EARLY-STOP @ **750**/955. HF best step **700** SHA `6d003041…`. §5 export step **600** SHA `ddbbee3a…`.
+- In-train: spurgeon 2.482 / puritan 1.740 / confession 1.666. Mix-val 2.205 (v5, unseeded).
+
+### Do next
+1. Isolation C (torch 2.8 + Unsloth 2026.8.22). Pin `EXPECTED_ADAPTER_SHA256` to nested fetch adapters, not the top-level `06354dfc` folder.
+2. Keep Hub S7 until winning C.
+
+### Do not
+- Treat top-level `fetch/theology_cpt_lora_s5best/` as the new B adapter (that file is still `06354dfc`).
+- Overwrite Hub / v3 / v4. Redraw holdouts. Fetch confession S5.
+
+<!-- memory-fabric:store/pretraining/cpt-phase-b-mix-a-output-v4 -->
+---
+store_path: pretraining/cpt-phase-b-mix-a-output-v4
+title: "Phase B mix a_output_v4 packed; no GPU"
+summary: "**Status:** Mix rebuilt + verified + packed"
+priority: high
+tags: [cpt, phase-b, mix, a-output-v4, wave5]
+schema_version: 1.3
+last_updated: "2026-09-23T09:26:48-03:00"
+evidence: ["[REDACTED_SECRET].json", continued_pretrain/data/theology_mix_manifest.json, continued_pretrain/NEXT_CPT_S7.md, continued_pretrain/data/corpus_v3_catalog.json]
+---
+
+# Phase B mix a_output_v4 ready (2026-09-23)
+
+**Status:** Mix rebuilt + verified + packed. **No GPU / CPT train.**
+
+## Identity
+- Path: `continued_pretrain/kaggle/a_output_v4`
+- `mix_sha256`: `37a3ba50aa9efb8057d9d36227ac4547f08d35a31ccd71cf3f2d20f928131c81`
+- Frozen S7 mix: `a_output_v3` SHA `23dd3820baa0b657cb6528e4fdf1b2d4813c3cfa7b7c982805b4a7ff34990973` (untouched)
+
+## Counts
+- Train docs 54,799 (HF 54,251 / val 548)
+- Verified tokens ~94.7M (Qwen3.5-4B-Base, ratio 0.2848)
+- Shares: puritan 47.8% / spurgeon 38.4% / general 7.2% / confession 5.3% / bible 1.3%
+- Holdouts pinned v3: puritan 20 + confession 10 fingerprints match
+- Henry exposition excluded
+
+## In train
+Downame + wave 5 (Ambrose, Swinnock ×2, Venning, Binning, Preston, Durham, Vincent, Guthrie).
 
 ## Do not
-- Treat Vast C 18.31 as ground truth for these weights
-- Merge / Hub overwrite without operator go
-- Re-rent Vast C on torch 2.11 / Unsloth 2026.9.x for this SHA
+- Overwrite `a_output_v3`
+- Redraw holdouts
+- Fetch confession S5
+- Start GPU until operator says go (init Hub S7 s5best `06354dfc…` on this mix)
 
-## Paste
-```
-S6 stack-isolation: SHA 6aab on Unsloth 2026.8.22/torch 2.8 → spurgeon 12.85 (−10.2%).
-Vast +27.9% was false FAIL. Hub overwrite needs separate approve.
-```
+<!-- memory-fabric:store/pretraining/cpt-phase-b-mix-audit-clean -->
+---
+store_path: pretraining/cpt-phase-b-mix-audit-clean
+title: "Phase B mix audit clean; keep a_output_v4"
+summary: "**Status:** Corpus-wide preprocess audit passed"
+priority: high
+tags: [cpt, phase-b, audit, a-output-v4, preprocess]
+schema_version: 1.3
+last_updated: "2026-09-23T10:44:32-03:00"
+evidence: [continued_pretrain/scripts/audit_cpt_mix_sources.py, "[REDACTED_SECRET].json", "[REDACTED_SECRET].md"]
+---
 
-## Clarification (side-chat 2026-09-20)
-- False FAIL was **C stack**, not “B early-stop was wrong because of C”.
-- C artifact = ckpt-**2050** / SHA `6aab…` (stop was 2400; ignore 2400 adapters).
-- S6@2050 beats Hub v2 on PPL scorecard; overwrite still explicit approve only.
+# Phase B mix audit clean (2026-09-23)
+
+**Status:** Corpus-wide preprocess audit passed. **No rebuild.** No GPU until operator go.
+
+## Verdict
+`python continued_pretrain/scripts/audit_cpt_mix_sources.py` returned AUDIT_CLEAN / CONTINUE_READY.
+
+- Live mix + a_output_v4 SHA 37a3ba50aa9efb8057d9d36227ac4547f08d35a31ccd71cf3f2d20f928131c81
+- Frozen a_output_v3 SHA 23dd3820baa0b657cb6528e4fdf1b2d4813c3cfa7b7c982805b4a7ff34990973
+- Puritan/confession holdouts byte-match holdouts_pinned_v3
+- Catalog identity 164/164; OCR fail 0; new authors 11/11 present and glyph-clean
+- Confession S5 still absent
+- Packed mix has 0 mapped glyphs. On-disk book squares are stripped at mix time. Holdout long-s left pinned.
+
+## Continue
+Copy a_output_v4 (old corpus plus nine unseen authors). Init Hub / local S7 s5best 06354dfc with a new Adam. Do not train a new-authors-only mix. Do not HF-resume a_output_v3.
+
+S7 pack/sync/readiness now default to v4 + s5best. Do not rent until operator go.
+
+<!-- memory-fabric:store/pretraining/cpt-phase-b-v5-reweight-ready -->
+---
+store_path: pretraining/cpt-phase-b-v5-reweight-ready
+title: "Phase B v5 reweight packed; no GPU"
+summary: "**Status:** Reweight mix built + verified + packed"
+priority: high
+tags: [cpt, phase-b, a-output-v5, reweight, wave5, downame]
+schema_version: 1.3
+last_updated: "2026-09-23T11:47:14-03:00"
+evidence: ["[REDACTED_SECRET].json", continued_pretrain/data/mix_v5/theology_mix_manifest.json, continued_pretrain/NEXT_CPT_S7.md, continued_pretrain/scripts/07_build_theology_mix.py]
+---
+
+# Phase B continue pack a_output_v5 ready (2026-09-23)
+
+**Status:** Reweight mix built + verified + packed. **No GPU / no rent / no Hub overwrite.**
+
+## Identity
+- Path: `continued_pretrain/kaggle/a_output_v5`
+- Mix txt: `continued_pretrain/data/mix_v5/theology_mix_train.txt`
+- `mix_sha256`: `61e830575138935cdf6c1b029a3128e096ff4e3633e44a464b3957b9d6e78285`
+- Frozen uniform v4: `a_output_v4` SHA `37a3ba50aa9efb8057d9d36227ac4547f08d35a31ccd71cf3f2d20f928131c81`
+- Frozen Phase A v3: `a_output_v3` SHA `23dd3820baa0b657cb6528e4fdf1b2d4813c3cfa7b7c982805b4a7ff34990973`
+
+## Counts
+- Train docs 15,420 (HF 15,265 / val 155)
+- Verified tokens ~25.1M (Qwen3.5-4B-Base, ratio 0.2701)
+- New-author one pass: 2,454 docs / 13.9M chars = **15.0%**
+- Shares: puritan 54.2% / spurgeon 33.8% / general 6.3% / confession 4.5% / bible 1.3%
+- Holdouts pinned v3 (20 / 10 / 298)
+
+## Continue knobs
+- Init Hub / local S7 s5best `06354dfc…`, new Adam, `PREV_RUN_CHECKPOINT=`
+- `CONTINUE_MAX_STEPS=955` (one packed epoch, batch 16)
+- `EARLY_STOP_MIN_STEPS=400`
+- Composite seeds: spurgeon 2.4987 / puritan 1.751 / confession 1.668. **No eval_mix_loss seed.**
+
+## Do not
+- Overwrite v3 or v4
+- Copy uniform v4 for GPU
+- Train new-authors-only
+- Fetch confession S5
+- Redraw holdouts
+- Rent until operator go
 
 <!-- memory-fabric:store/pretraining/cpt-s6-gpu-blocked-volume-balance -->
 ---
@@ -1058,6 +1268,97 @@ Eval: `CPT_EVAL_TRAIN_PROBE_DOCS` + `UNSLOTH_PIP_SPEC` env in `eval_cpt_sota.py`
 ### Improvement claim
 On good-stack C (v3 holdouts): S6@2050 spurgeon **12.85 (−10.2%)** beats Hub v2 **13.28 (−7.2%)** and S5 **13.34 (−6.8%)**. §5 −15% still FAIL. Hub overwrite still needs **separate operator approve**.
 
+<!-- memory-fabric:store/pretraining/cpt-s7-gpu-blocked-balance -->
+---
+store_path: pretraining/cpt-s7-gpu-blocked-balance
+title: "S7 Phase A GPU blocked: Runpod balance"
+summary: "- `a_output_v3` mix SHA `23dd…`"
+priority: high
+tags: [cpt, s7, runpod, blocker, balance]
+schema_version: 1.3
+last_updated: "2026-09-22T09:31:17-03:00"
+evidence: [continued_pretrain/NEXT_CPT_S7.md, continued_pretrain/scripts/s7_remote_continue_b.sh]
+---
+
+# S7 Phase A GPU go blocked — Runpod balance (2026-09-22)
+
+Operator said go. Prep remains ready. **No pod created** (`list-pods` empty).
+
+## Evidence this session
+1. `create-network-volume` EU-RO-1 75GB → **400**: account must have **≥ $5**.
+2. Secure RTX 4090 EU-RO-1 → **400** no stock (LOW evaporated).
+3. Secure L4 (EU-RO-1 / EUR-IS-1 / US-MO-2) with persistent `/workspace` → **402** balance too low to rent a pod.
+4. Network volumes on account: **0**. Prior volume `7hb931c5oe` still gone.
+5. `runpodctl user` → `no_credentials` (`RUNPOD_API_KEY` unset; `~/.runpod/config.toml` apikey empty). MCP OAuth works for infra CRUD only.
+
+## Local artifacts ready
+- `a_output_v3` mix SHA `23dd…`
+- Nested S6 LoRA SHA `6aab…` at `kaggle/runpod_cpt_v3/vast_cpt_s6/fetch/theology_cpt_lora/theology_cpt_lora/`
+- Launch: `scripts/s7_remote_continue_b.sh`; monitor `-TotalSteps 2064`
+- SSH key registered: `runpod-cpt-v2` (matches `~/.ssh/runpod_cpt.pub`)
+
+## On next go (after funds)
+1. Add Runpod balance (enough for volume gate ≥$5 + ~$0.50–0.74/hr × expected B hours).
+2. Prefer: create network volume in GPU DC, then Secure pod (4090 / L4 / A100) with mount `/workspace`.
+3. Optionally set `RUNPOD_API_KEY` for runpodctl `send`/`receive`; else scp via registered SSH key.
+4. Sync a_output_v3 + nested 6aab LoRA + train/eval + s7 launchers; `bash s7_remote_continue_b.sh`.
+5. Do **not** HF-resume sota; keep Hub S6 until winning C.
+
+<!-- memory-fabric:store/pretraining/cpt-s7-holdout-sibling-replay -->
+---
+store_path: pretraining/cpt-s7-holdout-sibling-replay
+title: "S7 holdout-sibling replay pack ready"
+summary: "Phase B isolation C on nested s5best `ddbbee3a` missed §5: Spurgeon 12.39 (−13.42%), Puritan 5.50 (−8.88%), confession 5.25 (−6.37%) vs Ampere base"
+priority: high
+tags: [cpt, s7, mix-v6, replay, vast]
+schema_version: 1.3
+last_updated: "2026-09-23T18:15:47-03:00"
+evidence: ["[REDACTED_SECRET].json", continued_pretrain/data/mix_v6/theology_mix_manifest.json, continued_pretrain/scripts/vast_cpt_s7_common.ps1, continued_pretrain/NEXT_CPT_S7.md]
+---
+
+## Holdout-sibling replay (v6) — packed 2026-09-23
+
+Phase B isolation C on nested s5best `ddbbee3a` missed §5: Spurgeon 12.39 (−13.42%), Puritan 5.50 (−8.88%), confession 5.25 (−6.37%) vs Ampere base. Slightly better than Hub `06354dfc` (12.45 / 5.52 / 5.27). Hub stays Phase A until a C wins Puritan and confession without Spurgeon past ~13.3.
+
+Do not retrain `a_output_v5`. Next CPT is a new pack:
+
+- Mix: `continued_pretrain/data/mix_v6` SHA `2d5a99c1a0d4d3e4d64013dabe894a52f4de1bf0b576e8997b02af595f691acd`
+- HF: `kaggle/a_output_v6` (23,139 docs; HF train 22,907 / val 232; ~42.4M tokens)
+- Sibling share 25% (5,661 docs / 35.1M chars of pinned puritan+confession train siblings)
+- Spurgeon floor 35%; new-author (Downame/wave 5) cap 5%
+- Shares: puritan 49.5% / spurgeon 35.0% / confession 9.2% / general 5.4% / bible 0.9%
+- Confession 9.2% is sibling upweight of existing S4 systematics, not Shaw/SSK. Leave S5 out.
+- Holdouts: pinned v3 (puritan 20, confession 10, spurgeon 298)
+- Init: nested Phase B s5best `ddbbee3ac9ef7baf6cca21dcdb844d027d39f5f6a4b88ba10fcf8a43fa7c8214`, new Adam, LR 2e-6
+- Halt composite: spurgeon + puritan + confession only (no `eval_mix_loss`)
+- Same early-stop: min 400, patience 4, ε 0.003, max 955
+- Stack pin: Unsloth 2026.8.22 + torch 2.8
+- Session/results: `vast_cpt_s7_replay` (do not overwrite Phase B fetch)
+
+No GPU until operator go. Do not overwrite v3/v4/v5 or Hub.
+
+<!-- memory-fabric:store/pretraining/cpt-s7-phase-a-done -->
+---
+store_path: pretraining/cpt-s7-phase-a-done
+title: "CPT S7 Phase A complete (Vast early-stop)"
+summary: "- Host: Vast instance `52063161` (destroyed after fetch)"
+priority: high
+tags: [cpt, s7, vast, early-stop]
+schema_version: 1.3
+last_updated: "2026-09-22T16:06:36-03:00"
+---
+
+## S7 Phase A result (2026-09-22)
+
+- Host: Vast instance `52063161` (destroyed after fetch).
+- Continue from S6 LoRA with new Adam; `CPT_CONTINUE_PROFILE=s7`; stopped by **COMPOSITE EARLY-STOP @ step 1250** (max_steps 2064, patience 4, ε 0.003).
+- Final HF LoRA SHA: `1381e5ee4eaf8f838aa6b1b21d1757de29404dbb50aa5e68ec3a4fd3bceae4db` (= checkpoint-1250).
+- s5best SHA: `06354dfc5a720143617ee2ffeef38faa48200811bed89e71561ff357ed547432` @ step 1200 (prefer for C eval).
+- Local path: `continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7/fetch/`.
+- Seed CE: spurgeon 2.4987 / mix 2.0208 / puritan 1.751 / confession 1.668.
+- @1250 CE (log): spurgeon 2.4867 / mix 2.009 / puritan 1.742 / confession 1.671.
+- Train loss ~1.988; runtime ~10179s.
+
 <!-- memory-fabric:store/pretraining/cpt-sota-assessment-2026-07 -->
 ---
 store_path: pretraining/cpt-sota-assessment-2026-07
@@ -1171,6 +1472,7 @@ tags: [kaggle, cpt, handoff, gate]
 schema_version: 1.3
 last_updated: "2026-08-25T10:20:50-04:00"
 evidence: [continued_pretrain/kaggle/c_output/C_EVAL_GATE_REPORT.md, continued_pretrain/kaggle/c_output/theology_cpt_eval_metrics.json, continued_pretrain/CPT_V2_KAGGLE_STATUS.md]
+review_status: stale
 ---
 
 # CPT v2 C_eval gate verdict (2026-08-25, analysis addendum)
@@ -1211,6 +1513,7 @@ tags: [kaggle, cpt, rc2, rc3, rc4]
 schema_version: 1.3
 last_updated: "2026-08-24T22:09:47-04:00"
 evidence: [continued_pretrain/kaggle/c_output/C_EVAL_GATE_REPORT.md, continued_pretrain/kaggle/b_output/b_logs.txt, continued_pretrain/kaggle/c_output/theology_cpt_eval_metrics.json]
+review_status: stale
 ---
 
 # CPT v2 C_eval — root cause analysis (2026-08-24)
@@ -1902,6 +2205,67 @@ S6 continue-B stopped at **step 2110/4128** (~51%) after monitor false-positive 
 
 Resume rule: HF `PREV_RUN_CHECKPOINT` with `CPT_RUN_MODE=fresh` (or unset) — **not** `continue` mode. Keep Hub v2 until a full S6 B + winning C eval.
 
+<!-- memory-fabric:store/pretraining/cpt-v4-continue-reweight -->
+---
+store_path: pretraining/cpt-v4-continue-reweight
+title: "CPT v4 continue: reweight new authors, keep old corpus"
+summary: "Use this when preparing the GPU CPT for the Downame + wave 5 corpus (`a_output_v4` shelf)"
+priority: high
+tags: [cpt, phase-b, a-output-v4, reweight, continue, downame, wave5]
+schema_version: 1.3
+last_updated: "2026-09-23T10:37:02-03:00"
+evidence: ["[REDACTED_SECRET].json", continued_pretrain/data/theology_mix_manifest.json, continued_pretrain/NEXT_CPT_S7.md, data/puritans/PROVENANCE.md]
+---
+
+# CPT on this corpus: continue, reweight, do not train new authors alone
+
+Use this when preparing the GPU CPT for the Downame + wave 5 corpus (`a_output_v4` shelf). Decided 2026-09-23.
+
+## Start point
+
+- Init adapter: Hub private `rafaelvieirar1r/qwen3.5-4b-theology-cpt-lora-v2` = S7 s5best SHA `06354dfc5a720143617ee2ffeef38faa48200811bed89e71561ff357ed547432`
+- That adapter trained on frozen `continued_pretrain/kaggle/a_output_v3` SHA `23dd3820baa0b657cb6528e4fdf1b2d4813c3cfa7b7c982805b4a7ff34990973`
+- It has never seen John Downame or wave 5 (Ambrose, Swinnock, Venning, Binning, Preston, Durham, Vincent, Guthrie)
+- Load that LoRA on Qwen3.5-4B-Base with a **new Adam**. Do not HF-resume the v3 optimizer or dataloader. Do not point the run back at `a_output_v3`. Packing stays `one_doc_padded`.
+
+## Corpus fact
+
+Packed `continued_pretrain/kaggle/a_output_v4` SHA `37a3ba50aa9efb8057d9d36227ac4547f08d35a31ccd71cf3f2d20f928131c81` is the **superset**: old shelf plus 11 new files (~14.2M chars: ~5.7M Downame + ~8.5M wave 5).
+
+- New files are ~4% of ~332M train characters and ~9% of the Puritan bucket (Puritan 47.8% / Spurgeon 38.4% / general 7.2% / confession 5.3% / Bible 1.3%).
+- A uniform epoch on this pack mostly re-reads text the S7 adapter has already fitted (~one epoch on v3).
+- Repeating the 11 files ~2x only lifts them to ~8%. ~4 copies to reach ~15% is enough to memorize those books.
+
+## What to train
+
+Keep the full mix. Do **not** run a new-authors-only CPT.
+
+- Puritan holdouts are pinned v3 probes drawn from the **older** Puritan shelf. Sibling chunks of those works stay in train. Gradients on the old shelf move that gate directly. The new books help that gate only by transfer.
+- Confession (~17M chars, the other half of the §5 −15% gate) is absent from the new files. A new-authors-only run has no confession tokens.
+- Spurgeon is already 12.45 (−13% vs base 14.31). A Puritan-only continue drops rehearsal of that number.
+
+Reweight before the GPU copy:
+
+- Keep Spurgeon, older Puritans, confession, Bible, and general replay as the **majority**.
+- Raise the 11 unseen files to a real minority, about **15%** of steps.
+- Prefer **one pass** over those 11 files plus a subsample of the already-trained shelf, so the old buckets stay the majority without four copies of the new books.
+- Same pinned holdouts (`continued_pretrain/data/holdouts_pinned_v3`). Do not redraw them. C will not report a separate loss for Downame or wave 5.
+- Reweight changes the mix, so pack a **new SHA**. Leave `a_output_v3` untouched. Do not overwrite v4 in place if that SHA has already been copied; write the reweighted pack to a new `a_output` directory.
+
+## Clean audit before the reweight
+
+Any orthography, boilerplate, or OCR-identity fix is corpus-wide (all Puritans, hymns, confessions, Bible, Spurgeon, replay), not new-authors-only. `data/**/*.txt` had no remaining long-s (`ſ`) on 2026-09-23. Rebuild the full mix only if a source file actually changes. Spurgeon's `clean_md_sermon` does not apply the long-s map; `clean_generic_text` does.
+
+## Still out
+
+- Confession S5 (Shaw, Sum of Saving Knowledge) unless 6% of the rebuilt mix exceeds confession already on disk (~30.7 MB)
+- Gillespie polity, Durham commentaries, Vincent WSC, Fisher, Savoy, Henry exposition, Turretin English, Banner/Heritage/Puritan Publications bodies
+- Hub overwrite until a winning C on the pinned probes
+
+## Gate this continue is for
+
+§5 −15% on puritan and confession vs this C's Ampere base, Spurgeon not worse than ~12.85 by more than ~1 PPL, general ≤ +10% vs base. C on Unsloth 2026.8.22 + torch 2.8.
+
 <!-- memory-fabric:store/grok/integration -->
 ---
 store_path: grok/integration
@@ -1959,6 +2323,7 @@ tags: [kaggle, cpt, eval, adapter]
 schema_version: 1.3
 last_updated: "2026-08-24T09:24:55-04:00"
 evidence: [continued_pretrain/scripts/_gen_sota_notebooks.py, continued_pretrain/scripts/test_kaggle_path_resolve.py]
+review_status: stale
 ---
 
 # Kaggle C_eval adapter path (2026-08-24)
@@ -2486,6 +2851,7 @@ tags: [kaggle, qwen3.5, processor, cpt, eval]
 schema_version: 1.3
 last_updated: "2026-08-24T10:19:14-04:00"
 evidence: [continued_pretrain/scripts/_gen_sota_notebooks.py, continued_pretrain/scripts/test_kaggle_path_resolve.py]
+review_status: stale
 ---
 
 # Qwen3.5 VL processor treats sermon text as image (C_eval)
@@ -3508,6 +3874,7 @@ schema_version: 1.3
 last_updated: "2026-08-25T10:20:39-04:00"
 occurrences: 2
 error_signature: "b_training_sota: earlystopping disabled — metric_for_best_model eval_spurgeon_loss not found in logs (b v<n> after tokenized eval)"
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-08-25T09:03:00-04:00
@@ -3591,6 +3958,57 @@ Moved onto C: as real directories (no junctions):
 
 Scripts default `VAST_LOCAL_RESULTS_DIR` to that C: path. Local readiness **PASS**. C: ~31 GB free. GATE-0 SFT merged/GGUF remain on D: (not needed for CPT S6).
 
+<!-- memory-fabric:store/pretraining/c-drive-cleanup-2026-09-23 -->
+---
+store_path: pretraining/c-drive-cleanup-2026-09-23
+title: "Freed C: by pruning Projetos caches and archiving stale CPT"
+summary: "Freed **C: from 2.0 GB to 82.0 GB** (D: still 480 GB free)"
+priority: medium
+tags: [disk, c-drive, checkpoints, projetos, cleanup]
+schema_version: 1.3
+last_updated: "2026-09-23T13:41:02-03:00"
+evidence: [continued_pretrain/kaggle/a_output_v5, continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7/fetch/theology_cpt_lora_s5best, fine_tuning/kaggle/vast_sft_gate0]
+---
+
+# C: / Projetos disk cleanup (2026-09-23)
+
+Freed **C: from 2.0 GB to 82.0 GB** (D: still 480 GB free). Phase B inputs stayed on C: as real directories.
+
+## Deleted (regenerable)
+`node_modules` plus `android/app/build`, `android/app/.cxx`, `android/.gradle` in:
+- `C:\Users\rafael\Projetos\controle-medico`
+- `C:\Users\rafael\Projetos\irglobal-app`
+- `C:\Users\rafael\Projetos\app-us`
+- `C:\Users\rafael\Projetos\ai-personal`
+
+Android `src` and keystores left in place. Reinstall with `npm install` / Gradle when those apps are opened again.
+
+## Deleted (superseded CPT/SFT)
+- `vast_cpt_s7/fetch/checkpoints_s7/` (Phase A intermediates)
+- `vast_cpt_s7/payload.tar` (repack on operator go for v5)
+- `vast_cpt_s7/fetch/theology_cpt_lora/` (not s5best)
+- `kaggle/b_output` and `b_output_v6`
+- `runpod_sft_gate0/theology_cpt_v2_merged_hf` (incomplete Runpod copy; complete merge remains on D: via junction)
+
+## Moved to D:\search-sermons-cpt\archive-2026-09-23\
+- `vast_cpt_s6/` (15.6 GB)
+- `s6_continue_b/` (5.6 GB)
+- `runpod_cpt_v3_theology_cpt_lora/` (S5, 1.4 GB)
+- `runpod_cpt_v2/` (1.4 GB)
+- `models/unsloth.F16.gguf` (5.8 GB)
+- `models/spurgeon_phase1_merged_hf.F16.gguf` (5.8 GB)
+- `models/spurgeon-qa-v2.Q4_K_M.gguf` (2.5 GB)
+
+File symlink for `continued_pretrain/models/unsloth.F16.gguf` failed (needs admin). Ollama `FROM ./unsloth.F16.gguf` will not resolve until an admin `mklink` is created or the Modelfile is pointed at the D: archive path.
+
+## Kept on C:
+- `a_output_v5` (real dir) + frozen `a_output_v3` / `a_output_v4`
+- `vast_cpt_s7/fetch/theology_cpt_lora_s5best/` (Hub production)
+- `search-sermons/.venv`
+- GATE-0 junctions under `fine_tuning/kaggle/vast_sft_gate0/` → `D:\search-sermons-cpt\vast_sft_gate0\`
+
+Left alone: `transcriptor-hosp`, `search-sermons/.git`.
+
 <!-- memory-fabric:store/failures/cpt-b-early-stop-561e9ec07f -->
 ---
 store_path: failures/cpt-b-early-stop-561e9ec07f
@@ -3612,32 +4030,155 @@ CPT B early-stop patience=2 with eval_steps=25 and 2-doc eval_spurgeon_loss halt
 **Fix:**
 Not a crash. For a future B that must consume the large mix: add min_steps/min_tokens before patience, or scale patience with packed_epoch_steps. Do not treat 2-doc Spurgeon CE plateau as dataset exhausted. Next step for the existing S5 adapter is C (approval), not a stealth re-train.
 
-<!-- memory-fabric:store/pretraining/cpt-current -->
+<!-- memory-fabric:store/pretraining/cpt-hub-s6-overwrite -->
 ---
-store_path: pretraining/cpt-current
-title: "CPT current — S6 LoRA good on S5 stack; Hub overwrite pending approve"
-summary: "**Stack isolation:** `pretraining/cpt-s6-stack-isolation-c`"
+store_path: pretraining/cpt-hub-s6-overwrite
+title: "Hub …-cpt-lora-v2 now S6 SHA 6aab (operator approved)"
+summary: "Explicit Hub overwrite of private `rafaelvieirar1r/qwen3.5-4b-theology-cpt-lora-v2` with S6 ckpt-2050 LoRA"
 priority: medium
-tags: [cpt, s6, hub-v2, stack-isolation]
+tags: [cpt, hub, s6, lora, overwrite]
 schema_version: 1.3
-last_updated: "2026-09-20T18:17:21-03:00"
-summary_hash: ae50844218c68cf398ceb1a89e8e955d
-evidence: [pretraining/cpt-s6-c-eval-regression-diagnosis, pretraining/cpt-s6-c-eval-complete]
+last_updated: "2026-09-21T10:13:38-03:00"
 ---
 
-# CPT — current pointer (2026-09-20)
+# Hub CPT LoRA overwritten with S6 best (2026-09-21)
 
-**Stack isolation:** `pretraining/cpt-s6-stack-isolation-c`  
-**Prior Vast C (false FAIL):** `pretraining/cpt-s6-c-eval-regression-diagnosis`
+## Operator approve
+Explicit Hub overwrite of private `rafaelvieirar1r/qwen3.5-4b-theology-cpt-lora-v2` with S6 ckpt-2050 LoRA.
 
-| Item | Status |
-|------|--------|
-| S6 B (Vast) | DONE — best ckpt-2050 SHA `6aab9194…` |
-| S6 C Vast torch 2.11 | DONE ×2 — **false FAIL** (+27.9%) |
-| Stack-isolation C (Unsloth 2026.8.22 / torch 2.8) | DONE — spurgeon **12.85 (−10.2%)** |
-| Hub production | still `…-theology-cpt-lora-v2` until **separate** overwrite approve |
-| New B | not needed to “fix C”; optional only for §5 −15% |
-| SFT | still on Hub-v2-merged path until Hub decision |
+## Identity
+| Field | Value |
+|-------|--------|
+| Repo | https://huggingface.co/rafaelvieirar1r/qwen3.5-4b-theology-cpt-lora-v2 (private) |
+| SHA256 | `6aab91940ce3e854f72a5308ae41e8ce1ae4c457752ff76390581f09ba436f0c` |
+| Local source | `continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s6/fetch/theology_cpt_lora/theology_cpt_lora/` |
+| Train best | HF checkpoint-2050, `eval_spurgeon_loss=2.4987` |
+| C (stack pin) | spurgeon **12.85 (−10.2%)** vs base 14.31 — `pretraining/cpt-s6-stack-isolation-c` |
+
+## Replaced
+Previous Hub contents were CPT v2 best-400 SHA `319d17a39d193041528914cfb2f83c1decf21e55ffe76dfd2ca565f5e99e1478` (spurgeon 13.28). Still on local disk under `kaggle/runpod_cpt_v2/theology_cpt_lora/`.
+
+## Upload
+`python continued_pretrain/scripts/upload_cpt_lora_to_hf.py --adapter-dir …/theology_cpt_lora/theology_cpt_lora --expected-sha256 6aab… --metrics-dir …/stack_isolation_c`
+Also wrote `ADAPTER_SHA256.txt` on Hub. `eval_cpt_sota.py` / `_gen_sota_notebooks.py` default `EXPECTED_ADAPTER_SHA256` now **6aab…**.
+
+## Not done
+- No merge / GGUF
+- No public flip
+- No new B
+- §5 −15% still FAIL on isolation C
+
+<!-- memory-fabric:store/pretraining/cpt-hub-s7-overwrite -->
+---
+store_path: pretraining/cpt-hub-s7-overwrite
+title: "Hub …-cpt-lora-v2 now S7 s5best SHA 06354dfc"
+summary: "Explicit Hub overwrite of private `rafaelvieirar1r/qwen3.5-4b-theology-cpt-lora-v2` with S7 Phase A **s5best** (step 1200)"
+priority: medium
+tags: [cpt, hub, s7, lora]
+schema_version: 1.3
+last_updated: "2026-09-22T17:55:58-03:00"
+evidence: [continued_pretrain/scripts/eval_cpt_sota.py, continued_pretrain/scripts/upload_cpt_lora_to_hf.py, continued_pretrain/NEXT_CPT_S7.md]
+---
+
+# Hub CPT LoRA overwritten with S7 s5best (2026-09-22)
+
+## Operator approve
+Explicit Hub overwrite of private `rafaelvieirar1r/qwen3.5-4b-theology-cpt-lora-v2` with S7 Phase A **s5best** (step 1200).
+
+## Identity
+| Field | Value |
+|-------|--------|
+| SHA256 | `06354dfc5a720143617ee2ffeef38faa48200811bed89e71561ff357ed547432` |
+| Local source | `continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7/fetch/theology_cpt_lora_s5best/` |
+| Train | S7 continue from S6; composite early-stop; s5best @ 1200 |
+| C (stack pin) | spurgeon **12.45 (−13.0%)**, puritan 5.52 (−8.6%), confession 5.27 (−6.0%), general 11.95 (−0.8%) |
+
+## Replaced
+Previous Hub contents were S6 SHA `6aab91940ce3e854f72a5308ae41e8ce1ae4c457752ff76390581f09ba436f0c` (spurgeon 12.85). Still on local disk under `vast_cpt_s6/fetch/`.
+
+## Upload
+```
+python continued_pretrain/scripts/upload_cpt_lora_to_hf.py \
+  --adapter-dir …/theology_cpt_lora_s5best \
+  --expected-sha256 06354dfc… \
+  --metrics-dir …/vast_cpt_s7_c \
+  --commit-message "CPT S7 s5best step-1200 isolation-C…"
+```
+Also wrote `ADAPTER_SHA256.txt`, metrics, `STACK_PIN.txt` on Hub.
+
+## Not done
+- No merge / GGUF
+- No public flip
+- §5 −15% still FAIL (puritan/confession)
+
+## Code defaults after Hub overwrite
+- `eval_cpt_sota.py` / `_gen_sota_notebooks.py` `EXPECTED_ADAPTER_SHA256` default → `06354dfc…`
+- `upload_cpt_lora_to_hf.py` adds `EXPECTED_SHA256_S7`; default expected SHA is S7
+- `NEXT_CPT_S7.md` Hub line updated to S7
+
+<!-- memory-fabric:store/pretraining/cpt-phase-b-downame-next-cycle -->
+---
+store_path: pretraining/cpt-phase-b-downame-next-cycle
+title: "Phase B mix a_output_v4 packed"
+summary: "**Status:** Fetch + catalog + holdout-pin code done"
+priority: medium
+tags: [cpt, phase-b, downame, ocr]
+schema_version: 1.3
+last_updated: "2026-09-23T09:26:50-03:00"
+evidence: [continued_pretrain/NEXT_CPT_S7.md, continued_pretrain/scripts/10_fetch_puritans.py, continued_pretrain/scripts/11_fetch_confessions.py, continued_pretrain/scripts/07_build_theology_mix.py, data/puritans/downame/christian_warfare.txt, data/puritans/downame/guide_to_godliness.txt, continued_pretrain/data/holdouts_pinned_v3]
+---
+
+# Phase B corpus prep — Downame landed (mix still deferred)
+
+**Status:** Fetch + catalog + holdout-pin code done. **No** `07` mix / `a_output_v4` until Phase A finishes.
+
+## Done (2026-09-22)
+
+### Downame (wave 4)
+- `data/puritans/downame/christian_warfare.txt` — EEBO-TCP `A20752` (~1.65M chars)
+- `data/puritans/downame/guide_to_godliness.txt` — EEBO-TCP `A20762` (~4.06M chars)
+- Catalog: `10_fetch_puritans.py` `_wave4_catalog()`; PROVENANCE Wave 4 section
+
+### Confession S5 (catalog only — not on disk)
+- Wired in `11_fetch_confessions.py` as `S5_CATALOG` + `--s5`:
+  - `shaw_exposition_wcf` (IA `expositionofconf00shaw`)
+  - `sum_of_saving_knowledge` (Reformed Standards / Wikisource)
+- **Skipped fetch:** after Downame, confession disk ~30.7 MB still exceeds max ≈27.3 MB at `--max-confession-share 0.06` (headroom **−3.39 MB**). Adding S5 would worsen random S4 systematic eviction under `_cap_bucket_to_final_share`.
+
+### Holdout pin
+- Snapshot: `continued_pretrain/data/holdouts_pinned_v3/`
+- `07_build_theology_mix.py` pins `puritan_holdout.txt` / `confession_holdout.txt` when present (fingerprint = first 200 chars), same pattern as Spurgeon. Downame stays train-only.
+
+### Rejected near-dupes (do not reopen)
+Savoy, Vincent WSC exposition, Fisher catechism — WCF/WSC near-duplicates under paragraph dedup.
+
+## After Phase A
+
+```text
+python continued_pretrain/scripts/07_build_theology_mix.py --target-spurgeon-share 0.45 --keep-all-spurgeon --max-other-weight 1.5 --max-confession-share 0.06 --replay-frac 0.10 --replay-txt continued_pretrain/data/replay/general_replay.txt
+python continued_pretrain/scripts/06_verify_tokens.py --mix
+python continued_pretrain/scripts/18_prep_hf_dataset.py --out-dir continued_pretrain/kaggle/a_output_v4
+```
+
+Playbook: `continued_pretrain/NEXT_CPT_S7.md` (Later — Phase B).
+
+## Do not
+- Rebuild mix / overwrite `a_output_v3` during Phase A
+- Fetch S5 while headroom is negative
+- Redraw puritan/confession holdouts
+- Raise confession cap to force Shaw in
+
+## Long-s normalization (2026-09-22)
+
+EEBO-TCP long-s (`ſ`→`s`) applied on disk for Downame **and** 21 other Puritan files + `wcf_catechisms_1756.txt` (23 shelf files had ~2–3% long-s; Ames/modern IA reprints were already clean). Cleaners updated in `10_fetch_puritans`, `11_fetch_confessions`, and `07` mix. Helper: `continued_pretrain/scripts/normalize_early_modern_orthography.py`.
+
+## Wave 5 landed 2026-09-23 (mix still deferred)
+
+Nine new-author practical-divinity texts on disk (~8.47M chars). Catalog `_wave5_catalog()` in `10_fetch_puritans.py`. Confession S5 still skipped (headroom). Next is mix → `a_output_v4` when operator starts Phase B mix — do not rebuild yet.
+
+## Phase B mix landed (2026-09-23)
+
+`a_output_v4` SHA `37a3ba50…` packed. Holdouts still pinned. Mix rebuild no longer deferred.
 
 <!-- memory-fabric:store/pretraining/cpt-s6-c-eval-regression-diagnosis -->
 ---
@@ -3678,6 +4219,118 @@ Vast C of ckpt-2050 LoRA scored spurgeon **18.31 (+27.9% vs Ampere base ~14.31)*
 - Hub `…-theology-cpt-lora-v2` stays until **explicit** overwrite approve (S6 12.85 beats Hub v2 13.28 on this scorecard).
 - No blind new B to “fix C”. Eval CPT only on Unsloth ~2026.8.22 + torch 2.8 for parity with Hub-v2/S5.
 
+<!-- memory-fabric:store/pretraining/cpt-s7-vast-phase-a -->
+---
+store_path: pretraining/cpt-s7-vast-phase-a
+title: "S7 Phase A Vast running on 4090"
+summary: "**Instance:** `52063161` (label `cpt-s7-phase-a`), SSH `root@149.40.242.200:40205`, RTX 4090 ~$0.40/hr"
+priority: medium
+tags: [cpt, s7, vast, running]
+schema_version: 1.3
+last_updated: "2026-09-22T10:44:29-03:00"
+evidence: [continued_pretrain/VAST_RUNBOOK_CPT_S7.md, continued_pretrain/scripts/vast_cpt_s7_orchestrate.ps1]
+---
+
+# S7 Phase A on Vast — RUNNING (2026-09-22)
+
+**Instance:** `52063161` (label `cpt-s7-phase-a`), SSH `root@149.40.242.200:40205`, RTX 4090 ~$0.40/hr.
+**Credit after top-up:** ~$7.55.
+**Session/results:** `kaggle/runpod_cpt_v3/vast_cpt_s7` + `vast_cpt_s7_session.json`.
+
+## Confirmed walk-away gates
+- `PREV_RUN_CHECKPOINT` empty / new Adam
+- `INIT_ADAPTER SHA256 OK` `6aab…`
+- `PIN_OK` torch **2.8.0+cu126** + Unsloth **2026.8.22**
+- conda `unsloth_cpt_s7`
+- `Continue profile max_steps 4128 -> 2064`, `output_dir=/workspace/checkpoints_s7`
+- `trainer_bf16=True`, training at step ≥2/2064, GPU ~100%
+
+## Fixes landed this session
+- Parallel Vast S7 lane (`vast_cpt_s7_*` scripts + runbook)
+- Launch via **nohup** (foreground SSH died mid-Miniforge)
+- `max_seq_length` → `max_length` remap for TRL 0.24; pin `trl>=0.18,<0.24` on fresh installs
+
+## Monitor
+`vast_cpt_s7_monitor_until_done.py` with `CPT_TOTAL_STEPS=2064` → fetch `checkpoints_s7` + s5best, then destroy.
+
+## Do not
+- Call S6 orchestrate; Hub overwrite; mix rebuild; destroy until B done + fetch OK
+
+<!-- memory-fabric:store/pretraining/cpt-s7-vast-phase-b -->
+---
+store_path: pretraining/cpt-s7-vast-phase-b
+title: "S7 Phase B Vast composite early-stop @ 750"
+summary: "**Instance:** `52264974` destroyed after fetch (`destroyed_at` 2026-09-23T19:37:29Z)"
+priority: medium
+tags: [cpt, s7, vast, phase-b, v5, early-stop]
+schema_version: 1.3
+last_updated: "2026-09-23T16:49:42-03:00"
+evidence: [continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7/fetch/cpt_train.log, continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7/fetch/theology_cpt_run_config.json]
+---
+
+## S7 Phase B on Vast — DONE (2026-09-23)
+
+**Instance:** `52264974` destroyed after fetch (`destroyed_at` 2026-09-23T19:37:29Z).
+**Stop:** **COMPOSITE EARLY-STOP @ step 750** / 955 (patience 4, ε 0.003). Not a crash. Train ~1.63 h, train_loss 2.017.
+
+## In-train CE @ 750
+- spurgeon **2.482** (seed 2.4987)
+- puritan **1.740** (seed 1.751)
+- confession **1.666** (seed 1.668)
+- mix-val **2.205** (unseeded v5 split; best 2.2048)
+- Composite bests never moved enough after ~550–600 → flat streak 4 → halt.
+
+## Artifacts (nested fetch)
+- HF best (spurgeon): step **700** SHA `6d0030418b0a6fecd4dbf29c63f467dd746119555818e4ad294c04dfd31a363a` at `fetch/theology_cpt_lora/theology_cpt_lora/`
+- §5 s5best: step **600** SHA `ddbbee3ac9ef7baf6cca21dcdb844d027d39f5f6a4b88ba10fcf8a43fa7c8214` at `fetch/theology_cpt_lora_s5best/theology_cpt_lora_s5best/`
+- Top-level `fetch/theology_cpt_lora_s5best/adapter_model.safetensors` is still Phase A `06354dfc` — do not confuse.
+
+## Next
+Isolation C on Unsloth 2026.8.22 + torch 2.8. Pin SHA (`ddbbee3a` and/or `6d003041`). **Keep Hub S7 `06354dfc` until winning C.**
+
+<!-- memory-fabric:store/pretraining/cpt-wave5-puritan-fetch -->
+---
+store_path: pretraining/cpt-wave5-puritan-fetch
+title: "Wave 5 Puritan fetch complete; mix still deferred"
+summary: "**Status:** Catalog + fetch + long-s normalize done"
+priority: medium
+tags: [cpt, wave5, puritans, corpus, phase-b]
+schema_version: 1.3
+last_updated: "2026-09-23T09:19:24-03:00"
+evidence: [continued_pretrain/scripts/10_fetch_puritans.py, continued_pretrain/data/corpus_v3_catalog.json, continued_pretrain/NEXT_CPT_S7.md, data/puritans/PROVENANCE.md]
+---
+
+# Wave 5 Puritan fetch (2026-09-23)
+
+**Status:** Catalog + fetch + long-s normalize done. **No** mix rebuild / `a_output_v4` / CPT train.
+
+## Landed (9/9, 0 fail)
+
+| Key | Path | Source | Chars |
+|-----|------|--------|-------|
+| ambrose_looking_unto_jesus | data/puritans/ambrose/looking_unto_jesus.txt | EEBO-TCP A25241 | 2,821,289 |
+| swinnock_works | data/puritans/swinnock/works_1665.txt | EEBO-TCP A62040 | 1,645,784 |
+| swinnock_incomparableness | data/puritans/swinnock/incomparableness_of_god.txt | EEBO-TCP A62054 | 359,563 |
+| venning_plague_of_plagues | data/puritans/venning/plague_of_plagues.txt | EEBO-TCP A64834 | 601,046 |
+| binning_sinners_sanctuary | data/puritans/binning/sinners_sanctuary.txt | EEBO-TCP A28173 | 740,940 |
+| preston_breastplate | data/puritans/preston/breastplate_of_faith_and_love.txt | EEBO-TCP A09950 | 934,050 |
+| durham_unsearchable_riches | data/puritans/durham/unsearchable_riches_of_christ.txt | EEBO-TCP B02840 | 686,701 |
+| vincent_unseen_christ | data/puritans/vincent/true_christians_love_of_the_unseen_christ.txt | EEBO-TCP A64995 | 271,893 |
+| guthrie_great_interest | data/puritans/guthrie/christians_great_interest.txt | CCEL guthrie/interest2 | 412,795 |
+
+Total **8,474,061 chars** (~8.5 MB). Long-s already 0 after fetch; `normalize_early_modern_orthography.py` rewrote 0 files.
+
+## Skipped (plan)
+- Gillespie Aaron's Rod (polity)
+- Extra titles by authors already on disk
+- Confession S5 (Shaw / Sum of Saving Knowledge): 6% of added mix is only ~0.5 MB; confession disk still over cap
+- Vincent WSC / Fisher / Savoy near-dupes
+
+## Do not
+- Rebuild mix / pack `a_output_v4` until operator starts Phase B mix
+- Redraw puritan/confession holdouts (keep `holdouts_pinned_v3`)
+- Fetch S5, scrape Banner/Heritage/Puritan Publications
+
 <!-- memory-fabric:store/failures/cuda-oom-during-mid-ffcb775074 -->
 ---
 store_path: failures/cuda-oom-during-mid-ffcb775074
@@ -3717,6 +4370,7 @@ schema_version: 1.3
 last_updated: "2026-08-25T02:32:47-04:00"
 occurrences: 1
 error_signature: "cuda oom on kaggle t<n> during cpt b v<n> after manual pack (float<n> qwen<n>.<n>, batch <n>, train_embeddings=true)"
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-08-25T02:32:47-04:00
@@ -3738,6 +4392,7 @@ schema_version: 1.3
 last_updated: "2026-08-26T01:22:24-04:00"
 occurrences: 1
 error_signature: "cuda out of memory during first eval of qwen<n>.<n> embed lora cpt: tried to allocate <n>.<n> gib on t<n> while evaluating mix+<n> holdout buckets at eval_docs_per_bucket=<n> (logits for <n>k vocab). train steps at batch <n>x<n> with train_embeddings=true succeeded."
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-08-26T01:22:24-04:00
@@ -3850,15 +4505,15 @@ Execution configurations and dependency management rules for continued pretraini
 <!-- memory-fabric:local/episodic -->
 ---
 section: episodic
-summary: "Generated map of memory-store/episodic/ (27 entries)."
+summary: "Generated map of memory-store/episodic/ (30 entries)."
 priority: medium
 tags: [episodic]
 schema_version: 1.3
-last_updated: "2026-09-21T07:10:40-03:00"
+last_updated: "2026-09-26T07:45:43-03:00"
 generated: true
 generated_from: memory-store/episodic
-store_fingerprint: 25e301fad24e6a2c7786a5c599337be6
-body_hash: 53a2f976830870da5f687b40421a6a33
+store_fingerprint: 73f6a40b4c185fbd6ccafb59a28b3c06
+body_hash: d2ee5dbef75b94ee96f20efbbea58081
 ---
 
 # Episodic Map
@@ -3880,7 +4535,7 @@ Generated by Memory Fabric from `memory-store/episodic/` — do not edit by hand
 - **Episodic Journal — 2026-08-30** (`episodic/2026-08-30`, low) — Resolved parallel Groq+Cerebras rewrite conflict: stopped Cerebras, let Groq finish, deduped bulk_pending.jsonl (648→637, 11 dupes removed), re-ran full pipeline
 - **Episodic Journal — 2026-08-31** (`episodic/2026-08-31`, low) — Verified live QA mix against serve contract and F5 targets
 - **Episodic Journal — 2026-09-01** (`episodic/2026-09-01`, low) — Verified QA teacher rewrite resume point (line 1786 per handoff, confirmed live)
-- …and 12 more entries — see `memory-store/index.md`.
+- …and 15 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:store/pretraining/eval-and-export -->
 ---
@@ -3904,15 +4559,15 @@ Following the successful execution of Notebook B (Epoch 1 & 2) up to step 432:
 <!-- memory-fabric:local/failures -->
 ---
 section: failures
-summary: "Generated map of memory-store/failures/ (30 entries)."
+summary: "Generated map of memory-store/failures/ (32 entries)."
 priority: medium
 tags: [failures]
 schema_version: 1.3
-last_updated: "2026-09-20T18:17:11-03:00"
+last_updated: "2026-09-23T14:22:40-03:00"
 generated: true
 generated_from: memory-store/failures
-store_fingerprint: 8027e2ad9ea607575cf177b190752683
-body_hash: 00a555c8e81a6b9fc4b68ba069c00044
+store_fingerprint: 6a90f60ca4a53e70b932c78f88a4ad87
+body_hash: 26f4d8f650c53855dbe819c48f9a0778
 ---
 
 # Failures Map
@@ -3927,7 +4582,7 @@ Generated by Memory Fabric from `memory-store/failures/` — do not edit by hand
 - **CUDA OOM on Kaggle T4 during CPT B v5 after manual pack (float32 Qwen3.5, batch ** (`failures/cuda-oom-on-kaggle-e64e9b60ce`, medium) — CUDA OOM on Kaggle T4 during CPT B v5 after manual pack (float32 Qwen3.5, batch 2, TRAIN_EMBEDDINGS=True)
 - **CUDA out of memory during first eval of Qwen3.5 embed LoRA CPT: tried to allocat** (`failures/cuda-out-of-memory-849d59401d`, medium) — CUDA out of memory during first eval of Qwen3.5 embed LoRA CPT: tried to allocate 6.81 GiB on T4 while evaluating mix+4 holdout buckets at EVAL_DOCS_PER_BUCKET=8 (logits for 248k vocab)
 - **Full semantic judge run stalled or failed due Groq/Cerebras 403, OpenRouter dail** (`failures/full-semantic-judge-run-2188a7bf04`, medium) — Full semantic judge run stalled or failed due Groq/Cerebras 403, OpenRouter daily quota 429, and transient Gemini 503 responses
-- …and 22 more entries — see `memory-store/index.md`.
+- …and 24 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:local/fine-tuning -->
 ---
@@ -4397,6 +5052,7 @@ last_updated: "2026-08-26T01:22:27-04:00"
 occurrences: 1
 error_signature: "oserror: [errno <n>] no space left on device on kaggle <path> while papermill saved the notebook after checkpoint-<n>. embed lora modules_to_save plus optimizer.pt x save_total_limit=<n> filled the ~<n>gb working disk."
 failure_key: oserror
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-08-26T01:22:27-04:00
@@ -4538,15 +5194,15 @@ Use ASCII -- in PowerShell scripts instead of Unicode em-dashes. Windows PowerSh
 <!-- memory-fabric:local/pretraining -->
 ---
 section: pretraining
-summary: "Generated map of memory-store/pretraining/ (66 entries)."
+summary: "Generated map of memory-store/pretraining/ (83 entries)."
 priority: medium
 tags: [pretraining]
 schema_version: 1.3
-last_updated: "2026-09-20T19:01:32-03:00"
+last_updated: "2026-09-23T18:15:47-03:00"
 generated: true
 generated_from: memory-store/pretraining
-store_fingerprint: 0e30dea5fefc59a2e2fbef053fa16c2d
-body_hash: 6844ec073fc5d4e013be1459075b7639
+store_fingerprint: 5d00609083f8e2801123c2faa4748ddb
+body_hash: 7fbd3af903e33a6e62c3c02bcb51f07c
 ---
 
 # Pretraining Map
@@ -4558,14 +5214,14 @@ Generated by Memory Fabric from `memory-store/pretraining/` — do not edit by h
 - **Confessions + Institutes corpus (WCF, 1689, Calvin)** (`pretraining/confessions-corpus-fetch`, high) — Confessions + Institutes corpus (WCF, 1689, Calvin)
 - **CPT B eval strategy — verified next-B spec** (`pretraining/cpt-b-eval-strategy`, high) — Operator approved this as the continue-session spec (nits from fact-check applied)
 - **CPT B eval strategy — implemented, ready for S6 run** (`pretraining/cpt-b-eval-strategy-implementation`, high) — B eval strategy implementation is **complete** (2026-08-28)
+- **Best CPT + Hub: S7 s5best spurgeon 12.45** (`pretraining/cpt-best-adapter-leaderboard`, high) — **S7 s5best is best measured CPT LoRA** and **is now on production Hub** (operator overwrite)
 - **CPT corpus expansion (Puritans/Edwards)** (`pretraining/cpt-corpus-expansion-2026-08`, high) — Grew non-Spurgeon domain text so Spurgeon in-mix could rise while keeping ~45% share
 - **CPT corpus v3 expansion plan (no training)** (`pretraining/cpt-corpus-v3-expansion-plan`, high) — Runpod C: spurgeon −7.2%, puritan −5.0%, confession −7.0% vs Ampere bf16 base
 - **CPT corpus v3 S1 complete (mix verified, no training)** (`pretraining/cpt-corpus-v3-s1-complete`, high) — **No B, no C, no Wave 2 fetch, no Runpod GPU, no Kaggle push, no merge, no Hub overwrite.**
 - **CPT corpus v3 S1 Wave 1 fetch + mix** (`pretraining/cpt-corpus-v3-s1-wave1`, high) — **No B, no C, no Runpod GPU, no Kaggle push, no merge, no Hub overwrite.**
 - **CPT corpus v3 S2 complete (fetch + mix, no training)** (`pretraining/cpt-corpus-v3-s2-complete`, high) — S2 fetch + mix rebuild finished 2026-08-27
 - **CPT corpus v3 S2 is done — next is S3** (`pretraining/cpt-corpus-v3-s2-handoff`, high) — S2 done; pointer to s2-complete.
-- **CPT corpus v3 S3 complete (Wave 3 + mix, no training)** (`pretraining/cpt-corpus-v3-s3-complete`, high) — S3 fetch + mix rebuild finished 2026-08-27
-- …and 54 more entries — see `memory-store/index.md`.
+- …and 71 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:store/fine-tuning/qwen-sft-alpaca-reversion -->
 ---
@@ -4631,6 +5287,7 @@ last_updated: "2026-08-26T01:22:26-04:00"
 occurrences: 1
 error_signature: "runtimeerror: expected mat<n> and mat<n> to have the same dtype, but got: float != c<n>::half during trainer.evaluate after unsloth upcasts embed_tokens to fp<n> (d<n> same_storage=<n>). eval calls self.lm_head(hidden_fp<n>) vs fp<n> lm_head weight. disabling trainer fp<n><path> alone did not fix it"
 failure_key: runtimeerror
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-08-26T01:22:26-04:00
@@ -4640,6 +5297,27 @@ RuntimeError: expected mat1 and mat2 to have the same dtype, but got: float != c
 
 **Fix:**
 Register a forward pre-hook on get_output_embeddings() that casts lm_head inputs to weight.dtype. Keep trainer fp16/bf16 off when TRAIN_EMBEDDINGS=True. Do not upcast the full lm_head table (VRAM).
+
+<!-- memory-fabric:store/failures/s-n-composite-seed-c37a1172e7 -->
+---
+store_path: failures/s-n-composite-seed-c37a1172e7
+title: "S7 composite seed used isolation-C full-holdout CE for puritan (1.722) and confe"
+summary: "S7 composite seed used isolation-C full-holdout CE for puritan (1.722) and confession (1.662) instead of S6 in-train @ ckpt-2050 (1.751 / 1.668)"
+priority: medium
+tags: [cpt, early-stop, failure, fix, s7, seed]
+schema_version: 1.3
+last_updated: "2026-09-21T11:05:20-03:00"
+occurrences: 1
+error_signature: "s<n> composite seed used isolation-c full-holdout ce for puritan (<n>.<n>) and confession (<n>.<n>) instead of s<n> in-train @ ckpt-<n> (<n>.<n> / <n>.<n>). combined with patience=<n> and seeded bests, first flat cycles would halt at step ~<n> of <n> (~<n>% of budget) because the seed was unreachabl"
+---
+
+## Occurrence 1 — 2026-09-21T11:05:20-03:00
+
+**Error:**
+S7 composite seed used isolation-C full-holdout CE for puritan (1.722) and confession (1.662) instead of S6 in-train @ ckpt-2050 (1.751 / 1.668). Combined with patience=2 and seeded bests, first flat cycles would halt at step ~525 of 2064 (~25% of budget) because the seed was unreachable on EVAL_DOCS_PER_BUCKET=16.
+
+**Fix:**
+Corrected S7_DEFAULT_COMPOSITE_SEED_BESTS to in-train values (puritan 1.751, confession 1.668). Retuned S7 to patience=4, epsilon=0.003, eval/save_steps=50, warmup_ratio=0.04. Documented that isolation-C CE must never replace in-train seeds.
 
 <!-- memory-fabric:store/failures/s-n-vast-c-b0dd9b03d4 -->
 ---
@@ -4876,13 +5554,13 @@ Never pass dataset_text_field/packing/max_seq_length to SFTTrainer. Put them on 
 <!-- memory-fabric:store/failures/unicodeencodeerror-val-codec-can-896018dfa4 -->
 ---
 store_path: failures/unicodeencodeerror-val-codec-can-896018dfa4
-title: "UnicodeEncodeError: 'charmap' codec can't encode character '\\u2192' in position "
+title: "UnicodeEncodeError: 'charmap' codec can't encode character '\\u258e' when vast_cp"
 summary: "UnicodeEncodeError: 'charmap' codec can't encode character '\\u2192' in position 2 (Windows cp1252 console) when 10_fetch_puritans.py printed status arrows"
 priority: medium
-tags: [cpt, encoding, failure, fix, mix, windows]
+tags: [cpt, encoding, failure, fix, monitor, vast, windows]
 schema_version: 1.3
-last_updated: "2026-08-27T15:23:32-04:00"
-occurrences: 2
+last_updated: "2026-09-23T14:22:40-03:00"
+occurrences: 3
 error_signature: "unicodeencodeerror: <val> codec can<val><path>' in position <n> (windows cp<n> console) when <n>_fetch_puritans.py printed status arrows."
 failure_key: unicodeencodeerror
 ---
@@ -4900,6 +5578,12 @@ Replaced the Unicode arrow in the status print with ASCII '->'. Also set PYTHONI
 UnicodeEncodeError: 'charmap' codec can't encode character '\u2192' in position 23 (Windows cp1252 console) when 07_build_theology_mix.py printed Paragraph dedup docs_in → docs_out
 
 Replaced Unicode arrows in 07_build_theology_mix.py prints (paragraph dedup and bucket cap) with ASCII '->'. Re-run mix with PYTHONIOENCODING=utf-8. Same class of bug as the fetcher status-arrow crash.
+
+## Occurrence 3 — 2026-09-23T14:22:40-03:00
+
+UnicodeEncodeError: 'charmap' codec can't encode character '\u258e' when vast_cpt_s7_monitor_until_done.py prints Unsloth tqdm progress bars on Windows cp1252 redirected stdout; that exception skipped fetch + finished checks every poll cycle
+
+Sanitize monitor log lines with safe_line() ASCII replace, reconfigure stdio to utf-8 errors=replace, and set PYTHONIOENCODING=utf-8 when orchestrate starts the monitor.
 
 <!-- memory-fabric:store/bugs/unsloth-fast-patching-warnings -->
 ---
@@ -4992,6 +5676,7 @@ last_updated: "2026-08-25T00:45:48-04:00"
 occurrences: 1
 error_signature: "unslothtrainer runtimeerror: you must specify a formatting_func when manual_pack train has input_ids but eval_dataset dict still has text columns"
 failure_key: runtimeerror
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-08-25T00:45:48-04:00
@@ -5001,6 +5686,28 @@ UnslothTrainer RuntimeError: You must specify a formatting_func when MANUAL_PACK
 
 **Fix:**
 Tokenize eval holdout buckets to input_ids/attention_mask/labels (truncate to MAX_SEQ_LENGTH) before UnslothTrainer when MANUAL_PACK=True in _gen_sota_notebooks.py
+
+<!-- memory-fabric:store/failures/unslothtrainingarguments-typeerror-sftconfig-unexpected-652ebfdef4 -->
+---
+store_path: failures/unslothtrainingarguments-typeerror-sftconfig-unexpected-652ebfdef4
+title: "UnslothTrainingArguments TypeError: SFTConfig unexpected keyword max_seq_length "
+summary: "UnslothTrainingArguments TypeError: SFTConfig unexpected keyword max_seq_length (TRL 0.24)"
+priority: medium
+tags: [failure, fix]
+schema_version: 1.3
+last_updated: "2026-09-22T10:36:31-03:00"
+occurrences: 1
+error_signature: "unslothtrainingarguments typeerror: sftconfig unexpected keyword max_seq_length (trl <n>.<n>)"
+failure_key: typeerror
+---
+
+## Occurrence 1 — 2026-09-22T10:36:31-03:00
+
+**Error:**
+UnslothTrainingArguments TypeError: SFTConfig unexpected keyword max_seq_length (TRL 0.24)
+
+**Fix:**
+TRL 0.24 renamed max_seq_length to max_length. train_cpt_sota.py now remaps on TypeError; vast_cpt_s7_remote_continue_b.sh pins trl>=0.18,<0.24.
 
 <!-- memory-fabric:store/failures/valueerror-incorrect-image-source-9824630bd3 -->
 ---
@@ -5014,6 +5721,7 @@ last_updated: "2026-08-24T10:19:12-04:00"
 occurrences: 1
 error_signature: "valueerror: incorrect image source. must be a valid url starting with htt<path> or http<path> ... got sermon <n> | the necessity of increased faith. c_eval tokenizer(text) on qwen<n>.<n> vl processor treats first positional arg as images."
 failure_key: valueerror
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-08-24T10:19:12-04:00
@@ -5477,6 +6185,7 @@ priority: low
 tags: [episodic, session-journal]
 schema_version: 1.3
 last_updated: "2026-08-23T14:33:13-04:00"
+review_status: stale
 ---
 
 ## upgrade-memory-fabric-diary
@@ -5559,6 +6268,7 @@ priority: low
 tags: [episodic, session-journal]
 schema_version: 1.3
 last_updated: "2026-08-24T17:04:05-04:00"
+review_status: stale
 ---
 
 ## cpt-b-done-c-started
@@ -5619,6 +6329,7 @@ priority: low
 tags: [episodic, session-journal]
 schema_version: 1.3
 last_updated: "2026-08-25T11:47:27-04:00"
+review_status: stale
 ---
 
 ## cpt-rc2-rc4-local
@@ -7317,7 +8028,7 @@ summary: "Committed and pushed CPT C-eval stack pin, S6 stack-isolation tooling/
 priority: low
 tags: [episodic, session-journal]
 schema_version: 1.3
-last_updated: "2026-09-21T07:40:52-03:00"
+last_updated: "2026-09-21T11:05:46-03:00"
 ---
 
 ## commit-push-s6-isolation
@@ -7345,6 +8056,328 @@ Ran LLM-assisted deep dream using the Split-Tool Protocol. Prepared payload with
 Executed a full deep dream consolidation with LLM synthesis, evaluation reporting (saved to .ai-memory/evals/latest.md), quality scoring (+6 delta, 100/100 score), and generation of rewrite candidates for long episodic entries.
 
 - Completed full deep dream with evaluation report generation and rewrite task identification via the Split-Tool Protocol
+
+## upgrade-memory-fabric-1.4.2
+
+Verified ai-memory / memory-fabric against PyPI latest (1.4.2). Project `.venv` was already on 1.4.2; upgraded the Cursor MCP `uv tool` install from 1.4.1 → 1.4.2 after stopping locked `memory-fabric-mcp` processes. Also cleaned/reinstalled a broken Python 3.14 user-site leftover to 1.4.2. `sync-agents --check` reported agent instruction files in sync. Doctor ok with existing store-hygiene warnings only.
+
+- Cursor `~/.cursor/mcp.json` uses the uv-tool binary (source of truth for live MCP)
+- On Windows, stop running `memory-fabric-mcp` processes before `uv tool upgrade` (file lock)
+
+## hub-s6-overwrite
+
+Uploaded S6 nested LoRA SHA 6aab to private Hub …-theology-cpt-lora-v2. Updated eval default EXPECTED_ADAPTER_SHA256 to 6aab. Wrote hub-overwrite + next-cpt-improvements-prep memories; next work is plan-only CPT improvements (LR/Adam/§5), not immediate train.
+
+- Operator approved Hub overwrite with S6 6aab
+- Legacy v2 SHA kept only as HUB_CPT_ADAPTER_SHA256_V2_LEGACY / local runpod_cpt_v2
+- Next session is CPT improvements prep only — no B until go
+
+
+## cpt-s7-improvements-prep
+
+Drafted the S7 CPT continue plan from S6 LoRA (SHA 6aab) without starting a GPU. Phase A is new Adam, ~2e-6 body LR, same v3 mix, C on Unsloth 2026.8.22/torch 2.8. Catalogued further levers (confession unique tokens, seeded composite, freeze embeds, merge+r=64) and the volume auto-resume landmine.
+
+- S7 Phase A is adapter-only new Adam from S6 LoRA 6aab, not HF-resume of 2050/2100/2400 (PREV_RUN_CHECKPOINT must be empty string).
+- Do not clone S6's 4e-6 peak; recommended body ~2e-6 / emb ~8e-7 with short warmup and seeded composite including puritan+confession.
+- Same a_output_v3 mix on first GPU go; unique confession/puritan tokens (Phase B) and merge+r=64 (Phase C) only if A plateaus.
+- Train and C on Unsloth 2026.8.22 / torch 2.8; skip WSD.
+- No GPU provisioned this session.
+
+- `pretraining/cpt-next-cpt-improvements-prep`
+
+## cpt-s7-phase-a-prep
+
+Implemented S7 Phase A prep with no GPU: CPT_CONTINUE_PROFILE=s7 (2e-6 / 8e-7, 2064 steps, seeded 4-metric composite, checkpoints_s7), regenerated train_cpt_sota.py, added s7_remote_continue_b.sh with stack pin, extended unit tests (32 passed), and wrote NEXT_CPT_S7.md. Next session is operator GPU go only.
+
+- CPT_CONTINUE_PROFILE=s7 keeps S6 continue defaults unchanged (4e-6 / min_steps 0.4 epoch).
+- S7 writes checkpoints_s7 and never auto-resumes leftover checkpoints_sota; first launch forces PREV_RUN_CHECKPOINT empty.
+- Composite early-stop accepts initial_bests seeded from S6 so first-eval spikes cannot become the halt baseline.
+- Train install honors UNSLOTH_PIP_SPEC; S7 launcher pins Unsloth 2026.8.22 / torch 2.8 and omits xformers.
+
+- `continued_pretrain/scripts/s7_remote_continue_b.sh`
+- `continued_pretrain/NEXT_CPT_S7.md`
+
+## s7-improvements-pass
+
+Implemented the S7 CPT improvements pass (no GPU): corrected unreachable isolation-C seed bests to S6 in-train values, retuned halt cadence (patience 4 / ε 0.003 / eval 50 / warmup 0.04), parameterized the monitor for 2064 steps, added LR floor + freeze-embeds + general bucket levers, S5BestAdapterExporter, AbortOnSeedRegressionCallback, and s7_remote_c_eval.sh. Regenerated train/eval scripts; all cpt_runtime and monitor tests passed.
+
+- S7 composite seeds must be S6 in-train @ 2050 (1.751/1.668), never isolation-C CE
+- patience 4 + eval_steps 50 so earliest halt is step 650 not 525
+- HF best stays spurgeon; §5 candidate exported to theology_cpt_lora_s5best
+- eval_cpt_sota.py default SHA left at S6 6aab; S7 C wrapper uses skip or explicit SHA
+
+- `continued_pretrain/scripts/s7_remote_c_eval.sh`
+
+<!-- memory-fabric:store/episodic/2026-09-22 -->
+---
+store_path: episodic/2026-09-22
+title: "Episodic Journal — 2026-09-22"
+summary: "Parked a next-cycle plan to add John Downame (with confession/ST unique-token growth) after S7 Phase A"
+priority: low
+tags: [episodic, session-journal]
+schema_version: 1.3
+last_updated: "2026-09-22T17:55:58-03:00"
+---
+
+## park-downame-phase-b
+
+Parked a next-cycle plan to add John Downame (with confession/ST unique-token growth) after S7 Phase A. Saved as pretraining/cpt-phase-b-downame-next-cycle and linked from the CPT handoff. Phase A stays on a_output_v3 with no mix rebuild.
+
+**Key decisions:**
+- Downame is Phase B only — not Phase A mix
+- Pair Downame with confession expansion, not Puritan alone
+
+## phase-b-downame-corpus
+
+Implemented Phase B corpus prep: Downame Christian Warfare + Guide to Godliness on disk from EEBO-TCP, S5 confession catalog wired but not fetched (negative headroom under 6% cap), 07 now pins puritan/confession holdouts, v3 holdout snapshot saved, playbook and memory updated. Mix rebuild to a_output_v4 remains deferred until Phase A finishes.
+
+- Fetched John Downame via EEBO-TCP A20752/A20762; train-only
+- Skipped S5 Shaw/Sum fetch because confession headroom was −3.39 MB after Downame
+- Pinned puritan/confession holdouts in 07 like Spurgeon; snapshot in holdouts_pinned_v3
+- Deferred mix rebuild and a_output_v4 until Phase A completes
+
+**Files changed:**
+- `data/puritans/downame/christian_warfare.txt`
+- `data/puritans/downame/guide_to_godliness.txt`
+- `continued_pretrain/data/holdouts_pinned_v3/`
+
+## s7-gpu-go-balance-block
+
+Attempted S7 Phase A GPU launch after operator go. Runpod MCP authenticated; zero pods/volumes. Network volume create failed (≥$5 required). Secure 4090 EU-RO-1 out of stock; Secure L4 create returned 402 balance too low. Confirmed local a_output_v3 (23dd) and nested S6 LoRA 6aab ready. No pod left running.
+
+- Will not train without funds; avoided leaving billable orphans
+- Prefer network volume + Secure GPU once balance restored; persistent mount only as fallback
+
+## s7-vast-phase-a-running
+
+Implemented S7 Vast lane, packed/synced a_output_v3 + 6aab LoRA to instance 52063161 (RTX 4090). Fixed TRL max_seq_length crash and nohup launch. Training running at 2064 max_steps with torch 2.8 / Unsloth 2026.8.22; monitor polling with TotalSteps 2064.
+
+- Vast primary for S7 Phase A after Runpod balance block
+- nohup whole launcher so Miniforge survives SSH
+- TRL 0.24 max_seq_length remapped to max_length; pin trl<0.24 on new envs
+
+- `continued_pretrain/scripts/vast_cpt_s7_remote_continue_b.sh`
+- `continued_pretrain/scripts/vast_cpt_s7_orchestrate.ps1`
+- `continued_pretrain/scripts/vast_cpt_s7_launch.ps1`
+- `continued_pretrain/scripts/vast_cpt_s7_fetch.ps1`
+- `continued_pretrain/scripts/vast_cpt_s7_monitor_until_done.py`
+- `continued_pretrain/VAST_RUNBOOK_CPT_S7.md`
+
+## s7-earlystop-fetch
+
+S7 Phase A CPT finished on Vast with COMPOSITE EARLY-STOP at step 1250 (max was 2064). Final LoRA SHA 1381e5ee… and s5best SHA 06354dfc… (step 1200) verified locally under vast_cpt_s7/fetch. Monitor did not auto-fetch/destroy; manual fetch completed; instance destroy attempted (credit still ~$4.5 with instance live until confirmed destroyed).
+
+- Prefer local theology_cpt_lora_s5best (step 1200) for upcoming C eval; final HF LoRA equals checkpoint-1250
+- Destroy Vast instance 52063161 after artifact verify to stop billing
+
+- `continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7/fetch/theology_cpt_lora`
+- `continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7/fetch/theology_cpt_lora_s5best`
+
+## s7-handoff-c-next
+
+Saved next-session handoff: operator will run S7 isolation C next. Updated cpt-next-session-handoff and cpt-current with s5best SHA, stack pin, and win/keep gates.
+
+- Next session is isolation C only; prefer s5best SHA 06354dfc…; Hub stays S6 until C wins
+
+## s7-isolation-c
+
+Ran S7 isolation C on Vast with the correct stack pin. Added vast_cpt_s7_c_eval.ps1, rented RTX 4090, evaluated s5best 06354dfc…, fetched metrics, destroyed instance. Spurgeon 12.45 (−13%); §5 puritan/confession −8.6%/−6.0% FAIL vs −15% bar. Hub stays S6.
+
+- Used Miniforge stack-isolation C (Unsloth 2026.8.22 + torch 2.8), not vast_remote_c_eval.sh torch 2.11
+- Evaluated s5best SHA 06354dfc (step 1200), not final 1381e5ee
+- §5 FAIL — keep Hub S6; no overwrite; next is Phase B
+
+- `continued_pretrain/scripts/vast_cpt_s7_c_eval.ps1`
+- `continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7_c/theology_cpt_eval_metrics.json`
+- `continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7_c/cpt_eval.log`
+
+## s7-best-adapter-memory
+
+Confirmed S7 s5best is the best CPT adapter on isolation-C scorecard (spurgeon 12.45 beats S6 12.85). Saved leaderboard + updated cpt-current and next-session handoff. Hub still S6 locally-only win.
+
+- S7 s5best 06354dfc is best measured CPT adapter (spurgeon 12.45 vs S6 12.85)
+- Hub remains S6 until operator overwrite approve
+- §5 still FAIL — Phase B next
+
+## hub-s7-overwrite
+
+Uploaded S7 s5best LoRA (SHA 06354dfc) to private Hugging Face repo rafaelvieirar1r/qwen3.5-4b-theology-cpt-lora-v2, replacing S6 6aab. Updated eval/generator SHA defaults and Hub memories.
+
+- Operator-approved Hub overwrite of private qwen3.5-4b-theology-cpt-lora-v2 with S7 s5best 06354dfc
+- Kept repo private; no merge/GGUF
+- Updated eval default EXPECTED_ADAPTER_SHA256 to S7
+
+
+## save-hub-s7-memories
+
+Saved/refreshed CPT memories after Hub S7 overwrite: cpt-current, cpt-best-adapter-leaderboard, cpt-hub-s7-overwrite (code defaults), and fixed cpt-next-session-handoff which still incorrectly said keep Hub S6.
+
+- Hub production is S7 s5best 06354dfc (not S6)
+- Next session handoff corrected to Phase B with Hub=S7
+- Leaderboard refreshed as best+Hub
+
+<!-- memory-fabric:store/episodic/2026-09-23 -->
+---
+store_path: episodic/2026-09-23
+title: "Episodic Journal — 2026-09-23"
+summary: "Implemented the recommended wave-5 Puritan shortlist: wired _wave5_catalog, fetched all 9 titles (~8.47M chars) via EEBO-TCP/CCEL, confirmed long-s already normalized, and stopped before mix rebuild o"
+priority: low
+tags: [episodic, session-journal]
+schema_version: 1.3
+last_updated: "2026-09-23T18:15:50-03:00"
+---
+
+## wave5-puritan-fetch
+
+Implemented the recommended wave-5 Puritan shortlist: wired _wave5_catalog, fetched all 9 titles (~8.47M chars) via EEBO-TCP/CCEL, confirmed long-s already normalized, and stopped before mix rebuild or CPT. Confession S5, Gillespie, and catechism near-dupes were left out.
+
+**Key decisions:**
+- Treat the plan's Recommend list as the approved subset.
+- Keep new texts train-only with holdouts pinned.
+- Do not fetch confession S5; extra Puritan mass is not enough to close the 6% headroom gap.
+
+**Files changed:**
+- `data/puritans/ambrose/looking_unto_jesus.txt`
+- `data/puritans/swinnock/works_1665.txt`
+- `data/puritans/swinnock/incomparableness_of_god.txt`
+- `data/puritans/venning/plague_of_plagues.txt`
+- `data/puritans/binning/sinners_sanctuary.txt`
+- `data/puritans/preston/breastplate_of_faith_and_love.txt`
+- `data/puritans/durham/unsearchable_riches_of_christ.txt`
+- `data/puritans/vincent/true_christians_love_of_the_unseen_christ.txt`
+- `data/puritans/guthrie/christians_great_interest.txt`
+
+## phase-b-mix-v4
+
+Rebuilt the theology mix with pinned v3 holdouts so Downame and the nine wave-5 Puritans entered the CPT corpus, verified ~94.7M tokens, and packed a_output_v4 (mix SHA 37a3ba50…). a_output_v3 was not overwritten. No CPT train was started.
+
+- Pin holdouts from holdouts_pinned_v3 so wave 5 and Downame stay train-only.
+- Pack only a_output_v4; leave a_output_v3 SHA 23dd untouched.
+- Stop before GPU continue-B.
+
+
+## next-cpt-preprocess-plan
+
+Planned data preprocessing for the next CPT. Phase B local prep is already packed as a_output_v4 (SHA 37a3ba50, ~94.7M tokens). The plan locks that artifact for the GPU continue from Hub S7, lists the verification-only checklist, and defers any new fetch or mix rebuild until after that run's C.
+
+- Do not rebuild the mix or fetch confession S5 before the Phase B GPU.
+- Next train consumes a_output_v4; one_doc_padded packing stays on the GPU.
+- A later corpus cycle (a_output_v5) starts only if new unique text is approved after C.
+
+## cpt-v4-reweight-memory
+
+Saved the CPT prep decision for the Downame and wave 5 corpus. The next run continues Hub S7 s5best on the full mix, reweighted so the eleven unseen files are about 15% of steps while Spurgeon, older Puritans, confession, Bible, and replay stay the majority.
+
+- Continue S7 s5best on a reweighted full mix, not a new-authors-only CPT.
+- Target about 15% steps on the 11 unseen files via one pass plus a subsample of the already-trained shelf.
+- Keep pinned v3 holdouts; new Adam; do not resume a_output_v3.
+
+## next-cpt-preprocess
+
+Implemented the next-CPT preprocess plan: corpus-wide audit of every mix bucket, no source rewrite and no mix rebuild because the audit was clean. Locked a_output_v4 SHA 37a3ba50 for the S7 continue, left a_output_v3 frozen, and pointed Phase B pack/sync/readiness at that v4 superset plus local s5best 06354dfc. GPU copy still waits for operator go.
+
+- Do not rebuild a_output_v4 after a clean audit
+- Do not normalize pinned holdouts that still contain long-s
+- Phase B copy uses a_output_v4 and S7 s5best, not S6 or a_output_v3
+
+- `continued_pretrain/scripts/audit_cpt_mix_sources.py`
+- `continued_pretrain/scripts/normalize_early_modern_orthography.py`
+- `continued_pretrain/scripts/05_build_corpus.py`
+- `continued_pretrain/scripts/vast_cpt_s7_common.ps1`
+- `continued_pretrain/scripts/vast_cpt_s7_pack_payload.ps1`
+- `continued_pretrain/scripts/vast_cpt_s7_sync.ps1`
+- `continued_pretrain/scripts/vast_cpt_s7_local_readiness.py`
+
+## phase-b-v5-reweight-prep
+
+Prepared Phase B continue without GPU: built an isolated 15% new-author reweight mix (a_output_v5 SHA 61e83057, ~25.1M tokens, 15,420 docs), pointed Vast/S7 launchers at that pack plus Hub S7 s5best, and dropped the v3 mix-val seed. Audit CLEAN / CONTINUE_READY. Dry orchestrate listed 4090 offers and rented nothing.
+
+- Keep the full mix; raise the 11 unseen books to 15% of chars via one pass plus a subsample of the already-trained shelf.
+- Write the reweight to isolated mix_v5 / a_output_v5; leave v3 and uniform v4 frozen.
+- Drop eval_mix_loss from composite seeds; set CONTINUE_MAX_STEPS=955 (one packed epoch) and EARLY_STOP_MIN_STEPS=400.
+- No GPU rent, no Hub overwrite.
+
+- `continued_pretrain/data/mix_v5/theology_mix_train.txt`
+
+## vast-4090-readiness-check
+
+Checked Vast 4090 readiness for S7→v5 continue. Old SIGSEGV path is already superseded by Miniforge + torch 2.8 / Unsloth 2026.8.22 (S7 Phase A completed on a 4090). Fixed leftover sync SHA check that still wanted S6 6aab, and pointed pack/sync at the v5 manifest. Local C: has only ~2.1 GB free so default payload.tar pack is unsafe; Vast credit was ~$4.14 under the $5 go gate.
+
+- Phase B sync must verify S7 s5best 06354dfc, not leftover S6 6aab.
+- Skip local payload.tar on C: when free disk is ~2 GB; scp files directly with -SkipPack.
+
+- `continued_pretrain/scripts/test_vast_cpt_s7_prepare.py`
+
+## projetos-disk-cleanup
+
+Freed C: from 2.0 GB to 82.0 GB by deleting regenerable node_modules/Android builds in four Projetos apps and removing superseded CPT/SFT blobs. Archived S6 trees, S5/v2 adapters, and unused GGUFs to D:\search-sermons-cpt\archive-2026-09-23\. Phase B keep-list (a_output_v5 + S7 s5best) and GATE-0 junctions remain on C:.
+
+- Delete regenerable mobile caches first so C: had headroom for S6/GGUF copies.
+- Delete S7 intermediate checkpoints and payload instead of archiving; pack script rebuilds payload for v5.
+- Move S6/S5/v2 history and unused GGUFs to D: archive rather than delete.
+- Skip unsloth.F16.gguf symlink after admin privilege failure; file lives only on D: until operator links it.
+
+- `D:\search-sermons-cpt\archive-2026-09-23\`
+- `controle-medico/node_modules (deleted)`
+- `irglobal-app/node_modules (deleted)`
+- `app-us/node_modules (deleted)`
+- `ai-personal/node_modules (deleted)`
+- `continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s6 (moved)`
+- `continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7/fetch/checkpoints_s7 (deleted)`
+- `fine_tuning/models/*.gguf (moved)`
+
+## cpt-s7-phase-b-vast-go
+
+Prepared and launched CPT S7 Phase B on Vast.ai: packed a_output_v5 + S7 s5best, rented RTX 4090 instance 52264974, and confirmed walk-away gates (new Adam, SHA 06354dfc, torch 2.8 / Unsloth 2026.8.22, max_steps 955). Training is running (~60/955, GPU 100%). Fixed the Windows monitor charmap crash so fetch+destroy still happens when B finishes.
+
+- Used -AllowLowCredit because live credit was $4.14 vs $5 gate; cheapest NYC 4090 at $0.448/hr should finish in ~$2-3.
+- Copied a_output_v5 + local s5best with a new Adam; did not HF-resume v3 or ship checkpoints_sota.
+- Restarted the local monitor after patching ASCII-safe progress-bar printing.
+
+
+## cpt-s7-phase-b-early-stop
+
+Phase B on Vast ended by design: composite early-stop at step 750/955 after holdout CE flattened (patience 4, epsilon 0.003). Monitor fetched adapters and destroyed instance 52264974. HF best is checkpoint-700 SHA 6d003041; new s5best is step 600 SHA ddbbee3a. Hub stays Phase A 06354dfc until isolation C.
+
+- Treat the stop as intended S7 composite halt, not a crash or credit kill.
+- Do not overwrite Hub until isolation C on the nested Phase B adapters.
+
+## cpt-s7-replay-pack
+
+Finished the post-plateau CPT plan. Isolation C on nested Phase B s5best ddbbee3a slightly beat Hub but missed §5 (12.39 / 5.50 / 5.25). Packed holdout-sibling mix_v6 + a_output_v6 and wired S7 continue to init ddbbee3a with a halt composite that drops mix-val. No GPU rented; Hub stays 06354dfc.
+
+- Do not retrain a_output_v5 after the Phase B plateau.
+- Init the replay from Phase B C-winner ddbbee3a (B slightly beat Hub) with new Adam and LR 2e-6.
+- New pack mix_v6 / a_output_v6: 25% holdout siblings, Spurgeon 35% floor, new-authors 5% cap. Confession 9.2% is sibling upweight of existing S4 text.
+- Halt on Spurgeon + Puritan + confession only; drop eval_mix_loss.
+- Keep Hub 06354dfc until a winning C. Session/results under vast_cpt_s7_replay so Phase B fetch is not overwritten.
+- No GPU until operator go.
+
+- `continued_pretrain/data/mix_v6/`
+- `continued_pretrain/kaggle/a_output_v6/`
+
+<!-- memory-fabric:store/episodic/2026-09-26 -->
+---
+store_path: episodic/2026-09-26
+title: "Episodic Journal — 2026-09-26"
+summary: "Committed and pushed CPT S7 work: Vast continue-B/C launchers, mix v5/v6 manifests plus pinned v3 holdouts, corpus/audit/normalize scripts, SOTA train/eval updates, and memory-store notes after Phase "
+priority: low
+tags: [episodic, session-journal]
+schema_version: 1.3
+last_updated: "2026-09-26T07:45:43-03:00"
+---
+
+## cpt-s7-commit-push
+
+Committed and pushed CPT S7 work: Vast continue-B/C launchers, mix v5/v6 manifests plus pinned v3 holdouts, corpus/audit/normalize scripts, SOTA train/eval updates, and memory-store notes after Phase A/B isolation C. Left mix_v5/v6 theology_mix_train.txt untracked (~226MB generated corpus, matching existing data/*.txt ignore policy).
+
+**Key decisions:**
+- Do not commit mix_v5/v6 theology_mix_train.txt (90MB + 136MB generated corpus).
+- Include scripts, notebooks, manifests, pinned holdouts, runbooks, and .ai-memory store updates.
+
+**Files changed:**
+- `continued_pretrain/data/mix_v6/theology_mix_manifest.json`
+- `[REDACTED_SECRET].md`
 
 <!-- memory-fabric:store/fine-tuning/cpt-merged-hf-local-complete -->
 ---
@@ -7449,6 +8482,52 @@ Automation hint: `continued_pretrain/scripts/s6_run_c_eval.ps1` (adapt paths/SHA
 
 ## Outcome (2026-09-18)
 Done on Vast RTX 4090 instance 51446613 (destroyed). Probe **FAIL** — adapter worse than Ampere base on all buckets (spurgeon +27.9%). **Keep Hub v2.** Metrics under `vast_cpt_s6/c_eval/`. Scripts: `vast_cpt_c_eval.ps1` + `vast_remote_c_eval.sh`. Full scorecard: `pretraining/cpt-s6-c-eval-complete`.
+
+<!-- memory-fabric:store/pretraining/cpt-s7-isolation-c-complete -->
+---
+store_path: pretraining/cpt-s7-isolation-c-complete
+title: "S7 isolation C complete: spurgeon 12.45; §5 FAIL"
+summary: "S7 Phase A **s5best** SHA `06354dfc5a720143617ee2ffeef38faa48200811bed89e71561ff357ed547432` (step 1200) on **Unsloth 2026.8.22 + torch 2.8.0+cu126** (Vast Miniforge `unsloth_cpt_s5pin`)"
+priority: low
+tags: [cpt, s7, c-eval, vast, isolation, scorecard]
+schema_version: 1.3
+last_updated: "2026-09-22T16:55:19-03:00"
+evidence: [continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7_c/theology_cpt_eval_metrics.json, continued_pretrain/scripts/vast_cpt_s7_c_eval.ps1, pretraining/cpt-s6-stack-isolation-c]
+---
+
+# S7 isolation C COMPLETE (2026-09-22)
+
+## Bottom line
+S7 Phase A **s5best** SHA `06354dfc5a720143617ee2ffeef38faa48200811bed89e71561ff357ed547432` (step 1200) on **Unsloth 2026.8.22 + torch 2.8.0+cu126** (Vast Miniforge `unsloth_cpt_s5pin`).
+
+**§5 −15% puritan+confession: FAIL** (−8.6% / −6.0%). Spurgeon **improved** vs S6 isolation C. **No Hub overwrite** this session.
+
+## Host
+- Vast instance `52108817` (label `cpt-s7-isolation-c`), RTX 4090, destroyed after fetch.
+- Launcher: `continued_pretrain/scripts/vast_cpt_s7_c_eval.ps1`
+- Remote: `vast_remote_stack_isolation_c.sh` (NOT torch-2.11 `vast_remote_c_eval.sh`)
+- Artifacts: `continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7_c/`
+
+## Scorecard (a_output_v3 holdouts, Ampere bf16)
+
+| Bucket | Base | S7 s5best | Δ% | S6 isolation C |
+|--------|------|-----------|-----|----------------|
+| spurgeon | 14.31 | **12.45** | **−13.0%** | 12.85 (−10.2%) |
+| puritan | 6.03 | 5.52 | −8.6% | 5.60 (−7.2%) |
+| confession | 5.61 | 5.27 | −6.0% | 5.27 (−6.0%) |
+| general | 12.04 | 11.95 | −0.8% | 11.83 (−1.8%) |
+
+Train probe spurgeon@16: ppl **11.88** (−10.6% vs base 13.30).
+
+## Gate vs Hub S6
+- Hub stays S6 `6aab9194…` until operator approve.
+- §5 win bar (≤−15% puritan+confession): **not met**.
+- Spurgeon 12.45 is **better** than S6 12.85 and well under 13.3 keep-bar.
+- Puritan 5.52 slightly better than S6 5.60; confession ties 5.27.
+- Next: Phase B mix `a_output_v4` (Downame) — do not Hub overwrite on §5 alone.
+
+## Stack pin used
+Unsloth 2026.8.22, torch 2.8.0+cu126, torchvision 0.23, no xformers, `CPT_EVAL_TRAIN_PROBE_DOCS=16`.
 
 <!-- memory-fabric:local/debt -->
 ---

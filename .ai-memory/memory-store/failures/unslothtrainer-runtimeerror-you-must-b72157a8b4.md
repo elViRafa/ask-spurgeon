@@ -9,6 +9,7 @@ last_updated: "2026-08-25T00:45:48-04:00"
 occurrences: 1
 error_signature: "unslothtrainer runtimeerror: you must specify a formatting_func when manual_pack train has input_ids but eval_dataset dict still has text columns"
 failure_key: runtimeerror
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-08-25T00:45:48-04:00

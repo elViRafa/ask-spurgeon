@@ -9,6 +9,7 @@ last_updated: "2026-08-26T01:22:27-04:00"
 occurrences: 1
 error_signature: "oserror: [errno <n>] no space left on device on kaggle <path> while papermill saved the notebook after checkpoint-<n>. embed lora modules_to_save plus optimizer.pt x save_total_limit=<n> filled the ~<n>gb working disk."
 failure_key: oserror
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-08-26T01:22:27-04:00

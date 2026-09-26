@@ -7,6 +7,7 @@ tags: [kaggle, cpt, rc2, rc3, rc4]
 schema_version: 1.3
 last_updated: "2026-08-24T22:09:47-04:00"
 evidence: [continued_pretrain/kaggle/c_output/C_EVAL_GATE_REPORT.md, continued_pretrain/kaggle/b_output/b_logs.txt, continued_pretrain/kaggle/c_output/theology_cpt_eval_metrics.json]
+review_status: stale
 ---
 
 # CPT v2 C_eval — root cause analysis (2026-08-24)

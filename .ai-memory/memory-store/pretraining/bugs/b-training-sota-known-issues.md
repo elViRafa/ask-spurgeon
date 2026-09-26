@@ -7,6 +7,7 @@ tags: [pretraining, cpt, kaggle, bugs, unsloth, qwen35, p1]
 schema_version: 1.3
 last_updated: "2026-08-25T10:20:30-04:00"
 evidence: [continued_pretrain/kaggle/b_output_v6/checkpoints_sota/checkpoint-75/trainer_state.json, continued_pretrain/kaggle/c_output/theology_cpt_lora_final/adapter_model.safetensors, continued_pretrain/scripts/_gen_sota_notebooks.py, continued_pretrain/kaggle/c_output/C_EVAL_GATE_REPORT.md]
+review_status: stale
 ---
 
 # CPT B_training_sota known issues (fix next)

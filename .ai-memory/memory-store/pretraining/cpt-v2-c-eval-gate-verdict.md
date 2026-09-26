@@ -7,6 +7,7 @@ tags: [kaggle, cpt, handoff, gate]
 schema_version: 1.3
 last_updated: "2026-08-25T10:20:50-04:00"
 evidence: [continued_pretrain/kaggle/c_output/C_EVAL_GATE_REPORT.md, continued_pretrain/kaggle/c_output/theology_cpt_eval_metrics.json, continued_pretrain/CPT_V2_KAGGLE_STATUS.md]
+review_status: stale
 ---
 
 # CPT v2 C_eval gate verdict (2026-08-25, analysis addendum)

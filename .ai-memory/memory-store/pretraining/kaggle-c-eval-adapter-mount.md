@@ -7,6 +7,7 @@ tags: [kaggle, cpt, eval, adapter]
 schema_version: 1.3
 last_updated: "2026-08-24T09:24:55-04:00"
 evidence: [continued_pretrain/scripts/_gen_sota_notebooks.py, continued_pretrain/scripts/test_kaggle_path_resolve.py]
+review_status: stale
 ---
 
 # Kaggle C_eval adapter path (2026-08-24)

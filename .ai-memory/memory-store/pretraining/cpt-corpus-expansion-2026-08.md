@@ -7,6 +7,7 @@ tags: [pretraining, cpt, corpus, puritans, edwards]
 schema_version: 1.3
 last_updated: "2026-08-24T22:54:43-04:00"
 evidence: [data/puritans/PROVENANCE.md, continued_pretrain/data/theology_mix_manifest.json, continued_pretrain/CPT_V2_KAGGLE_STATUS.md]
+review_status: stale
 ---
 
 # CPT corpus expansion (2026-08-24)

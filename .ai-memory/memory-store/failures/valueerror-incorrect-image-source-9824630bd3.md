@@ -9,6 +9,7 @@ last_updated: "2026-08-24T10:19:12-04:00"
 occurrences: 1
 error_signature: "valueerror: incorrect image source. must be a valid url starting with htt<path> or http<path> ... got sermon <n> | the necessity of increased faith. c_eval tokenizer(text) on qwen<n>.<n> vl processor treats first positional arg as images."
 failure_key: valueerror
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-08-24T10:19:12-04:00

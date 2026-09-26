@@ -8,6 +8,7 @@ schema_version: 1.3
 last_updated: "2026-08-25T02:32:47-04:00"
 occurrences: 1
 error_signature: "cuda oom on kaggle t<n> during cpt b v<n> after manual pack (float<n> qwen<n>.<n>, batch <n>, train_embeddings=true)"
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-08-25T02:32:47-04:00

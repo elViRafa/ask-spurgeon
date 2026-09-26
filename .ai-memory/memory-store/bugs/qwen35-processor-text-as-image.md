@@ -7,6 +7,7 @@ tags: [kaggle, qwen3.5, processor, cpt, eval]
 schema_version: 1.3
 last_updated: "2026-08-24T10:19:14-04:00"
 evidence: [continued_pretrain/scripts/_gen_sota_notebooks.py, continued_pretrain/scripts/test_kaggle_path_resolve.py]
+review_status: stale
 ---
 
 # Qwen3.5 VL processor treats sermon text as image (C_eval)

@@ -17,7 +17,6 @@ Explicit Hub overwrite of private `rafaelvieirar1r/qwen3.5-4b-theology-cpt-lora-
 ## Identity
 | Field | Value |
 |-------|--------|
-| Repo | https://huggingface.co/rafaelvieirar1r/qwen3.5-4b-theology-cpt-lora-v2 (private) |
 | SHA256 | `06354dfc5a720143617ee2ffeef38faa48200811bed89e71561ff357ed547432` |
 | Local source | `continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7/fetch/theology_cpt_lora_s5best/` |
 | Train | S7 continue from S6; composite early-stop; s5best @ 1200 |

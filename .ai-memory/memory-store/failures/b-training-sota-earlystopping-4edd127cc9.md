@@ -8,6 +8,7 @@ schema_version: 1.3
 last_updated: "2026-08-25T10:20:39-04:00"
 occurrences: 2
 error_signature: "b_training_sota: earlystopping disabled — metric_for_best_model eval_spurgeon_loss not found in logs (b v<n> after tokenized eval)"
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-08-25T09:03:00-04:00
