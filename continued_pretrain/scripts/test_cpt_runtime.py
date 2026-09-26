@@ -237,8 +237,10 @@ def test_resolve_continue_training_config_s7(tmp_path: Path) -> None:
         "puritan",
         "confession",
         "general",
+        "new_authors",
     ]
     assert "eval_general_loss" not in cfg["composite_early_stop_metrics"]
+    assert "eval_new_authors_loss" not in cfg["composite_early_stop_metrics"]
     assert cfg["composite_early_stop_metrics"] == [
         "eval_spurgeon_loss",
         "eval_puritan_loss",

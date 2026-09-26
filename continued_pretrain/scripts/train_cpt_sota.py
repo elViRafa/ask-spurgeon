@@ -103,16 +103,30 @@ SKIP_WALK_DIRS = {"hf_home", "unsloth_compiled_cache", ".cache", "hub", "__pycac
 # (EVAL_DOCS_PER_BUCKET=16). Do NOT replace with isolation-C full-holdout CE
 # (puritan 20 / confession 10 docs) — those are a different measurement and
 # make the seed unreachable on the in-train eval set.
+# Holdout seeds stay (pinned v3 probes). Do not seed eval_mix_loss — mix-val
+# is a different split and is not the §5 gate. Replay halt is holdouts only.
 S7_DEFAULT_COMPOSITE_SEED_BESTS = {
     "eval_spurgeon_loss": 2.4987,
     "eval_puritan_loss": 1.751,
     "eval_confession_loss": 1.668,
 }
+# Continue budget: 955 steps (one packed epoch of v5; ~0.67 epoch of v6).
 S7_DEFAULT_CONTINUE_MAX_STEPS = 955
 S7_DEFAULT_EARLY_STOP_MIN_STEPS = 400
 S7_DEFAULT_ABORT_SPURGEON_DELTA = 0.12
 S7_DEFAULT_S5_SPURGEON_GUARDRAIL = 0.01
 S7_DEFAULT_GENERAL_WARN_DELTA = 0.15
+
+# S7 eval buckets: gate metrics stay spurgeon/puritan/confession (composite + §5/Hub).
+# general + new_authors are monitor-only (loaded/reported; not in COMPOSITE_EARLY_STOP_METRICS).
+S7_GATE_EVAL_BUCKETS = ["spurgeon", "puritan", "confession"]
+S7_MONITOR_EVAL_BUCKETS = ["general", "new_authors"]
+S7_DEFAULT_EVAL_BUCKETS = S7_GATE_EVAL_BUCKETS + S7_MONITOR_EVAL_BUCKETS
+# Isolation C preflight requires these HF buckets; new_authors stays optional (report if present).
+C_REQUIRED_HOLDOUT_BUCKETS = ["spurgeon", "puritan", "confession", "general"]
+C_MONITOR_HOLDOUT_BUCKETS = ["new_authors"]
+# Train/eval discovery tries these HF subdirs under theology_holdouts/.
+HOLDOUT_EVAL_CANDIDATES = C_REQUIRED_HOLDOUT_BUCKETS + C_MONITOR_HOLDOUT_BUCKETS
 
 
 def posix_path(path):
@@ -634,9 +648,9 @@ def resolve_continue_training_config(env=None, packed_epoch_steps=None):
             continue_max = int(max_steps_env)
         work_root = resolve_work_root(env)
         layout = layout_paths(work_root, env=env)
-        # Default S7 buckets include general (monitor-only); composite metrics stay 4.
+        # Default S7 buckets include general + new_authors (monitor-only); composite stays gate-only.
         if not buckets_raw:
-            buckets = ["spurgeon", "puritan", "confession", "general"]
+            buckets = list(S7_DEFAULT_EVAL_BUCKETS)
         return {
             "run_mode": "continue",
             "continue_profile": "s7",
@@ -1571,7 +1585,7 @@ if holdout_src and os.path.exists(holdout_src):
         holdout_src = LOCAL_HOLDOUT_PATH
     elif os.path.exists(LOCAL_HOLDOUT_PATH) and is_hf_holdout_root(LOCAL_HOLDOUT_PATH):
         holdout_src = LOCAL_HOLDOUT_PATH
-    for name in ["spurgeon", "puritan", "confession", "general"]:
+    for name in ["spurgeon", "puritan", "confession", "general", "new_authors"]:
         p = os.path.join(holdout_src, name)
         if os.path.exists(p) and (
             os.path.isfile(os.path.join(p, "dataset_info.json"))
@@ -1692,22 +1706,8 @@ if LR_SCHEDULER_KWARGS:
 try:
     training_args = UnslothTrainingArguments(**_ta_kwargs)
 except TypeError as _ta_err:
-    err_s = str(_ta_err)
-    # TRL >=0.24 renamed max_seq_length -> max_length on SFTConfig.
-    if "max_seq_length" in err_s and "max_seq_length" in _ta_kwargs:
-        print(
-            "WARNING: UnslothTrainingArguments rejected max_seq_length; "
-            "remapping to max_length for this TRL"
-        )
-        _ta_kwargs["max_length"] = _ta_kwargs.pop("max_seq_length")
-        try:
-            training_args = UnslothTrainingArguments(**_ta_kwargs)
-            _ta_err = None
-        except TypeError as _retry_err:
-            _ta_err = _retry_err
-            err_s = str(_ta_err)
     # Older transformers may reject cosine_with_min_lr / lr_scheduler_kwargs.
-    if _ta_err is not None and (LR_SCHEDULER_KWARGS or LR_SCHEDULER != "cosine"):
+    if LR_SCHEDULER_KWARGS or LR_SCHEDULER != "cosine":
         print(
             f"WARNING: TrainingArguments rejected lr_scheduler={LR_SCHEDULER} "
             f"kwargs={LR_SCHEDULER_KWARGS}: {_ta_err}; falling back to cosine"
@@ -1717,8 +1717,8 @@ except TypeError as _ta_err:
         LR_SCHEDULER = "cosine"
         LR_SCHEDULER_KWARGS = None
         training_args = UnslothTrainingArguments(**_ta_kwargs)
-    elif _ta_err is not None:
-        raise _ta_err
+    else:
+        raise
 
 if MAX_STEPS is not None:
     training_args.max_steps = int(MAX_STEPS)

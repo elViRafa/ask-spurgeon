@@ -28,6 +28,7 @@ VAL_FRACTION = 0.01
 SEED = 42
 DOMAIN_BUCKETS = ("spurgeon", "puritan", "confession", "bible")
 HOLDOUT_NAMES = ("spurgeon", "puritan", "confession", "general")
+# Extra dirs (e.g. holdouts_new_authors/) may add monitor-only buckets like new_authors.
 V2_TRAIN_DOCS = 8162
 
 
@@ -103,6 +104,18 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--repo-root", default=str(repo))
     p.add_argument("--train-txt", default=str(data / "theology_mix_train.txt"))
     p.add_argument("--holdout-dir", default=str(data / "holdouts"))
+    p.add_argument(
+        "--extra-holdout-dir",
+        action="append",
+        default=[],
+        help=(
+            "Additional holdout concat dir(s) (repeatable), e.g. "
+            "continued_pretrain/data/holdouts_new_authors. Each "
+            "{name}_holdout.txt becomes theology_holdouts/{name}/. "
+            "Use for monitor-only probes (new_authors); does not touch "
+            "pinned v3 gate holdouts."
+        ),
+    )
     p.add_argument("--manifest", default=str(data / "theology_mix_manifest.json"))
     p.add_argument("--out-dir", default=str(default_out))
     p.add_argument("--min-chars", type=int, default=MIN_CHARS)
@@ -162,17 +175,32 @@ def main(argv: list[str] | None = None) -> None:
 
     holdouts: dict[str, object] = {}
     holdout_counts: dict[str, int] = {}
-    for name in HOLDOUT_NAMES:
-        path = holdout_dir / f"{name}_holdout.txt"
+
+    def _ingest_holdout_file(name: str, path: Path) -> None:
         if not path.is_file():
             print(f"NOTE: missing holdout (skip): {path}")
-            continue
+            return
         docs, _chars = parse_concat_txt(path, min_chars=args.min_chars)
         if not docs:
             print(f"NOTE: empty holdout: {path}")
-            continue
+            return
+        if name in holdouts:
+            print(f"NOTE: replacing holdout bucket {name!r} from {path}")
         holdouts[name] = Dataset.from_dict({"text": docs, "bucket": [name] * len(docs)})
         holdout_counts[name] = len(docs)
+
+    for name in HOLDOUT_NAMES:
+        _ingest_holdout_file(name, holdout_dir / f"{name}_holdout.txt")
+    for extra in args.extra_holdout_dir or []:
+        extra_dir = Path(extra)
+        if not extra_dir.is_dir():
+            print(f"NOTE: extra holdout dir missing (skip): {extra_dir}")
+            continue
+        for path in sorted(extra_dir.glob("*_holdout.txt")):
+            name = path.name[: -len("_holdout.txt")]
+            if not name:
+                continue
+            _ingest_holdout_file(name, path)
     print("Holdout buckets:", holdout_counts)
     if "puritan" not in holdouts and not args.allow_spurgeon_only:
         print("WARNING: puritan holdout empty — domain eval will be weak.")
