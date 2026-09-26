@@ -1,14 +1,60 @@
 {
   "plan": "continued_pretrain/CORPUS_V3_EXPANSION_PLAN.md",
-  "handoff": "continued_pretrain/CORPUS_V3_S5_HANDOFF.md",
+  "handoff": "continued_pretrain/NEXT_CPT_S7.md",
   "created": "2026-08-27",
-  "updated": "2026-08-27",
-  "status": "s4_complete_next_is_s5",
-  "next_session": "s5_runpod_b_needs_approval",
+  "updated": "2026-09-23",
+  "status": "phase_b_reweight_ready",
+  "next_session": "phase_b_gpu_continue_from_s7_on_v5",
   "train": false,
   "fallback_adapter": {
     "hub": "rafaelvieirar1r/qwen3.5-4b-theology-cpt-lora-v2",
-    "sha256": "319d17a39d193041528914cfb2f83c1decf21e55ffe76dfd2ca565f5e99e1478"
+    "sha256": "6aab91940ce3e854f72a5308ae41e8ce1ae4c457752ff76390581f09ba436f0c",
+    "note": "S6 production Hub; Phase A continues from this SHA on a_output_v3"
+  },
+  "frozen_mix": {
+    "path": "continued_pretrain/kaggle/a_output_v3",
+    "mix_sha256": "23dd3820baa0b657cb6528e4fdf1b2d4813c3cfa7b7c982805b4a7ff34990973",
+    "note": "S7 Phase A train set; leave untouched"
+  },
+  "phase_b_uniform_mix": {
+    "path": "continued_pretrain/kaggle/a_output_v4",
+    "mix_sha256": "37a3ba50aa9efb8057d9d36227ac4547f08d35a31ccd71cf3f2d20f928131c81",
+    "train_docs": 54799,
+    "hf_train_docs": 54251,
+    "hf_val_docs": 548,
+    "verified_tokens": 94744771,
+    "shares": {
+      "spurgeon": 0.384,
+      "puritan": 0.4779,
+      "confession": 0.0527,
+      "general": 0.0724,
+      "bible": 0.0131
+    },
+    "holdouts_pinned": true,
+    "note": "Uniform Downame + wave 5 shelf. Frozen. Do not copy for GPU continue."
+  },
+  "phase_b_mix": {
+    "path": "continued_pretrain/kaggle/a_output_v5",
+    "mix_txt": "continued_pretrain/data/mix_v5/theology_mix_train.txt",
+    "mix_sha256": "61e830575138935cdf6c1b029a3128e096ff4e3633e44a464b3957b9d6e78285",
+    "train_docs": 15420,
+    "hf_train_docs": 15265,
+    "hf_val_docs": 155,
+    "verified_tokens": 25129612,
+    "continue_reweight_share": 0.15,
+    "new_author_docs": 2454,
+    "new_author_chars": 13917986,
+    "shares": {
+      "spurgeon": 0.3376,
+      "puritan": 0.5423,
+      "confession": 0.0451,
+      "general": 0.0626,
+      "bible": 0.0125
+    },
+    "holdouts_pinned": true,
+    "continue_max_steps": 955,
+    "early_stop_min_steps": 400,
+    "note": "One pass of 11 new-author files at 15% plus a subsample of the already-trained shelf. Init S7 s5best 06354dfc with a new Adam."
   },
   "exclude_from_mix": [
     {
@@ -46,5 +92,109 @@
     {"key": "hodge_commentary_ephesians", "status": "s3_done", "kind": "commentary"},
     {"key": "calvin_commentary_selected", "status": "s3_done", "kind": "commentary"}
   ],
-  "notes": "Full per-author on_disk/wave1/wave2 lists lived in the pre-S4 catalog; S1-S3 statuses remain done. S4 did not re-fetch waves 1-3. Mix: continued_pretrain/data/theology_mix_manifest.json"
+  "wave4": [
+    {
+      "key": "downame_christian_warfare",
+      "status": "fetched",
+      "kind": "puritan",
+      "source": "EEBO-TCP A20752",
+      "chars": 1650411
+    },
+    {
+      "key": "downame_guide_godliness",
+      "status": "fetched",
+      "kind": "puritan",
+      "source": "EEBO-TCP A20762",
+      "chars": 4062002
+    }
+  ],
+  "wave5": [
+    {
+      "key": "ambrose_looking_unto_jesus",
+      "status": "fetched",
+      "kind": "puritan",
+      "source": "EEBO-TCP A25241",
+      "chars": 2821289
+    },
+    {
+      "key": "swinnock_works",
+      "status": "fetched",
+      "kind": "puritan",
+      "source": "EEBO-TCP A62040",
+      "chars": 1645784
+    },
+    {
+      "key": "swinnock_incomparableness",
+      "status": "fetched",
+      "kind": "puritan",
+      "source": "EEBO-TCP A62054",
+      "chars": 359563
+    },
+    {
+      "key": "venning_plague_of_plagues",
+      "status": "fetched",
+      "kind": "puritan",
+      "source": "EEBO-TCP A64834",
+      "chars": 601046
+    },
+    {
+      "key": "binning_sinners_sanctuary",
+      "status": "fetched",
+      "kind": "puritan",
+      "source": "EEBO-TCP A28173",
+      "chars": 740940
+    },
+    {
+      "key": "preston_breastplate",
+      "status": "fetched",
+      "kind": "puritan",
+      "source": "EEBO-TCP A09950",
+      "chars": 934050
+    },
+    {
+      "key": "durham_unsearchable_riches",
+      "status": "fetched",
+      "kind": "puritan",
+      "source": "EEBO-TCP B02840",
+      "chars": 686701
+    },
+    {
+      "key": "vincent_unseen_christ",
+      "status": "fetched",
+      "kind": "puritan",
+      "source": "EEBO-TCP A64995",
+      "chars": 271893
+    },
+    {
+      "key": "guthrie_great_interest",
+      "status": "fetched",
+      "kind": "puritan",
+      "source": "CCEL guthrie/interest2",
+      "chars": 412795
+    }
+  ],
+  "s5": [
+    {
+      "key": "shaw_exposition_wcf",
+      "status": "skipped_headroom",
+      "kind": "systematic",
+      "source": "IA expositionofconf00shaw",
+      "note": "After Downame + wave5 (~8.47M extra Puritan chars), 6% of added mix is only ~0.5MB. Confession disk ~30.7MB still over max. Do not fetch; would worsen random S4 eviction."
+    },
+    {
+      "key": "sum_of_saving_knowledge",
+      "status": "skipped_headroom",
+      "kind": "confession",
+      "source": "reformedstandards.com / Wikisource",
+      "note": "Same headroom block as Shaw; catalog kept for a later cycle if puritan mass grows further"
+    }
+  ],
+  "phase_b_rules": {
+    "pin_holdouts": true,
+    "max_confession_share": 0.06,
+    "no_cap_fire": true,
+    "out_dir": "continued_pretrain/kaggle/a_output_v5",
+    "rejected_near_dupes": ["savoy", "vincent_wsc", "fisher_catechism"]
+  },
+  "notes": "Full per-author on_disk/wave1/wave2 lists lived in the pre-S4 catalog; S1-S3 statuses remain done. Phase B continue pack is a_output_v5 SHA 61e83057 (15% new authors). Uniform a_output_v4 SHA 37a3ba50 and a_output_v3 SHA 23dd stay frozen. S5 confession still not fetched. No GPU until operator go."
 }

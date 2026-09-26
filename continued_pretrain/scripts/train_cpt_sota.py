@@ -14,10 +14,11 @@ Unset PREV_RUN_CHECKPOINT under CPT_RUN_MODE=continue to HF-resume the highest c
 See continued_pretrain/RUNPOD_RUNBOOK.md.
 """
 import argparse
+import os
 import subprocess
 import sys
 
-UNSLOTH_PIP_SPEC = "unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git"
+UNSLOTH_PIP_SPEC = (os.environ.get("UNSLOTH_PIP_SPEC") or "").strip() or "unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git"
 TORCH_CU126_INDEX = "https://download.pytorch.org/whl/cu126"
 
 
@@ -88,6 +89,7 @@ after other imports.
 """
 
 import hashlib
+import json
 import math
 import os
 import re
@@ -96,6 +98,21 @@ KAGGLE_WORKING = "/kaggle/working"
 KAGGLE_INPUT = "/kaggle/input"
 DEFAULT_WORKSPACE = "/workspace"
 SKIP_WALK_DIRS = {"hf_home", "unsloth_compiled_cache", ".cache", "hub", "__pycache__"}
+
+# S7 Phase A: seed composite halt from S6 in-train values at ckpt-2050
+# (EVAL_DOCS_PER_BUCKET=16). Do NOT replace with isolation-C full-holdout CE
+# (puritan 20 / confession 10 docs) — those are a different measurement and
+# make the seed unreachable on the in-train eval set.
+S7_DEFAULT_COMPOSITE_SEED_BESTS = {
+    "eval_spurgeon_loss": 2.4987,
+    "eval_puritan_loss": 1.751,
+    "eval_confession_loss": 1.668,
+}
+S7_DEFAULT_CONTINUE_MAX_STEPS = 955
+S7_DEFAULT_EARLY_STOP_MIN_STEPS = 400
+S7_DEFAULT_ABORT_SPURGEON_DELTA = 0.12
+S7_DEFAULT_S5_SPURGEON_GUARDRAIL = 0.01
+S7_DEFAULT_GENERAL_WARN_DELTA = 0.15
 
 
 def posix_path(path):
@@ -140,13 +157,29 @@ def resolve_work_root(env=None):
     return os.path.abspath(os.getcwd())
 
 
-def layout_paths(work_root):
+def resolve_continue_profile(env=None):
+    """``s7`` when CPT_CONTINUE_PROFILE=s7; otherwise empty (S6 continue defaults)."""
+    env = os.environ if env is None else env
+    profile = (env.get("CPT_CONTINUE_PROFILE") or "").strip().lower()
+    return "s7" if profile == "s7" else ""
+
+
+def layout_paths(work_root, env=None):
+    """Resolve work-root layout. S7 continue writes to checkpoints_s7, not sota."""
+    env = os.environ if env is None else env
+    explicit = (env.get("CPT_OUTPUT_DIR") or "").strip()
+    if explicit:
+        output_dir = explicit
+    elif resolve_run_mode(env) == "continue" and resolve_continue_profile(env) == "s7":
+        output_dir = os.path.join(work_root, "checkpoints_s7")
+    else:
+        output_dir = os.path.join(work_root, "checkpoints_sota")
     return {
         "offload_dir": os.path.join(work_root, "unsloth_offload"),
         "hf_home": os.path.join(work_root, "hf_home"),
         "local_dataset": os.path.join(work_root, "theology_dataset"),
         "local_holdout": os.path.join(work_root, "theology_holdouts"),
-        "output_dir": os.path.join(work_root, "checkpoints_sota"),
+        "output_dir": output_dir,
         "adapter_out": os.path.join(work_root, "theology_cpt_lora"),
         "run_config_out": os.path.join(work_root, "theology_cpt_run_config.json"),
         "requirements_lock": os.path.join(work_root, "requirements_lock.txt"),
@@ -203,12 +236,24 @@ def dataset_search_roots(work_root, env=None, kaggle_input=None, cwd=None):
             os.path.join(work_root, "theology_dataset"),
             os.path.join(work_root, "theology-cpt-dataset"),
             os.path.join(work_root, "a_output"),
+            os.path.join(work_root, "a_output_v6"),
+            os.path.join(work_root, "a_output_v5"),
+            os.path.join(work_root, "a_output_v4"),
             os.path.join(work_root, "a_output_v3"),
             os.path.join(work_root, "kaggle", "a_output"),
+            os.path.join(work_root, "kaggle", "a_output_v6"),
+            os.path.join(work_root, "kaggle", "a_output_v5"),
+            os.path.join(work_root, "kaggle", "a_output_v4"),
             os.path.join(work_root, "kaggle", "a_output_v3"),
             os.path.join(cwd, "continued_pretrain", "kaggle", "a_output"),
+            os.path.join(cwd, "continued_pretrain", "kaggle", "a_output_v6"),
+            os.path.join(cwd, "continued_pretrain", "kaggle", "a_output_v5"),
+            os.path.join(cwd, "continued_pretrain", "kaggle", "a_output_v4"),
             os.path.join(cwd, "continued_pretrain", "kaggle", "a_output_v3"),
             os.path.join(cwd, "kaggle", "a_output"),
+            os.path.join(cwd, "kaggle", "a_output_v6"),
+            os.path.join(cwd, "kaggle", "a_output_v5"),
+            os.path.join(cwd, "kaggle", "a_output_v4"),
             os.path.join(cwd, "kaggle", "a_output_v3"),
         ]
     )
@@ -335,9 +380,17 @@ def find_highest_checkpoint(root):
     return best
 
 
-def collect_checkpoint_roots(work_root, kaggle_input=None):
+def collect_checkpoint_roots(work_root, env=None, kaggle_input=None):
+    """Roots searched for auto-resume. S7 never scans leftover checkpoints_sota."""
+    env = os.environ if env is None else env
     kaggle_input = KAGGLE_INPUT if kaggle_input is None else kaggle_input
     roots = []
+    if resolve_run_mode(env) == "continue" and resolve_continue_profile(env) == "s7":
+        explicit = (env.get("CPT_OUTPUT_DIR") or "").strip()
+        local = explicit or os.path.join(work_root, "checkpoints_s7")
+        if os.path.isdir(local):
+            roots.append(local)
+        return roots
     local = os.path.join(work_root, "checkpoints_sota")
     if os.path.isdir(local):
         roots.append(local)
@@ -375,7 +428,7 @@ def resolve_prev_checkpoint(work_root, env=None, kaggle_input=None):
         return val
     best = None
     best_step = -1
-    for root in collect_checkpoint_roots(work_root, kaggle_input=kaggle_input):
+    for root in collect_checkpoint_roots(work_root, env=env, kaggle_input=kaggle_input):
         found = find_highest_checkpoint(root)
         if not found:
             continue
@@ -518,13 +571,115 @@ def _env_int(env, key, default):
     return int(val)
 
 
+def parse_composite_seed_bests(env=None, default=None):
+    """Parse COMPOSITE_SEED_BESTS JSON into eval_*_loss -> float. Empty/invalid → default."""
+    env = os.environ if env is None else env
+    raw = (env.get("COMPOSITE_SEED_BESTS") or "").strip()
+    if not raw:
+        return dict(default or {})
+    try:
+        data = json.loads(raw)
+    except (TypeError, ValueError, json.JSONDecodeError):
+        return dict(default or {})
+    if not isinstance(data, dict):
+        return dict(default or {})
+    out = {}
+    for key, value in data.items():
+        if value is None:
+            continue
+        try:
+            out[str(key)] = float(value)
+        except (TypeError, ValueError):
+            continue
+    return out if out else dict(default or {})
+
+
+def resolve_composite_early_stop_metrics(env=None, default=None):
+    """Parse COMPOSITE_EARLY_STOP_METRICS CSV. Empty/invalid → default list."""
+    env = os.environ if env is None else env
+    raw = (env.get("COMPOSITE_EARLY_STOP_METRICS") or "").strip()
+    if not raw:
+        return list(default or [])
+    keys = [part.strip() for part in raw.split(",") if part.strip()]
+    return keys if keys else list(default or [])
+
+
 def resolve_continue_training_config(env=None, packed_epoch_steps=None):
-    """Overrides for CPT_RUN_MODE=continue. Empty dict when not in continue mode."""
+    """Overrides for CPT_RUN_MODE=continue. Empty dict when not in continue mode.
+
+    CPT_CONTINUE_PROFILE=s7 selects Phase A knobs (lower LR, checkpoints_s7, seeded
+    4-metric composite). Unset profile keeps S6 continue defaults (4e-6, 0.4 epoch floor).
+    """
     env = os.environ if env is None else env
     if resolve_run_mode(env) != "continue":
         return {}
 
+    profile = resolve_continue_profile(env)
     packed = int(packed_epoch_steps or 0)
+    buckets_raw = (env.get("EVAL_BUCKETS_DURING_TRAIN") or "").strip()
+    if buckets_raw:
+        buckets = [part.strip() for part in buckets_raw.split(",") if part.strip()]
+    else:
+        buckets = ["spurgeon", "puritan", "confession"]
+
+    if profile == "s7":
+        min_steps = S7_DEFAULT_EARLY_STOP_MIN_STEPS
+        explicit_min = (env.get("EARLY_STOP_MIN_STEPS") or "").strip()
+        if explicit_min:
+            min_steps = int(explicit_min)
+        continue_max = _env_int(env, "CONTINUE_MAX_STEPS", S7_DEFAULT_CONTINUE_MAX_STEPS)
+        # MAX_STEPS env also wins when set (pod overrides).
+        max_steps_env = (env.get("MAX_STEPS") or "").strip()
+        if max_steps_env:
+            continue_max = int(max_steps_env)
+        work_root = resolve_work_root(env)
+        layout = layout_paths(work_root, env=env)
+        # Default S7 buckets include general (monitor-only); composite metrics stay 4.
+        if not buckets_raw:
+            buckets = ["spurgeon", "puritan", "confession", "general"]
+        return {
+            "run_mode": "continue",
+            "continue_profile": "s7",
+            "learning_rate": _env_float(env, "LEARNING_RATE", 2e-6),
+            "embedding_learning_rate": _env_float(env, "EMBEDDING_LEARNING_RATE", 8e-7),
+            "warmup_ratio": _env_float(env, "WARMUP_RATIO", 0.04),
+            "eval_docs_per_bucket": _env_int(env, "EVAL_DOCS_PER_BUCKET", 16),
+            "eval_buckets_during_train": buckets,
+            "eval_steps": _env_int(env, "EVAL_STEPS", 50),
+            "save_steps": _env_int(env, "SAVE_STEPS", 50),
+            "lr_scheduler_type": (env.get("LR_SCHEDULER") or "cosine_with_min_lr").strip()
+            or "cosine_with_min_lr",
+            "lr_scheduler_kwargs": {"min_lr_rate": 0.1},
+            "abort_spurgeon_step": _env_int(env, "ABORT_SPURGEON_STEP", 0),
+            "abort_spurgeon_delta": _env_float(
+                env, "ABORT_SPURGEON_DELTA", S7_DEFAULT_ABORT_SPURGEON_DELTA
+            ),
+            "s5_spurgeon_guardrail": _env_float(
+                env, "S5_SPURGEON_GUARDRAIL", S7_DEFAULT_S5_SPURGEON_GUARDRAIL
+            ),
+            "general_warn_delta": _env_float(
+                env, "GENERAL_WARN_DELTA", S7_DEFAULT_GENERAL_WARN_DELTA
+            ),
+            "early_stop_min_steps": min_steps,
+            "early_stop_epsilon": _env_float(env, "EARLY_STOP_EPSILON", 0.003),
+            "early_stop_patience": _env_int(env, "EARLY_STOPPING_PATIENCE", 4),
+            "composite_early_stop_metrics": resolve_composite_early_stop_metrics(
+                env,
+                [
+                    "eval_spurgeon_loss",
+                    "eval_puritan_loss",
+                    "eval_confession_loss",
+                ],
+            ),
+            "use_composite_early_stop": True,
+            "continue_max_steps": continue_max,
+            "output_dir": layout["output_dir"],
+            "composite_seed_bests": parse_composite_seed_bests(
+                env, default=S7_DEFAULT_COMPOSITE_SEED_BESTS
+            ),
+            "s5_best_adapter_dir": os.path.join(work_root, "theology_cpt_lora_s5best"),
+        }
+
     min_steps = 0
     if packed > 0:
         min_steps = max(1, math.ceil(0.4 * packed))
@@ -532,14 +687,9 @@ def resolve_continue_training_config(env=None, packed_epoch_steps=None):
     if explicit_min:
         min_steps = int(explicit_min)
 
-    buckets_raw = (env.get("EVAL_BUCKETS_DURING_TRAIN") or "").strip()
-    if buckets_raw:
-        buckets = [part.strip() for part in buckets_raw.split(",") if part.strip()]
-    else:
-        buckets = ["spurgeon", "puritan", "confession"]
-
     return {
         "run_mode": "continue",
+        "continue_profile": "",
         "learning_rate": _env_float(env, "LEARNING_RATE", 4e-6),
         "embedding_learning_rate": _env_float(env, "EMBEDDING_LEARNING_RATE", 1.5e-6),
         "warmup_ratio": _env_float(env, "WARMUP_RATIO", 0.01),
@@ -549,8 +699,13 @@ def resolve_continue_training_config(env=None, packed_epoch_steps=None):
         "early_stop_min_steps": min_steps,
         "early_stop_epsilon": _env_float(env, "EARLY_STOP_EPSILON", 0.005),
         "early_stop_patience": _env_int(env, "EARLY_STOPPING_PATIENCE", 2),
-        "composite_early_stop_metrics": ["eval_spurgeon_loss", "eval_mix_loss"],
+        "composite_early_stop_metrics": resolve_composite_early_stop_metrics(
+            env, ["eval_spurgeon_loss", "eval_mix_loss"]
+        ),
         "use_composite_early_stop": True,
+        "continue_max_steps": None,
+        "output_dir": None,
+        "composite_seed_bests": parse_composite_seed_bests(env, default={}),
     }
 
 
@@ -626,6 +781,55 @@ def update_composite_flat_state(bests, flat_streak, metrics, metric_keys, epsilo
 def composite_should_halt(flat_streak, patience):
     """True when flat streak reached patience."""
     return int(flat_streak) >= int(patience)
+
+
+def s5_loss_from_metrics(metrics):
+    """Mean of eval_puritan_loss + eval_confession_loss, or None if either missing."""
+    if not metrics:
+        return None
+    try:
+        puritan = metrics.get("eval_puritan_loss")
+        confession = metrics.get("eval_confession_loss")
+        if puritan is None or confession is None:
+            return None
+        return (float(puritan) + float(confession)) / 2.0
+    except (TypeError, ValueError):
+        return None
+
+
+def s5_best_should_save(s5_loss, best_s5, spurgeon_loss, seed_spurgeon, guardrail=0.01):
+    """True when s5 improves and spurgeon stays within seed + guardrail."""
+    if s5_loss is None or spurgeon_loss is None or seed_spurgeon is None:
+        return False
+    try:
+        s5 = float(s5_loss)
+        spurgeon = float(spurgeon_loss)
+        seed = float(seed_spurgeon)
+        limit = seed + float(guardrail)
+    except (TypeError, ValueError):
+        return False
+    if spurgeon > limit:
+        return False
+    if best_s5 is None:
+        return True
+    return s5 < float(best_s5)
+
+
+def seed_regression_streak(current_spurgeon, seed_spurgeon, delta, prior_streak=0):
+    """Consecutive cycles where spurgeon >= seed + delta. Resets to 0 when recovered."""
+    if current_spurgeon is None or seed_spurgeon is None:
+        return int(prior_streak or 0)
+    try:
+        if float(current_spurgeon) >= float(seed_spurgeon) + float(delta):
+            return int(prior_streak or 0) + 1
+    except (TypeError, ValueError):
+        return int(prior_streak or 0)
+    return 0
+
+
+def seed_regression_should_abort(streak, required=2):
+    """Halt after ``required`` consecutive seed-regression cycles."""
+    return int(streak) >= int(required)
 
 
 def resolve_init_adapter(work_root, env=None, kaggle_input=None):
@@ -737,7 +941,14 @@ LORA_ALPHA = 32
 USE_RSLORA = True
 # v5 OOM = embed LoRA + batch 2. v6 completed 1×16 with embeds off (C v4 still missed §5).
 # v7: same 1×16 shape WITH embed LoRA (actual Unsloth CPT). If OOM, see EVAL_* fallbacks first.
-TRAIN_EMBEDDINGS = True
+# CPT_TRAIN_EMBEDDINGS=0|false|no freezes embeds without editing this cell (continue ablation).
+_train_emb_env = (os.environ.get("CPT_TRAIN_EMBEDDINGS") or "").strip().lower()
+if _train_emb_env in ("0", "false", "no", "off"):
+    TRAIN_EMBEDDINGS = False
+elif _train_emb_env in ("1", "true", "yes", "on"):
+    TRAIN_EMBEDDINGS = True
+else:
+    TRAIN_EMBEDDINGS = True
 # M1 (2026-07-13): Qwen3.5-4B-Base has tie_word_embeddings=true → default lm_head OFF.
 # Flip to True only if D4 shows clean separate head training + VRAM holds.
 TRAIN_LM_HEAD = False
@@ -753,6 +964,7 @@ EMBEDDING_LEARNING_RATE = 5e-6
 WARMUP_RATIO = 0.03
 WEIGHT_DECAY = 0.01
 LR_SCHEDULER = "cosine"
+LR_SCHEDULER_KWARGS = None
 
 # ---- Packing (GatedDeltaNet fail-closed) ----
 MANUAL_PACK = True
@@ -791,6 +1003,13 @@ EARLY_STOP_MIN_STEPS = 0
 EARLY_STOP_EPSILON = 0.005
 USE_COMPOSITE_EARLY_STOP = False
 COMPOSITE_EARLY_STOP_METRICS = ["eval_spurgeon_loss", "eval_mix_loss"]
+COMPOSITE_SEED_BESTS = {}
+CONTINUE_PROFILE = ""
+ABORT_SPURGEON_DELTA = 0.0
+S5_SPURGEON_GUARDRAIL = 0.01
+GENERAL_WARN_DELTA = 0.15
+S5_BEST_ADAPTER_DIR = None
+S5_BEST_STATE = None
 INIT_ADAPTER_PATH = None
 
 # ---- Paths: env CPT_WORK_ROOT / CPT_DATA_ROOT / PREV_RUN_CHECKPOINT; Kaggle mounts still work ----
@@ -830,7 +1049,33 @@ if CPT_RUN_MODE == "continue":
     EARLY_STOPPING_PATIENCE = _cont_cfg["early_stop_patience"]
     USE_COMPOSITE_EARLY_STOP = _cont_cfg["use_composite_early_stop"]
     COMPOSITE_EARLY_STOP_METRICS = _cont_cfg["composite_early_stop_metrics"]
-    print(f"Continue mode: init_adapter={INIT_ADAPTER_PATH}")
+    COMPOSITE_SEED_BESTS = dict(_cont_cfg.get("composite_seed_bests") or {})
+    CONTINUE_PROFILE = _cont_cfg.get("continue_profile") or ""
+    if _cont_cfg.get("output_dir"):
+        OUTPUT_DIR = _cont_cfg["output_dir"]
+    if _cont_cfg.get("eval_steps"):
+        EVAL_STEPS = int(_cont_cfg["eval_steps"])
+    if _cont_cfg.get("save_steps"):
+        SAVE_STEPS = int(_cont_cfg["save_steps"])
+    if _cont_cfg.get("lr_scheduler_type"):
+        LR_SCHEDULER = _cont_cfg["lr_scheduler_type"]
+    if _cont_cfg.get("lr_scheduler_kwargs") is not None:
+        LR_SCHEDULER_KWARGS = dict(_cont_cfg["lr_scheduler_kwargs"] or {})
+    ABORT_SPURGEON_DELTA = float(_cont_cfg.get("abort_spurgeon_delta") or 0.0)
+    S5_SPURGEON_GUARDRAIL = float(_cont_cfg.get("s5_spurgeon_guardrail") or 0.01)
+    GENERAL_WARN_DELTA = float(_cont_cfg.get("general_warn_delta") or 0.15)
+    S5_BEST_ADAPTER_DIR = _cont_cfg.get("s5_best_adapter_dir") or os.path.join(
+        WORK_ROOT, "theology_cpt_lora_s5best"
+    )
+    print(f"Continue mode: init_adapter={INIT_ADAPTER_PATH} profile={CONTINUE_PROFILE!r}")
+    if COMPOSITE_SEED_BESTS:
+        print(f"  composite_seed_bests={COMPOSITE_SEED_BESTS}")
+    if LR_SCHEDULER_KWARGS:
+        print(f"  lr_scheduler={LR_SCHEDULER} kwargs={LR_SCHEDULER_KWARGS}")
+    if ABORT_SPURGEON_DELTA:
+        print(f"  abort_spurgeon_delta={ABORT_SPURGEON_DELTA}")
+    if S5_BEST_ADAPTER_DIR:
+        print(f"  s5_best_adapter_dir={S5_BEST_ADAPTER_DIR}")
 
 PREV_RUN_CHECKPOINT = resolve_prev_checkpoint(WORK_ROOT, kaggle_input=_kaggle_input)
 if CPT_RUN_MODE == "continue" and PREV_RUN_CHECKPOINT:
@@ -1022,8 +1267,10 @@ if TRAIN_EMBEDDINGS:
 from unsloth import UnslothTrainer, UnslothTrainingArguments
 from transformers import DataCollatorForSeq2Seq, EarlyStoppingCallback, TrainerCallback
 from datasets import Dataset, load_from_disk
-import shutil
+import json
 import math
+import os
+import shutil
 
 # Qwen3.5 loads a VL Processor — Unsloth ignores packing=True on ProcessorMixin models.
 # GatedDeltaNet packing silently leaks. PACKING_MODE / PAD_TO_MAX come from the config cell.
@@ -1293,9 +1540,17 @@ if MANUAL_PACK:
     if CPT_RUN_MODE == "continue":
         _cont_cfg = resolve_continue_training_config(packed_epoch_steps=PACKED_EPOCH_STEPS)
         EARLY_STOP_MIN_STEPS = _cont_cfg.get("early_stop_min_steps", EARLY_STOP_MIN_STEPS)
+        _cont_max = _cont_cfg.get("continue_max_steps")
+        if _cont_max is not None and int(MAX_STEPS) != int(_cont_max):
+            print(f"Continue profile max_steps {MAX_STEPS} -> {_cont_max}")
+            MAX_STEPS = int(_cont_max)
+        if _cont_cfg.get("output_dir"):
+            OUTPUT_DIR = _cont_cfg["output_dir"]
+        COMPOSITE_SEED_BESTS = dict(_cont_cfg.get("composite_seed_bests") or COMPOSITE_SEED_BESTS)
         print(
             f"  continue early_stop_min_steps={EARLY_STOP_MIN_STEPS} "
-            f"epsilon={EARLY_STOP_EPSILON} composite={USE_COMPOSITE_EARLY_STOP}"
+            f"epsilon={EARLY_STOP_EPSILON} composite={USE_COMPOSITE_EARLY_STOP} "
+            f"max_steps={MAX_STEPS} output_dir={OUTPUT_DIR}"
         )
 elif APPEND_EOS and train_tok.eos_token:
     def _add_eos(batch):
@@ -1401,7 +1656,7 @@ if USE_COMPOSITE_EARLY_STOP and isinstance(eval_sets, dict):
 # even with TRAIN_EMBEDDINGS. T4 + embeds → both False (float32).
 _bf16_ok = torch.cuda.is_bf16_supported()
 _use_fp16, _use_bf16 = trainer_mixed_precision(TRAIN_EMBEDDINGS, _bf16_ok)
-training_args = UnslothTrainingArguments(
+_ta_kwargs = dict(
     per_device_train_batch_size=PER_DEVICE_BATCH,
     gradient_accumulation_steps=GRAD_ACCUM,
     warmup_ratio=WARMUP_RATIO,
@@ -1432,6 +1687,38 @@ training_args = UnslothTrainingArguments(
     packing=False,  # Qwen3.5 Processor + GatedDeltaNet — native packing unsupported
     report_to=REPORT_TO,
 )
+if LR_SCHEDULER_KWARGS:
+    _ta_kwargs["lr_scheduler_kwargs"] = LR_SCHEDULER_KWARGS
+try:
+    training_args = UnslothTrainingArguments(**_ta_kwargs)
+except TypeError as _ta_err:
+    err_s = str(_ta_err)
+    # TRL >=0.24 renamed max_seq_length -> max_length on SFTConfig.
+    if "max_seq_length" in err_s and "max_seq_length" in _ta_kwargs:
+        print(
+            "WARNING: UnslothTrainingArguments rejected max_seq_length; "
+            "remapping to max_length for this TRL"
+        )
+        _ta_kwargs["max_length"] = _ta_kwargs.pop("max_seq_length")
+        try:
+            training_args = UnslothTrainingArguments(**_ta_kwargs)
+            _ta_err = None
+        except TypeError as _retry_err:
+            _ta_err = _retry_err
+            err_s = str(_ta_err)
+    # Older transformers may reject cosine_with_min_lr / lr_scheduler_kwargs.
+    if _ta_err is not None and (LR_SCHEDULER_KWARGS or LR_SCHEDULER != "cosine"):
+        print(
+            f"WARNING: TrainingArguments rejected lr_scheduler={LR_SCHEDULER} "
+            f"kwargs={LR_SCHEDULER_KWARGS}: {_ta_err}; falling back to cosine"
+        )
+        _ta_kwargs["lr_scheduler_type"] = "cosine"
+        _ta_kwargs.pop("lr_scheduler_kwargs", None)
+        LR_SCHEDULER = "cosine"
+        LR_SCHEDULER_KWARGS = None
+        training_args = UnslothTrainingArguments(**_ta_kwargs)
+    elif _ta_err is not None:
+        raise _ta_err
 
 if MAX_STEPS is not None:
     training_args.max_steps = int(MAX_STEPS)
@@ -1515,14 +1802,16 @@ class CompositeFlatEarlyStoppingCallback(TrainerCallback):
 
     Hugging Face emits one on_evaluate per eval dataset. Cache by global_step
     and score only after mix + Spurgeon (or configured keys) have both arrived.
+    Pass initial_bests (e.g. S6 seed) so a first-eval spike cannot become the
+    halt baseline.
     """
 
-    def __init__(self, metric_keys, patience=2, epsilon=0.005, min_steps=0):
+    def __init__(self, metric_keys, patience=2, epsilon=0.005, min_steps=0, initial_bests=None):
         self.metric_keys = list(metric_keys)
         self.patience = int(patience)
         self.epsilon = float(epsilon)
         self.min_steps = int(min_steps)
-        self.bests = {}
+        self.bests = dict(initial_bests or {})
         self.flat_streak = 0
         self._eval_cache = {}
 
@@ -1558,6 +1847,150 @@ class CompositeFlatEarlyStoppingCallback(TrainerCallback):
             control.should_training_stop = True
 
 
+class AbortOnSeedRegressionCallback(TrainerCallback):
+    """Halt when spurgeon stays >= seed + delta for two consecutive complete cycles."""
+
+    def __init__(self, seed_spurgeon, delta=0.12, min_steps=0, required=2):
+        self.seed_spurgeon = float(seed_spurgeon) if seed_spurgeon is not None else None
+        self.delta = float(delta)
+        self.min_steps = int(min_steps)
+        self.required = int(required)
+        self.streak = 0
+        self._eval_cache = {}
+        self._keys = ["eval_spurgeon_loss"]
+
+    def on_evaluate(self, args, state, control, metrics=None, **kwargs):
+        if self.seed_spurgeon is None or self.delta <= 0:
+            return
+        step = int(getattr(state, "global_step", 0) or 0)
+        if step < self.min_steps:
+            return
+        if not metrics:
+            return
+        self._eval_cache, merged = merge_eval_event_for_step(
+            self._eval_cache,
+            step,
+            metrics,
+            self._keys,
+        )
+        if merged is None:
+            return
+        spurgeon = merged.get("eval_spurgeon_loss")
+        self.streak = seed_regression_streak(
+            spurgeon, self.seed_spurgeon, self.delta, self.streak
+        )
+        if seed_regression_should_abort(self.streak, self.required):
+            print(
+                f"ABORT_SEED_REGRESSION @ step {step}: "
+                f"eval_spurgeon_loss={spurgeon} >= seed {self.seed_spurgeon} "
+                f"+ delta {self.delta} for {self.streak} consecutive cycles"
+            )
+            control.should_training_stop = True
+
+
+class S5BestAdapterExporter(TrainerCallback):
+    """Save theology_cpt_lora_s5best when mean(puritan, confession) improves
+    and spurgeon stays within seed + guardrail. Survives save_total_limit=3.
+    """
+
+    def __init__(
+        self,
+        adapter_dir,
+        seed_spurgeon,
+        guardrail=0.01,
+        min_steps=0,
+        tokenizer=None,
+    ):
+        self.adapter_dir = adapter_dir
+        self.seed_spurgeon = float(seed_spurgeon) if seed_spurgeon is not None else None
+        self.guardrail = float(guardrail)
+        self.min_steps = int(min_steps)
+        self.tokenizer = tokenizer
+        self.best_s5 = None
+        self.best_record = None
+        self._eval_cache = {}
+        self._keys = [
+            "eval_spurgeon_loss",
+            "eval_puritan_loss",
+            "eval_confession_loss",
+            "eval_mix_loss",
+        ]
+
+    def on_evaluate(self, args, state, control, metrics=None, model=None, **kwargs):
+        if not self.adapter_dir or self.seed_spurgeon is None:
+            return
+        step = int(getattr(state, "global_step", 0) or 0)
+        if step < self.min_steps:
+            return
+        if not metrics:
+            return
+        self._eval_cache, merged = merge_eval_event_for_step(
+            self._eval_cache,
+            step,
+            metrics,
+            self._keys,
+        )
+        if merged is None:
+            return
+        # Monitor-only general warn (does not affect save / halt).
+        if "eval_general_loss" in metrics and metrics["eval_general_loss"] is not None:
+            try:
+                g = float(metrics["eval_general_loss"])
+                if not hasattr(self, "_general_seed") or self._general_seed is None:
+                    self._general_seed = g
+                elif g > float(self._general_seed) + float(GENERAL_WARN_DELTA):
+                    print(
+                        f"WARNING general forgetting @ step {step}: "
+                        f"eval_general_loss={g:.4f} > first {self._general_seed:.4f} "
+                        f"+ {GENERAL_WARN_DELTA}"
+                    )
+            except (TypeError, ValueError):
+                pass
+        s5 = s5_loss_from_metrics(merged)
+        spurgeon = merged.get("eval_spurgeon_loss")
+        if not s5_best_should_save(
+            s5, self.best_s5, spurgeon, self.seed_spurgeon, self.guardrail
+        ):
+            return
+        self.best_s5 = float(s5)
+        save_model = model
+        if save_model is None:
+            return
+        os.makedirs(self.adapter_dir, exist_ok=True)
+        save_model.save_pretrained(self.adapter_dir)
+        tok = self.tokenizer
+        if tok is not None:
+            try:
+                tok.save_pretrained(self.adapter_dir)
+            except Exception as exc:
+                print(f"s5_best tokenizer save warn: {exc}")
+        weights = os.path.join(self.adapter_dir, "adapter_model.safetensors")
+        sha = sha256_file(weights) if os.path.isfile(weights) else None
+        self.best_record = {
+            "step": step,
+            "s5_loss": self.best_s5,
+            "eval_spurgeon_loss": float(spurgeon) if spurgeon is not None else None,
+            "eval_puritan_loss": float(merged.get("eval_puritan_loss")),
+            "eval_confession_loss": float(merged.get("eval_confession_loss")),
+            "eval_mix_loss": (
+                float(merged["eval_mix_loss"]) if merged.get("eval_mix_loss") is not None else None
+            ),
+            "adapter_sha256": sha,
+            "adapter_dir": self.adapter_dir,
+            "spurgeon_guardrail": self.guardrail,
+            "seed_spurgeon": self.seed_spurgeon,
+        }
+        meta_path = os.path.join(self.adapter_dir, "s5_best.json")
+        with open(meta_path, "w", encoding="utf-8") as fh:
+            json.dump(self.best_record, fh, indent=2)
+        global S5_BEST_STATE
+        S5_BEST_STATE = dict(self.best_record)
+        print(
+            f"S5_BEST saved @ step {step}: s5={self.best_s5:.6f} "
+            f"spurgeon={spurgeon} sha={sha} -> {self.adapter_dir}"
+        )
+
+
 _callbacks = [_PrintEvalKeysOnce()]
 if USE_COMPOSITE_EARLY_STOP:
     _callbacks.append(
@@ -1566,6 +1999,7 @@ if USE_COMPOSITE_EARLY_STOP:
             patience=int(EARLY_STOPPING_PATIENCE),
             epsilon=float(EARLY_STOP_EPSILON),
             min_steps=int(EARLY_STOP_MIN_STEPS),
+            initial_bests=COMPOSITE_SEED_BESTS,
         )
     )
 elif LOAD_BEST_MODEL_AT_END and EARLY_STOPPING_PATIENCE:
@@ -1575,6 +2009,26 @@ if ABORT_SPURGEON_STEP:
         AbortIfSpurgeonRisesCallback(
             abort_step=ABORT_SPURGEON_STEP,
             ref_step=ABORT_SPURGEON_REF_STEP,
+        )
+    )
+_seed_spurgeon = (COMPOSITE_SEED_BESTS or {}).get("eval_spurgeon_loss")
+if ABORT_SPURGEON_DELTA and _seed_spurgeon is not None:
+    _callbacks.append(
+        AbortOnSeedRegressionCallback(
+            seed_spurgeon=_seed_spurgeon,
+            delta=float(ABORT_SPURGEON_DELTA),
+            min_steps=int(EARLY_STOP_MIN_STEPS),
+            required=2,
+        )
+    )
+if S5_BEST_ADAPTER_DIR and _seed_spurgeon is not None:
+    _callbacks.append(
+        S5BestAdapterExporter(
+            adapter_dir=S5_BEST_ADAPTER_DIR,
+            seed_spurgeon=_seed_spurgeon,
+            guardrail=float(S5_SPURGEON_GUARDRAIL),
+            min_steps=int(EARLY_STOP_MIN_STEPS),
+            tokenizer=train_tok,
         )
     )
 
@@ -1967,9 +2421,17 @@ run_config["use_composite_early_stop"] = USE_COMPOSITE_EARLY_STOP if "USE_COMPOS
 run_config["composite_early_stop_metrics"] = (
     COMPOSITE_EARLY_STOP_METRICS if "COMPOSITE_EARLY_STOP_METRICS" in dir() else None
 )
+run_config["continue_profile"] = CONTINUE_PROFILE if "CONTINUE_PROFILE" in dir() else ""
+run_config["composite_seed_bests"] = COMPOSITE_SEED_BESTS if "COMPOSITE_SEED_BESTS" in dir() else None
 run_config["eval_buckets_during_train"] = (
     EVAL_BUCKETS_DURING_TRAIN if "EVAL_BUCKETS_DURING_TRAIN" in dir() else None
 )
+run_config["abort_spurgeon_delta"] = ABORT_SPURGEON_DELTA if "ABORT_SPURGEON_DELTA" in dir() else None
+run_config["s5_spurgeon_guardrail"] = S5_SPURGEON_GUARDRAIL if "S5_SPURGEON_GUARDRAIL" in dir() else None
+run_config["s5_best_adapter_dir"] = S5_BEST_ADAPTER_DIR if "S5_BEST_ADAPTER_DIR" in dir() else None
+run_config["s5_best"] = S5_BEST_STATE if "S5_BEST_STATE" in dir() else None
+run_config["lr_scheduler"] = LR_SCHEDULER if "LR_SCHEDULER" in dir() else None
+run_config["lr_scheduler_kwargs"] = LR_SCHEDULER_KWARGS if "LR_SCHEDULER_KWARGS" in dir() else None
 
 with open(RUN_CONFIG_OUT, "w", encoding="utf-8") as f:
     json.dump(run_config, f, indent=2)
@@ -1977,5 +2439,7 @@ with open(RUN_CONFIG_OUT, "w", encoding="utf-8") as f:
 print("Saved:")
 print(" ", ADAPTER_OUT)
 print(" ", RUN_CONFIG_OUT)
+if S5_BEST_STATE:
+    print(" S5 best:", S5_BEST_STATE.get("adapter_dir"), "step", S5_BEST_STATE.get("step"))
 print("Checkpoints:", OUTPUT_DIR)
 

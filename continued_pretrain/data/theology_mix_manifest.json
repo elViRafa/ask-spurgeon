@@ -1,9 +1,9 @@
 {
-  "created_at": "2026-08-27T19:58:31.279219+00:00",
+  "created_at": "2026-09-23T12:23:28.103203+00:00",
   "seed": 42,
   "plan": "PLAN_FABLE5_TO_IMPROVE_CPT v2",
   "max_chunk_chars": 7000,
-  "spurgeon_weight": 1.068846,
+  "spurgeon_weight": 1.157749,
   "spurgeon_weight_mode": "target_share=0.45",
   "spurgeon_keep_all": false,
   "other_bucket_weight": 1.0,
@@ -14,9 +14,9 @@
   "author_tags": false,
   "doc_separator": "<|endoftext|>",
   "train_path": "C:\\Users\\rafael\\Projetos\\search-sermons\\continued_pretrain\\data\\theology_mix_train.txt",
-  "train_docs": 51937,
-  "train_chars": 316512374,
-  "train_approx_tokens": 79128093,
+  "train_docs": 54799,
+  "train_chars": 331792127,
+  "train_approx_tokens": 82948031,
   "max_doc_chars": 7000,
   "docs_over_8k_chars": 0,
   "buckets": {
@@ -24,31 +24,31 @@
       "docs": 630,
       "chars": 4330884,
       "approx_tokens": 1082721,
-      "char_share": 0.0137
+      "char_share": 0.0131
     },
     "confession": {
-      "docs": 2762,
-      "chars": 17465945,
-      "approx_tokens": 4366486,
-      "char_share": 0.0552
+      "docs": 2763,
+      "chars": 17472348,
+      "approx_tokens": 4368087,
+      "char_share": 0.0527
     },
     "general": {
-      "docs": 4298,
-      "chars": 22673731,
-      "approx_tokens": 5668432,
-      "char_share": 0.0716
+      "docs": 4614,
+      "chars": 24025300,
+      "approx_tokens": 6006325,
+      "char_share": 0.0724
     },
     "puritan": {
-      "docs": 23258,
-      "chars": 144711625,
-      "approx_tokens": 36177906,
-      "char_share": 0.4572
+      "docs": 25691,
+      "chars": 158554814,
+      "approx_tokens": 39638703,
+      "char_share": 0.4779
     },
     "spurgeon": {
-      "docs": 20989,
-      "chars": 127330189,
-      "approx_tokens": 31832547,
-      "char_share": 0.4023
+      "docs": 21101,
+      "chars": 127408781,
+      "approx_tokens": 31852195,
+      "char_share": 0.384
     }
   },
   "domain_buckets_present": [
@@ -64,12 +64,17 @@
     "general": 10
   },
   "dedup": {
-    "dropped_duplicate_paragraphs": 29366,
-    "dropped_docs_after_dedup": 2166,
-    "docs_in": 54103,
-    "docs_out": 51937,
-    "unique_long_paragraphs": 317257,
+    "dropped_duplicate_paragraphs": 45930,
+    "dropped_docs_after_dedup": 4014,
+    "docs_in": 58813,
+    "docs_out": 54799,
+    "unique_long_paragraphs": 325364,
     "top_frequent_paragraphs": [
+      {
+        "preview": "this work is the substance of many libraries. it contains the essence of all the commentators upon the psalms, both ancient and modern. besides containing origi",
+        "count": 3,
+        "chars": 467
+      },
       {
         "preview": "what do sermons and discourses mean but, \"come sinner, come!\"? and those secret motions of power upon the conscience. those times when the heart grows calm, eve",
         "count": 3,
@@ -121,54 +126,49 @@
         "chars": 323
       },
       {
-        "preview": "the dearest idol i have known, whatever that idol be, help me to tear it from your throne, and worship only thee! so shall my walk be close with god, calm and s",
+        "preview": "occasionally this comes in the form of a presentiment. i do not think that i am superstitious. i fancy that i am pretty clear of that vice, yet i have had prese",
         "count": 3,
-        "chars": 237
+        "chars": 557
       },
       {
-        "preview": "the priesthood of the christian church is common to all the saints! there is no other true priesthood but that of the lord jesus christ. i cannot discharge any ",
+        "preview": "how do you understand the story of john wycliffe, at lutterworth, in any other way than this? he had been speaking against the monks and various abuses of the c",
+        "count": 3,
+        "chars": 1171
+      },
+      {
+        "preview": "wycliffe begged an attendant to help him sit up and then he cried with all his strength, \"i shall not die, but live, to declare the works of the lord and to exp",
+        "count": 3,
+        "chars": 574
+      },
+      {
+        "preview": "now, do not be making up presentiments about all sorts of things because i have said that sometimes the lord grants them to his saints. this would be a mischiev",
         "count": 3,
         "chars": 835
       },
       {
-        "preview": "so, to your personal redeemer render your personal service. give liberally of your substance to help others to do their part of the work, but give yourself--spi",
+        "preview": "this surprised her and i asked her friends to bring her food. she said she would not eat it and then i told her that if she was resolved on suicide, i would men",
         "count": 3,
-        "chars": 241
+        "chars": 947
       },
       {
-        "preview": "some of you have to live in places where you are not comfortable. perhaps you are not in a neighborhood that you like. possibly in the very house where you live",
+        "preview": "this, however, i only mention by the way. when a believer is in trouble, he derives great comfort from his reliance upon the compassion of god. the lord scourge",
         "count": 3,
-        "chars": 1965
+        "chars": 695
       },
       {
-        "preview": "perhaps, however, you are a member of an ungodly family. now, you had no hand in that matter. you were not responsible for your birth and you cannot get out of ",
+        "preview": "o believer, never let anything drive you away from this confidence, for it has sure truth for its foundation! the lord is good and his mercy endures forever. it",
         "count": 3,
-        "chars": 1126
+        "chars": 672
       },
       {
-        "preview": "it may be that you are persecuted, that you live in places where you are sneered at, where the doctrines that are dearer than life to you, are regarded with con",
+        "preview": "next, faith comforts the tried child of god by assuring him of the forgiveness of his sin and his security from punishment. please notice the very distant diffe",
         "count": 3,
-        "chars": 1503
+        "chars": 826
       },
       {
-        "preview": "brothers and sisters, i think our text furnishes sweet consolation to any who have been engaged in very arduous service. have you a great deal to do for christ-",
+        "preview": "the governor of the feast called the bridegroom, and saith unto him, every man at the beginning doth set forth good wine; and when men have well drunk, then tha",
         "count": 3,
-        "chars": 445
-      },
-      {
-        "preview": "or on the other hand, are you passing through a very trying experience? if so, you are being qualified for greater usefulness. your dark experience will only te",
-        "count": 3,
-        "chars": 499
-      },
-      {
-        "preview": "25, 26. while you are on the way with him, lest at any time the adversary deliver you to the judge, and the judge deliver you to the officer, and you be cast in",
-        "count": 3,
-        "chars": 563
-      },
-      {
-        "preview": "_walt whitman has somewhere a fine and just distinction between \u201cloving by allowance\u201d and \u201cloving with personal love.\u201d this distinction applies to books as well",
-        "count": 3,
-        "chars": 1700
+        "chars": 234
       }
     ]
   },
@@ -194,42 +194,42 @@
     "tokenizer": "Qwen/Qwen3.5-4B-Base",
     "method": "sample_ratio",
     "sample_chars": 500000,
-    "token_char_ratio": 0.287726,
-    "train_estimated_tokens": 91307937,
-    "train_chars": 317343366,
+    "token_char_ratio": 0.284802,
+    "train_estimated_tokens": 94744771,
+    "train_chars": 332668911,
     "max_doc_chars": 7000,
     "docs_over_8k_chars": 0,
-    "n_docs": 51937,
+    "n_docs": 54799,
     "buckets": {
       "bible": {
         "chars": 4330884,
-        "estimated_tokens": 1246107,
-        "char_share": 0.0137,
+        "estimated_tokens": 1233444,
+        "char_share": 0.0131,
         "docs": 630
       },
       "confession": {
-        "chars": 17465945,
-        "estimated_tokens": 5025406,
-        "char_share": 0.0552,
-        "docs": 2762
+        "chars": 17472348,
+        "estimated_tokens": 4976159,
+        "char_share": 0.0527,
+        "docs": 2763
       },
       "general": {
-        "chars": 22673731,
-        "estimated_tokens": 6523821,
-        "char_share": 0.0716,
-        "docs": 4298
+        "chars": 24025300,
+        "estimated_tokens": 6842453,
+        "char_share": 0.0724,
+        "docs": 4614
       },
       "puritan": {
-        "chars": 144711625,
-        "estimated_tokens": 41637297,
-        "char_share": 0.4572,
-        "docs": 23258
+        "chars": 158554814,
+        "estimated_tokens": 45156728,
+        "char_share": 0.4779,
+        "docs": 25691
       },
       "spurgeon": {
-        "chars": 127330189,
-        "estimated_tokens": 36636205,
-        "char_share": 0.4023,
-        "docs": 20989
+        "chars": 127408781,
+        "estimated_tokens": 36286275,
+        "char_share": 0.384,
+        "docs": 21101
       }
     }
   }

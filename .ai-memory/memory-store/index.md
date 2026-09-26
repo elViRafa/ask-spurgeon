@@ -5,7 +5,7 @@ summary: "Index of all semantic memory store files."
 priority: high
 tags: [index, memory-store]
 schema_version: 1.3
-last_updated: "2026-09-21T07:09:57-03:00"
+last_updated: "2026-09-21T07:40:59-03:00"
 ---
 
 # Memory Store Index
@@ -50,6 +50,7 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `episodic/2026-09-18` | low | Finished Vast CPT S6 continue-B cleanup: re-fetched artifacts to vast_cpt_s6/fetch, destroyed idle instance 51416115 (instances=[]), and documented why resume spiked spurgeon 2.4987→2.618 then composi | • vast-cpt-s6-fetch-destroy-analyse<br>• cpt-s6-c-eval-handoff<br>• s6-c-eval-vast<br>• s6-c-regression-diagnosis | episodic, session-journal |
 | `episodic/2026-09-19` | low | Operator asked to save memories | • save-cpt-c-eval-memories | episodic, session-journal |
 | `episodic/2026-09-20` | low | Implemented stack-isolation C for S6 SHA 6aab | • s6-stack-isolation-c<br>• memory-stack-isolation | episodic, session-journal |
+| `episodic/2026-09-21` | low | Committed and pushed CPT C-eval stack pin, S6 stack-isolation tooling/scripts, and related memory-store updates to origin/main as cca6aee | • commit-push-s6-isolation<br>• memory-deep-dream<br>• llm-dream-split-tool<br>• full-deep-dream | episodic, session-journal |
 | `failures/asyncua-write-value-badtypemismatch-188c68c9d2` | medium | asyncua write_value BadTypeMismatch when writing int to UInt16 or Double node wi | • Occurrence 1 — 2026-08-12T08:59:14-04:00 | failure, fix |
 | `failures/b-training-sota-earlystopping-4edd127cc9` | medium | B_training_sota: EarlyStopping disabled — metric_for_best_model eval_spurgeon_loss not found in logs (B v6 after tokenized eval) | • Occurrence 1 — 2026-08-25T09:03:00-04:00<br>• Occurrence 2 — 2026-08-25T10:20:39-04:00 | cpt, early-stopping, failure, fix, kaggle, transformers |
 | `failures/cpt-b-early-stop-561e9ec07f` | medium | CPT B early-stop patience=2 with eval_steps=25 and 2-doc eval_spurgeon_loss halted corpus v3 at step 375 of 4128 (~8.2M of 90M tokens) | • Occurrence 1 — 2026-08-27T21:36:49-04:00 | cpt, early-stop, failure, fix, runpod |

@@ -76,6 +76,12 @@ def clean_md_sermon(raw_text: str) -> str:
     # 13. Collapse 3+ blank lines to one (i.e. double newline for one blank line)
     text = re.sub(r'\n{3,}', '\n\n', text)
 
+    # 14. EEBO-TCP long-s / editorial glyphs (same map as the mix book cleaner)
+    text = text.replace("\u017f", "s").replace("\u017F", "s")
+    text = text.replace("\u01b2", "V").replace("\u028b", "v")
+    for ch in ("\u25ca", "\u25aa", "\u25a0", "\u3008", "\u3009", "\ufffd"):
+        text = text.replace(ch, "")
+
     return text.strip()
 
 def build_corpus(corpus_root: str, output_file: str, holdout_dir: str = None):

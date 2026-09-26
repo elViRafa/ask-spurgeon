@@ -1,12 +1,12 @@
 ---
 store_path: failures/unicodeencodeerror-val-codec-can-896018dfa4
-title: "UnicodeEncodeError: 'charmap' codec can't encode character '\\u2192' in position "
+title: "UnicodeEncodeError: 'charmap' codec can't encode character '\\u258e' when vast_cp"
 summary: "UnicodeEncodeError: 'charmap' codec can't encode character '\\u2192' in position 2 (Windows cp1252 console) when 10_fetch_puritans.py printed status arrows"
 priority: medium
-tags: [cpt, encoding, failure, fix, mix, windows]
+tags: [cpt, encoding, failure, fix, monitor, vast, windows]
 schema_version: 1.3
-last_updated: "2026-08-27T15:23:32-04:00"
-occurrences: 2
+last_updated: "2026-09-23T14:22:40-03:00"
+occurrences: 3
 error_signature: "unicodeencodeerror: <val> codec can<val><path>' in position <n> (windows cp<n> console) when <n>_fetch_puritans.py printed status arrows."
 failure_key: unicodeencodeerror
 ---
@@ -24,3 +24,9 @@ Replaced the Unicode arrow in the status print with ASCII '->'. Also set PYTHONI
 UnicodeEncodeError: 'charmap' codec can't encode character '\u2192' in position 23 (Windows cp1252 console) when 07_build_theology_mix.py printed Paragraph dedup docs_in → docs_out
 
 Replaced Unicode arrows in 07_build_theology_mix.py prints (paragraph dedup and bucket cap) with ASCII '->'. Re-run mix with PYTHONIOENCODING=utf-8. Same class of bug as the fetcher status-arrow crash.
+
+## Occurrence 3 — 2026-09-23T14:22:40-03:00
+
+UnicodeEncodeError: 'charmap' codec can't encode character '\u258e' when vast_cpt_s7_monitor_until_done.py prints Unsloth tqdm progress bars on Windows cp1252 redirected stdout; that exception skipped fetch + finished checks every poll cycle
+
+Sanitize monitor log lines with safe_line() ASCII replace, reconfigure stdio to utf-8 errors=replace, and set PYTHONIOENCODING=utf-8 when orchestrate starts the monitor.

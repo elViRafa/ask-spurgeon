@@ -9,7 +9,7 @@ Usage (repo root):
   python continued_pretrain/scripts/10_fetch_puritans.py
   python continued_pretrain/scripts/10_fetch_puritans.py --only owen,watson
   python continued_pretrain/scripts/10_fetch_puritans.py --list
-  python continued_pretrain/scripts/10_fetch_puritans.py --wave 3
+  python continued_pretrain/scripts/10_fetch_puritans.py --wave 5
   python continued_pretrain/scripts/10_fetch_puritans.py --rebuild-mix
       (passes --keep-all-spurgeon --max-other-weight 1.5; prefer the explicit mix command)
 """
@@ -1313,9 +1313,156 @@ def _wave3_catalog() -> dict[str, dict]:
     }
 
 
+def _wave4_catalog() -> dict[str, dict]:
+    """Phase B unique Puritan tokens — John Downame (not Bishop George).
+
+    Prefer EEBO-TCP over IA OCR. Train-only: do not put Downame into holdouts.
+    """
+    return {
+        "downame_christian_warfare": {
+            "author": "downame",
+            "filename": "christian_warfare.txt",
+            "title": "The Christian Warfare (John Downame)",
+            "urls": [
+                *tcp_urls("A20752"),
+                ia_dl(
+                    "bim_early-english-books-1475-1640_the-christian-warfare-_downame-john_1604",
+                    "bim_early-english-books-1475-1640_the-christian-warfare-_downame-john_1604_djvu.txt",
+                ),
+            ],
+            "must_match": ["warfare"],
+            "must_match_any": ["downame", "dovvname", "douname"],
+            "min_chars": 80_000,
+            "wave": 4,
+        },
+        "downame_guide_godliness": {
+            "author": "downame",
+            "filename": "guide_to_godliness.txt",
+            "title": "A Guide to Godliness (John Downame)",
+            "urls": [
+                *tcp_urls("A20762"),
+                ia_dl(
+                    "bim_early-english-books-1475-1640_a-guide-to-godlynesse-_downame-john_1622",
+                    "bim_early-english-books-1475-1640_a-guide-to-godlynesse-_downame-john_1622_djvu.txt",
+                ),
+            ],
+            "must_match": ["guide"],
+            "must_match_any": ["downame", "dovvname", "douname"],
+            "min_chars": 80_000,
+            "wave": 4,
+        },
+    }
+
+
+def _wave5_catalog() -> dict[str, dict]:
+    """Phase B extra Puritan tokens — new authors, practical divinity.
+
+    Train-only: do not put these into holdouts (probes stay pinned v3).
+    Prefer EEBO-TCP (`tcp_urls`) over IA OCR. Phase-2 IDs fall through to OTA.
+    Skip Gillespie polity, Vincent WSC, and Durham commentaries.
+    """
+    return {
+        "ambrose_looking_unto_jesus": {
+            "author": "ambrose",
+            "filename": "looking_unto_jesus.txt",
+            "title": "Looking unto Jesus (Isaac Ambrose)",
+            "urls": [*tcp_urls("A25241")],
+            "must_match": ["looking"],
+            "must_match_any": ["ambrose", "jesus", "iesus"],
+            "min_chars": 80_000,
+            "wave": 5,
+        },
+        "swinnock_works": {
+            "author": "swinnock",
+            "filename": "works_1665.txt",
+            "title": "The Works of George Swinnock (1665 godliness treatise)",
+            "urls": [*tcp_urls("A62040")],
+            "must_match": ["godliness"],
+            "must_match_any": ["swinnock", "swinnocke"],
+            "min_chars": 80_000,
+            "wave": 5,
+        },
+        "swinnock_incomparableness": {
+            "author": "swinnock",
+            "filename": "incomparableness_of_god.txt",
+            "title": "A Treatise of the Incomparableness of God (George Swinnock)",
+            "urls": [*tcp_urls("A62054")],
+            "must_match": ["incomparable"],
+            "must_match_any": ["swinnock", "swinnocke"],
+            "min_chars": 50_000,
+            "wave": 5,
+        },
+        "venning_plague_of_plagues": {
+            "author": "venning",
+            "filename": "plague_of_plagues.txt",
+            "title": "Sin, the Plague of Plagues (Ralph Venning)",
+            "urls": [*tcp_urls("A64834")],
+            "must_match": ["plague"],
+            "must_match_any": ["venning", "sinful"],
+            "min_chars": 50_000,
+            "wave": 5,
+        },
+        "binning_sinners_sanctuary": {
+            "author": "binning",
+            "filename": "sinners_sanctuary.txt",
+            "title": "The Sinner's Sanctuary (Hugh Binning)",
+            "urls": [*tcp_urls("A28173")],
+            "must_match": ["sanctuary"],
+            "must_match_any": ["binning", "romans", "romanes"],
+            "min_chars": 80_000,
+            "wave": 5,
+        },
+        "preston_breastplate": {
+            "author": "preston",
+            "filename": "breastplate_of_faith_and_love.txt",
+            "title": "The Breast-plate of Faith and Love (John Preston)",
+            "urls": [*tcp_urls("A09950")],
+            "must_match": ["faith"],
+            "must_match_any": ["preston", "breast"],
+            "min_chars": 80_000,
+            "wave": 5,
+        },
+        "durham_unsearchable_riches": {
+            "author": "durham",
+            "filename": "unsearchable_riches_of_christ.txt",
+            "title": "The Unsearchable Riches of Christ (James Durham)",
+            "urls": [*tcp_urls("B02840")],
+            "must_match": ["riches"],
+            "must_match_any": ["durham", "unsearchable"],
+            "min_chars": 50_000,
+            "wave": 5,
+        },
+        "vincent_unseen_christ": {
+            "author": "vincent",
+            "filename": "true_christians_love_of_the_unseen_christ.txt",
+            "title": "The True Christian's Love of the Unseen Christ (Thomas Vincent)",
+            "urls": [*tcp_urls("A64995")],
+            "must_match": ["unseen"],
+            "must_match_any": ["vincent", "christ"],
+            "min_chars": 30_000,
+            "wave": 5,
+        },
+        "guthrie_great_interest": {
+            "author": "guthrie",
+            "filename": "christians_great_interest.txt",
+            "title": "The Christian's Great Interest (William Guthrie)",
+            "urls": [
+                ccel_cache("g", "guthrie", "interest2"),
+                "https://www.ccel.org/ccel/g/guthrie/interest2/cache/interest2.txt",
+            ],
+            "must_match": ["interest"],
+            "must_match_any": ["guthrie"],
+            "min_chars": 30_000,
+            "wave": 5,
+        },
+    }
+
+
 CATALOG.update(_wave1_catalog())
 CATALOG.update(_wave2_catalog())
 CATALOG.update(_wave3_catalog())
+CATALOG.update(_wave4_catalog())
+CATALOG.update(_wave5_catalog())
 
 
 def fetch_bytes(url: str, timeout: int = 180, retries: int = 2) -> bytes | None:
@@ -1372,6 +1519,24 @@ def strip_html(text: str) -> str:
     return text.strip()
 
 
+def normalize_early_modern_orthography(text: str) -> str:
+    """Map TCP/EEBO long-s and light editorial glyphs to modern ASCII-ish forms.
+
+    Long-s (U+017F) is ~2–3% of many EEBO-TCP dumps and splits Qwen tokens away
+    from the modernized rest of the mix (Spurgeon, IA reprints). Safe, reversible
+    for CPT: ſ→s only; drop a few TCP markup diamonds/brackets.
+    """
+    if not text:
+        return text
+    # Long s (ſ) and rare Latin letter V used as U in some TCP dumps.
+    text = text.replace("\u017f", "s").replace("\u017F", "s")
+    text = text.replace("\u01b2", "V").replace("\u028b", "v")  # Ʋ ʋ
+    # EEBO-TCP editorial / lacuna markers — not lexical.
+    for ch in ("\u25ca", "\u25aa", "\u25a0", "\u3008", "\u3009", "\ufffd"):
+        text = text.replace(ch, "")
+    return text
+
+
 def clean_pd_text(text: str) -> str:
     text = strip_html(text)
     # Gutenberg banners
@@ -1399,6 +1564,7 @@ def clean_pd_text(text: str) -> str:
             text = text[cut.end() :]
     # Archive OCR form feeds
     text = text.replace("\f", "\n\n")
+    text = normalize_early_modern_orthography(text)
     text = re.sub(r"\n{3,}", "\n\n", text)
     return text.strip()
 

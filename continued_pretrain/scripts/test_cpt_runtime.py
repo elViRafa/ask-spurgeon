@@ -204,7 +204,167 @@ def test_resolve_continue_training_config() -> None:
     assert cfg["eval_buckets_during_train"] == ["spurgeon", "puritan", "confession"]
     assert cfg["early_stop_min_steps"] == 1652  # ceil(0.4 * 4128)
     assert cfg["use_composite_early_stop"] is True
+    assert cfg["composite_early_stop_metrics"] == ["eval_spurgeon_loss", "eval_mix_loss"]
+    assert cfg.get("continue_profile") == ""
+    assert cfg.get("continue_max_steps") is None
     assert cr.resolve_continue_training_config(env={}, packed_epoch_steps=100) == {}
+
+
+def test_resolve_continue_training_config_s7(tmp_path: Path) -> None:
+    work = tmp_path / "s7work"
+    work.mkdir(parents=True)
+    env = {
+        "CPT_RUN_MODE": "continue",
+        "CPT_CONTINUE_PROFILE": "s7",
+        "CPT_WORK_ROOT": str(work),
+    }
+    cfg = cr.resolve_continue_training_config(env=env, packed_epoch_steps=4128)
+    assert cfg["continue_profile"] == "s7"
+    assert cfg["learning_rate"] == 2e-6
+    assert cfg["embedding_learning_rate"] == 8e-7
+    assert cfg["warmup_ratio"] == 0.04
+    assert cfg["early_stop_min_steps"] == 400  # not 0.4*4128
+    assert cfg["early_stop_patience"] == 4
+    assert cfg["early_stop_epsilon"] == 0.003
+    assert cfg["eval_steps"] == 50
+    assert cfg["save_steps"] == 50
+    assert cfg["lr_scheduler_type"] == "cosine_with_min_lr"
+    assert cfg["lr_scheduler_kwargs"] == {"min_lr_rate": 0.1}
+    assert cfg["continue_max_steps"] == 955
+    assert cfg["output_dir"] == str(work / "checkpoints_s7")
+    assert cfg["eval_buckets_during_train"] == [
+        "spurgeon",
+        "puritan",
+        "confession",
+        "general",
+    ]
+    assert "eval_general_loss" not in cfg["composite_early_stop_metrics"]
+    assert cfg["composite_early_stop_metrics"] == [
+        "eval_spurgeon_loss",
+        "eval_puritan_loss",
+        "eval_confession_loss",
+    ]
+    assert "eval_mix_loss" not in cfg["composite_early_stop_metrics"]
+    assert cfg["composite_seed_bests"]["eval_spurgeon_loss"] == 2.4987
+    assert "eval_mix_loss" not in cfg["composite_seed_bests"]
+    # In-train @ ckpt-2050 — not isolation-C full-holdout CE
+    assert cfg["composite_seed_bests"]["eval_puritan_loss"] == 1.751
+    assert cfg["composite_seed_bests"]["eval_confession_loss"] == 1.668
+    assert cfg["abort_spurgeon_delta"] == 0.12
+    assert cfg["s5_spurgeon_guardrail"] == 0.01
+    assert cfg["s5_best_adapter_dir"] == str(work / "theology_cpt_lora_s5best")
+    layout = cr.layout_paths(str(work), env=env)
+    assert layout["output_dir"] == str(work / "checkpoints_s7")
+
+
+def test_s7_replay_drops_mix_from_composite() -> None:
+    env = {
+        "CPT_RUN_MODE": "continue",
+        "CPT_CONTINUE_PROFILE": "s7",
+        "COMPOSITE_EARLY_STOP_METRICS": (
+            "eval_spurgeon_loss,eval_puritan_loss,eval_confession_loss"
+        ),
+    }
+    cfg = cr.resolve_continue_training_config(env=env, packed_epoch_steps=100)
+    assert cfg["composite_early_stop_metrics"] == [
+        "eval_spurgeon_loss",
+        "eval_puritan_loss",
+        "eval_confession_loss",
+    ]
+    assert "eval_mix_loss" not in cfg["composite_early_stop_metrics"]
+
+
+def test_s5_best_should_save_guardrail() -> None:
+    seed = 2.4987
+    s5 = cr.s5_loss_from_metrics(
+        {"eval_puritan_loss": 1.70, "eval_confession_loss": 1.60}
+    )
+    assert abs(s5 - 1.65) < 1e-9
+    # First s5 with spurgeon within guardrail → save
+    assert cr.s5_best_should_save(s5, None, 2.50, seed, guardrail=0.01) is True
+    # Spurgeon past guardrail → no save even if s5 improves
+    assert cr.s5_best_should_save(1.50, 1.65, 2.52, seed, guardrail=0.01) is False
+    # Better s5 + spurgeon OK → save
+    assert cr.s5_best_should_save(1.60, 1.65, 2.505, seed, guardrail=0.01) is True
+    # Worse s5 → no save
+    assert cr.s5_best_should_save(1.70, 1.65, 2.50, seed, guardrail=0.01) is False
+
+
+def test_seed_regression_abort_two_cycles() -> None:
+    seed = 2.4987
+    delta = 0.12
+    streak = 0
+    streak = cr.seed_regression_streak(2.62, seed, delta, streak)
+    assert streak == 1
+    assert cr.seed_regression_should_abort(streak, required=2) is False
+    streak = cr.seed_regression_streak(2.63, seed, delta, streak)
+    assert streak == 2
+    assert cr.seed_regression_should_abort(streak, required=2) is True
+    # Recovery resets
+    streak = cr.seed_regression_streak(2.50, seed, delta, streak)
+    assert streak == 0
+
+
+def test_composite_seed_bests_spike_does_not_replace_seed() -> None:
+    """First eval worse than S6 seed must not become the halt baseline."""
+    keys = [
+        "eval_spurgeon_loss",
+        "eval_mix_loss",
+        "eval_puritan_loss",
+        "eval_confession_loss",
+    ]
+    seed = dict(cr.S7_DEFAULT_COMPOSITE_SEED_BESTS)
+    seed["eval_mix_loss"] = 2.0208
+    # Spike like S6 resume at 2075
+    spiked = {
+        "eval_spurgeon_loss": 2.6185,
+        "eval_mix_loss": 2.1157,
+        "eval_puritan_loss": 1.834,
+        "eval_confession_loss": 1.755,
+    }
+    bests, streak, improved = cr.update_composite_flat_state(
+        seed, 0, spiked, keys, epsilon=0.005
+    )
+    assert improved is False
+    assert streak == 1
+    assert bests["eval_spurgeon_loss"] == 2.4987
+    # Flat again vs seed → streak 2 → halt
+    bests, streak, improved = cr.update_composite_flat_state(
+        bests, streak, spiked, keys, epsilon=0.005
+    )
+    assert improved is False
+    assert streak == 2
+    assert cr.composite_should_halt(streak, patience=2) is True
+
+
+def test_s7_empty_prev_ignores_leftover_sota(tmp_path: Path) -> None:
+    """PREV_RUN_CHECKPOINT='' must force fresh even when checkpoints_sota exists."""
+    sota = tmp_path / "checkpoints_sota" / "checkpoint-2400"
+    sota.mkdir(parents=True)
+    _write(sota / "trainer_state.json")
+    env = {
+        "CPT_RUN_MODE": "continue",
+        "CPT_CONTINUE_PROFILE": "s7",
+        "PREV_RUN_CHECKPOINT": "",
+    }
+    assert (
+        cr.resolve_prev_checkpoint(str(tmp_path), env=env, kaggle_input=str(tmp_path / "none"))
+        is None
+    )
+    # Unset PREV with s7 profile must not auto-pick sota either
+    env2 = {"CPT_RUN_MODE": "continue", "CPT_CONTINUE_PROFILE": "s7"}
+    assert (
+        cr.resolve_prev_checkpoint(str(tmp_path), env=env2, kaggle_input=str(tmp_path / "none"))
+        is None
+    )
+    # Mid-S7: highest under checkpoints_s7 only
+    s7 = tmp_path / "checkpoints_s7"
+    _write(s7 / "checkpoint-100" / "trainer_state.json")
+    _write(s7 / "checkpoint-250" / "trainer_state.json")
+    found = cr.resolve_prev_checkpoint(
+        str(tmp_path), env=env2, kaggle_input=str(tmp_path / "none")
+    )
+    assert found == str(s7 / "checkpoint-250")
 
 
 def test_composite_flat_state_s5_like() -> None:
@@ -372,8 +532,31 @@ def test_dataset_search_includes_a_output_v3(tmp_path: Path) -> None:
         cwd=str(tmp_path),
     )
     assert any("a_output_v3" in root for root in roots)
+    assert any("a_output_v4" in root for root in roots)
+    assert any("a_output_v5" in root for root in roots)
+    assert any("a_output_v6" in root for root in roots)
     found = cr.find_hf_dataset_root(roots)
     assert found == str(data)
+
+
+def test_dataset_search_prefers_a_output_v6(tmp_path: Path) -> None:
+    work = tmp_path / "work"
+    v3 = work / "a_output_v3" / "theology_dataset"
+    v4 = work / "a_output_v4" / "theology_dataset"
+    v5 = work / "a_output_v5" / "theology_dataset"
+    v6 = work / "a_output_v6" / "theology_dataset"
+    _write(v3 / "dataset_dict.json")
+    _write(v4 / "dataset_dict.json")
+    _write(v5 / "dataset_dict.json")
+    _write(v6 / "dataset_dict.json")
+    roots = cr.dataset_search_roots(
+        str(work),
+        env={},
+        kaggle_input=str(tmp_path / "nope"),
+        cwd=str(tmp_path),
+    )
+    found = cr.find_hf_dataset_root(roots)
+    assert found == str(v6)
 
 
 def test_dataset_search_uses_cpt_data_root(tmp_path: Path) -> None:
@@ -406,6 +589,12 @@ def main() -> None:
         test_spurgeon_rose_by_step()
         test_resolve_run_mode()
         test_resolve_continue_training_config()
+        test_resolve_continue_training_config_s7(tmp_path / "s7cfg")
+        test_s7_replay_drops_mix_from_composite()
+        test_s5_best_should_save_guardrail()
+        test_seed_regression_abort_two_cycles()
+        test_composite_seed_bests_spike_does_not_replace_seed()
+        test_s7_empty_prev_ignores_leftover_sota(tmp_path / "s7prev")
         test_composite_flat_state_s5_like()
         test_composite_flat_state_both_flat_halts()
         test_merge_eval_event_split_hf_cycle()
@@ -416,6 +605,7 @@ def main() -> None:
         test_metric_improved()
         test_resolve_init_adapter_env_and_local(tmp_path)
         test_dataset_search_includes_a_output_v3(tmp_path)
+        test_dataset_search_prefers_a_output_v6(tmp_path / "v6pref")
         test_dataset_search_uses_cpt_data_root(tmp_path / "envds")
     print("PASS: work_root env")
     print("PASS: layout_paths")
@@ -435,6 +625,11 @@ def main() -> None:
     print("PASS: abort if eval_spurgeon rose by step 50")
     print("PASS: CPT_RUN_MODE fresh/continue")
     print("PASS: continue training config")
+    print("PASS: S7 continue profile")
+    print("PASS: s5_best guardrail")
+    print("PASS: seed regression abort")
+    print("PASS: composite seed resists spike")
+    print("PASS: S7 empty PREV ignores sota ckpts")
     print("PASS: composite flat S5-like (mix still improving)")
     print("PASS: composite flat both-flat halt")
     print("PASS: merge split HF eval events")
@@ -445,6 +640,7 @@ def main() -> None:
     print("PASS: metric_improved epsilon")
     print("PASS: resolve_init_adapter env/local")
     print("PASS: a_output_v3 dataset search")
+    print("PASS: a_output_v6 preferred over v5/v4/v3")
     print("PASS: CPT_DATA_ROOT dataset search")
 
 

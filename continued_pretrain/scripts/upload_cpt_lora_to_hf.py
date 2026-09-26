@@ -17,7 +17,9 @@ import os
 import sys
 from pathlib import Path
 
-EXPECTED_SHA256 = "319d17a39d193041528914cfb2f83c1decf21e55ffe76dfd2ca565f5e99e1478"
+EXPECTED_SHA256_V2 = "319d17a39d193041528914cfb2f83c1decf21e55ffe76dfd2ca565f5e99e1478"
+EXPECTED_SHA256_S6 = "6aab91940ce3e854f72a5308ae41e8ce1ae4c457752ff76390581f09ba436f0c"
+EXPECTED_SHA256_S7 = "06354dfc5a720143617ee2ffeef38faa48200811bed89e71561ff357ed547432"
 DEFAULT_REPO = "rafaelvieirar1r/qwen3.5-4b-theology-cpt-lora-v2"
 
 
@@ -55,6 +57,23 @@ def main(argv: list[str] | None = None) -> int:
         ),
     )
     p.add_argument(
+        "--expected-sha256",
+        default=EXPECTED_SHA256_S7,
+        help=(
+            f"Adapter weights digest (S7 s5best default; S6={EXPECTED_SHA256_S6}; "
+            f"v2={EXPECTED_SHA256_V2})"
+        ),
+    )
+    p.add_argument(
+        "--commit-message",
+        default="CPT S7 s5best step-1200 isolation-C (embed FT, Ampere bf16)",
+    )
+    p.add_argument(
+        "--metrics-dir",
+        default="",
+        help="Optional folder with SHA256SUMS / theology_cpt_eval_metrics.json to upload",
+    )
+    p.add_argument(
         "--public",
         action="store_true",
         help="Create/update a public repo (default is private)",
@@ -67,10 +86,11 @@ def main(argv: list[str] | None = None) -> int:
         print(f"ERROR: missing {weights}", file=sys.stderr)
         return 2
 
+    want = (args.expected_sha256 or "").strip().lower()
     digest = sha256_file(weights)
-    if digest != EXPECTED_SHA256:
+    if want and digest != want:
         print(
-            f"ERROR: SHA256 mismatch\n  got  {digest}\n  want {EXPECTED_SHA256}",
+            f"ERROR: SHA256 mismatch\n  got  {digest}\n  want {want}",
             file=sys.stderr,
         )
         return 2
@@ -93,15 +113,18 @@ def main(argv: list[str] | None = None) -> int:
         exist_ok=True,
     )
     print(f"Uploading {adapter} ({weights.stat().st_size / 1e9:.2f} GB weights) -> {args.repo}")
+    print(f"SHA256 {digest}")
     api.upload_folder(
         folder_path=str(adapter),
         repo_id=args.repo,
         repo_type="model",
-        commit_message="CPT v2 Runpod LoRA best-400 (embed FT, Ampere bf16)",
+        commit_message=args.commit_message,
     )
-    extra = repo_root() / "continued_pretrain/kaggle/runpod_cpt_v2"
-    for name in ("SNAPSHOT.json", "SHA256SUMS", "theology_cpt_eval_metrics.json"):
-        path = extra / name
+    metrics_dir = Path(args.metrics_dir) if args.metrics_dir else (
+        repo_root() / "continued_pretrain/kaggle/runpod_cpt_v2"
+    )
+    for name in ("SNAPSHOT.json", "SHA256SUMS", "theology_cpt_eval_metrics.json", "STACK_PIN.txt"):
+        path = metrics_dir / name
         if path.is_file():
             api.upload_file(
                 path_or_fileobj=str(path),
@@ -110,6 +133,19 @@ def main(argv: list[str] | None = None) -> int:
                 repo_type="model",
                 commit_message=f"Add {name}",
             )
+    # Always write a small identity file for the uploaded digest.
+    import tempfile
+
+    with tempfile.TemporaryDirectory() as tmp:
+        ident = Path(tmp) / "ADAPTER_SHA256.txt"
+        ident.write_text(digest + "\n", encoding="utf-8")
+        api.upload_file(
+            path_or_fileobj=str(ident),
+            path_in_repo="ADAPTER_SHA256.txt",
+            repo_id=args.repo,
+            repo_type="model",
+            commit_message=f"Record adapter SHA256 {digest[:12]}…",
+        )
     vis = "public" if args.public else "private"
     print(f"SUCCESS ({vis}): https://huggingface.co/{args.repo}")
     return 0

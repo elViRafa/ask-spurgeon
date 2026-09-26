@@ -1,0 +1,286 @@
+{
+  "created_at": "2026-09-23T21:10:33.556049+00:00",
+  "seed": 42,
+  "plan": "PLAN_FABLE5_TO_IMPROVE_CPT v2",
+  "max_chunk_chars": 7000,
+  "spurgeon_weight": 1.157749,
+  "spurgeon_weight_mode": "target_share=0.45",
+  "spurgeon_keep_all": false,
+  "other_bucket_weight": 1.0,
+  "other_weight_capped": false,
+  "target_spurgeon_share": 0.45,
+  "replay_frac_target": 0.1,
+  "allow_spurgeon_only": false,
+  "author_tags": false,
+  "doc_separator": "<|endoftext|>",
+  "train_path": "C:\\Users\\rafael\\Projetos\\search-sermons\\continued_pretrain\\data\\mix_v6\\theology_mix_train.txt",
+  "train_docs": 23139,
+  "train_chars": 140588405,
+  "train_approx_tokens": 35147101,
+  "max_doc_chars": 7000,
+  "docs_over_8k_chars": 0,
+  "buckets": {
+    "bible": {
+      "docs": 190,
+      "chars": 1305642,
+      "approx_tokens": 326410,
+      "char_share": 0.0093
+    },
+    "confession": {
+      "docs": 2062,
+      "chars": 12912700,
+      "approx_tokens": 3228175,
+      "char_share": 0.0918
+    },
+    "general": {
+      "docs": 1443,
+      "chars": 7581422,
+      "approx_tokens": 1895355,
+      "char_share": 0.0539
+    },
+    "puritan": {
+      "docs": 11300,
+      "chars": 69578857,
+      "approx_tokens": 17394714,
+      "char_share": 0.4949
+    },
+    "spurgeon": {
+      "docs": 8144,
+      "chars": 49209784,
+      "approx_tokens": 12302446,
+      "char_share": 0.35
+    }
+  },
+  "domain_buckets_present": [
+    "spurgeon",
+    "puritan",
+    "confession",
+    "bible"
+  ],
+  "holdouts": {
+    "spurgeon": 298,
+    "puritan": 20,
+    "confession": 10,
+    "general": 10
+  },
+  "dedup": {
+    "dropped_duplicate_paragraphs": 45930,
+    "dropped_docs_after_dedup": 4014,
+    "docs_in": 58813,
+    "docs_out": 54799,
+    "unique_long_paragraphs": 325364,
+    "top_frequent_paragraphs": [
+      {
+        "preview": "this work is the substance of many libraries. it contains the essence of all the commentators upon the psalms, both ancient and modern. besides containing origi",
+        "count": 3,
+        "chars": 467
+      },
+      {
+        "preview": "what do sermons and discourses mean but, \"come sinner, come!\"? and those secret motions of power upon the conscience. those times when the heart grows calm, eve",
+        "count": 3,
+        "chars": 598
+      },
+      {
+        "preview": "the church is always saying, \"come!\" this is, indeed, the meaning of her sabbath gatherings, of her testimony in the pulpit, of her teaching in the schools, of ",
+        "count": 3,
+        "chars": 684
+      },
+      {
+        "preview": "the next giver of the invitation is spoken of as, \"him that hears.\" if you have had an ear to hear and have heard the gospel to your own salvation, the very nex",
+        "count": 3,
+        "chars": 857
+      },
+      {
+        "preview": "because you have heard the message and proved its truth, go and call in others to the feast of love! oh, if there were more of these individual proclaimers, wha",
+        "count": 3,
+        "chars": 895
+      },
+      {
+        "preview": "now, notice the remarkably encouraging character of this, \"come!\" which is given by the spirit of the bride. one part of it is directed to the thirsty--\"let him",
+        "count": 3,
+        "chars": 651
+      },
+      {
+        "preview": "whether you are thirsty or not, yet have you a will to drink? have you a will to be saved? have you a will to be cleansed from sin? a will to be made a new crea",
+        "count": 3,
+        "chars": 471
+      },
+      {
+        "preview": "\"whoever\" is the first door. \"whoever\"--then what man dares have the impudence to say that he is shut out? if you say that you cannot come in under, \"whoever,\" ",
+        "count": 3,
+        "chars": 651
+      },
+      {
+        "preview": "\"whoever will.\" there is no hindrance whatever in your way. and then, \"freely.\" god's gifts are given without any expectation or recompense, or any requirements",
+        "count": 3,
+        "chars": 660
+      },
+      {
+        "preview": "observe how the invitation sums up the work the sinner is called upon to do. first, he is bid to come. \"whoever will, let him come.\" now, to come to christ mean",
+        "count": 3,
+        "chars": 574
+      },
+      {
+        "preview": "\"for if the blood of bulls and of goats, and the ashes of an heifer sprinkling the unclean, sanctifies to the purifying of the flesh: how much more shall the bl",
+        "count": 3,
+        "chars": 323
+      },
+      {
+        "preview": "occasionally this comes in the form of a presentiment. i do not think that i am superstitious. i fancy that i am pretty clear of that vice, yet i have had prese",
+        "count": 3,
+        "chars": 557
+      },
+      {
+        "preview": "how do you understand the story of john wycliffe, at lutterworth, in any other way than this? he had been speaking against the monks and various abuses of the c",
+        "count": 3,
+        "chars": 1171
+      },
+      {
+        "preview": "wycliffe begged an attendant to help him sit up and then he cried with all his strength, \"i shall not die, but live, to declare the works of the lord and to exp",
+        "count": 3,
+        "chars": 574
+      },
+      {
+        "preview": "now, do not be making up presentiments about all sorts of things because i have said that sometimes the lord grants them to his saints. this would be a mischiev",
+        "count": 3,
+        "chars": 835
+      },
+      {
+        "preview": "this surprised her and i asked her friends to bring her food. she said she would not eat it and then i told her that if she was resolved on suicide, i would men",
+        "count": 3,
+        "chars": 947
+      },
+      {
+        "preview": "this, however, i only mention by the way. when a believer is in trouble, he derives great comfort from his reliance upon the compassion of god. the lord scourge",
+        "count": 3,
+        "chars": 695
+      },
+      {
+        "preview": "o believer, never let anything drive you away from this confidence, for it has sure truth for its foundation! the lord is good and his mercy endures forever. it",
+        "count": 3,
+        "chars": 672
+      },
+      {
+        "preview": "next, faith comforts the tried child of god by assuring him of the forgiveness of his sin and his security from punishment. please notice the very distant diffe",
+        "count": 3,
+        "chars": 826
+      },
+      {
+        "preview": "the governor of the feast called the bridegroom, and saith unto him, every man at the beginning doth set forth good wine; and when men have well drunk, then tha",
+        "count": 3,
+        "chars": 234
+      }
+    ]
+  },
+  "continue_reweight_share": null,
+  "continue_reweight": null,
+  "holdout_sibling_share": 0.25,
+  "holdout_sibling": {
+    "share_target": 0.25,
+    "sibling_stems": [
+      "c:/users/rafael/projetos/search-sermons/data/confessions/institutes/institutes_beveridge_vol2.txt",
+      "c:/users/rafael/projetos/search-sermons/data/confessions/systematic/dabney_systematic_theology.txt",
+      "c:/users/rafael/projetos/search-sermons/data/confessions/systematic/gill_body_of_doctrinal_divinity.txt",
+      "c:/users/rafael/projetos/search-sermons/data/confessions/systematic/shedd_dogmatic_theology_vol1.txt",
+      "c:/users/rafael/projetos/search-sermons/data/confessions/systematic/shedd_dogmatic_theology_vol2.txt",
+      "c:/users/rafael/projetos/search-sermons/data/confessions/systematic/systematic_theology_vol3.txt",
+      "c:/users/rafael/projetos/search-sermons/data/confessions/systematic/witsius_economy_of_the_covenants_vol1.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/boston/fourfold_state.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/bridge/lifting_up_for_the_downcast.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/brooks/complete_works_vol1.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/calvin/commentary_1corinthians.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/calvin/commentary_catholic_epistles.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/calvin/tracts_vol3.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/flavel/works_vol05.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/flavel/works_vol06.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/goodwin/works_vol01.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/goodwin/works_vol03.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/greenham/works.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/manton/works_vol12.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/owen/works_vol05.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/owen/works_vol14.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/rutherford/letters.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/sibbes/works_vol02.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/watson/body_of_divinity.txt"
+    ],
+    "sibling_docs": 5661,
+    "sibling_chars": 35146178,
+    "sibling_char_share": 0.25,
+    "spurgeon_docs": 8144,
+    "spurgeon_chars": 49209784,
+    "spurgeon_char_share": 0.35,
+    "new_author_docs": 1237,
+    "new_author_chars": 7033353,
+    "new_author_char_share": 0.05,
+    "other_docs": 8097,
+    "other_chars": 49199090,
+    "spurgeon_floor": 0.35,
+    "new_author_cap": 0.05
+  },
+  "holdouts_pinned": {
+    "puritan": "c:\\Users\\rafael\\Projetos\\search-sermons\\continued_pretrain\\data\\holdouts_pinned_v3\\puritan_holdout.txt",
+    "confession": "c:\\Users\\rafael\\Projetos\\search-sermons\\continued_pretrain\\data\\holdouts_pinned_v3\\confession_holdout.txt",
+    "spurgeon": "c:\\Users\\rafael\\Projetos\\search-sermons\\continued_pretrain\\data\\holdouts_pinned_v3\\spurgeon_holdout.txt"
+  },
+  "sources": {
+    "spurgeon_train": "C:\\Users\\rafael\\Projetos\\search-sermons\\continued_pretrain\\data\\spurgeon_train.txt",
+    "puritans_dir": "C:\\Users\\rafael\\Projetos\\search-sermons\\data\\puritans",
+    "confessions_dir": "C:\\Users\\rafael\\Projetos\\search-sermons\\data\\confessions",
+    "bible_dir": "C:\\Users\\rafael\\Projetos\\search-sermons\\data\\bible",
+    "hymns_dir": "C:\\Users\\rafael\\Projetos\\search-sermons\\data\\hymns",
+    "exclude_globs": [
+      "henry/exposition*",
+      "**/henry/exposition*"
+    ],
+    "replay_txt": "c:\\Users\\rafael\\Projetos\\search-sermons\\continued_pretrain\\data\\replay\\general_replay.txt",
+    "replay_hf": null
+  },
+  "notes": [
+    "approx_tokens uses chars/4; run 06_verify_tokens.py --mix to fill verified_tokens.",
+    "Heidelberg Catechism + Belgic Confession belong in continued_pretrain/data/holdouts_manual/ (not training dirs).",
+    "Flagship base: Qwen3.5-4B-Base (see plan \u00a74.1). Baseline Spurgeon path remains B_training.ipynb."
+  ],
+  "verified_tokens": {
+    "tokenizer": "Qwen/Qwen3.5-4B-Base",
+    "method": "sample_ratio",
+    "sample_chars": 500000,
+    "token_char_ratio": 0.3005,
+    "train_estimated_tokens": 42358068,
+    "train_chars": 140958629,
+    "max_doc_chars": 7000,
+    "docs_over_8k_chars": 0,
+    "n_docs": 23139,
+    "buckets": {
+      "bible": {
+        "chars": 1305642,
+        "estimated_tokens": 392345,
+        "char_share": 0.0093,
+        "docs": 190
+      },
+      "confession": {
+        "chars": 12912700,
+        "estimated_tokens": 3880266,
+        "char_share": 0.0918,
+        "docs": 2062
+      },
+      "general": {
+        "chars": 7581422,
+        "estimated_tokens": 2278217,
+        "char_share": 0.0539,
+        "docs": 1443
+      },
+      "puritan": {
+        "chars": 69578857,
+        "estimated_tokens": 20908446,
+        "char_share": 0.4949,
+        "docs": 11300
+      },
+      "spurgeon": {
+        "chars": 49209784,
+        "estimated_tokens": 14787540,
+        "char_share": 0.35,
+        "docs": 8144
+      }
+    }
+  }
+}

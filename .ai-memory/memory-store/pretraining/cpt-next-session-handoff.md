@@ -1,36 +1,28 @@
 ---
 store_path: pretraining/cpt-next-session-handoff
-title: "Next session: S6 LoRA good; Hub overwrite needs approve"
-summary: "S6 SHA `6aab…` on Unsloth 2026.8.22 / torch 2.8: spurgeon **12.85 (−10.2%)**"
+title: "Phase B done; next is isolation C"
+summary: "- `rafaelvieirar1r/qwen3.5-4b-theology-cpt-lora-v2` = S7 Phase A s5best SHA `06354dfc…`"
 priority: high
-tags: [cpt, s6, handoff]
+tags: [cpt, s7, handoff, phase-b, eval-c]
 schema_version: 1.3
-last_updated: "2026-09-20T19:04:21-03:00"
-evidence: [pretraining/cpt-s6-c-eval-regression-diagnosis]
+last_updated: "2026-09-23T16:49:44-03:00"
+evidence: [pretraining/cpt-s7-vast-phase-b, continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7/fetch/theology_cpt_run_config.json]
 ---
 
-# Next session — after stack-isolation flip
+## Next session — Phase B finished (early-stop 750); run isolation C; Hub stays S7
 
-S6 SHA `6aab…` on Unsloth 2026.8.22 / torch 2.8: spurgeon **12.85 (−10.2%)**. Vast +27.9% was **eval-stack false FAIL**. See `pretraining/cpt-s6-stack-isolation-c`.
+### Production Hub (unchanged)
+- `rafaelvieirar1r/qwen3.5-4b-theology-cpt-lora-v2` = S7 Phase A s5best SHA `06354dfc…`
 
-## Do
-1. Keep Hub v2 until operator **explicitly** approves overwrite (S6 beats Hub v2 13.28 on this scorecard but overwrite is a separate session).
-2. Prefer confirmatory Runpod C of same SHA when Runpod has funds (this C was Vast host + S5 software pin).
-3. Optional: Hub overwrite of `…-theology-cpt-lora-v2` with nested `6aab…` after approve.
-4. Do **not** start a blind continue-B to “fix C”.
+### Phase B result
+- Vast `52264974` destroyed after fetch.
+- COMPOSITE EARLY-STOP @ **750**/955. HF best step **700** SHA `6d003041…`. §5 export step **600** SHA `ddbbee3a…`.
+- In-train: spurgeon 2.482 / puritan 1.740 / confession 1.666. Mix-val 2.205 (v5, unseeded).
 
-## Do not
-- Treat Vast C 18.31 as ground truth for these weights
-- Merge / Hub overwrite without operator go
-- Re-rent Vast C on torch 2.11 / Unsloth 2026.9.x for this SHA
+### Do next
+1. Isolation C (torch 2.8 + Unsloth 2026.8.22). Pin `EXPECTED_ADAPTER_SHA256` to nested fetch adapters, not the top-level `06354dfc` folder.
+2. Keep Hub S7 until winning C.
 
-## Paste
-```
-S6 stack-isolation: SHA 6aab on Unsloth 2026.8.22/torch 2.8 → spurgeon 12.85 (−10.2%).
-Vast +27.9% was false FAIL. Hub overwrite needs separate approve.
-```
-
-## Clarification (side-chat 2026-09-20)
-- False FAIL was **C stack**, not “B early-stop was wrong because of C”.
-- C artifact = ckpt-**2050** / SHA `6aab…` (stop was 2400; ignore 2400 adapters).
-- S6@2050 beats Hub v2 on PPL scorecard; overwrite still explicit approve only.
+### Do not
+- Treat top-level `fetch/theology_cpt_lora_s5best/` as the new B adapter (that file is still `06354dfc`).
+- Overwrite Hub / v3 / v4. Redraw holdouts. Fetch confession S5.

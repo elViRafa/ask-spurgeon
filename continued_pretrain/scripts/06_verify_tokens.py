@@ -103,8 +103,15 @@ def verify_spurgeon(base_dir: Path, tokenizer, sample_chars: int) -> None:
     print(f"Found {delim_count} occurrences of {DOC_SEP} in train file.")
 
 
-def verify_mix(base_dir: Path, tokenizer, tokenizer_name: str, sample_chars: int, update_manifest: bool) -> None:
-    data_dir = base_dir / "continued_pretrain" / "data"
+def verify_mix(
+    base_dir: Path,
+    tokenizer,
+    tokenizer_name: str,
+    sample_chars: int,
+    update_manifest: bool,
+    data_dir: Path | None = None,
+) -> None:
+    data_dir = Path(data_dir) if data_dir else base_dir / "continued_pretrain" / "data"
     train_file = data_dir / "theology_mix_train.txt"
     manifest_path = data_dir / "theology_mix_manifest.json"
 
@@ -199,6 +206,11 @@ def main(argv: list[str] | None = None) -> None:
         "--repo-root",
         default=str(Path(__file__).resolve().parent.parent.parent),
     )
+    p.add_argument(
+        "--data-dir",
+        default=None,
+        help="Mix directory (default: continued_pretrain/data). Use mix_v5 for the reweight pack.",
+    )
     args = p.parse_args(argv)
 
     base_dir = Path(args.repo_root).resolve()
@@ -213,6 +225,7 @@ def main(argv: list[str] | None = None) -> None:
             tok_name,
             args.sample_chars,
             update_manifest=not args.no_update_manifest,
+            data_dir=Path(args.data_dir) if args.data_dir else None,
         )
     else:
         verify_spurgeon(base_dir, tokenizer, args.sample_chars)

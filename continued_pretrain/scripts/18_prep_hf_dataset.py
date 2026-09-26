@@ -72,10 +72,16 @@ def _is_forbidden_out(path: Path, repo: Path) -> str | None:
     kaggle = (repo / "continued_pretrain" / "kaggle").resolve()
     v2_ds = kaggle / "a_output" / "theology_dataset"
     v2_ho = kaggle / "a_output" / "theology_holdouts"
+    v3 = kaggle / "a_output_v3"
+    v4 = kaggle / "a_output_v4"
+    v5 = kaggle / "a_output_v5"
     snap = kaggle / "runpod_cpt_v2"
     for forbidden, label in (
         (v2_ds, "v2 a_output theology_dataset"),
         (v2_ho, "v2 a_output theology_holdouts"),
+        (v3, "frozen a_output_v3"),
+        (v4, "frozen a_output_v4"),
+        (v5, "frozen a_output_v5"),
         (snap, "runpod_cpt_v2 snapshot"),
     ):
         try:
@@ -103,6 +109,11 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--val-fraction", type=float, default=VAL_FRACTION)
     p.add_argument("--seed", type=int, default=SEED)
     p.add_argument("--allow-spurgeon-only", action="store_true")
+    p.add_argument(
+        "--allow-continue-reweight",
+        action="store_true",
+        help="Permit a smaller continue-reweight mix (below the S4 ~52k-doc floor).",
+    )
     args = p.parse_args(argv)
 
     repo = Path(args.repo_root).resolve()
@@ -137,10 +148,11 @@ def main(argv: list[str] | None = None) -> None:
     print(f"SHA256 {train_txt.name} ...")
     mix_sha = sha256_file(train_txt)
     train_docs, train_chars = parse_concat_txt(train_txt, min_chars=args.min_chars)
-    if len(train_docs) <= V2_TRAIN_DOCS + 200:
+    if len(train_docs) <= V2_TRAIN_DOCS + 200 and not args.allow_continue_reweight:
         raise SystemExit(
             f"parsed {len(train_docs)} train docs; that looks like the v2 probe mix "
-            f"(~{V2_TRAIN_DOCS}), not S4 (~51937). Aborting."
+            f"(~{V2_TRAIN_DOCS}), not S4 (~51937). Aborting. "
+            "Pass --allow-continue-reweight for the Phase B 15% pack."
         )
 
     train_ds = Dataset.from_dict({"text": train_docs})
@@ -202,7 +214,7 @@ def main(argv: list[str] | None = None) -> None:
     meta_path = out_dir / "DATASET_META.json"
     meta_path.write_text(json.dumps(meta, indent=2) + "\n", encoding="utf-8")
     print("Wrote", meta_path)
-    print("Done. Do not copy kaggle/a_output (v2). Next session copies a_output_v3.")
+    print("Done. Do not overwrite a_output_v3, a_output_v4, or a_output_v5.")
 
 
 if __name__ == "__main__":

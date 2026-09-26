@@ -7,13 +7,15 @@ Fetch public-domain confessions / systematic theology into data/confessions/.
 - Calvin Institutes (Beveridge)
 - S4: unique PD systematic (Gill, Dabney, Shedd, A.A. Hodge, Witsius, Boyce)
   plus small Reformed symbols (Dort, Second Helvetic, Scots Confession)
+- S5: Shaw Exposition of the WCF + Sum of Saving Knowledge (Phase B headroom fill)
 
 Heidelberg + Belgic stay in continued_pretrain/data/holdouts_manual/ (NOT training).
-Do not fetch more biblical commentary. Do not grow Puritan treatise mass.
+Do not fetch more biblical commentary. Do not grow Puritan treatise mass beyond Phase B Downame.
 
 Usage:
   python continued_pretrain/scripts/11_fetch_confessions.py
   python continued_pretrain/scripts/11_fetch_confessions.py --s4
+  python continued_pretrain/scripts/11_fetch_confessions.py --s5
   python continued_pretrain/scripts/11_fetch_confessions.py --rebuild-mix
 """
 
@@ -52,6 +54,13 @@ def to_text(data: bytes) -> str:
 
 
 def clean(text: str) -> str:
+    if text.lstrip().startswith("{{") or "{{header" in text[:800]:
+        # Wikisource mediawiki raw — strip templates / markup lightly.
+        text = re.sub(r"(?s)\{\{.*?\}\}", " ", text)
+        text = re.sub(r"\[\[(?:[^|\]]*\|)?([^\]]+)\]\]", r"\1", text)
+        text = re.sub(r"'{2,}", "", text)
+        text = re.sub(r"^[=]+.*?[=]+\s*$", "", text, flags=re.M)
+        text = re.sub(r"<[^>]+>", " ", text)
     if "<html" in text[:1200].lower() or "<body" in text[:1200].lower():
         text = re.sub(r"(?is)<script.*?>.*?</script>", " ", text)
         text = re.sub(r"(?is)<style.*?>.*?</style>", " ", text)
@@ -72,6 +81,11 @@ def clean(text: str) -> str:
     if m:
         text = text[: m.start()]
     text = text.replace("\f", "\n\n")
+    # EEBO-TCP / early-modern long-s (same map as 10_fetch_puritans)
+    text = text.replace("\u017f", "s").replace("\u017F", "s")
+    text = text.replace("\u01b2", "V").replace("\u028b", "v")
+    for ch in ("\u25ca", "\u25aa", "\u25a0", "\u3008", "\u3009", "\ufffd"):
+        text = text.replace(ch, "")
     text = re.sub(r"\n{3,}", "\n\n", text)
     return text.strip()
 
@@ -484,6 +498,40 @@ S4_CATALOG = [
 ]
 
 
+# Phase B confession headroom fill — commentary prose / short Scottish appendix.
+# Not WCF/WSC near-duplicates (Savoy, Vincent, Fisher). Not Turretin English.
+S5_CATALOG = [
+    {
+        "key": "shaw_exposition_wcf",
+        "dest": "data/confessions/systematic/shaw_exposition_wcf.txt",
+        "title": "Robert Shaw, Exposition of the Confession of Faith (1846)",
+        "urls": [
+            ia_download("expositionofconf00shaw"),
+            ia_download("expositionofconf1850shaw"),
+        ],
+        "keys_all": ["shaw"],
+        "keys_any": ["confession", "westminster", "exposition"],
+        "min_chars": 80_000,
+    },
+    {
+        "key": "sum_of_saving_knowledge",
+        "dest": "data/confessions/reformed/sum_of_saving_knowledge.txt",
+        "title": "The Sum of Saving Knowledge (Dickson / Durham)",
+        "urls": [
+            "https://reformedstandards.com/westminster/sum-of-saving-knowledge.html",
+            "https://en.wikisource.org/wiki/The_Sum_of_Saving_Knowledge?action=raw",
+        ],
+        "keys_any": [
+            "sum of saving knowledge",
+            "saving knowledge",
+            "covenant of works",
+            "covenant of grace",
+        ],
+        "min_chars": 8_000,
+    },
+]
+
+
 def try_fetch_1689(repo: Path, force: bool) -> bool:
     dest = repo / "data" / "confessions" / "1689" / "second_london_confession.txt"
     if dest.exists() and dest.stat().st_size > 2000 and not force:
@@ -557,14 +605,18 @@ PROVENANCE = """# Confessions / Institutes provenance
 | Second Helvetic Confession | `reformed/second_helvetic_confession.txt` | CCEL Schaff Creeds III English appendix `creeds3.v.ix.html` (S4; anonymous/helvetic cache 404) |
 | Scots Confession 1560 | `reformed/scots_confession_1560.txt` | CCEL `a/anonymous/scotconf` (S4) |
 | Canons of Dort | `reformed/canons_of_dort.txt` | CCEL Schaff Creeds III Dort page only (S4) |
+| Shaw Exposition of the WCF | `systematic/shaw_exposition_wcf.txt` | IA `expositionofconf00shaw` (S5; fallback `expositionofconf1850shaw`) |
+| Sum of Saving Knowledge | `reformed/sum_of_saving_knowledge.txt` | Reformed Standards HTML; Wikisource raw fallback (S5) |
 
 **Held out (do not train):** `continued_pretrain/data/holdouts_manual/heidelberg_catechism.txt` and `belgic_confession.txt`.
 
 Calvin **treatises/sermons** (not Institutes) live under `data/puritans/calvin/` so they do not blow the 6% confession cap. Hodge/Calvin **biblical commentary** is Wave 3, under `data/puritans/`, capped, not this fetcher.
 
 Do **not** add Turretin English (P&R/Dennison 1992–97 is in copyright). Latin Turretin is not useful for this English mix.
+Do **not** add Savoy / Vincent / Fisher (WCF/WSC near-duplicates under paragraph dedup).
 
 Re-fetch S4 only: `python continued_pretrain/scripts/11_fetch_confessions.py --s4`
+Re-fetch S5 only: `python continued_pretrain/scripts/11_fetch_confessions.py --s5`
 """
 
 
@@ -573,7 +625,12 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--repo-root", default=str(Path(__file__).resolve().parent.parent.parent))
     p.add_argument("--force", action="store_true")
     p.add_argument("--s4", action="store_true", help="Fetch only S4 unique confession/ST (skip WCF/Institutes/1689)")
-    p.add_argument("--only", default=None, help="Comma-separated S4 keys (implies --s4)")
+    p.add_argument("--s5", action="store_true", help="Fetch only S5 confession headroom fill (Shaw + Sum)")
+    p.add_argument(
+        "--only",
+        default=None,
+        help="Comma-separated S4/S5 keys (implies --s4 or --s5 when key is in that catalog)",
+    )
     p.add_argument("--list", action="store_true")
     p.add_argument("--sleep", type=float, default=1.2)
     p.add_argument(
@@ -590,11 +647,31 @@ def main(argv: list[str] | None = None) -> None:
         print("s4:")
         for item in S4_CATALOG:
             print(f"  {item['key']:24s}  {item['dest']}")
+        print("s5:")
+        for item in S5_CATALOG:
+            print(f"  {item['key']:24s}  {item['dest']}")
         return
 
     repo = Path(args.repo_root).resolve()
-    s4_only = bool(args.s4 or args.only)
-    items = list(S4_CATALOG) if s4_only else list(CATALOG) + list(S4_CATALOG)
+    s4_keys = {it["key"] for it in S4_CATALOG}
+    s5_keys = {it["key"] for it in S5_CATALOG}
+    s5_only = bool(args.s5)
+    s4_only = bool(args.s4) and not s5_only
+    if args.only and not (args.s4 or args.s5):
+        wanted_probe = {x.strip().lower() for x in args.only.split(",") if x.strip()}
+        if wanted_probe & s5_keys and not (wanted_probe & s4_keys):
+            s5_only = True
+        elif wanted_probe & s4_keys and not (wanted_probe & s5_keys):
+            s4_only = True
+
+    if s5_only:
+        items = list(S5_CATALOG)
+    elif s4_only:
+        items = list(S4_CATALOG)
+    else:
+        # Default: base + S4 only. S5 is opt-in (--s5) so headroom checks stay explicit.
+        items = list(CATALOG) + list(S4_CATALOG)
+
     if args.only:
         wanted = {x.strip().lower() for x in args.only.split(",") if x.strip()}
         items = [it for it in items if it.get("key", "").lower() in wanted]
@@ -620,7 +697,7 @@ def main(argv: list[str] | None = None) -> None:
         else:
             fail += 1
 
-    if not s4_only:
+    if not s4_only and not s5_only:
         print("[1689 Second London Confession]")
         if try_fetch_1689(repo, args.force):
             ok += 1

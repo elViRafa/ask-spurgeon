@@ -53,6 +53,21 @@ DEFAULT_EXCLUDE_GLOBS = [
     "**/henry/exposition*",
 ]
 
+# Downame + wave 5 — unseen by Hub S7 s5best. Keep in sync with audit_cpt_mix_sources.py.
+NEW_AUTHOR_FILES = (
+    ("downame", "christian_warfare.txt"),
+    ("downame", "guide_to_godliness.txt"),
+    ("ambrose", "looking_unto_jesus.txt"),
+    ("swinnock", "works_1665.txt"),
+    ("swinnock", "incomparableness_of_god.txt"),
+    ("venning", "plague_of_plagues.txt"),
+    ("binning", "sinners_sanctuary.txt"),
+    ("preston", "breastplate_of_faith_and_love.txt"),
+    ("durham", "unsearchable_riches_of_christ.txt"),
+    ("vincent", "true_christians_love_of_the_unseen_christ.txt"),
+    ("guthrie", "christians_great_interest.txt"),
+)
+
 
 DOC_SEP = "<|endoftext|>"
 MIN_DOC_CHARS = 500
@@ -112,8 +127,20 @@ def clean_md_sermon(raw_text: str) -> str:
     text = re.sub(r"<[^>]+>", "", text)
     text = re.sub(r"^(SERMON\s+)?NO\.\s*\d+\.?\s*$", "", text, flags=re.MULTILINE | re.IGNORECASE)
     text = re.sub(r"^Volume\s+[IVXLCDM\d]+\.?\s*$", "", text, flags=re.MULTILINE | re.IGNORECASE)
+    text = normalize_early_modern_orthography(text)
     text = re.sub(r"\n{3,}", "\n\n", text)
     return text.strip()
+
+
+def normalize_early_modern_orthography(text: str) -> str:
+    """Same map as 10_fetch_puritans / normalize_early_modern_orthography.py."""
+    if not text:
+        return text
+    text = text.replace("\u017f", "s").replace("\u017F", "s")
+    text = text.replace("\u01b2", "V").replace("\u028b", "v")
+    for ch in ("\u25ca", "\u25aa", "\u25a0", "\u3008", "\u3009", "\ufffd"):
+        text = text.replace(ch, "")
+    return text
 
 
 def clean_generic_text(raw_text: str) -> str:
@@ -141,6 +168,7 @@ def clean_generic_text(raw_text: str) -> str:
     text = re.sub(r"\[(.+?)\]\(.*?\)", r"\1", text)
     text = text.replace("\f", "\n\n")
     text = re.sub(r"^\s*page\s+\d+\s*$", "", text, flags=re.MULTILINE | re.I)
+    text = normalize_early_modern_orthography(text)
     text = re.sub(r"\n{3,}", "\n\n", text)
     return text.strip()
 
@@ -257,6 +285,8 @@ def load_spurgeon_from_concat(
     train_txt: Path,
     bucket: str = "spurgeon",
     max_chunk_chars: int = DEFAULT_MAX_CHUNK_CHARS,
+    author: str = "spurgeon",
+    work: str = "sermons",
 ) -> list[Doc]:
     if not train_txt.exists():
         print(f"WARNING: Spurgeon train file missing: {train_txt}")
@@ -270,7 +300,7 @@ def load_spurgeon_from_concat(
         for j, chunk in enumerate(split_long_text(text, max_chars=max_chunk_chars)):
             src = f"{train_txt.name}#{i}" if j == 0 else f"{train_txt.name}#{i}.{j}"
             docs.append(
-                Doc(text=chunk, bucket=bucket, source=src, author="spurgeon", work="sermons")
+                Doc(text=chunk, bucket=bucket, source=src, author=author, work=work)
             )
     return docs
 
@@ -409,6 +439,133 @@ def load_replay_txt(path: Path, max_chunk_chars: int = DEFAULT_MAX_CHUNK_CHARS) 
 # ---------------------------------------------------------------------------
 # Mix logic
 # ---------------------------------------------------------------------------
+
+def is_new_author_source(source: str, files: tuple[tuple[str, str], ...] = NEW_AUTHOR_FILES) -> bool:
+    """True when a Doc.source path belongs to a Downame / wave-5 file."""
+    posix = source.replace("\\", "/").split("#", 1)[0].lower()
+    for author, name in files:
+        needle = f"/{author.lower()}/{name.lower()}"
+        if posix.endswith(needle) or posix.endswith(needle.lstrip("/")) or needle in posix:
+            return True
+    return False
+
+
+def apply_continue_reweight(
+    docs: list[Doc],
+    share: float,
+    rng: random.Random,
+    files: tuple[tuple[str, str], ...] = NEW_AUTHOR_FILES,
+) -> tuple[list[Doc], dict]:
+    """Keep one pass of new-author docs; subsample the rest so they are ``share`` of chars.
+
+    Does not copy new-author chunks. Old-bucket relative shares stay inside the
+    leftover (1 - share) mass.
+    """
+    if share <= 0 or share >= 1:
+        raise ValueError(f"continue_reweight_share must be in (0, 1), got {share}")
+    new_docs = [d for d in docs if is_new_author_source(d.source, files)]
+    old_docs = [d for d in docs if not is_new_author_source(d.source, files)]
+    new_chars = sum(d.n_chars for d in new_docs)
+    if new_chars <= 0:
+        raise ValueError("continue-reweight found no new-author docs")
+    old_target = int(round(new_chars * (1.0 - share) / share))
+    old_kept = subsample_by_chars(old_docs, old_target, rng)
+    old_chars = sum(d.n_chars for d in old_kept)
+    total = max(1, new_chars + old_chars)
+    out = list(new_docs) + old_kept
+    report = {
+        "share_target": share,
+        "new_author_docs": len(new_docs),
+        "new_author_chars": new_chars,
+        "new_author_char_share": round(new_chars / total, 4),
+        "old_docs_in": len(old_docs),
+        "old_docs_out": len(old_kept),
+        "old_chars_in": sum(d.n_chars for d in old_docs),
+        "old_chars_out": old_chars,
+        "old_target_chars": old_target,
+        "files": [f"{author}/{name}" for author, name in files],
+    }
+    return out, report
+
+
+def source_stem(source: str) -> str:
+    """File path without #chunk suffix, posix-lower."""
+    return source.replace("\\", "/").split("#", 1)[0].lower()
+
+
+def holdout_source_stems(holdout_docs: list[Doc], catalog: list[Doc]) -> set[str]:
+    """Recover original book paths for pinned holdout texts via first-200 fingerprints."""
+    fps = {d.text[:200] for d in holdout_docs if d.text}
+    stems: set[str] = set()
+    for d in catalog:
+        if d.text[:200] in fps:
+            stems.add(source_stem(d.source))
+    return stems
+
+
+def apply_holdout_sibling_replay(
+    train_docs: list[Doc],
+    holdout_docs: list[Doc],
+    catalog: list[Doc],
+    share: float,
+    rng: random.Random,
+    spurgeon_floor: float = 0.35,
+    new_author_cap: float = 0.05,
+) -> tuple[list[Doc], dict]:
+    """Keep one pass of train siblings of pinned puritan/confession holdouts.
+
+    ``share`` is the sibling char target. Leftover mass keeps Spurgeon at
+    ``spurgeon_floor`` of the final mix and caps Downame/wave 5 at
+    ``new_author_cap``. No copies of sibling books.
+    """
+    if share <= 0 or share >= 1:
+        raise ValueError(f"holdout_sibling_share must be in (0, 1), got {share}")
+    stems = holdout_source_stems(holdout_docs, catalog)
+    if not stems:
+        raise ValueError("holdout-sibling replay found no matching holdout sources")
+    siblings = [d for d in train_docs if source_stem(d.source) in stems]
+    leftover = [d for d in train_docs if source_stem(d.source) not in stems]
+    sib_chars = sum(d.n_chars for d in siblings)
+    if sib_chars <= 0:
+        raise ValueError("holdout-sibling replay found no train siblings")
+    total_target = int(round(sib_chars / share))
+    leftover_target = max(0, total_target - sib_chars)
+    spurgeon_target = int(round(total_target * spurgeon_floor))
+    new_target = int(round(total_target * new_author_cap))
+
+    leftover_sp = [d for d in leftover if d.bucket == "spurgeon"]
+    leftover_new = [d for d in leftover if is_new_author_source(d.source)]
+    leftover_other = [
+        d
+        for d in leftover
+        if d.bucket != "spurgeon" and not is_new_author_source(d.source)
+    ]
+    sp_kept = subsample_by_chars(leftover_sp, spurgeon_target, rng)
+    new_kept = subsample_by_chars(leftover_new, new_target, rng)
+    used = sum(d.n_chars for d in sp_kept) + sum(d.n_chars for d in new_kept)
+    other_target = leftover_target - used
+    other_kept = subsample_by_chars(leftover_other, max(0, other_target), rng)
+    out = list(siblings) + sp_kept + new_kept + other_kept
+    total = max(1, sum(d.n_chars for d in out))
+    report = {
+        "share_target": share,
+        "sibling_stems": sorted(stems),
+        "sibling_docs": len(siblings),
+        "sibling_chars": sib_chars,
+        "sibling_char_share": round(sib_chars / total, 4),
+        "spurgeon_docs": len(sp_kept),
+        "spurgeon_chars": sum(d.n_chars for d in sp_kept),
+        "spurgeon_char_share": round(sum(d.n_chars for d in sp_kept) / total, 4),
+        "new_author_docs": len(new_kept),
+        "new_author_chars": sum(d.n_chars for d in new_kept),
+        "new_author_char_share": round(sum(d.n_chars for d in new_kept) / total, 4),
+        "other_docs": len(other_kept),
+        "other_chars": sum(d.n_chars for d in other_kept),
+        "spurgeon_floor": spurgeon_floor,
+        "new_author_cap": new_author_cap,
+    }
+    return out, report
+
 
 def subsample_by_chars(docs: list[Doc], target_chars: int, rng: random.Random) -> list[Doc]:
     """Shuffle and take docs until cumulative chars ≈ target_chars."""
@@ -613,7 +770,35 @@ def non_empty_domain_buckets(spurgeon, puritan, confession, bible) -> list[str]:
 def build_mix(args: argparse.Namespace) -> None:
     rng = random.Random(args.seed)
     base = Path(args.repo_root).resolve()
-    out_dir = Path(args.out_dir).resolve() if args.out_dir else base / "continued_pretrain" / "data"
+    live_data = (base / "continued_pretrain" / "data").resolve()
+    out_dir = Path(args.out_dir).resolve() if args.out_dir else live_data
+    reweight_share = getattr(args, "continue_reweight_share", None)
+    sibling_share = getattr(args, "holdout_sibling_share", None)
+    if reweight_share and sibling_share:
+        print("ERROR: pass only one of --continue-reweight-share or --holdout-sibling-share")
+        sys.exit(2)
+    isolated_mix = bool(reweight_share or sibling_share)
+    if isolated_mix:
+        if out_dir == live_data:
+            print(
+                "ERROR: isolated mix refuses to write into "
+                "continued_pretrain/data (would clobber the live mix). "
+                "Pass --out-dir continued_pretrain/data/mix_v6"
+            )
+            sys.exit(2)
+        live_mix = live_data / "theology_mix_train.txt"
+        if (out_dir / "theology_mix_train.txt").resolve() == live_mix:
+            print("ERROR: isolated mix would overwrite live theology_mix_train.txt")
+            sys.exit(2)
+        frozen = {
+            (live_data / "mix_v5").resolve(),
+            (base / "continued_pretrain" / "kaggle" / "a_output_v3").resolve(),
+            (base / "continued_pretrain" / "kaggle" / "a_output_v4").resolve(),
+            (base / "continued_pretrain" / "kaggle" / "a_output_v5").resolve(),
+        }
+        if out_dir in frozen:
+            print(f"ERROR: isolated mix refuses to write into frozen pack {out_dir}")
+            sys.exit(2)
     holdout_dir = out_dir / "holdouts"
     holdout_dir.mkdir(parents=True, exist_ok=True)
     max_chunk = int(args.max_chunk_chars)
@@ -675,6 +860,7 @@ def build_mix(args: argparse.Namespace) -> None:
         f"confession={len(confession_docs)}, bible={len(bible_docs)} "
         f"(max_chunk_chars={max_chunk})"
     )
+    holdout_catalog = list(puritan_docs) + list(confession_docs)
 
     domain_buckets = non_empty_domain_buckets(spurgeon_docs, puritan_docs, confession_docs, bible_docs)
     if len(domain_buckets) < 2 and not args.allow_spurgeon_only:
@@ -690,6 +876,11 @@ def build_mix(args: argparse.Namespace) -> None:
         print("WARNING: --allow-spurgeon-only: building Spurgeon(+replay)-only mix (NOT for flagship v2).")
 
     # --- Holdouts (domain) ---
+    # Spurgeon: pin from concat file when present (stable §5 probe).
+    # Puritan / confession: prefer existing holdout concat under holdout_dir (or
+    # --puritan-holdout / --confession-holdout) so mix rebuilds with new authors
+    # (e.g. Downame) keep the same probe set. Fall back to take_holdout only
+    # when no pin file exists.
     if spurgeon_holdout_src.exists():
         spurgeon_holdout = load_spurgeon_from_concat(
             spurgeon_holdout_src, bucket="spurgeon", max_chunk_chars=max_chunk
@@ -701,10 +892,54 @@ def build_mix(args: argparse.Namespace) -> None:
             spurgeon_docs, args.holdout_per_bucket, rng
         )
 
-    puritan_train, puritan_holdout = take_holdout(puritan_docs, args.holdout_per_bucket, rng)
-    confession_train, confession_holdout = take_holdout(
-        confession_docs, max(5, args.holdout_per_bucket // 2), rng
+    puritan_holdout_src = (
+        Path(args.puritan_holdout)
+        if args.puritan_holdout
+        else holdout_dir / "puritan_holdout.txt"
     )
+    confession_holdout_src = (
+        Path(args.confession_holdout)
+        if args.confession_holdout
+        else holdout_dir / "confession_holdout.txt"
+    )
+
+    if puritan_holdout_src.exists():
+        puritan_holdout = load_spurgeon_from_concat(
+            puritan_holdout_src,
+            bucket="puritan",
+            max_chunk_chars=max_chunk,
+            author="puritan",
+            work="holdout",
+        )
+        hold_fps = {d.text[:200] for d in puritan_holdout}
+        puritan_train = [d for d in puritan_docs if d.text[:200] not in hold_fps]
+        print(
+            f"Pinned puritan holdout from {puritan_holdout_src} "
+            f"({len(puritan_holdout)} docs); train={len(puritan_train)}"
+        )
+    else:
+        puritan_train, puritan_holdout = take_holdout(
+            puritan_docs, args.holdout_per_bucket, rng
+        )
+
+    if confession_holdout_src.exists():
+        confession_holdout = load_spurgeon_from_concat(
+            confession_holdout_src,
+            bucket="confession",
+            max_chunk_chars=max_chunk,
+            author="confession",
+            work="holdout",
+        )
+        hold_fps = {d.text[:200] for d in confession_holdout}
+        confession_train = [d for d in confession_docs if d.text[:200] not in hold_fps]
+        print(
+            f"Pinned confession holdout from {confession_holdout_src} "
+            f"({len(confession_holdout)} docs); train={len(confession_train)}"
+        )
+    else:
+        confession_train, confession_holdout = take_holdout(
+            confession_docs, max(5, args.holdout_per_bucket // 2), rng
+        )
 
     # --- Cap secondary buckets (plan: bible 2–4%, confessions 3–6%), then size Spurgeon ---
     spurgeon_chars = sum(d.n_chars for d in spurgeon_train_docs)
@@ -858,6 +1093,49 @@ def build_mix(args: argparse.Namespace) -> None:
         f"dropped_paras={dedup_report['dropped_duplicate_paragraphs']}"
     )
 
+    reweight_report = None
+    if reweight_share:
+        try:
+            train_docs, reweight_report = apply_continue_reweight(
+                train_docs, float(reweight_share), rng
+            )
+        except ValueError as exc:
+            print(f"ERROR: {exc}")
+            sys.exit(2)
+        print(
+            "Continue reweight: "
+            f"new_authors={reweight_report['new_author_docs']} docs / "
+            f"{reweight_report['new_author_chars']:,} chars "
+            f"(share={reweight_report['new_author_char_share']:.1%} "
+            f"target={reweight_share:.1%}); "
+            f"old kept {reweight_report['old_docs_out']}/{reweight_report['old_docs_in']} docs"
+        )
+
+    sibling_report = None
+    if sibling_share:
+        try:
+            train_docs, sibling_report = apply_holdout_sibling_replay(
+                train_docs,
+                list(puritan_holdout) + list(confession_holdout),
+                holdout_catalog,
+                float(sibling_share),
+                rng,
+                spurgeon_floor=float(getattr(args, "holdout_sibling_spurgeon_floor", 0.35)),
+                new_author_cap=float(getattr(args, "holdout_sibling_new_author_cap", 0.05)),
+            )
+        except ValueError as exc:
+            print(f"ERROR: {exc}")
+            sys.exit(2)
+        print(
+            "Holdout-sibling replay: "
+            f"siblings={sibling_report['sibling_docs']} docs / "
+            f"{sibling_report['sibling_chars']:,} chars "
+            f"(share={sibling_report['sibling_char_share']:.1%} "
+            f"target={sibling_share:.1%}); "
+            f"spurgeon={sibling_report['spurgeon_char_share']:.1%} "
+            f"new_authors={sibling_report['new_author_char_share']:.1%}"
+        )
+
     if args.author_tags:
         train_docs = apply_author_tags(train_docs)
         print("Applied [AUTHOR]/ [WORK:] tags (E1).")
@@ -931,6 +1209,15 @@ def build_mix(args: argparse.Namespace) -> None:
         "domain_buckets_present": domain_buckets,
         "holdouts": stats.holdout_docs,
         "dedup": dedup_report,
+        "continue_reweight_share": float(reweight_share) if reweight_share else None,
+        "continue_reweight": reweight_report,
+        "holdout_sibling_share": float(sibling_share) if sibling_share else None,
+        "holdout_sibling": sibling_report,
+        "holdouts_pinned": {
+            "puritan": str(puritan_holdout_src) if puritan_holdout_src.exists() else None,
+            "confession": str(confession_holdout_src) if confession_holdout_src.exists() else None,
+            "spurgeon": str(spurgeon_holdout_src) if spurgeon_holdout_src.exists() else None,
+        },
         "sources": {
             "spurgeon_train": str(spurgeon_train),
             "puritans_dir": str(puritan_root),
@@ -980,6 +1267,22 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--out-dir", default=None, help="Output directory (default: continued_pretrain/data)")
     p.add_argument("--spurgeon-train", default=None, help="Path to spurgeon_train.txt")
     p.add_argument("--spurgeon-holdout", default=None, help="Path to spurgeon_holdout.txt")
+    p.add_argument(
+        "--puritan-holdout",
+        default=None,
+        help=(
+            "Pin puritan holdout concat (default: <out-dir>/holdouts/puritan_holdout.txt "
+            "when present). Keeps §5 probes stable across mix rebuilds."
+        ),
+    )
+    p.add_argument(
+        "--confession-holdout",
+        default=None,
+        help=(
+            "Pin confession holdout concat (default: <out-dir>/holdouts/confession_holdout.txt "
+            "when present)."
+        ),
+    )
     p.add_argument("--puritans-dir", default=None, help="Root dir of Puritan texts")
     p.add_argument("--confessions-dir", default=None, help="Root dir of confessions/systematic")
     p.add_argument("--bible-dir", default=None, help="Root dir of Scripture text")
@@ -1066,6 +1369,39 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
             "Skip files matching this glob (repeatable). Matched against filename and "
             "path relative to the bucket root. Defaults already skip henry/exposition*."
         ),
+    )
+    p.add_argument(
+        "--continue-reweight-share",
+        type=float,
+        default=None,
+        help=(
+            "After dedup, keep one pass of Downame + wave 5 and subsample the already-"
+            "trained shelf so those files are this char share (e.g. 0.15). Writes only "
+            "to --out-dir; refuses continued_pretrain/data."
+        ),
+    )
+    p.add_argument(
+        "--holdout-sibling-share",
+        type=float,
+        default=None,
+        help=(
+            "After dedup, keep one pass of train siblings of pinned puritan/"
+            "confession holdouts and subsample the rest so those siblings are "
+            "this char share (e.g. 0.25). Writes only to --out-dir; refuses "
+            "live mix and frozen v3/v4/v5 packs."
+        ),
+    )
+    p.add_argument(
+        "--holdout-sibling-spurgeon-floor",
+        type=float,
+        default=0.35,
+        help="Minimum Spurgeon char share inside a holdout-sibling replay (default 0.35).",
+    )
+    p.add_argument(
+        "--holdout-sibling-new-author-cap",
+        type=float,
+        default=0.05,
+        help="Max Downame/wave-5 char share inside a holdout-sibling replay (default 0.05).",
     )
     return p.parse_args(argv)
 

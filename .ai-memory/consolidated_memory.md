@@ -59,11 +59,12 @@ summary: "Map of available project memory sections."
 priority: high
 tags: [index, memory]
 schema_version: 1.3
-last_updated: "2026-09-21T07:09:57-03:00"
-consolidation_hash: 5a5b4dae7f0bf8a48f4d6fb8c7dc80bf
-contradictions: ["`fine-tuning/hf-spurgeon-qa-v2-gguf` and `fine-tuning/plans/ollama-merge-gguf` cover similar content but state different numbers (2.71 vs 07) - review for conflict [heuristic]", "`pretraining/cpt-b-eval-strategy` and `pretraining/cpt-eval-unify-vs-buckets` cover similar content but state different numbers (0 / 1650 / 17 vs 0.2 / 1.2 / 18) - review for conflict [heuristic]", "`pretraining/cpt-corpus-v3-s1-complete` and `pretraining/cpt-corpus-v3-s1-wave1` cover similar content but state different numbers (0.282874 / 0.658552 / 0.7 vs 0.10 / 0.164 / 0.45) - review for conflict [heuristic]", "`pretraining/cpt-corpus-v3-s2-handoff` and `pretraining/cpt-corpus-v3-s3-handoff` cover similar content but state different numbers (2 vs -) - review for conflict [heuristic]", "`pretraining/cpt-corpus-v3-s2-handoff` and `pretraining/cpt-corpus-v3-s4-handoff` cover similar content but state different numbers (2 vs 4) - review for conflict [heuristic]", "`pretraining/cpt-corpus-v3-s3-handoff` and `pretraining/cpt-corpus-v3-s4-handoff` cover similar content but state different numbers (- vs 4) - review for conflict [heuristic]", "`architecture/ask-spurgeon-rag` and `fine-tuning/runpod-sft-gate0-decisions` disagree about `cpt` (neg vs pos) - review for conflict [polarity]", "`architecture/ask-spurgeon-rag` and `fine-tuning/runpod-sft-gate0-implementation` disagree about `sft` (neg vs pos) - review for conflict [polarity]", "`architecture/ask-spurgeon-rag` and `fine-tuning/sft-phase-b-dry-terminated` disagree about `cpt` (neg vs pos) - review for conflict [polarity]", "`architecture/ask-spurgeon-rag` and `fine-tuning/sft-prep-after-cpt` disagree about `cpt` (neg vs pos) - review for conflict [polarity]", "`architecture/ask-spurgeon-rag` and `pretraining/cpt-eval-stack-pin-s5` disagree about `cpt` (neg vs pos) - review for conflict [polarity]", "`architecture/ask-spurgeon-rag` and `pretraining/cpt-eval-unify-vs-buckets` disagree about `cpt` (neg vs pos) - review for conflict [polarity]", "`architecture/ask-spurgeon-rag` and `pretraining/cpt-v3-s6-handoff` disagree about `cpt` (neg vs pos) - review for conflict [polarity]", "`bugs/gemma4-chat-template-fix` and `fine-tuning/sft-prep-after-cpt` disagree about `from_pretrained` (neg vs pos) - review for conflict [polarity]", "`bugs/lora-frozen-embeddings-special-tokens` and `bugs/sft-tokenizer-mismatch-vinfos-spepacer` disagree about `im_start` (pos vs neg) - review for conflict [polarity]", "`bugs/lora-frozen-embeddings-special-tokens` and `bugs/unsloth-fast-patching-warnings` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/lora-frozen-embeddings-special-tokens` and `fine-tuning/sft-prep-after-cpt` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/lora-frozen-embeddings-special-tokens` and `pretraining/cpt-eval-stack-pin-s5` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/lora-frozen-embeddings-special-tokens` and `pretraining/cpt-eval-unify-vs-buckets` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/lora-frozen-embeddings-special-tokens` and `pretraining/cpt-s6-c-eval-next-session` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/lora-frozen-embeddings-special-tokens` and `pretraining/cpt-s6-phase0-prepared` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/lora-frozen-embeddings-special-tokens` and `pretraining/cpt-v2-qwen35-upstream-recipes` disagree about `mlp` (pos vs neg) - review for conflict [polarity]", "`bugs/lora-frozen-embeddings-special-tokens` and `pretraining/vast-cpt-s6-early-stop-handoff` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/lora-frozen-embeddings-special-tokens` and `pretraining/vast-cpt-s6-resume-spike-analysis` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/ollama-tokenizer-corruption-fix` and `decisions/gemma4-local-ollama` disagree about `gguf` (neg vs pos) - review for conflict [polarity]", "`bugs/ollama-tokenizer-corruption-fix` and `pretraining/merge-and-export` disagree about `gguf` (neg vs pos) - review for conflict [polarity]", "`bugs/sft-tokenizer-mismatch-vinfos-spepacer` and `bugs/unsloth-fast-patching-warnings` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/sft-tokenizer-mismatch-vinfos-spepacer` and `fine-tuning/sft-prep-after-cpt` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/sft-tokenizer-mismatch-vinfos-spepacer` and `fine-tuning/vultr-sft-planning` disagree about `peft` (pos vs neg) - review for conflict [polarity]", "`bugs/sft-tokenizer-mismatch-vinfos-spepacer` and `pretraining/cpt-eval-stack-pin-s5` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/sft-tokenizer-mismatch-vinfos-spepacer` and `pretraining/cpt-eval-unify-vs-buckets` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/sft-tokenizer-mismatch-vinfos-spepacer` and `pretraining/cpt-s6-c-eval-next-session` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/sft-tokenizer-mismatch-vinfos-spepacer` and `pretraining/cpt-s6-phase0-prepared` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/sft-tokenizer-mismatch-vinfos-spepacer` and `pretraining/vast-cpt-s6-early-stop-handoff` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/sft-tokenizer-mismatch-vinfos-spepacer` and `pretraining/vast-cpt-s6-resume-spike-analysis` disagree about `lora` (neg vs pos) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `fine-tuning/qwen35-sft-special-tokens` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `fine-tuning/runpod-sft-gate0-implementation` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `fine-tuning/vultr-sft-planning` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/bugs/b-training-sota-known-issues` disagree about `vram` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/cpt-corpus-v3-s2-complete` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/cpt-corpus-v3-s4-complete` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/cpt-future-b-early-stop-scale` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/cpt-v2-c-eval-gate-verdict` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/cpt-v2-c-eval-runpod-prep` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/cpt-v2-next-steps-after-v13` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/cpt-v2-qwen35-upstream-recipes` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/cpt-v3-s6-handoff` disagree about `lora` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/environment-setup` disagree about `cuda` (pos vs neg) - review for conflict [polarity]", "`bugs/unsloth-fast-patching-warnings` and `pretraining/model-choice` disagree about `vram` (pos vs neg) - review for conflict [polarity]", "`decisions/gemma4-local-ollama` and `fine-tuning/qa-gold-rewrite-pilot` disagree about `fine_tuning` (pos vs neg) - review for conflict [polarity]"]
+last_updated: "2026-09-21T08:19:23-03:00"
+consolidation_hash: acd058fab27bf79aa31f9bd2e3dc7172
+contradictions: ["`fine-tuning/hf-spurgeon-qa-v2-gguf` and `fine-tuning/plans/ollama-merge-gguf` cover similar content but state different numbers (2.71 vs 07) - review for conflict [heuristic]", "`pretraining/cpt-b-eval-strategy` and `pretraining/cpt-eval-unify-vs-buckets` cover similar content but state different numbers (0 / 1650 / 17 vs 0.2 / 1.2 / 18) - review for conflict [heuristic]", "`pretraining/cpt-corpus-v3-s1-complete` and `pretraining/cpt-corpus-v3-s1-wave1` cover similar content but state different numbers (0.282874 / 0.658552 / 0.7 vs 0.10 / 0.164 / 0.45) - review for conflict [heuristic]", "`bugs/lora-frozen-embeddings-special-tokens` and `bugs/sft-tokenizer-mismatch-vinfos-spepacer` disagree about `im_start` (pos vs neg) - review for conflict [polarity]", "`fine-tuning/next-session-handoff` and `fine-tuning/vast-gate0-candidate` disagree about `scalingtype` (pos vs neg) - review for conflict [polarity]"]
 consolidation_warnings: []
 summary_hash: c81ed9efe309125e42b693ba950f4f04
+contradiction_count: 50
 ---
 
 # Project Memory Index
@@ -76,7 +77,7 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `bugs` | medium | Generated map of memory-store/bugs/ (7 entries). | • **Bug Fix: GGUF Vocab Shift and Alignment (具有战士/ _Parms)*...<br>• **Qwen3.5 processor text-as-image in C_eval** (`bugs/qwen...<br>• **Bug Fix: Unsloth Embedding Offload on Read-Only Filesys... |
 | `debt` | low | App debt (hybrid search, rate limits) plus 2026-08-29 memory-fabric LLM/host hygiene notes. | • Known Technical Debt & Limits<br>• Roadmap & Pending Features |
 | `decisions` | medium | Generated map of memory-store/decisions/ (2 entries). | • **Gemma 4 Fine-Tuning Transition** (`decisions/gemma4-fin...<br>• **Gemma 4 Local Ollama Deployment** (`decisions/gemma4-lo... |
-| `episodic` | medium | Generated map of memory-store/episodic/ (26 entries). | • **Episodic Journal — 2026-07-11** (`episodic/2026-07-11`,...<br>• **Episodic Journal — 2026-07-12** (`episodic/2026-07-12`,...<br>• **Episodic Journal — 2026-07-13** (`episodic/2026-07-13`,... |
+| `episodic` | medium | Generated map of memory-store/episodic/ (27 entries). | • **Episodic Journal — 2026-07-11** (`episodic/2026-07-11`,...<br>• **Episodic Journal — 2026-07-12** (`episodic/2026-07-12`,...<br>• **Episodic Journal — 2026-07-13** (`episodic/2026-07-13`,... |
 | `failures` | medium | Generated map of memory-store/failures/ (30 entries). | • **Vast official Unsloth image smoke blocked; LD_LIBRARY_P...<br>• **asyncua write_value BadTypeMismatch when writing int to...<br>• **B_training_sota: EarlyStopping disabled — metric_for_be... |
 | `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (39 entries). | • **Fine-tuning next session handoff** (`fine-tuning/next-s...<br>• **SFT QA gold rewrite pilot (20 rows, merged)** (`fine-tu...<br>• **SFT/serve: knowledge assistant, not Spurgeon persona** ... |
 | `framework-rules` | medium | Defines coding standards, required libraries (Streamlit, LlamaIndex), environment setup (.env), and database rules for the codebase. | • 1. Runtime Environment<br>• 2. Core Libraries & Packages<br>• 3. Vector Database Rules<br>• 4. Agent Memory Guidelines |
@@ -3849,15 +3850,15 @@ Execution configurations and dependency management rules for continued pretraini
 <!-- memory-fabric:local/episodic -->
 ---
 section: episodic
-summary: "Generated map of memory-store/episodic/ (26 entries)."
+summary: "Generated map of memory-store/episodic/ (27 entries)."
 priority: medium
 tags: [episodic]
 schema_version: 1.3
-last_updated: "2026-09-20T18:17:25-03:00"
+last_updated: "2026-09-21T07:10:40-03:00"
 generated: true
 generated_from: memory-store/episodic
-store_fingerprint: 1c2072df874c0015e78171a9b37528ed
-body_hash: a663b00c4f0e5b38d76353015d9cec36
+store_fingerprint: 25e301fad24e6a2c7786a5c599337be6
+body_hash: 53a2f976830870da5f687b40421a6a33
 ---
 
 # Episodic Map
@@ -3879,7 +3880,7 @@ Generated by Memory Fabric from `memory-store/episodic/` — do not edit by hand
 - **Episodic Journal — 2026-08-30** (`episodic/2026-08-30`, low) — Resolved parallel Groq+Cerebras rewrite conflict: stopped Cerebras, let Groq finish, deduped bulk_pending.jsonl (648→637, 11 dupes removed), re-ran full pipeline
 - **Episodic Journal — 2026-08-31** (`episodic/2026-08-31`, low) — Verified live QA mix against serve contract and F5 targets
 - **Episodic Journal — 2026-09-01** (`episodic/2026-09-01`, low) — Verified QA teacher rewrite resume point (line 1786 per handoff, confirmed live)
-- …and 11 more entries — see `memory-store/index.md`.
+- …and 12 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:store/pretraining/eval-and-export -->
 ---
@@ -7307,6 +7308,43 @@ Persisted and cross-linked stack-isolation findings: updated regression diagnosi
 - `.ai-memory/memory-store/pretraining/cpt-s6-c-eval-regression-diagnosis.md`
 - `.ai-memory/memory-store/pretraining/cpt-eval-stack-pin-s5.md`
 - `.ai-memory/memory-store/pretraining/cpt-s6-c-eval-complete.md`
+
+<!-- memory-fabric:store/episodic/2026-09-21 -->
+---
+store_path: episodic/2026-09-21
+title: "Episodic Journal — 2026-09-21"
+summary: "Committed and pushed CPT C-eval stack pin, S6 stack-isolation tooling/scripts, and related memory-store updates to origin/main as cca6aee"
+priority: low
+tags: [episodic, session-journal]
+schema_version: 1.3
+last_updated: "2026-09-21T07:40:52-03:00"
+---
+
+## commit-push-s6-isolation
+
+Committed and pushed CPT C-eval stack pin, S6 stack-isolation tooling/scripts, and related memory-store updates to origin/main as cca6aee.
+
+**Files changed:**
+- `.ai-memory/memory-store/pretraining/cpt-s6-stack-isolation-c.md`
+
+## memory-deep-dream
+
+Verified Memory Fabric health and executed a deep dream consolidation. Quality score improved by +6 points (88 to 94) and cleared the stale dream warning.
+
+**Key decisions:**
+- Ran deep dream maintenance to consolidate indices and resolve stale dream warning
+
+## llm-dream-split-tool
+
+Ran LLM-assisted deep dream using the Split-Tool Protocol. Prepared payload with prepare_dream_payload_tool, synthesized improved summaries for bug entries and contradictions with the assistant LLM, and applied the consolidation via apply_dream_results_tool (100/100 pass).
+
+- Executed LLM Dreaming via Memory Fabric Split-Tool Protocol, passing structured summaries and contradiction review from the assistant LLM
+
+## full-deep-dream
+
+Executed a full deep dream consolidation with LLM synthesis, evaluation reporting (saved to .ai-memory/evals/latest.md), quality scoring (+6 delta, 100/100 score), and generation of rewrite candidates for long episodic entries.
+
+- Completed full deep dream with evaluation report generation and rewrite task identification via the Split-Tool Protocol
 
 <!-- memory-fabric:store/fine-tuning/cpt-merged-hf-local-complete -->
 ---
