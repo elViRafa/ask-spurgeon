@@ -482,6 +482,54 @@ def trainer_mixed_precision(train_embeddings, bf16_supported):
     return True, False
 
 
+def choose_seq_length_kwarg(training_args_cls):
+    """Prefer ``max_length`` (TRL 0.24+ SFTConfig); else ``max_seq_length``.
+
+    UnslothTrainingArguments subclasses SFTConfig. TRL 0.24 renamed the
+    kwarg; probing the signature avoids a TypeError on either side of the cut.
+    When the signature is unavailable or only has ``**kwargs``, prefer the
+    legacy name — ``classify_training_args_typeerror`` remaps on reject.
+    """
+    import inspect
+
+    try:
+        params = set(inspect.signature(training_args_cls.__init__).parameters)
+    except (TypeError, ValueError):
+        params = set()
+    if "max_length" in params:
+        return "max_length"
+    return "max_seq_length"
+
+
+def classify_training_args_typeerror(err, kwargs, lr_scheduler, lr_scheduler_kwargs):
+    """Classify UnslothTrainingArguments TypeError for a safe one-knob retry.
+
+    Returns ``(action, warning)`` where action is one of:
+      - ``"remap_max_length"``: pop max_seq_length, set max_length (TRL 0.24+)
+      - ``"fallback_cosine"``: only when the error mentions lr_scheduler*
+      - ``"raise"``: unrelated / unrecoverable — caller must re-raise
+
+    Never falls back lr_scheduler→cosine when the error is about max_seq_length
+    (that produced a misleading cosine warning that still died on the same
+    TypeError on Vast instance 52805980).
+    """
+    err_s = str(err)
+    if "max_seq_length" in err_s and kwargs is not None and "max_seq_length" in kwargs:
+        return (
+            "remap_max_length",
+            "TrainingArguments rejected max_seq_length; remapping to max_length (TRL 0.24+)",
+        )
+    if "lr_scheduler" in err_s and (
+        lr_scheduler_kwargs or (lr_scheduler or "") != "cosine"
+    ):
+        return (
+            "fallback_cosine",
+            "TrainingArguments rejected lr_scheduler=%s kwargs=%s; falling back to cosine"
+# skipped notebook magic: % (lr_scheduler, lr_scheduler_kwargs),
+        )
+    return "raise", None
+
+
 def checkpoint_save_policy(work_root):
     """Kaggle 20 GB disk vs Runpod volume resume."""
     if is_kaggle_work_root(work_root):
@@ -1670,6 +1718,7 @@ if USE_COMPOSITE_EARLY_STOP and isinstance(eval_sets, dict):
 # even with TRAIN_EMBEDDINGS. T4 + embeds → both False (float32).
 _bf16_ok = torch.cuda.is_bf16_supported()
 _use_fp16, _use_bf16 = trainer_mixed_precision(TRAIN_EMBEDDINGS, _bf16_ok)
+_seq_len_kw = choose_seq_length_kwarg(UnslothTrainingArguments)
 _ta_kwargs = dict(
     per_device_train_batch_size=PER_DEVICE_BATCH,
     gradient_accumulation_steps=GRAD_ACCUM,
@@ -1697,27 +1746,37 @@ _ta_kwargs = dict(
     greater_is_better=False,
     output_dir=OUTPUT_DIR,
     seed=SEED,
-    max_seq_length=MAX_SEQ_LENGTH,
     packing=False,  # Qwen3.5 Processor + GatedDeltaNet — native packing unsupported
     report_to=REPORT_TO,
 )
+_ta_kwargs[_seq_len_kw] = MAX_SEQ_LENGTH
 if LR_SCHEDULER_KWARGS:
     _ta_kwargs["lr_scheduler_kwargs"] = LR_SCHEDULER_KWARGS
-try:
-    training_args = UnslothTrainingArguments(**_ta_kwargs)
-except TypeError as _ta_err:
-    # Older transformers may reject cosine_with_min_lr / lr_scheduler_kwargs.
-    if LR_SCHEDULER_KWARGS or LR_SCHEDULER != "cosine":
-        print(
-            f"WARNING: TrainingArguments rejected lr_scheduler={LR_SCHEDULER} "
-            f"kwargs={LR_SCHEDULER_KWARGS}: {_ta_err}; falling back to cosine"
-        )
-        _ta_kwargs["lr_scheduler_type"] = "cosine"
-        _ta_kwargs.pop("lr_scheduler_kwargs", None)
-        LR_SCHEDULER = "cosine"
-        LR_SCHEDULER_KWARGS = None
+# TRL 0.24 renamed max_seq_length→max_length; only fall back cosine on lr_scheduler errors.
+_ta_attempts = 0
+while True:
+    try:
         training_args = UnslothTrainingArguments(**_ta_kwargs)
-    else:
+        break
+    except TypeError as _ta_err:
+        _ta_attempts += 1
+        if _ta_attempts > 3:
+            raise
+        _action, _warn = classify_training_args_typeerror(
+            _ta_err, _ta_kwargs, LR_SCHEDULER, LR_SCHEDULER_KWARGS
+        )
+        if _action == "remap_max_length":
+            print(f"WARNING: {_warn}: {_ta_err}")
+            _ta_kwargs.pop("max_seq_length", None)
+            _ta_kwargs["max_length"] = MAX_SEQ_LENGTH
+            continue
+        if _action == "fallback_cosine":
+            print(f"WARNING: {_warn}: {_ta_err}")
+            _ta_kwargs["lr_scheduler_type"] = "cosine"
+            _ta_kwargs.pop("lr_scheduler_kwargs", None)
+            LR_SCHEDULER = "cosine"
+            LR_SCHEDULER_KWARGS = None
+            continue
         raise
 
 if MAX_STEPS is not None:
