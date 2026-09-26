@@ -1,7 +1,9 @@
-# Vast S7 Phase B isolation C: nested s5best step 600 SHA ddbbee3a.
+# Vast S7 holdout-sibling replay isolation C: flat s5best checkpoint-550 SHA 0289f1c9.
 # Stack pin: torch 2.8 + Unsloth 2026.8.22. Do NOT use vast_remote_c_eval.sh (torch 2.11).
-# Do NOT point at top-level fetch/theology_cpt_lora_s5best (that is still Phase A 06354dfc).
-# No training. No Hub overwrite. No merge. Destroys instance unless -KeepInstance.
+# Do NOT use init LoRA ddbbee3a (vast_cpt_s7_replay/fetch/theology_cpt_lora) or Phase A 06354dfc.
+# Prefer flat vast_cpt_s7_replay/fetch/theology_cpt_lora_s5best (NOT nested double folder; NOT theology_cpt_lora).
+# Holdouts: a_output_v6 (same pack as S7 replay orchestrate/sync). No training. No Hub overwrite. No merge.
+# Destroys instance unless -KeepInstance.
 param(
     [string]$OfferId = "",
     [switch]$KeepInstance,
@@ -12,22 +14,22 @@ param(
 $ErrorActionPreference = "Stop"
 
 $CptRootLocal = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
-$env:VAST_SESSION_FILE = Join-Path $CptRootLocal "kaggle\runpod_cpt_v3\vast_cpt_s7_b_c_session.json"
-$env:VAST_LOCAL_RESULTS_DIR = Join-Path $CptRootLocal "kaggle\runpod_cpt_v3\vast_cpt_s7_b_c"
+$env:VAST_SESSION_FILE = Join-Path $CptRootLocal "kaggle\runpod_cpt_v3\vast_cpt_s7_replay_c_session.json"
+$env:VAST_LOCAL_RESULTS_DIR = Join-Path $CptRootLocal "kaggle\runpod_cpt_v3\vast_cpt_s7_replay_c"
 
 . "$PSScriptRoot\vast_cpt_common.ps1"
 
 $FtScripts = Join-Path $RepoRoot "fine_tuning\scripts"
-$Script:DefaultLabel = "cpt-s7-phase-b-c"
+$Script:DefaultLabel = "cpt-s7-replay-c"
 $Script:DefaultDiskGb = $DiskGb
 $Script:MaxWallHours = 4
 $Script:SearchQuery = "num_gpus=1 gpu_name=RTX_4090 reliability>=0.90 disk_space>=60 gpu_frac>=1 cuda_max_good>=12.6"
 $Script:SearchQuery3090 = "num_gpus=1 gpu_name=RTX_3090 reliability>=0.90 disk_space>=60 gpu_frac>=1 cuda_max_good>=12.6"
 
-# Nested Phase B §5 export (step 600). Top-level theology_cpt_lora_s5best is still 06354dfc.
-$ExpectedSha = "ddbbee3ac9ef7baf6cca21dcdb844d027d39f5f6a4b88ba10fcf8a43fa7c8214"
-$AdapterDir = Join-Path $CptRoot "kaggle\runpod_cpt_v3\vast_cpt_s7\fetch\theology_cpt_lora_s5best\theology_cpt_lora_s5best"
-$Holdouts = Join-Path $CptRoot "kaggle\a_output_v5\theology_holdouts"
+# Replay best checkpoint-550 / 0289f1c9. Do NOT use init ddbbee3a or Phase A 06354dfc.
+$ExpectedSha = "0289f1c9af70615ef4dca58b3e2d7dabc3eefef96c8bdf92bff0933689adeb55"
+$AdapterDir = Join-Path $CptRoot "kaggle\runpod_cpt_v3\vast_cpt_s7_replay\fetch\theology_cpt_lora_s5best"
+$Holdouts = Join-Path $CptRoot "kaggle\a_output_v6\theology_holdouts"
 $Mcq = Join-Path $CptRoot "data\catechism_mcq.json"
 $EvalPy = Join-Path $CptRoot "scripts\eval_cpt_sota.py"
 $RemoteSh = Join-Path $CptRoot "scripts\vast_remote_stack_isolation_c.sh"
@@ -60,7 +62,7 @@ function Send-ToWorkspace([string]$Local, [string]$Remote) {
     if ($LASTEXITCODE -ne 0) { throw "scp failed: $Local" }
 }
 
-Write-Host "=== Vast S7 Phase B isolation C (s5best step 600 ddbbee3a) ==="
+Write-Host "=== Vast S7 replay isolation C (s5best checkpoint-550 0289f1c9) ==="
 Write-Host "disk=${DiskGb}GB label=$DefaultLabel expected_sha=$ExpectedSha"
 Write-Host "stack=Unsloth 2026.8.22 + torch 2.8.0+cu126 (NOT 2.11)"
 
@@ -77,6 +79,12 @@ $weights = Join-Path $AdapterDir "adapter_model.safetensors"
 $gotSha = (Get-FileHash -Algorithm SHA256 -Path $weights).Hash.ToLower()
 if ($gotSha -ne $ExpectedSha) {
     throw "Local adapter SHA mismatch want=$ExpectedSha got=$gotSha"
+}
+if ($gotSha -eq "ddbbee3ac9ef7baf6cca21dcdb844d027d39f5f6a4b88ba10fcf8a43fa7c8214") {
+    throw "Refusing init LoRA ddbbee3a for isolation C"
+}
+if ($gotSha -eq "06354dfc5a720143617ee2ffeef38faa48200811bed89e71561ff357ed547432") {
+    throw "Refusing Phase A 06354dfc for isolation C"
 }
 Write-Host "Local adapter SHA OK"
 
@@ -168,8 +176,8 @@ $session = Get-VastSession
 if ($LASTEXITCODE -ne 0) { Write-Host "WARN: HF inject failed - continuing" }
 
 # --- Sync assets ---
-# Nested dir leaf is theology_cpt_lora_s5best; remote expects /workspace/theology_cpt_lora/.
-Write-Host "Syncing C-eval assets (Phase B nested s5best) ..."
+# Flat replay s5best leaf is theology_cpt_lora_s5best; remote expects /workspace/theology_cpt_lora/.
+Write-Host "Syncing C-eval assets (replay flat s5best 0289f1c9) ..."
 Invoke-CEvalSsh "mkdir -p /workspace/hf_home && rm -rf /workspace/theology_cpt_lora /workspace/theology_cpt_lora_s5best /workspace/theology_holdouts"
 Send-ToWorkspace $AdapterDir "/workspace/"
 Invoke-CEvalSsh 'if [[ -f /workspace/theology_cpt_lora_s5best/adapter_model.safetensors ]]; then mv /workspace/theology_cpt_lora_s5best /workspace/theology_cpt_lora && echo LORA_RENAMED_S5BEST; elif [[ -f /workspace/theology_cpt_lora/adapter_model.safetensors ]]; then echo LORA_LAYOUT_OK; elif [[ -f /workspace/theology_cpt_lora/theology_cpt_lora/adapter_model.safetensors ]]; then mv /workspace/theology_cpt_lora/theology_cpt_lora/* /workspace/theology_cpt_lora/ && rmdir /workspace/theology_cpt_lora/theology_cpt_lora 2>/dev/null; echo LORA_LAYOUT_FLATTENED; else echo LORA_LAYOUT_FAIL; ls -laR /workspace/theology_cpt_lora /workspace/theology_cpt_lora_s5best 2>/dev/null || true; exit 2; fi'
@@ -245,14 +253,14 @@ $stamp = Get-Date -Format o
 @"
 remote_exit=$rc
 adapter_sha=$ExpectedSha
-adapter=theology_cpt_lora_s5best/theology_cpt_lora_s5best
-step=600
+adapter=vast_cpt_s7_replay/fetch/theology_cpt_lora_s5best
+step=550
 fetched=$stamp
 unsloth=unsloth[colab-new]==2026.8.22
 torch=2.8.0+cu126
 train_probe_docs=16
-holdouts=a_output_v5_pinned_v3
-note=S7 Phase B isolation C on nested s5best ddbbee3a
+holdouts=a_output_v6
+note=S7 replay isolation C on flat s5best checkpoint-550 0289f1c9
 "@ | Set-Content (Join-Path $ResultsDir "result.txt")
 @"
 # Stack isolation pin (S5 cpt_eval.log)
@@ -260,7 +268,7 @@ unsloth=2026.8.22
 torch=2.8.0+cu126
 expected_sha=$ExpectedSha
 train_probe_docs=16
-run=s7-phase-b-isolation-c
+run=s7-replay-isolation-c
 "@ | Set-Content (Join-Path $ResultsDir "STACK_PIN.txt")
 Write-Host "Eval artifacts -> $ResultsDir"
 
