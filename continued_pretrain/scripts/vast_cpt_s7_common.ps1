@@ -22,7 +22,7 @@ $Script:SearchQuery = "num_gpus=1 gpu_name=RTX_4090 reliability>=0.90 disk_space
 $Script:S6AdapterSha = "6aab91940ce3e854f72a5308ae41e8ce1ae4c457752ff76390581f09ba436f0c"
 $Script:S7PhaseASha = "06354dfc5a720143617ee2ffeef38faa48200811bed89e71561ff357ed547432"
 $Script:S7AdapterSha = "ddbbee3ac9ef7baf6cca21dcdb844d027d39f5f6a4b88ba10fcf8a43fa7c8214"
-$Script:MixSha = "2d5a99c1a0d4d3e4d64013dabe894a52f4de1bf0b576e8997b02af595f691acd"
+$Script:MixSha = "e050787e138e3d082937e35d1a87aa139f8e980403c3e5fefcc55aa90a2465fc"
 $Script:MixRel = "kaggle\a_output_v6"
 $Script:FrozenV4Sha = "37a3ba50aa9efb8057d9d36227ac4547f08d35a31ccd71cf3f2d20f928131c81"
 $Script:FrozenV5Sha = "61e830575138935cdf6c1b029a3128e096ff4e3633e44a464b3957b9d6e78285"

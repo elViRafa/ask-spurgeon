@@ -198,7 +198,7 @@ Puritan and confession without Spurgeon past ~13.3. No GPU until operator go.
 |------|--------|
 | Path | `continued_pretrain/kaggle/a_output_v6` |
 | Mix txt | `continued_pretrain/data/mix_v6/theology_mix_train.txt` |
-| `mix_sha256` | `2d5a99c1a0d4d3e4d64013dabe894a52f4de1bf0b576e8997b02af595f691acd` |
+| `mix_sha256` | `e050787e138e3d082937e35d1a87aa139f8e980403c3e5fefcc55aa90a2465fc` |
 | Train docs | 23,139 (HF train 22,907 / val 232) |
 | Verified tokens | ~42.4M (Qwen3.5-4B-Base, sample ratio 0.3005) |
 | Sibling share | **25.0%** (5,661 docs / 35.1M chars; train siblings of pinned puritan + confession holdouts) |
