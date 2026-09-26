@@ -7,6 +7,7 @@ tags: [cpt, kaggle, ppl, packing, qwen35, holdout]
 schema_version: 1.3
 last_updated: "2026-08-26T13:51:42-04:00"
 evidence: [continued_pretrain/scripts/_gen_sota_notebooks.py, continued_pretrain/scripts/07_build_theology_mix.py, continued_pretrain/scripts/test_manual_pack.py, continued_pretrain/CPT_V2_KAGGLE_STATUS.md]
+review_status: stale
 ---
 
 # Additional CPT failure modes (beyond token budget / frozen embeds)

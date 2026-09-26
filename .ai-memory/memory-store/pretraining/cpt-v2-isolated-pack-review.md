@@ -7,6 +7,7 @@ tags: [cpt, packing, kaggle, review]
 schema_version: 1.3
 last_updated: "2026-08-26T08:47:40-04:00"
 evidence: [continued_pretrain/scripts/_gen_sota_notebooks.py, continued_pretrain/scripts/test_manual_pack.py, continued_pretrain/CPT_V2_KAGGLE_STATUS.md]
+review_status: stale
 ---
 
 # Isolated-pack defect review (2026-08-26)

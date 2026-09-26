@@ -8,6 +8,7 @@ schema_version: 1.3
 last_updated: "2026-08-26T08:47:44-04:00"
 occurrences: 1
 error_signature: "pack_document_isolated spliced leftover tokens of a document longer than max_seq_len onto the start of the next short document (same row), recreating stream-pack leftover-a + start-of-b"
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-08-26T08:47:44-04:00

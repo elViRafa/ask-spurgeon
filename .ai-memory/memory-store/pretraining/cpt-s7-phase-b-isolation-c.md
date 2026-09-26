@@ -18,7 +18,6 @@ Do **not** eval the top-level `fetch/theology_cpt_lora_s5best/` file — that is
 ### Scorecard (pinned v3 holdouts, Ampere bf16)
 
 | Bucket | Base | Phase B C | Δ% | Hub `06354dfc` |
-|--------|------|-----------|-----|----------------|
 | spurgeon | 14.31 | **12.39** | **−13.42%** | 12.45 (−13.0%) |
 | puritan | 6.03 | **5.50** | **−8.88%** | 5.52 (−8.6%) |
 | confession | 5.61 | **5.25** | **−6.37%** | 5.27 (−6.0%) |

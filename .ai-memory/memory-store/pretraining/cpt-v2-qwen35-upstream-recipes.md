@@ -7,6 +7,7 @@ tags: [qwen35, unsloth, cpt, packing, qlora, t4]
 schema_version: 1.3
 last_updated: "2026-08-26T13:37:34-04:00"
 evidence: ["continued_pretrain/scripts/_gen_sota_notebooks.py:407", continued_pretrain/CPT_V2_KAGGLE_STATUS.md]
+review_status: stale
 ---
 
 # Qwen3.5 CPT — upstream recipes that already work (2026-08)
