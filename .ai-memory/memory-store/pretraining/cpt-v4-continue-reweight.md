@@ -1,4 +1,4 @@
-﻿---
+---
 store_path: pretraining/cpt-v4-continue-reweight
 title: "CPT v4 continue: reweight new authors, keep old corpus"
 summary: "Use this when preparing the GPU CPT for the Downame + wave 5 corpus (`a_output_v4` shelf)"

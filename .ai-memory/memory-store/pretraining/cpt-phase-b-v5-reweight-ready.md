@@ -1,4 +1,4 @@
-﻿---
+---
 store_path: pretraining/cpt-phase-b-v5-reweight-ready
 title: "Phase B v5 reweight packed; no GPU"
 summary: "**Status:** Reweight mix built + verified + packed"

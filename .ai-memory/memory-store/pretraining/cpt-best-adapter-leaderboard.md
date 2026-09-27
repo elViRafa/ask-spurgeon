@@ -1,4 +1,4 @@
-﻿---
+---
 store_path: pretraining/cpt-best-adapter-leaderboard
 title: "Best CPT + Hub: Phase A Hub; replay 0289f1c9 top local"
 summary: "**Hub production is still Phase A s5best** `06354dfc…`. Top local continue-from is replay C `0289f1c9…` (still §5 FAIL)."

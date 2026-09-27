@@ -1,4 +1,4 @@
-﻿---
+---
 store_path: pretraining/cpt-phase-b-mix-a-output-v4
 title: "Phase B mix a_output_v4 packed; no GPU"
 summary: "**Status:** Mix rebuilt + verified + packed"

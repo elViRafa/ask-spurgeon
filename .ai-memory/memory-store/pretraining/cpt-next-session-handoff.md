@@ -1,4 +1,4 @@
-﻿---
+---
 store_path: pretraining/cpt-next-session-handoff
 title: "Next CPT: continue from replay 0289f1c9; Hub stays Phase A"
 summary: "- Next init SHA `0289f1c9…` from replay s5best (checkpoint-550); Hub stays Phase A `06354dfc…`"

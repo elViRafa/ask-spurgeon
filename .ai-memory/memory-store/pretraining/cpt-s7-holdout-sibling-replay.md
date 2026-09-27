@@ -1,4 +1,4 @@
-﻿---
+---
 store_path: pretraining/cpt-s7-holdout-sibling-replay
 title: "S7 holdout-sibling replay pack ready"
 summary: "Phase B isolation C on nested s5best `ddbbee3a` missed §5: Spurgeon 12.39 (−13.42%), Puritan 5.50 (−8.88%), confession 5.25 (−6.37%) vs Ampere base"
