@@ -1,4 +1,4 @@
----
+﻿---
 store_path: pretraining/cpt-next-session-handoff
 title: "Next CPT: continue from replay 0289f1c9; Hub stays Phase A"
 summary: "- Next init SHA `0289f1c9…` from replay s5best (checkpoint-550); Hub stays Phase A `06354dfc…`"
@@ -18,7 +18,7 @@ evidence: [pretraining/cpt-s7-replay-isolation-c-complete, pretraining/cpt-s7-ho
 ### Continue-from pin (local)
 - SHA256: `0289f1c9af70615ef4dca58b3e2d7dabc3eefef96c8bdf92bff0933689adeb55`
 - Checkpoint: `checkpoint-550` / `theology_cpt_lora_s5best`
-- Marker: `continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7_replay/CONTINUE_FROM.json`
+- Marker: `vast_cpt_s7_replay/CONTINUE_FROM.json`
 - Adapter: `vast_cpt_s7_replay/fetch/theology_cpt_lora_s5best/`
 - **Next CPT init = this adapter, new Adam** (do not HF-resume optimizer)
 

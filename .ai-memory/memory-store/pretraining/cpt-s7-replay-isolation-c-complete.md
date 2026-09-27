@@ -1,4 +1,4 @@
----
+﻿---
 store_path: pretraining/cpt-s7-replay-isolation-c-complete
 title: "S7 replay isolation C complete: 12.35/5.48/5.22; §5 FAIL"
 summary: "Holdout-sibling replay **s5best** SHA `0289f1c9…` (checkpoint-550) isolation C on Unsloth 2026.8.22 + torch 2.8: Spurgeon 12.35 (−13.69%), Puritan 5.48 (−9.22%), confession 5.22 (−6.88%). §5 FAIL. Hub stays Phase A. Instance 52830244 destroyed."

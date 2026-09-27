@@ -9,6 +9,7 @@ last_updated: "2026-08-26T23:34:20-04:00"
 occurrences: 1
 error_signature: "nameerror: name <val> is not defined. did you mean: <val>? in train_cpt_sota.py after pack (max_steps <n> -> <n>). crashed before d<n><path> load."
 failure_key: nameerror
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-08-26T23:34:20-04:00

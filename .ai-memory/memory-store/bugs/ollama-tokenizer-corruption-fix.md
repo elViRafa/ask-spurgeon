@@ -1,4 +1,4 @@
----
+﻿---
 store_path: bugs/ollama-tokenizer-corruption-fix
 title: "Bug Fix: GGUF Vocab Shift and Alignment (具有战士/ _Parms)"
 summary: "Bug Fix: GGUF Vocab Shift and Alignment (具有战士/ _Parms)"

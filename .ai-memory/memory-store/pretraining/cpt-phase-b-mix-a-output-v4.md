@@ -1,4 +1,4 @@
----
+﻿---
 store_path: pretraining/cpt-phase-b-mix-a-output-v4
 title: "Phase B mix a_output_v4 packed; no GPU"
 summary: "**Status:** Mix rebuilt + verified + packed"
@@ -6,7 +6,7 @@ priority: high
 tags: [cpt, phase-b, mix, a-output-v4, wave5]
 schema_version: 1.3
 last_updated: "2026-09-23T09:26:48-03:00"
-evidence: [[REDACTED_SECRET].json, continued_pretrain/data/theology_mix_manifest.json, continued_pretrain/NEXT_CPT_S7.md, continued_pretrain/data/corpus_v3_catalog.json]
+evidence: [continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7_replay/CONTINUE_FROM.json, continued_pretrain/data/theology_mix_manifest.json, continued_pretrain/NEXT_CPT_S7.md, continued_pretrain/data/corpus_v3_catalog.json]
 ---
 
 # Phase B mix a_output_v4 ready (2026-09-23)

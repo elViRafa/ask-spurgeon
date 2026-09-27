@@ -1,4 +1,4 @@
----
+﻿---
 store_path: pretraining/cpt-phase-b-mix-audit-clean
 title: "Phase B mix audit clean; keep a_output_v4"
 summary: "**Status:** Corpus-wide preprocess audit passed"
@@ -6,7 +6,7 @@ priority: high
 tags: [cpt, phase-b, audit, a-output-v4, preprocess]
 schema_version: 1.3
 last_updated: "2026-09-23T10:44:32-03:00"
-evidence: [continued_pretrain/scripts/audit_cpt_mix_sources.py, [REDACTED_SECRET].json, [REDACTED_SECRET].md]
+evidence: [continued_pretrain/scripts/audit_cpt_mix_sources.py, continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7_replay/CONTINUE_FROM.json, [REDACTED_SECRET].md]
 ---
 
 # Phase B mix audit clean (2026-09-23)

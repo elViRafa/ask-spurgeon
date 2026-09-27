@@ -1,4 +1,4 @@
----
+﻿---
 store_path: pretraining/cpt-corpus-v3-expansion-plan
 title: "CPT corpus v3 expansion plan (no training)"
 summary: "Runpod C: spurgeon −7.2%, puritan −5.0%, confession −7.0% vs Ampere bf16 base"

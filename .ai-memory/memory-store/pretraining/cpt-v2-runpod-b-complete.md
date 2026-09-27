@@ -7,6 +7,7 @@ tags: [cpt, runpod, training]
 schema_version: 1.3
 last_updated: "2026-08-27T08:21:39-04:00"
 evidence: [continued_pretrain/kaggle/runpod_cpt_v2/theology_cpt_run_config.json, continued_pretrain/kaggle/runpod_cpt_v2/cpt_train.log, continued_pretrain/CPT_V2_KAGGLE_STATUS.md]
+review_status: stale
 ---
 
 # CPT v2 Runpod B — COMPLETE 2026-08-27

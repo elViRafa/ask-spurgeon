@@ -7,6 +7,7 @@ tags: [cpt, packing, gdn, qwen35, kaggle, runpod]
 schema_version: 1.3
 last_updated: "2026-08-26T23:15:36-04:00"
 evidence: [continued_pretrain/CPT_V2_KAGGLE_STATUS.md, continued_pretrain/scripts/_gen_sota_notebooks.py]
+review_status: stale
 ---
 
 # One-doc padded rows — Kaggle v13/v14 ERROR; Runpod uses the same pack

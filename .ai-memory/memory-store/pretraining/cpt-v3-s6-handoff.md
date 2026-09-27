@@ -1,4 +1,4 @@
----
+﻿---
 store_path: pretraining/cpt-v3-s6-handoff
 title: "S6 CPT handoff — resume B, partial C, Hub v2 policy"
 summary: "**Last updated:** 2026-08-28"

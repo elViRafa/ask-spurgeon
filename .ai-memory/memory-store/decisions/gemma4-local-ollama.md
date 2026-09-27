@@ -1,4 +1,4 @@
----
+﻿---
 store_path: decisions/gemma4-local-ollama
 title: "Gemma 4 Local Ollama Deployment"
 summary: "Gemma 4 Local Ollama Deployment"

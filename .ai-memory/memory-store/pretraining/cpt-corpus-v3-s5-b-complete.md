@@ -1,4 +1,4 @@
----
+﻿---
 store_path: pretraining/cpt-corpus-v3-s5-b-complete
 title: "CPT corpus v3 S5 B complete — best step 325"
 summary: "GPU `pul3xia882ub5r` **deleted**"

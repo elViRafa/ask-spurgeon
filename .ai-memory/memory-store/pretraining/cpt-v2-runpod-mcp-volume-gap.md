@@ -1,4 +1,4 @@
----
+﻿---
 store_path: pretraining/cpt-v2-runpod-mcp-volume-gap
 title: "Runpod MCP create-pod objectMounts 400; REST v1 attaches volume"
 summary: "As of 2026-08-28, hosted MCP `create-pod` GraphQL sends `objectMounts: null` / `tags: null`"

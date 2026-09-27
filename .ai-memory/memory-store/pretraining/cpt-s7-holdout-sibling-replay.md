@@ -1,4 +1,4 @@
----
+﻿---
 store_path: pretraining/cpt-s7-holdout-sibling-replay
 title: "S7 holdout-sibling replay pack ready"
 summary: "Phase B isolation C on nested s5best `ddbbee3a` missed §5: Spurgeon 12.39 (−13.42%), Puritan 5.50 (−8.88%), confession 5.25 (−6.37%) vs Ampere base"
@@ -6,7 +6,7 @@ priority: high
 tags: [cpt, s7, mix-v6, replay, vast]
 schema_version: 1.3
 last_updated: "2026-09-26T20:31:48-03:00"
-evidence: [[REDACTED_SECRET].json, continued_pretrain/data/mix_v6/theology_mix_manifest.json, continued_pretrain/scripts/vast_cpt_s7_common.ps1, continued_pretrain/NEXT_CPT_S7.md]
+evidence: [continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7_replay/CONTINUE_FROM.json, continued_pretrain/data/mix_v6/theology_mix_manifest.json, continued_pretrain/scripts/vast_cpt_s7_common.ps1, continued_pretrain/NEXT_CPT_S7.md]
 ---
 
 ## Holdout-sibling replay (v6) — packed 2026-09-23

@@ -1,4 +1,4 @@
----
+﻿---
 store_path: pretraining/cpt-s6-phase0-prepared
 title: "S6 Phase 0 prepared; GPU blocked on operator go"
 summary: "- Volume `7hb931c5oe` is source of truth (`checkpoint-2100`; HF best `checkpoint-2050`)"

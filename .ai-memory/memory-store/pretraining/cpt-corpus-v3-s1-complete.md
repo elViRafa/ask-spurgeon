@@ -1,4 +1,4 @@
----
+﻿---
 store_path: pretraining/cpt-corpus-v3-s1-complete
 title: "CPT corpus v3 S1 complete (mix verified, no training)"
 summary: "**No B, no C, no Wave 2 fetch, no Runpod GPU, no Kaggle push, no merge, no Hub overwrite.**"

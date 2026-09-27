@@ -7,6 +7,7 @@ tags: [cpt, runpod, c-eval, handoff]
 schema_version: 1.3
 last_updated: "2026-08-27T08:21:31-04:00"
 evidence: [continued_pretrain/scripts/_gen_sota_notebooks.py, continued_pretrain/scripts/cpt_runtime.py, continued_pretrain/RUNPOD_RUNBOOK.md, continued_pretrain/kaggle/runpod_cpt_v2/theology_cpt_lora/adapter_config.json]
+review_status: stale
 ---
 
 # CPT v2 C eval — Runpod session prep (2026-08-27)

@@ -1,4 +1,4 @@
----
+﻿---
 store_path: bugs/gemma4-chat-template-fix
 title: "Gemma 4 Chat Template Processor Fix"
 summary: "Gemma 4 Chat Template Processor Fix"

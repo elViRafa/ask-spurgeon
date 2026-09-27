@@ -1,4 +1,4 @@
----
+﻿---
 store_path: pretraining/cpt-b-eval-strategy-implementation
 title: "CPT B eval strategy — implemented, ready for S6 run"
 summary: "B eval strategy implementation is **complete** (2026-08-28)"

@@ -1,4 +1,4 @@
----
+﻿---
 store_path: pretraining/cpt-current
 title: "CPT current status"
 summary: "| **Hub production** | private `rafaelvieirar1r/qwen3.5-4b-theology-cpt-lora-v2` = Phase A s5best `06354dfc…` |"

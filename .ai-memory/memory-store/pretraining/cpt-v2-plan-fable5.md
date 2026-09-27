@@ -1,4 +1,4 @@
----
+﻿---
 store_path: pretraining/cpt-v2-plan-fable5
 title: "CPT v2 improvement plan (Fable 5 review, 2026-07-12)"
 summary: "CPT v2 improvement plan (Fable 5 review, 2026-07-12)"

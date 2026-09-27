@@ -1,4 +1,4 @@
----
+﻿---
 store_path: pretraining/cpt-v2-implementation-fable5
 title: "CPT v2 implementation (Fable 5 plan)"
 summary: "CPT v2 implementation (Fable 5 plan)"

@@ -1,4 +1,4 @@
----
+﻿---
 store_path: pretraining/cpt-v2-next-steps-after-v13
 title: "CPT v2 next steps after B v13 ERROR"
 summary: "**Context:** B v13 `one_doc_padded` D1/D2 PASS (`multi_doc_rows=0`)"
@@ -7,6 +7,7 @@ tags: [cpt, kaggle, handoff, b-v13, next-steps]
 schema_version: 1.3
 last_updated: "2026-08-26T19:25:47-04:00"
 evidence: [continued_pretrain/CPT_V2_KAGGLE_STATUS.md, continued_pretrain/kaggle/b_logs_v13_raw.txt, pretraining/cpt-v2-qwen35-upstream-recipes]
+review_status: stale
 ---
 
 # CPT v2 — next steps after B v13 ERROR (do not act in save-only session)

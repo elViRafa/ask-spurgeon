@@ -1,4 +1,4 @@
----
+﻿---
 store_path: pretraining/cpt-phase-b-v5-reweight-ready
 title: "Phase B v5 reweight packed; no GPU"
 summary: "**Status:** Reweight mix built + verified + packed"
@@ -6,7 +6,7 @@ priority: high
 tags: [cpt, phase-b, a-output-v5, reweight, wave5, downame]
 schema_version: 1.3
 last_updated: "2026-09-23T11:47:14-03:00"
-evidence: [[REDACTED_SECRET].json, continued_pretrain/data/mix_v5/theology_mix_manifest.json, continued_pretrain/NEXT_CPT_S7.md, continued_pretrain/scripts/07_build_theology_mix.py]
+evidence: [continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7_replay/CONTINUE_FROM.json, continued_pretrain/data/mix_v5/theology_mix_manifest.json, continued_pretrain/NEXT_CPT_S7.md, continued_pretrain/scripts/07_build_theology_mix.py]
 ---
 
 # Phase B continue pack a_output_v5 ready (2026-09-23)

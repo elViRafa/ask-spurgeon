@@ -1,4 +1,4 @@
----
+﻿---
 store_path: pretraining/cpt-s6-c-eval-next-session
 title: "S6 C-eval session playbook (post-Vast B)"
 summary: "Score the finished Vast S6 best LoRA (HF best **checkpoint-2050**) against Ampere bf16 base and Hub v2"

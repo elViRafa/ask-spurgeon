@@ -7,6 +7,7 @@ tags: [cpt, runpod, analysis, checklist, handoff]
 schema_version: 1.3
 last_updated: "2026-08-26T23:15:31-04:00"
 evidence: [continued_pretrain/scripts/cpt_runtime.py, continued_pretrain/scripts/_gen_sota_notebooks.py, continued_pretrain/RUNPOD_RUNBOOK.md]
+review_status: stale
 ---
 
 # CPT v2 — pre-train analysis checklist (CLOSED 2026-08-26)

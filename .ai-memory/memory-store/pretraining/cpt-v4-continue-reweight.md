@@ -1,4 +1,4 @@
----
+﻿---
 store_path: pretraining/cpt-v4-continue-reweight
 title: "CPT v4 continue: reweight new authors, keep old corpus"
 summary: "Use this when preparing the GPU CPT for the Downame + wave 5 corpus (`a_output_v4` shelf)"
@@ -6,7 +6,7 @@ priority: high
 tags: [cpt, phase-b, a-output-v4, reweight, continue, downame, wave5]
 schema_version: 1.3
 last_updated: "2026-09-23T10:37:02-03:00"
-evidence: [[REDACTED_SECRET].json, continued_pretrain/data/theology_mix_manifest.json, continued_pretrain/NEXT_CPT_S7.md, data/puritans/PROVENANCE.md]
+evidence: [continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7_replay/CONTINUE_FROM.json, continued_pretrain/data/theology_mix_manifest.json, continued_pretrain/NEXT_CPT_S7.md, data/puritans/PROVENANCE.md]
 ---
 
 # CPT on this corpus: continue, reweight, do not train new authors alone

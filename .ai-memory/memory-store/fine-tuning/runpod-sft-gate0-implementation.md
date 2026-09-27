@@ -1,4 +1,4 @@
----
+﻿---
 store_path: fine-tuning/runpod-sft-gate0-implementation
 title: "RunPod SFT GATE-0 — full implementation"
 summary: "**Status:** Implementation complete; GPU execution blocked on US-IL-1 capacity"
