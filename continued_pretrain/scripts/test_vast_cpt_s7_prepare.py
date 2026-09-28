@@ -17,15 +17,20 @@ EXPECT_S6 = "6aab91940ce3e854f72a5308ae41e8ce1ae4c457752ff76390581f09ba436f0c"
 EXPECT_S5 = "ef4df3a31c9d17f7ba8741e80df6d764bca19a6d535f0a33c210e547f486c303"
 EXPECT_S7 = "06354dfc5a720143617ee2ffeef38faa48200811bed89e71561ff357ed547432"
 EXPECT_B = "ddbbee3ac9ef7baf6cca21dcdb844d027d39f5f6a4b88ba10fcf8a43fa7c8214"
+EXPECT_P1 = "a70fded8aea1c9cb1a484e640e89137412519c28d95bdbfbf8d73ca2d2e42eac"
+EXPECT_P0_INIT = "0289f1c9af70615ef4dca58b3e2d7dabc3eefef96c8bdf92bff0933689adeb55"
 
 
 def test_remote_launcher_s7_policy() -> None:
     sh = (SCRIPTS / "vast_cpt_s7_remote_continue_b.sh").read_text(encoding="utf-8")
     assert "ENV_NAME=unsloth_cpt_s7" in sh
     assert "CPT_CONTINUE_PROFILE=s7" in sh
-    assert EXPECT_B in sh
+    assert EXPECT_P1 in sh
+    assert EXPECT_P0_INIT not in sh
     assert EXPECT_S6 not in sh
     assert EXPECT_S5 not in sh
+    assert "METRIC_FOR_BEST" in sh
+    assert "eval_puritan_loss" in sh
     assert "COMPOSITE_EARLY_STOP_METRICS" in sh
     assert "eval_mix_loss" not in sh
     assert "CONTINUE_MAX_STEPS" in sh
@@ -58,12 +63,13 @@ def test_pack_script_excludes_sota() -> None:
     assert "Get-VastCptS7MixDir" in ps1
     assert "mix_v6" in ps1
     common = (SCRIPTS / "vast_cpt_s7_common.ps1").read_text(encoding="utf-8")
-    assert "a_output_v6" in common
-    assert EXPECT_B in common
-    assert '$Script:S7AdapterSha = "ddbbee3a' in common
+    assert "a_output_v6_p0" in common
+    assert EXPECT_P1 in common
+    assert '$Script:S7AdapterSha = "a70fded8' in common
     assert '$Script:S7AdapterSha = "06354dfc' not in common
-    assert "theology_cpt_lora_s5best\\theology_cpt_lora_s5best" in common
-    assert "vast_cpt_s7_replay" in common
+    assert '$Script:S7AdapterSha = "0289f1c9' not in common
+    assert "vast_cpt_s7_p0" in common
+    assert "cpt-s7-p1" in common
 
 
 def test_sync_verifies_s7_not_s6() -> None:
@@ -108,12 +114,13 @@ def test_orchestrate_credit_and_disk() -> None:
 
 def test_c_eval_targets_phase_b() -> None:
     ps1 = (SCRIPTS / "vast_cpt_s7_c_eval.ps1").read_text(encoding="utf-8")
-    assert EXPECT_B in ps1
+    # Standalone C-eval still targets historical replay flat s5best 0289f1c9 (not P1 train init).
+    assert EXPECT_P0_INIT in ps1
     assert '$ExpectedSha = "06354dfc' not in ps1
-    assert "theology_cpt_lora_s5best\\theology_cpt_lora_s5best" in ps1
-    assert "vast_cpt_s7_b_c" in ps1
+    assert '$ExpectedSha = "ddbbee3a' not in ps1
+    assert "theology_cpt_lora_s5best\\theology_cpt_lora_s5best" not in ps1.replace("/", "\\")
     assert "vast_cpt_s7_c_eval_readiness.py" in ps1
-    assert "a_output_v5" in ps1
+    assert "a_output_v6" in ps1
 
 
 def test_scripts_exist() -> None:

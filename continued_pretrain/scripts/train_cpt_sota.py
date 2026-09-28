@@ -1065,6 +1065,8 @@ if CPT_RUN_MODE == "continue":
     COMPOSITE_EARLY_STOP_METRICS = _cont_cfg["composite_early_stop_metrics"]
     COMPOSITE_SEED_BESTS = dict(_cont_cfg.get("composite_seed_bests") or {})
     CONTINUE_PROFILE = _cont_cfg.get("continue_profile") or ""
+    if _cont_cfg.get("metric_for_best"):
+        METRIC_FOR_BEST = str(_cont_cfg["metric_for_best"])
     if _cont_cfg.get("output_dir"):
         OUTPUT_DIR = _cont_cfg["output_dir"]
     if _cont_cfg.get("eval_steps"):
