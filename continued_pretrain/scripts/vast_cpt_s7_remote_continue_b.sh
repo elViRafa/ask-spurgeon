@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Vast S7 holdout-sibling continue on a_output_v6. Miniforge + isolation-C stack pin.
-# Init Phase B C-winner s5best ddbbee3a with a new Adam. Do NOT HF-resume v3 / sota.
+# Vast S7 holdout-sibling continue on a_output_v6_p0. Miniforge + isolation-C stack pin.
+# Init replay s5best 0289f1c9 with a new Adam. Do NOT HF-resume v3 / sota.
 set -euo pipefail
 
 export CPT_WORK_ROOT=/workspace
@@ -16,7 +16,7 @@ export GPU_PROFILE="${GPU_PROFILE:-ampere}"
 export UNSLOTH_PIP_SPEC="${UNSLOTH_PIP_SPEC:-unsloth[colab-new]==2026.8.22}"
 export UNSLOTH_SKIP_TORCHVISION_CHECK="${UNSLOTH_SKIP_TORCHVISION_CHECK:-1}"
 # Capture before .sft_env (HF inject may overwrite EXPECTED_ADAPTER_SHA256).
-PINNED_ADAPTER_SHA256="${EXPECTED_ADAPTER_SHA256:-ddbbee3ac9ef7baf6cca21dcdb844d027d39f5f6a4b88ba10fcf8a43fa7c8214}"
+PINNED_ADAPTER_SHA256="${EXPECTED_ADAPTER_SHA256:-0289f1c9af70615ef4dca58b3e2d7dabc3eefef96c8bdf92bff0933689adeb55}"
 
 if [[ -z "${COMPOSITE_SEED_BESTS:-}" ]]; then
   # Holdout seeds only — do not seed mix-val loss.
@@ -34,7 +34,7 @@ if [[ -f /workspace/.sft_env ]]; then
   # shellcheck disable=SC1091
   source /workspace/.sft_env
 fi
-# Must follow .sft_env: re-pin Phase B C-winner SHA (ddbbee3a), not whatever inject wrote.
+# Must follow .sft_env: re-pin replay s5best SHA (0289f1c9), not whatever inject wrote.
 export EXPECTED_ADAPTER_SHA256="$PINNED_ADAPTER_SHA256"
 if [[ -n "${HF_TOKEN:-}" ]]; then
   export HUGGING_FACE_HUB_TOKEN="$HF_TOKEN"
@@ -137,14 +137,14 @@ if [[ "${S7_RESUME:-}" == "1" ]]; then
   echo "S7_RESUME=1 — HF resume from $PREV_RUN_CHECKPOINT (continue hyperparams kept)"
 else
   export PREV_RUN_CHECKPOINT=
-  echo "PREV_RUN_CHECKPOINT empty — S7 replay new Adam from Phase B C-winner ddbbee3a (no HF resume)"
+  echo "PREV_RUN_CHECKPOINT empty — S7 replay new Adam from replay s5best 0289f1c9 (no HF resume)"
   if [[ -d /workspace/checkpoints_sota ]]; then
     echo "NOTE: /workspace/checkpoints_sota present but ignored (S7 never auto-resumes sota)"
   fi
 fi
 
 if [[ ! -d /workspace/theology_dataset ]]; then
-  echo "MISSING /workspace/theology_dataset — sync a_output_v6 first" >&2
+  echo "MISSING /workspace/theology_dataset — sync a_output_v6_p0 first" >&2
   exit 2
 fi
 if [[ ! -f /workspace/theology_cpt_lora/adapter_model.safetensors ]]; then

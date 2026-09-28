@@ -76,6 +76,7 @@ def _is_forbidden_out(path: Path, repo: Path) -> str | None:
     v3 = kaggle / "a_output_v3"
     v4 = kaggle / "a_output_v4"
     v5 = kaggle / "a_output_v5"
+    v6 = kaggle / "a_output_v6"
     snap = kaggle / "runpod_cpt_v2"
     for forbidden, label in (
         (v2_ds, "v2 a_output theology_dataset"),
@@ -83,6 +84,7 @@ def _is_forbidden_out(path: Path, repo: Path) -> str | None:
         (v3, "frozen a_output_v3"),
         (v4, "frozen a_output_v4"),
         (v5, "frozen a_output_v5"),
+        (v6, "frozen a_output_v6"),
         (snap, "runpod_cpt_v2 snapshot"),
     ):
         try:
@@ -242,7 +244,7 @@ def main(argv: list[str] | None = None) -> None:
     meta_path = out_dir / "DATASET_META.json"
     meta_path.write_text(json.dumps(meta, indent=2) + "\n", encoding="utf-8")
     print("Wrote", meta_path)
-    print("Done. Do not overwrite a_output_v3, a_output_v4, or a_output_v5.")
+    print("Done. Do not overwrite a_output_v3, a_output_v4, a_output_v5, or a_output_v6.")
 
 
 if __name__ == "__main__":

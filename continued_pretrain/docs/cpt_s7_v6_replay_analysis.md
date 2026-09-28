@@ -124,3 +124,7 @@ Do not combine. Pick with evidence:
 ## 8. One-line summary
 
 v6 replay from `ddbbee3a` early-stopped at checkpoint-550 (`0289f1c9…`); isolation C is the best local §5 so far (12.35 / 5.48 / 5.22) but still FAIL vs −15%; Hub stays Phase A; continue from this adapter only after a new operator go and a **single** next knob aimed at confession/puritan (and watch repetition).
+
+## P0 follow-up (2026-09-28)
+
+Built `mix_v6_p0` / `a_output_v6_p0` with `--target-confession-share 0.15` (Spurgeon pinned 35%, puritan 50%). Dry orchestrator green. Next GPU: init `0289f1c9`, new Adam, session `vast_cpt_s7_p0` — needs go.
