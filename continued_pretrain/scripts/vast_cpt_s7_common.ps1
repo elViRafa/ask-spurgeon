@@ -1,4 +1,4 @@
-# Shared Vast CPT S7 holdout-sibling replay defaults (v6 + Phase B C-winner).
+# Shared Vast CPT S7 P0 confession-reweight defaults (v6_p0 + replay s5best 0289f1c9).
 # Do NOT dot vast_cpt_common.ps1. Never print VAST_API_KEY / HF_TOKEN.
 $ErrorActionPreference = "Stop"
 
@@ -7,28 +7,28 @@ $Script:RepoRootFromCpt = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
 $FtScripts = Join-Path $RepoRootFromCpt "fine_tuning\scripts"
 
 if (-not $env:VAST_SESSION_FILE -or -not $env:VAST_SESSION_FILE.Trim()) {
-    $env:VAST_SESSION_FILE = Join-Path $CptRoot "kaggle\runpod_cpt_v3\vast_cpt_s7_replay_session.json"
+    $env:VAST_SESSION_FILE = Join-Path $CptRoot "kaggle\runpod_cpt_v3\vast_cpt_s7_p0_session.json"
 }
 if (-not $env:VAST_LOCAL_RESULTS_DIR -or -not $env:VAST_LOCAL_RESULTS_DIR.Trim()) {
-    $env:VAST_LOCAL_RESULTS_DIR = Join-Path $CptRoot "kaggle\runpod_cpt_v3\vast_cpt_s7_replay"
+    $env:VAST_LOCAL_RESULTS_DIR = Join-Path $CptRoot "kaggle\runpod_cpt_v3\vast_cpt_s7_p0"
 }
 
 . (Join-Path $FtScripts "vast_common.ps1")
 
 $Script:DefaultDiskGb = 120
-$Script:DefaultLabel = "cpt-s7-replay"
+$Script:DefaultLabel = "cpt-s7-p0"
 $Script:MaxWallHours = 12
 $Script:SearchQuery = "num_gpus=1 gpu_name=RTX_4090 reliability>=0.90 disk_space>=80 gpu_frac>=1 cuda_max_good>=12.6"
 $Script:S6AdapterSha = "6aab91940ce3e854f72a5308ae41e8ce1ae4c457752ff76390581f09ba436f0c"
 $Script:S7PhaseASha = "06354dfc5a720143617ee2ffeef38faa48200811bed89e71561ff357ed547432"
-$Script:S7AdapterSha = "ddbbee3ac9ef7baf6cca21dcdb844d027d39f5f6a4b88ba10fcf8a43fa7c8214"
-$Script:MixSha = "e050787e138e3d082937e35d1a87aa139f8e980403c3e5fefcc55aa90a2465fc"
-$Script:MixRel = "kaggle\a_output_v6"
+$Script:S7AdapterSha = "0289f1c9af70615ef4dca58b3e2d7dabc3eefef96c8bdf92bff0933689adeb55"
+$Script:MixSha = "ad817213af207428785c4cfac12ddc1bc390b3e59d6e97b43491fafdafe91962"
+$Script:MixRel = "kaggle\a_output_v6_p0"
 $Script:FrozenV4Sha = "37a3ba50aa9efb8057d9d36227ac4547f08d35a31ccd71cf3f2d20f928131c81"
 $Script:FrozenV5Sha = "61e830575138935cdf6c1b029a3128e096ff4e3633e44a464b3957b9d6e78285"
 # Replay init: nested Phase B §5 export (flatten to /workspace/theology_cpt_lora on sync).
 # Top-level fetch/theology_cpt_lora_s5best is still Phase A 06354dfc.
-$Script:S7LoraRel = "kaggle\runpod_cpt_v3\vast_cpt_s7\fetch\theology_cpt_lora_s5best\theology_cpt_lora_s5best"
+$Script:S7LoraRel = "kaggle\runpod_cpt_v3\vast_cpt_s7_replay\fetch\theology_cpt_lora_s5best"
 
 function Get-VastCptS7MixDir {
     return (Join-Path $CptRoot $MixRel)

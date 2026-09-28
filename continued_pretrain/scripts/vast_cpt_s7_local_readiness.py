@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Local readiness for Vast CPT S7 holdout-sibling replay (v6 + ddbbee3a). No GPU rent, no train."""
+"""Local readiness for Vast CPT S7 P0 confession-reweight (v6_p0 + 0289f1c9). No GPU rent, no train."""
 from __future__ import annotations
 
 import hashlib
@@ -24,25 +24,25 @@ S7_S5BEST = (
     CPT
     / "kaggle"
     / "runpod_cpt_v3"
-    / "vast_cpt_s7"
+    / "vast_cpt_s7_replay"
     / "fetch"
-    / "theology_cpt_lora_s5best"
     / "theology_cpt_lora_s5best"
     / "adapter_model.safetensors"
 )
 S5_LORA = CPT / "kaggle" / "runpod_cpt_v3" / "theology_cpt_lora" / "adapter_model.safetensors"
-META = CPT / "kaggle" / "a_output_v6" / "DATASET_META.json"
-DATASET = CPT / "kaggle" / "a_output_v6" / "theology_dataset" / "dataset_dict.json"
-HOLDOUT = CPT / "kaggle" / "a_output_v6" / "theology_holdouts" / "spurgeon" / "dataset_info.json"
+META = CPT / "kaggle" / "a_output_v6_p0" / "DATASET_META.json"
+DATASET = CPT / "kaggle" / "a_output_v6_p0" / "theology_dataset" / "dataset_dict.json"
+HOLDOUT = CPT / "kaggle" / "a_output_v6_p0" / "theology_holdouts" / "spurgeon" / "dataset_info.json"
+V6_META = CPT / "kaggle" / "a_output_v6" / "DATASET_META.json"
 V5_META = CPT / "kaggle" / "a_output_v5" / "DATASET_META.json"
 V4_META = CPT / "kaggle" / "a_output_v4" / "DATASET_META.json"
 V3_META = CPT / "kaggle" / "a_output_v3" / "DATASET_META.json"
-MANIFEST = CPT / "data" / "mix_v6" / "theology_mix_manifest.json"
+MANIFEST = CPT / "data" / "mix_v6_p0" / "theology_mix_manifest.json"
 REMOTE_SH = CPT / "scripts" / "vast_cpt_s7_remote_continue_b.sh"
 TRAIN = CPT / "scripts" / "train_cpt_sota.py"
 RUNTIME = CPT / "scripts" / "cpt_runtime.py"
 SSH_KEY = Path.home() / ".ssh" / "runpod_cpt"
-FETCH_ROOT = CPT / "kaggle" / "runpod_cpt_v3" / "vast_cpt_s7"
+FETCH_ROOT = CPT / "kaggle" / "runpod_cpt_v3" / "vast_cpt_s7_p0"
 SOTA_CKPT = (
     CPT
     / "kaggle"
@@ -55,9 +55,11 @@ SOTA_CKPT = (
 
 EXPECT_S6 = "6aab91940ce3e854f72a5308ae41e8ce1ae4c457752ff76390581f09ba436f0c"
 EXPECT_S5 = "ef4df3a31c9d17f7ba8741e80df6d764bca19a6d535f0a33c210e547f486c303"
-EXPECT_S7 = "ddbbee3ac9ef7baf6cca21dcdb844d027d39f5f6a4b88ba10fcf8a43fa7c8214"
+EXPECT_S7 = "0289f1c9af70615ef4dca58b3e2d7dabc3eefef96c8bdf92bff0933689adeb55"
+EXPECT_S7_PHASE_B = "ddbbee3ac9ef7baf6cca21dcdb844d027d39f5f6a4b88ba10fcf8a43fa7c8214"
 EXPECT_S7_PHASE_A = "06354dfc5a720143617ee2ffeef38faa48200811bed89e71561ff357ed547432"
-EXPECT_MIX = "e050787e138e3d082937e35d1a87aa139f8e980403c3e5fefcc55aa90a2465fc"
+EXPECT_MIX = "ad817213af207428785c4cfac12ddc1bc390b3e59d6e97b43491fafdafe91962"
+EXPECT_MIX_V6 = "e050787e138e3d082937e35d1a87aa139f8e980403c3e5fefcc55aa90a2465fc"
 EXPECT_MIX_V5 = "61e830575138935cdf6c1b029a3128e096ff4e3633e44a464b3957b9d6e78285"
 EXPECT_MIX_V4 = "37a3ba50aa9efb8057d9d36227ac4547f08d35a31ccd71cf3f2d20f928131c81"
 EXPECT_MIX_V3 = "23dd3820baa0b657cb6528e4fdf1b2d4813c3cfa7b7c982805b4a7ff34990973"
@@ -91,17 +93,17 @@ def disk_free_gb(letter: str) -> float | None:
 def main() -> int:
     errors: list[str] = []
     warnings: list[str] = []
-    print("=== Vast CPT S7 holdout-sibling replay local readiness (no rent) ===")
+    print("=== Vast CPT S7 P0 confession-reweight local readiness (no rent) ===")
 
     for p, label in (
-        (DATASET, "HF theology_dataset a_output_v6"),
-        (HOLDOUT, "HF spurgeon holdout a_output_v6"),
-        (META, "DATASET_META.json a_output_v6"),
-        (MANIFEST, "mix_v6 theology_mix_manifest.json"),
+        (DATASET, "HF theology_dataset a_output_v6_p0"),
+        (HOLDOUT, "HF spurgeon holdout a_output_v6_p0"),
+        (META, "DATASET_META.json a_output_v6_p0"),
+        (MANIFEST, "mix_v6_p0 theology_mix_manifest.json"),
         (TRAIN, "train_cpt_sota.py"),
         (RUNTIME, "cpt_runtime.py"),
         (REMOTE_SH, "vast_cpt_s7_remote_continue_b.sh"),
-        (S7_S5BEST, "Phase B C-winner s5best LoRA ddbbee3a"),
+        (S7_S5BEST, "Replay s5best LoRA 0289f1c9 (checkpoint-550)"),
         (SSH_KEY, "SSH private key"),
     ):
         ok = p.is_file()
@@ -120,18 +122,34 @@ def main() -> int:
         man = json.loads(MANIFEST.read_text(encoding="utf-8"))
         sibling = man.get("holdout_sibling") or {}
         share = man.get("holdout_sibling_share")
+        buckets = man.get("buckets") or {}
+        conf_target = man.get("target_confession_share")
         print(
             f"holdout_sibling_share={share} "
             f"sibling_char_share={sibling.get('sibling_char_share')} "
-            f"spurgeon={sibling.get('spurgeon_char_share')} "
-            f"new_authors={sibling.get('new_author_char_share')}"
+            f"target_confession_share={conf_target} "
+            f"confession={ (buckets.get('confession') or {}).get('char_share') } "
+            f"puritan={ (buckets.get('puritan') or {}).get('char_share') } "
+            f"spurgeon={ (buckets.get('spurgeon') or {}).get('char_share') }"
         )
         if share != 0.25:
-            errors.append(f"mix_v6 holdout_sibling_share want 0.25 got {share}")
-        if abs(float(sibling.get("spurgeon_char_share") or 0) - 0.35) > 0.001:
-            errors.append("mix_v6 spurgeon share is not the 0.35 floor")
-        if float(sibling.get("new_author_char_share") or 1) > 0.051:
-            errors.append("mix_v6 new-author share exceeds 0.05 cap")
+            errors.append(f"mix_v6_p0 holdout_sibling_share want 0.25 got {share}")
+        if conf_target != 0.15:
+            errors.append(f"mix_v6_p0 target_confession_share want 0.15 got {conf_target}")
+        for bucket, want in (("confession", 0.15), ("spurgeon", 0.35), ("puritan", 0.50)):
+            got = float((buckets.get(bucket) or {}).get("char_share") or -1)
+            if abs(got - want) > 0.01:
+                errors.append(f"mix_v6_p0 {bucket} share want ~{want} got {got}")
+
+
+    if V6_META.is_file():
+        v6 = json.loads(V6_META.read_text(encoding="utf-8"))
+        v6_mix = (v6.get("mix_sha256") or "").lower()
+        print(f"v6_mix_sha256={v6_mix[:16]}... frozen={EXPECT_MIX_V6[:16]}...")
+        if v6_mix != EXPECT_MIX_V6:
+            errors.append(f"a_output_v6 was mutated got {v6_mix}")
+    else:
+        errors.append("missing frozen a_output_v6 DATASET_META.json")
 
     if V5_META.is_file():
         v5 = json.loads(V5_META.read_text(encoding="utf-8"))
@@ -166,9 +184,11 @@ def main() -> int:
         if got != EXPECT_S7:
             errors.append(f"S7 s5best SHA mismatch got {got} want {EXPECT_S7}")
         if got == EXPECT_S6:
-            errors.append("Init resolved to S6 SHA 6aab — use Phase B C-winner ddbbee3a")
+            errors.append("Init resolved to S6 SHA 6aab — use replay s5best 0289f1c9")
         if got == EXPECT_S7_PHASE_A:
-            errors.append("Init resolved to Phase A 06354dfc — use nested ddbbee3a")
+            errors.append("Init resolved to Phase A 06354dfc — use replay s5best 0289f1c9")
+        if got == EXPECT_S7_PHASE_B:
+            errors.append("Init resolved to Phase B ddbbee3a — use replay s5best 0289f1c9")
         if got == EXPECT_S5:
             errors.append("Phase B init resolved to S5 SHA ef4df3a3 — wrong adapter")
 
@@ -191,7 +211,7 @@ def main() -> int:
         "CPT_CONTINUE_PROFILE=s7",
         "ENV_NAME=unsloth_cpt_s7",
         "PREV_RUN_CHECKPOINT=",
-        "ddbbee3ac9ef7baf6cca21dcdb844d027d39f5f6a4b88ba10fcf8a43fa7c8214",
+        "0289f1c9af70615ef4dca58b3e2d7dabc3eefef96c8bdf92bff0933689adeb55",
         "COMPOSITE_EARLY_STOP_METRICS",
         'nohup env',
     ):
@@ -215,7 +235,7 @@ def main() -> int:
         return 1
     for w in warnings:
         print("WARN:", w)
-    print("READY: Vast S7 replay local artifacts OK (no rent; operator go to copy v6 + ddbbee3a)")
+    print("READY: Vast S7 P0 local artifacts OK (no rent; operator go to copy v6_p0 + 0289f1c9)")
     return 0
 
 

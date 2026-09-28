@@ -174,6 +174,25 @@ Artifacts: HF best → `theology_cpt_lora/` (spurgeon metric); §5 candidate →
 - Seed composite with isolation-C full-holdout CE
 - Mix rebuild again / Hub overwrite / merge until a winning Phase B C
 
+## P0 confession reweight (ready 2026-09-28)
+
+One-knob after replay C FAIL under reframed section-5 (Spurgeon keep + Puritan hard; confession soft until mix is honest).
+
+| Item | Value |
+|------|--------|
+| Mix | `continued_pretrain/data/mix_v6_p0` |
+| HF | `kaggle/a_output_v6_p0` (14,037 docs; HF train 13,896 / val 141; ~21.5M tok) |
+| mix_sha256 | `ad817213af207428785c4cfac12ddc1bc390b3e59d6e97b43491fafdafe91962` |
+| Sibling share | 25% (same stems as v6) |
+| Confession target | **15.0%** (`--target-confession-share 0.15`; in 9.2% to out 15.0%) |
+| Shares | confession 15.0% / puritan 50.0% / spurgeon 35.0% (general+bible cut) |
+| Holdouts | pinned v3 (unchanged) |
+| Init | replay s5best `0289f1c9` @ `vast_cpt_s7_replay/fetch/theology_cpt_lora_s5best`, **new Adam** |
+| Session / results | `vast_cpt_s7_p0` |
+| Hub | still Phase A `06354dfc` until C win |
+
+Dry: `vast_cpt_s7_orchestrate.ps1` READY (no `-Go`). Do not overwrite `a_output_v6` / `mix_v6`. Rent only on operator go.
+
 ## Later — holdout-sibling replay (ready 2026-09-23)
 
 Phase B plateaued at step 750/955 (composite ε=0.003 × 4 evals). Isolation C on

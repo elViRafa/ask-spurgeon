@@ -2,7 +2,7 @@
 # Stack pin: torch 2.8 + Unsloth 2026.8.22. Do NOT use vast_remote_c_eval.sh (torch 2.11).
 # Do NOT use init LoRA ddbbee3a (vast_cpt_s7_replay/fetch/theology_cpt_lora) or Phase A 06354dfc.
 # Prefer flat vast_cpt_s7_replay/fetch/theology_cpt_lora_s5best (NOT nested double folder; NOT theology_cpt_lora).
-# Holdouts: a_output_v6 (same pack as S7 replay orchestrate/sync). No training. No Hub overwrite. No merge.
+# Holdouts: a_output_v6_p0 (same pack as S7 replay orchestrate/sync). No training. No Hub overwrite. No merge.
 # Destroys instance unless -KeepInstance.
 param(
     [string]$OfferId = "",
@@ -29,7 +29,7 @@ $Script:SearchQuery3090 = "num_gpus=1 gpu_name=RTX_3090 reliability>=0.90 disk_s
 # Replay best checkpoint-550 / 0289f1c9. Do NOT use init ddbbee3a or Phase A 06354dfc.
 $ExpectedSha = "0289f1c9af70615ef4dca58b3e2d7dabc3eefef96c8bdf92bff0933689adeb55"
 $AdapterDir = Join-Path $CptRoot "kaggle\runpod_cpt_v3\vast_cpt_s7_replay\fetch\theology_cpt_lora_s5best"
-$Holdouts = Join-Path $CptRoot "kaggle\a_output_v6\theology_holdouts"
+$Holdouts = Join-Path $CptRoot "kaggle\a_output_v6_p0\theology_holdouts"
 $Mcq = Join-Path $CptRoot "data\catechism_mcq.json"
 $EvalPy = Join-Path $CptRoot "scripts\eval_cpt_sota.py"
 $RemoteSh = Join-Path $CptRoot "scripts\vast_remote_stack_isolation_c.sh"
@@ -259,7 +259,7 @@ fetched=$stamp
 unsloth=unsloth[colab-new]==2026.8.22
 torch=2.8.0+cu126
 train_probe_docs=16
-holdouts=a_output_v6
+holdouts=a_output_v6_p0
 note=S7 replay isolation C on flat s5best checkpoint-550 0289f1c9
 "@ | Set-Content (Join-Path $ResultsDir "result.txt")
 @"

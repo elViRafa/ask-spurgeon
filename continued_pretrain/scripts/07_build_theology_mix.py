@@ -567,6 +567,115 @@ def apply_holdout_sibling_replay(
     return out, report
 
 
+
+def apply_confession_target_share(
+    docs: list[Doc],
+    target_share: float,
+    rng: random.Random,
+    spurgeon_floor: float = 0.35,
+    cut_order: tuple[str, ...] = ("general", "bible", "puritan"),
+) -> tuple[list[Doc], dict]:
+    """Raise confession char share by cutting other buckets (no copies).
+
+    Keeps every confession doc. Target total is confession_chars / target_share.
+    Spurgeon is pinned to ``spurgeon_floor`` of that total (subsample down;
+    never copy). Remaining budget fills ``cut_order`` from the end (prefer keep
+    puritan; cut general then bible first). Isolated packs only.
+    """
+    if target_share <= 0 or target_share >= 1:
+        raise ValueError(f"target_confession_share must be in (0, 1), got {target_share}")
+    if spurgeon_floor < 0 or spurgeon_floor >= 1:
+        raise ValueError(f"spurgeon_floor must be in [0, 1), got {spurgeon_floor}")
+    if target_share + spurgeon_floor >= 1:
+        raise ValueError(
+            f"target_confession_share ({target_share}) + spurgeon_floor "
+            f"({spurgeon_floor}) must be < 1"
+        )
+
+    confession = [d for d in docs if d.bucket == "confession"]
+    spurgeon = [d for d in docs if d.bucket == "spurgeon"]
+    other = [d for d in docs if d.bucket not in ("confession", "spurgeon")]
+    conf_chars = sum(d.n_chars for d in confession)
+    if conf_chars <= 0:
+        raise ValueError("confession target-share found no confession docs")
+
+    total_in = max(1, sum(d.n_chars for d in docs))
+    share_in = conf_chars / total_in
+    if share_in + 1e-9 >= target_share:
+        return list(docs), {
+            "share_target": target_share,
+            "share_in": round(share_in, 4),
+            "share_out": round(share_in, 4),
+            "changed": False,
+            "confession_chars": conf_chars,
+            "spurgeon_floor": spurgeon_floor,
+            "cut_order": list(cut_order),
+            "chars_cut": 0,
+        }
+
+    total_target = max(conf_chars + 1, int(round(conf_chars / target_share)))
+    sp_chars_in = sum(d.n_chars for d in spurgeon)
+    sp_target = int(round(total_target * spurgeon_floor))
+    take_sp = min(sp_chars_in, sp_target)
+    sp_kept = subsample_by_chars(spurgeon, take_sp, rng) if take_sp > 0 else []
+    sp_chars_out = sum(d.n_chars for d in sp_kept)
+    leftover_budget = max(0, total_target - conf_chars - sp_chars_out)
+
+    by_bucket: dict[str, list[Doc]] = {b: [] for b in cut_order}
+    rest: list[Doc] = []
+    for d in other:
+        if d.bucket in by_bucket:
+            by_bucket[d.bucket].append(d)
+        else:
+            rest.append(d)
+    ordered_pools = [(b, by_bucket[b]) for b in cut_order] + [("other", rest)]
+    other_chars_in = sum(d.n_chars for d in other)
+
+    keep_other: list[Doc] = []
+    if leftover_budget <= 0:
+        keep_other = []
+    elif leftover_budget >= other_chars_in:
+        keep_other = list(other)
+    else:
+        keep_budget = leftover_budget
+        kept_map: dict[str, list[Doc]] = {}
+        for label, pool in reversed(ordered_pools):
+            if keep_budget <= 0 or not pool:
+                kept_map[label] = []
+                continue
+            pool_chars = sum(d.n_chars for d in pool)
+            take = min(pool_chars, keep_budget)
+            kept_map[label] = subsample_by_chars(pool, take, rng)
+            keep_budget -= sum(d.n_chars for d in kept_map[label])
+        for label, _pool in ordered_pools:
+            keep_other.extend(kept_map.get(label, []))
+
+    out = list(confession) + list(sp_kept) + keep_other
+    total_out = max(1, sum(d.n_chars for d in out))
+    share_out = conf_chars / total_out
+    report = {
+        "share_target": target_share,
+        "share_in": round(share_in, 4),
+        "share_out": round(share_out, 4),
+        "changed": True,
+        "confession_docs": len(confession),
+        "confession_chars": conf_chars,
+        "spurgeon_docs": len(sp_kept),
+        "spurgeon_chars": sp_chars_out,
+        "spurgeon_char_share": round(sp_chars_out / total_out, 4),
+        "other_docs_in": len(other),
+        "other_docs_out": len(keep_other),
+        "other_chars_in": other_chars_in,
+        "other_chars_out": sum(d.n_chars for d in keep_other),
+        "spurgeon_floor": spurgeon_floor,
+        "cut_order": list(cut_order),
+        "chars_cut": max(0, total_in - total_out),
+        "total_in": total_in,
+        "total_out": total_out,
+    }
+    return out, report
+
+
 def subsample_by_chars(docs: list[Doc], target_chars: int, rng: random.Random) -> list[Doc]:
     """Shuffle and take docs until cumulative chars ≈ target_chars."""
     if not docs or target_chars <= 0:
@@ -774,10 +883,14 @@ def build_mix(args: argparse.Namespace) -> None:
     out_dir = Path(args.out_dir).resolve() if args.out_dir else live_data
     reweight_share = getattr(args, "continue_reweight_share", None)
     sibling_share = getattr(args, "holdout_sibling_share", None)
+    confession_target = getattr(args, "target_confession_share", None)
     if reweight_share and sibling_share:
         print("ERROR: pass only one of --continue-reweight-share or --holdout-sibling-share")
         sys.exit(2)
-    isolated_mix = bool(reweight_share or sibling_share)
+    if reweight_share and confession_target:
+        print("ERROR: pass only one of --continue-reweight-share or --target-confession-share")
+        sys.exit(2)
+    isolated_mix = bool(reweight_share or sibling_share or confession_target)
     if isolated_mix:
         if out_dir == live_data:
             print(
@@ -792,9 +905,11 @@ def build_mix(args: argparse.Namespace) -> None:
             sys.exit(2)
         frozen = {
             (live_data / "mix_v5").resolve(),
+            (live_data / "mix_v6").resolve(),
             (base / "continued_pretrain" / "kaggle" / "a_output_v3").resolve(),
             (base / "continued_pretrain" / "kaggle" / "a_output_v4").resolve(),
             (base / "continued_pretrain" / "kaggle" / "a_output_v5").resolve(),
+            (base / "continued_pretrain" / "kaggle" / "a_output_v6").resolve(),
         }
         if out_dir in frozen:
             print(f"ERROR: isolated mix refuses to write into frozen pack {out_dir}")
@@ -1162,6 +1277,24 @@ def build_mix(args: argparse.Namespace) -> None:
             f"new_authors={sibling_report['new_author_char_share']:.1%}"
         )
 
+    confession_target_report = None
+    if confession_target:
+        train_docs, confession_target_report = apply_confession_target_share(
+            train_docs,
+            float(confession_target),
+            rng,
+            spurgeon_floor=float(getattr(args, "holdout_sibling_spurgeon_floor", 0.35)),
+        )
+        print(
+            "Confession target-share: "
+            f"in={confession_target_report['share_in']:.1%} "
+            f"out={confession_target_report['share_out']:.1%} "
+            f"(target={confession_target:.1%}); "
+            f"spurgeon={confession_target_report.get('spurgeon_char_share', 0):.1%} "
+            f"chars_cut={confession_target_report.get('chars_cut', 0):,}"
+        )
+
+
     if args.author_tags:
         train_docs = apply_author_tags(train_docs)
         print("Applied [AUTHOR]/ [WORK:] tags (E1).")
@@ -1239,6 +1372,8 @@ def build_mix(args: argparse.Namespace) -> None:
         "continue_reweight": reweight_report,
         "holdout_sibling_share": float(sibling_share) if sibling_share else None,
         "holdout_sibling": sibling_report,
+        "target_confession_share": float(confession_target) if confession_target else None,
+        "confession_target": confession_target_report,
         "holdouts_pinned": {
             "puritan": str(puritan_holdout_src) if puritan_holdout_src.exists() else None,
             "confession": str(confession_holdout_src) if confession_holdout_src.exists() else None,
@@ -1434,6 +1569,17 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         type=float,
         default=0.05,
         help="Max Downame/wave-5 char share inside a holdout-sibling replay (default 0.05).",
+    )
+    p.add_argument(
+        "--target-confession-share",
+        type=float,
+        default=None,
+        help=(
+            "After mix (and optional holdout-sibling replay), cut general/bible/"
+            "puritan so confession reaches this char share (e.g. 0.15). Keeps all "
+            "confession docs; Spurgeon floor from --holdout-sibling-spurgeon-floor. "
+            "Isolated --out-dir only; no copies."
+        ),
     )
     p.add_argument(
         "--new-authors-holdout",
