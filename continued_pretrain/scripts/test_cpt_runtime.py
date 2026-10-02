@@ -254,7 +254,12 @@ def test_resolve_continue_training_config_s7(tmp_path: Path) -> None:
     assert cfg["composite_seed_bests"]["eval_confession_loss"] == 1.668
     assert cfg["abort_spurgeon_delta"] == 0.12
     assert cfg["s5_spurgeon_guardrail"] == 0.01
+    assert cfg["metric_for_best"] == "eval_puritan_loss"
     assert cfg["s5_best_adapter_dir"] == str(work / "theology_cpt_lora_s5best")
+    env_metric = dict(env)
+    env_metric["METRIC_FOR_BEST"] = "eval_spurgeon_loss"
+    cfg2 = cr.resolve_continue_training_config(env=env_metric, packed_epoch_steps=100)
+    assert cfg2["metric_for_best"] == "eval_spurgeon_loss"
     layout = cr.layout_paths(str(work), env=env)
     assert layout["output_dir"] == str(work / "checkpoints_s7")
 

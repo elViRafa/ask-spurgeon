@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Local readiness for Vast CPT S7 P0 confession-reweight (v6_p0 + 0289f1c9). No GPU rent, no train."""
+"""Local readiness for Vast CPT S7 P1 (v6_p0 + a70fded8; metric_for_best=eval_puritan_loss). No GPU rent, no train."""
 from __future__ import annotations
 
 import hashlib
@@ -24,7 +24,7 @@ S7_S5BEST = (
     CPT
     / "kaggle"
     / "runpod_cpt_v3"
-    / "vast_cpt_s7_replay"
+    / "vast_cpt_s7_p0"
     / "fetch"
     / "theology_cpt_lora_s5best"
     / "adapter_model.safetensors"
@@ -55,7 +55,7 @@ SOTA_CKPT = (
 
 EXPECT_S6 = "6aab91940ce3e854f72a5308ae41e8ce1ae4c457752ff76390581f09ba436f0c"
 EXPECT_S5 = "ef4df3a31c9d17f7ba8741e80df6d764bca19a6d535f0a33c210e547f486c303"
-EXPECT_S7 = "0289f1c9af70615ef4dca58b3e2d7dabc3eefef96c8bdf92bff0933689adeb55"
+EXPECT_S7 = "a70fded8aea1c9cb1a484e640e89137412519c28d95bdbfbf8d73ca2d2e42eac"
 EXPECT_S7_PHASE_B = "ddbbee3ac9ef7baf6cca21dcdb844d027d39f5f6a4b88ba10fcf8a43fa7c8214"
 EXPECT_S7_PHASE_A = "06354dfc5a720143617ee2ffeef38faa48200811bed89e71561ff357ed547432"
 EXPECT_MIX = "ad817213af207428785c4cfac12ddc1bc390b3e59d6e97b43491fafdafe91962"
@@ -93,7 +93,7 @@ def disk_free_gb(letter: str) -> float | None:
 def main() -> int:
     errors: list[str] = []
     warnings: list[str] = []
-    print("=== Vast CPT S7 P0 confession-reweight local readiness (no rent) ===")
+    print("=== Vast CPT S7 P1 local readiness (no rent) ===")
 
     for p, label in (
         (DATASET, "HF theology_dataset a_output_v6_p0"),
@@ -103,7 +103,7 @@ def main() -> int:
         (TRAIN, "train_cpt_sota.py"),
         (RUNTIME, "cpt_runtime.py"),
         (REMOTE_SH, "vast_cpt_s7_remote_continue_b.sh"),
-        (S7_S5BEST, "Replay s5best LoRA 0289f1c9 (checkpoint-550)"),
+        (S7_S5BEST, "P0 best LoRA a70fded8 (checkpoint-600)"),
         (SSH_KEY, "SSH private key"),
     ):
         ok = p.is_file()
@@ -184,11 +184,11 @@ def main() -> int:
         if got != EXPECT_S7:
             errors.append(f"S7 s5best SHA mismatch got {got} want {EXPECT_S7}")
         if got == EXPECT_S6:
-            errors.append("Init resolved to S6 SHA 6aab — use replay s5best 0289f1c9")
+            errors.append("Init resolved to S6 SHA 6aab — use P0 best a70fded8")
         if got == EXPECT_S7_PHASE_A:
-            errors.append("Init resolved to Phase A 06354dfc — use replay s5best 0289f1c9")
+            errors.append("Init resolved to Phase A 06354dfc — use P0 best a70fded8")
         if got == EXPECT_S7_PHASE_B:
-            errors.append("Init resolved to Phase B ddbbee3a — use replay s5best 0289f1c9")
+            errors.append("Init resolved to Phase B ddbbee3a — use P0 best a70fded8")
         if got == EXPECT_S5:
             errors.append("Phase B init resolved to S5 SHA ef4df3a3 — wrong adapter")
 
@@ -211,8 +211,10 @@ def main() -> int:
         "CPT_CONTINUE_PROFILE=s7",
         "ENV_NAME=unsloth_cpt_s7",
         "PREV_RUN_CHECKPOINT=",
-        "0289f1c9af70615ef4dca58b3e2d7dabc3eefef96c8bdf92bff0933689adeb55",
+        "a70fded8aea1c9cb1a484e640e89137412519c28d95bdbfbf8d73ca2d2e42eac",
         "COMPOSITE_EARLY_STOP_METRICS",
+        "METRIC_FOR_BEST",
+        "eval_puritan_loss",
         'nohup env',
     ):
         if needle not in sh:
@@ -235,7 +237,7 @@ def main() -> int:
         return 1
     for w in warnings:
         print("WARN:", w)
-    print("READY: Vast S7 P0 local artifacts OK (no rent; operator go to copy v6_p0 + 0289f1c9)")
+    print("READY: Vast S7 P1 local artifacts OK (no rent; operator go to copy v6_p0 + a70fded8)")
     return 0
 
 

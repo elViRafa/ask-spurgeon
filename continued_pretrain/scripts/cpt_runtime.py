@@ -609,6 +609,9 @@ def resolve_continue_training_config(env=None, packed_epoch_steps=None):
                 ],
             ),
             "use_composite_early_stop": True,
+            # Hard gate is Puritan; load_best picks best Puritan eval (Spurgeon abort/guardrail remain).
+            "metric_for_best": (env.get("METRIC_FOR_BEST") or "eval_puritan_loss").strip()
+            or "eval_puritan_loss",
             "continue_max_steps": continue_max,
             "output_dir": layout["output_dir"],
             "composite_seed_bests": parse_composite_seed_bests(

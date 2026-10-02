@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Vast S7 holdout-sibling continue on a_output_v6_p0. Miniforge + isolation-C stack pin.
-# Init replay s5best 0289f1c9 with a new Adam. Do NOT HF-resume v3 / sota.
+# Vast S7 P1 continue on a_output_v6_p0. Miniforge + isolation-C stack pin.
+# Init P0 best a70fded8 (step600) with a new Adam. metric_for_best=eval_puritan_loss. Do NOT HF-resume v3 / sota.
 set -euo pipefail
 
 export CPT_WORK_ROOT=/workspace
@@ -16,7 +16,7 @@ export GPU_PROFILE="${GPU_PROFILE:-ampere}"
 export UNSLOTH_PIP_SPEC="${UNSLOTH_PIP_SPEC:-unsloth[colab-new]==2026.8.22}"
 export UNSLOTH_SKIP_TORCHVISION_CHECK="${UNSLOTH_SKIP_TORCHVISION_CHECK:-1}"
 # Capture before .sft_env (HF inject may overwrite EXPECTED_ADAPTER_SHA256).
-PINNED_ADAPTER_SHA256="${EXPECTED_ADAPTER_SHA256:-0289f1c9af70615ef4dca58b3e2d7dabc3eefef96c8bdf92bff0933689adeb55}"
+PINNED_ADAPTER_SHA256="${EXPECTED_ADAPTER_SHA256:-a70fded8aea1c9cb1a484e640e89137412519c28d95bdbfbf8d73ca2d2e42eac}"
 
 if [[ -z "${COMPOSITE_SEED_BESTS:-}" ]]; then
   # Holdout seeds only — do not seed mix-val loss.
@@ -27,6 +27,7 @@ if [[ -z "${COMPOSITE_EARLY_STOP_METRICS:-}" ]]; then
 fi
 export CONTINUE_MAX_STEPS="${CONTINUE_MAX_STEPS:-955}"
 export EARLY_STOP_MIN_STEPS="${EARLY_STOP_MIN_STEPS:-400}"
+export METRIC_FOR_BEST="${METRIC_FOR_BEST:-eval_puritan_loss}"
 
 mkdir -p "$HF_HOME" /workspace/unsloth_offload /workspace/miniforge3 /workspace/checkpoints_s7
 
@@ -34,7 +35,7 @@ if [[ -f /workspace/.sft_env ]]; then
   # shellcheck disable=SC1091
   source /workspace/.sft_env
 fi
-# Must follow .sft_env: re-pin replay s5best SHA (0289f1c9), not whatever inject wrote.
+# Must follow .sft_env: re-pin P0 best SHA (a70fded8), not whatever inject wrote.
 export EXPECTED_ADAPTER_SHA256="$PINNED_ADAPTER_SHA256"
 if [[ -n "${HF_TOKEN:-}" ]]; then
   export HUGGING_FACE_HUB_TOKEN="$HF_TOKEN"
@@ -137,7 +138,7 @@ if [[ "${S7_RESUME:-}" == "1" ]]; then
   echo "S7_RESUME=1 — HF resume from $PREV_RUN_CHECKPOINT (continue hyperparams kept)"
 else
   export PREV_RUN_CHECKPOINT=
-  echo "PREV_RUN_CHECKPOINT empty — S7 replay new Adam from replay s5best 0289f1c9 (no HF resume)"
+  echo "PREV_RUN_CHECKPOINT empty — S7 P1 new Adam from P0 best a70fded8 (no HF resume)"
   if [[ -d /workspace/checkpoints_sota ]]; then
     echo "NOTE: /workspace/checkpoints_sota present but ignored (S7 never auto-resumes sota)"
   fi
@@ -200,6 +201,7 @@ nohup env \
   COMPOSITE_EARLY_STOP_METRICS="${COMPOSITE_EARLY_STOP_METRICS:-}" \
   CONTINUE_MAX_STEPS="$CONTINUE_MAX_STEPS" \
   EARLY_STOP_MIN_STEPS="$EARLY_STOP_MIN_STEPS" \
+  METRIC_FOR_BEST="$METRIC_FOR_BEST" \
   "$PY" -u /workspace/train_cpt_sota.py > /workspace/cpt_train.log 2>&1 &
 echo "Started PID $! — tail -f /workspace/cpt_train.log"
 sleep 8
