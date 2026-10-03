@@ -588,6 +588,54 @@ def trainer_mixed_precision(train_embeddings, bf16_supported):
     return True, False
 
 
+def choose_seq_length_kwarg(training_args_cls):
+    """Prefer ``max_length`` (TRL 0.24+ SFTConfig); else ``max_seq_length``.
+
+    UnslothTrainingArguments subclasses SFTConfig. TRL 0.24 renamed the
+    kwarg; probing the signature avoids a TypeError on either side of the cut.
+    When the signature is unavailable or only has ``**kwargs``, prefer the
+    legacy name — ``classify_training_args_typeerror`` remaps on reject.
+    """
+    import inspect
+
+    try:
+        params = set(inspect.signature(training_args_cls.__init__).parameters)
+    except (TypeError, ValueError):
+        params = set()
+    if "max_length" in params:
+        return "max_length"
+    return "max_seq_length"
+
+
+def classify_training_args_typeerror(err, kwargs, lr_scheduler, lr_scheduler_kwargs):
+    """Classify UnslothTrainingArguments TypeError for a safe one-knob retry.
+
+    Returns ``(action, warning)`` where action is one of:
+      - ``"remap_max_length"``: pop max_seq_length, set max_length (TRL 0.24+)
+      - ``"fallback_cosine"``: only when the error mentions lr_scheduler*
+      - ``"raise"``: unrelated / unrecoverable — caller must re-raise
+
+    Never falls back lr_scheduler→cosine when the error is about max_seq_length
+    (that produced a misleading cosine warning that still died on the same
+    TypeError on Vast instance 52805980).
+    """
+    err_s = str(err)
+    if "max_seq_length" in err_s and kwargs is not None and "max_seq_length" in kwargs:
+        return (
+            "remap_max_length",
+            "TrainingArguments rejected max_seq_length; remapping to max_length (TRL 0.24+)",
+        )
+    if "lr_scheduler" in err_s and (
+        lr_scheduler_kwargs or (lr_scheduler or "") != "cosine"
+    ):
+        return (
+            "fallback_cosine",
+            "TrainingArguments rejected lr_scheduler=%s kwargs=%s; falling back to cosine"
+# skipped notebook magic: % (lr_scheduler, lr_scheduler_kwargs),
+        )
+    return "raise", None
+
+
 def checkpoint_save_policy(work_root):
     """Kaggle 20 GB disk vs Runpod volume resume."""
     if is_kaggle_work_root(work_root):

@@ -126,6 +126,61 @@ def test_trainer_mixed_precision() -> None:
     assert cr.trainer_mixed_precision(train_embeddings=False, bf16_supported=False) == (True, False)
 
 
+def test_choose_seq_length_kwarg_prefers_max_length() -> None:
+    class NewSFT:
+        def __init__(self, max_length=None, packing=False, **kwargs):
+            pass
+
+    class OldSFT:
+        def __init__(self, max_seq_length=None, packing=False, **kwargs):
+            pass
+
+    class KwargsOnly:
+        def __init__(self, **kwargs):
+            pass
+
+    assert cr.choose_seq_length_kwarg(NewSFT) == "max_length"
+    assert cr.choose_seq_length_kwarg(OldSFT) == "max_seq_length"
+    # **kwargs only → legacy name; TypeError remap handles TRL 0.24 reject
+    assert cr.choose_seq_length_kwarg(KwargsOnly) == "max_seq_length"
+
+
+def test_classify_training_args_typeerror_remap_max_seq_length() -> None:
+    err = TypeError(
+        "SFTConfig.__init__() got an unexpected keyword argument 'max_seq_length'"
+    )
+    kwargs = {"max_seq_length": 2048, "lr_scheduler_type": "cosine_with_min_lr"}
+    action, warn = cr.classify_training_args_typeerror(
+        err, kwargs, "cosine_with_min_lr", {"min_lr": 1e-6}
+    )
+    assert action == "remap_max_length"
+    assert "max_length" in (warn or "")
+    # Must NOT fall back to cosine when the error is max_seq_length
+    assert action != "fallback_cosine"
+
+
+def test_classify_training_args_typeerror_fallback_cosine_only_for_scheduler() -> None:
+    err = TypeError(
+        "TrainingArguments.__init__() got an unexpected keyword argument 'lr_scheduler_kwargs'"
+    )
+    kwargs = {"max_seq_length": 2048, "lr_scheduler_kwargs": {"min_lr": 1e-6}}
+    action, warn = cr.classify_training_args_typeerror(
+        err, kwargs, "cosine_with_min_lr", {"min_lr": 1e-6}
+    )
+    assert action == "fallback_cosine"
+    assert "cosine" in (warn or "")
+
+
+def test_classify_training_args_typeerror_unrelated_raises() -> None:
+    err = TypeError("SFTConfig.__init__() got an unexpected keyword argument 'bogus'")
+    kwargs = {"max_seq_length": 2048, "lr_scheduler_type": "cosine_with_min_lr"}
+    action, warn = cr.classify_training_args_typeerror(
+        err, kwargs, "cosine_with_min_lr", {"min_lr": 1e-6}
+    )
+    assert action == "raise"
+    assert warn is None
+
+
 def test_checkpoint_save_policy(tmp_path: Path) -> None:
     runpod = cr.checkpoint_save_policy(str(tmp_path))
     assert runpod == {"save_total_limit": 3, "save_only_model": False}
