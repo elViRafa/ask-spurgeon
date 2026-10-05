@@ -982,22 +982,12 @@ _ta_kwargs = dict(
 )
 if LR_SCHEDULER_KWARGS:
     _ta_kwargs["lr_scheduler_kwargs"] = LR_SCHEDULER_KWARGS
-try:
-    training_args = UnslothTrainingArguments(**_ta_kwargs)
-except TypeError as _ta_err:
-    # Older transformers may reject cosine_with_min_lr / lr_scheduler_kwargs.
-    if LR_SCHEDULER_KWARGS or LR_SCHEDULER != "cosine":
-        print(
-            f"WARNING: TrainingArguments rejected lr_scheduler={LR_SCHEDULER} "
-            f"kwargs={LR_SCHEDULER_KWARGS}: {_ta_err}; falling back to cosine"
-        )
-        _ta_kwargs["lr_scheduler_type"] = "cosine"
-        _ta_kwargs.pop("lr_scheduler_kwargs", None)
-        LR_SCHEDULER = "cosine"
-        LR_SCHEDULER_KWARGS = None
-        training_args = UnslothTrainingArguments(**_ta_kwargs)
-    else:
-        raise
+training_args, LR_SCHEDULER, LR_SCHEDULER_KWARGS = build_unsloth_training_args(
+    UnslothTrainingArguments,
+    _ta_kwargs,
+    lr_scheduler=LR_SCHEDULER,
+    lr_scheduler_kwargs=LR_SCHEDULER_KWARGS,
+)
 
 if MAX_STEPS is not None:
     training_args.max_steps = int(MAX_STEPS)
