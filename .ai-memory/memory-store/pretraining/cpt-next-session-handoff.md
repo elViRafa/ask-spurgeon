@@ -1,30 +1,37 @@
 ---
 store_path: pretraining/cpt-next-session-handoff
 title: "CPT next-session handoff"
-summary: "P1 dry READY; PR #6 merge + go then rent vast_cpt_s7_p1"
+summary: "S8 MISS; propose m_hi continue MAX_STEPS 800; wait approve+go; 0 GPUs"
 priority: high
-tags: [cpt, s7, handoff, p1]
+tags: [cpt, s8, handoff, m_hi, one-knob]
 schema_version: 1.3
-last_updated: "2026-10-02T18:15:00-03:00"
-evidence: [pretraining/cpt-s7-p1-metric-puritan, pretraining/cpt-s7-p0-confession-reweight, pretraining/cpt-hub-keep-phase-a]
+last_updated: "2026-10-05T14:24:00-03:00"
+evidence: [pretraining/cpt-s8-sweep-complete, pretraining/cpt-current]
 ---
 
 # CPT next-session handoff
 
-## Do next
+## For Cursor / next agent analysis
 
-1. Merge [PR #6](https://github.com/elViRafa/ask-spurgeon/pull/6) to main.
-2. Operator **go** to rent one 4090.
-3. Forge: `.\vast_cpt_s7_orchestrate.ps1 -Go -StartMonitor` — reuse pack `a_output_v6_p0`, init `a70fded8`, session `vast_cpt_s7_p1` / label `cpt-s7-p1`.
-4. Train+C → fetch → destroy. No Hub. No second GPU.
+S8 plateau sweep finished and fetched. Decision: **in-train plateau not broken**. Best arm = `m_hi`.
 
-## Ready now
+### Proposed next one-knob (NOT started — needs Rafael approve + go)
 
-- Dry `vast_cpt_s7_orchestrate.ps1` READY (2026-09-28)
-- Knob: `metric_for_best=eval_puritan_loss` (Spurgeon stays in composite abort)
-- Mix SHA `ad817213af207428785c4cfac12ddc1bc390b3e59d6e97b43491fafdafe91962`
-- Branch commit `25e14c2` on `cpt-s7-p1-metric-puritan`
+1. Init: `continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s8_sweep/fetch/sweep/m_hi/theology_cpt_lora`
+2. Knob: `MAX_STEPS` **400 → 800** only
+3. Keep: LR body **5e-5**, emb **5e-6**, `METRIC_FOR_BEST=eval_puritan_loss`, r=128 alpha=64, pack `a_output_v6_p0` SHA `ad817213`
+4. New Adam (optimizer weights were not fetched)
+5. Foundry dries orchestrate; Forge rents only after **go**
+6. After C-worthy in-train win: isolation C; Hub stays Phase A until C win
 
-## Do not
+### Why this knob
 
-- Rent without go; overwrite a_output_v6 / v3-v5; HF-resume sota; Hub-push on fail; heuristic dream that redacts continue-from marker paths
+`m_hi` puritan fell every eval 50→400 (1.753→1.723) and stopped ~0.002 short of ≤1.7204. Merged >> stock (`f_hi` worse). Higher LR beat `m_lo`.
+
+### Do not
+
+- Rent without go
+- Re-run S7/P1 as its own session
+- Hub-push / overwrite Phase A
+- HF-resume `checkpoints_sota`
+- Change mix in the same change as the step bump

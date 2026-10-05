@@ -1,12 +1,12 @@
 ---
 store_path: pretraining/cpt-current
 title: "CPT current status"
-summary: "P1 waiting merge+go; best local continue-from a70fded8; Hub Phase A 06354dfc"
+summary: "S8 plateau MISS; best m_hi 1.723; Hub Phase A; next knob pending (m_hi continue 800 steps)"
 priority: high
-tags: [cpt, s7, status, hub, gate, p0, p1]
+tags: [cpt, s8, status, hub, gate, m_hi]
 schema_version: 1.3
-last_updated: "2026-10-02T18:15:00-03:00"
-evidence: [pretraining/cpt-hub-keep-phase-a, pretraining/cpt-s7-p0-confession-reweight, pretraining/cpt-s7-p1-metric-puritan, pretraining/cpt-best-adapter-leaderboard]
+last_updated: "2026-10-05T14:24:00-03:00"
+evidence: [pretraining/cpt-s8-sweep-complete, pretraining/cpt-next-session-handoff, continued_pretrain/NEXT_CPT_S8_SWEEP.md]
 ---
 
 # CPT current status
@@ -16,13 +16,19 @@ evidence: [pretraining/cpt-hub-keep-phase-a, pretraining/cpt-s7-p0-confession-re
 | Item | Value |
 |------|--------|
 | **Hub production** | Phase A s5best `06354dfc` |
-| **Best local continue-from** | P0 best `a70fded8` (checkpoint-600) under `vast_cpt_s7_p0/fetch/theology_cpt_lora_s5best` |
-| Prior replay init | `0289f1c9` (checkpoint-550) — keep for clean A/B only |
-| P0 C (step600) | Spurgeon ~-13.87%, Puritan ~-9.45%, confession ~-7.4% — section-5 FAIL (Puritan hard) |
-| Replay C | Spurgeon 12.35 (-13.69%), Puritan 5.48 (-9.22%), confession 5.22 (-6.88%) |
-| **section-5 framing** | Spurgeon keep + Puritan hard (-15%); confession soft/monitor |
-| **Pack** | `a_output_v6_p0` / `mix_v6_p0` SHA `ad817213` — confession 15% / puritan 50% / spurgeon 35% |
-| **Next (P1)** | one-knob `metric_for_best=eval_puritan_loss`; init `a70fded8` + new Adam; session `vast_cpt_s7_p1`; PR #6 open MERGEABLE; dry READY; **no rent until merge + operator go** |
-| Stack | Unsloth 2026.8.22 + torch 2.8 |
+| **S8 result (2026-10-05)** | Plateau **MISS** — no isolation C, no Hub |
+| **Best local adapter** | S8 `m_hi` LoRA under `vast_cpt_s8_sweep/fetch/sweep/m_hi/theology_cpt_lora` (best puritan **1.723** / trainer_state step400 **1.7226**; Spurgeon **2.469**) |
+| Prior P0 best | `a70fded8` (checkpoint-600) — merge parent for S8 |
+| **section-5 / S8 break** | In-train puritan **≤1.7204** (ref 1.7354 − 0.015); Spurgeon **≤2.490** |
+| **Pack** | `a_output_v6_p0` / `mix_v6_p0` SHA `ad817213` |
+| **Next (proposed, not approved)** | one-knob: continue from `m_hi`, **MAX_STEPS 400→800**, LR 5e-5, `metric_for_best=eval_puritan_loss`, r=128, new Adam; no rent until go |
+| Vast | **0** instances after destroy `54312477`; credit ~$5.87 |
+| Stack pin | Unsloth 2026.8.22 + torch 2.8 |
 
-Vast instances: 0. Hub stays Phase A until section-5 win. After C: save adapter locally, destroy pod.
+## S8 arm finals (puritan / Spurgeon)
+
+| Arm | Best |
+|-----|------|
+| m_lo (merged, LR 2e-5) | 1.725 / 2.470 |
+| m_hi (merged, LR 5e-5) | **1.723 / 2.469** |
+| f_hi (stock, LR 5e-5) | 1.736 / 2.488 |
