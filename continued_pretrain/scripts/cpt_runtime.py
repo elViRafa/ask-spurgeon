@@ -405,6 +405,88 @@ def trainer_mixed_precision(train_embeddings, bf16_supported):
     return True, False
 
 
+
+def build_unsloth_training_args(
+    ctor,
+    ta_kwargs,
+    *,
+    lr_scheduler="cosine",
+    lr_scheduler_kwargs=None,
+    log=print,
+):
+    """Construct UnslothTrainingArguments with max_seq_length remapping.
+
+    Newer TRL/Unsloth SFTConfig accepts ``max_length`` and rejects ``max_seq_length``.
+    Remap that kwarg first. Cosine scheduler fallback runs only when the TypeError is
+    about the LR scheduler / lr_scheduler_kwargs (or a post-remap failure while a
+    non-cosine scheduler is still requested). Never treat a max_seq_length TypeError
+    as a reason to fall back to cosine.
+
+    Returns ``(training_args, lr_scheduler, lr_scheduler_kwargs)``.
+    """
+    kwargs = dict(ta_kwargs)
+    sched = lr_scheduler
+    sched_kw = lr_scheduler_kwargs
+
+    def _err_text(exc):
+        return str(exc) if exc is not None else ""
+
+    def _is_max_seq_length_error(exc):
+        msg = _err_text(exc)
+        return "max_seq_length" in msg and "max_seq_length" in kwargs
+
+    def _is_scheduler_error(exc):
+        msg = _err_text(exc).lower()
+        return any(
+            token in msg
+            for token in (
+                "lr_scheduler_kwargs",
+                "lr_scheduler_type",
+                "lr_scheduler",
+                "cosine_with_min_lr",
+            )
+        )
+
+    def _cosine_fallback(exc):
+        nonlocal sched, sched_kw
+        if not (sched_kw or sched != "cosine"):
+            raise exc
+        log(
+            f"WARNING: TrainingArguments rejected lr_scheduler={sched} "
+            f"kwargs={sched_kw}: {exc}; falling back to cosine"
+        )
+        kwargs["lr_scheduler_type"] = "cosine"
+        kwargs.pop("lr_scheduler_kwargs", None)
+        sched = "cosine"
+        sched_kw = None
+        return ctor(**kwargs)
+
+    try:
+        training_args = ctor(**kwargs)
+    except TypeError as err:
+        if _is_max_seq_length_error(err):
+            seq = kwargs.pop("max_seq_length")
+            kwargs["max_length"] = seq
+            log(
+                f"WARNING: UnslothTrainingArguments rejected max_seq_length; "
+                f"remapped to max_length={seq} "
+                f"(scheduler unchanged: {sched})"
+            )
+            try:
+                training_args = ctor(**kwargs)
+            except TypeError as err2:
+                # Remap succeeded as a kwarg strategy; remaining failure may be scheduler.
+                if _is_scheduler_error(err2) or (sched_kw or sched != "cosine"):
+                    training_args = _cosine_fallback(err2)
+                else:
+                    raise
+        elif _is_scheduler_error(err):
+            training_args = _cosine_fallback(err)
+        else:
+            raise
+    return training_args, sched, sched_kw
+
+
 def checkpoint_save_policy(work_root):
     """Kaggle 20 GB disk vs Runpod volume resume."""
     if is_kaggle_work_root(work_root):
