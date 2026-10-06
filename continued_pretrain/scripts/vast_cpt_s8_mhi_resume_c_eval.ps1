@@ -3,8 +3,11 @@
 # (same bytes as checkpoint-2250). AdapterDir is the flat leaf, not the checkpoint dir.
 # Stack: Unsloth 2026.8.22 + torch 2.8 via vast_remote_stack_isolation_c.sh.
 # Do NOT use vast_remote_c_eval.sh (S6 torch 2.11).
-# Do NOT score Phase A 06354dfc, S6 6aab, S7 replay/Phase B, or merge-parent a70fded8.
-# Holdouts: a_output_v6_p0. No training. No Hub overwrite. No merge.
+# Do NOT score Phase A 06354dfc, S6 6aab, S7 replay/Phase B, or merge-parent a70fded8 as the C candidate.
+# Holdouts: a_output_v6_p0. No training. No Hub overwrite.
+# C rebuilds /workspace/theology_cpt_merged_a70 on the pod from a70 + merge_cpt_lora.py
+# (adapter_config names that path). Do NOT remap adapter onto stock Qwen.
+# Older "No merge" notes meant no Hub merge promote — not "skip pod-local merge parent".
 # Default: readiness only (no vastai, no rent). -Go rents one GPU.
 # Success destroys the instance unless -KeepInstance. Failure keeps it for inspection.
 param(
@@ -37,12 +40,18 @@ $Mcq = Join-Path $CptRootLocal "data\catechism_mcq.json"
 $EvalPy = Join-Path $CptRootLocal "scripts\eval_cpt_sota.py"
 $RemoteSh = Join-Path $CptRootLocal "scripts\vast_remote_stack_isolation_c.sh"
 $ResultsDir = Join-Path $CptRootLocal "kaggle\runpod_cpt_v3\vast_cpt_s8_mhi_resume_c"
+# Merge parent a70 (S7 P0 s5best). Not the C candidate — used only to rebuild theology_cpt_merged_a70 on the pod.
+$MergeParentDir = Join-Path $CptRootLocal "kaggle\runpod_cpt_v3\vast_cpt_s7_p0\fetch\theology_cpt_lora_s5best"
+$MergePy = Join-Path $RepoRootLocal "fine_tuning\scripts\merge_cpt_lora.py"
+$MergeParentSha = "a70fded8aea1c9cb1a484e640e89137412519c28d95bdbfbf8d73ca2d2e42eac"
 
 Write-Host "=== Vast S8 m_hi resume isolation C (flat ckpt-2250 22698039) ==="
 Write-Host "go=$Go disk=${DiskGb}GB expected_sha=$ExpectedSha"
 Write-Host "stack=Unsloth 2026.8.22 + torch 2.8.0+cu126 (NOT torch 2.11)"
 Write-Host "adapter=$AdapterDir"
 Write-Host "holdouts=$Holdouts"
+Write-Host "merge_parent=$MergeParentDir"
+Write-Host "merge_py=$MergePy"
 Write-Host "results=$ResultsDir"
 
 $py = Join-Path $RepoRootLocal ".venv\Scripts\python.exe"
@@ -99,7 +108,7 @@ function Send-ToWorkspace([string]$Local, [string]$Remote) {
     if ($LASTEXITCODE -ne 0) { throw "scp failed: $Local" }
 }
 
-foreach ($p in @($AdapterDir, $Holdouts, $Mcq, $EvalPy, $RemoteSh)) {
+foreach ($p in @($AdapterDir, $Holdouts, $Mcq, $EvalPy, $RemoteSh, $MergeParentDir, $MergePy)) {
     if (-not (Test-Path $p)) { throw "Missing artifact: $p" }
 }
 $weights = Join-Path $AdapterDir "adapter_model.safetensors"
@@ -116,6 +125,13 @@ if ($gotSha -ne $ExpectedSha) {
     throw "Local adapter SHA mismatch want=$ExpectedSha got=$gotSha"
 }
 Write-Host "Local adapter SHA OK"
+$mergeWeights = Join-Path $MergeParentDir "adapter_model.safetensors"
+if (-not (Test-Path $mergeWeights)) { throw "Missing merge parent weights: $mergeWeights" }
+$gotMergeSha = (Get-FileHash -Algorithm SHA256 -Path $mergeWeights).Hash.ToLower()
+if ($gotMergeSha -ne $MergeParentSha) {
+    throw "Local merge parent SHA mismatch want=$MergeParentSha got=$gotMergeSha"
+}
+Write-Host "Local merge parent a70 SHA OK"
 
 Show-VastAccountSummary
 $user = Invoke-VastaiJson -CliArgs @("show", "user")
@@ -202,15 +218,19 @@ $session = Get-VastSession
 & (Join-Path $FtScripts "vast_inject_hf_token.ps1")
 if ($LASTEXITCODE -ne 0) { Write-Host "WARN: HF inject failed - continuing" }
 
-Write-Host "Syncing C-eval assets (m_hi resume flat 22698039) ..."
-Invoke-CEvalSsh "mkdir -p /workspace/hf_home && rm -rf /workspace/theology_cpt_lora /workspace/theology_holdouts"
+Write-Host "Syncing C-eval assets (m_hi resume flat 22698039 + merge parent a70) ..."
+Invoke-CEvalSsh "mkdir -p /workspace/hf_home && rm -rf /workspace/theology_cpt_lora /workspace/theology_holdouts /workspace/merge_parent_a70 /workspace/theology_cpt_merged_a70"
 Send-ToWorkspace $AdapterDir "/workspace/"
 Invoke-CEvalSsh 'if [[ -f /workspace/theology_cpt_lora/adapter_model.safetensors ]]; then echo LORA_LAYOUT_OK; elif [[ -f /workspace/theology_cpt_lora/theology_cpt_lora/adapter_model.safetensors ]]; then mv /workspace/theology_cpt_lora/theology_cpt_lora/* /workspace/theology_cpt_lora/ && rmdir /workspace/theology_cpt_lora/theology_cpt_lora 2>/dev/null; echo LORA_LAYOUT_FLATTENED; else echo LORA_LAYOUT_FAIL; ls -laR /workspace/theology_cpt_lora 2>/dev/null || true; exit 2; fi'
 Send-ToWorkspace $Holdouts "/workspace/"
 Send-ToWorkspace $Mcq "/workspace/catechism_mcq.json"
 Send-ToWorkspace $EvalPy "/workspace/eval_cpt_sota.py"
 Send-ToWorkspace $RemoteSh "/workspace/vast_remote_stack_isolation_c.sh"
-Invoke-CEvalSsh "chmod +x /workspace/vast_remote_stack_isolation_c.sh && test -f /workspace/theology_cpt_lora/adapter_model.safetensors && test -d /workspace/theology_holdouts/spurgeon && echo REMOTE_LAYOUT_OK"
+Invoke-CEvalSsh "rm -rf /workspace/merge_parent_a70 && mkdir -p /workspace/merge_parent_a70"
+Send-ToWorkspace $MergeParentDir "/workspace/merge_parent_a70"
+Invoke-CEvalSsh 'if [[ -f /workspace/merge_parent_a70/adapter_model.safetensors ]]; then echo MERGE_PARENT_LAYOUT_OK; elif [[ -f /workspace/merge_parent_a70/theology_cpt_lora_s5best/adapter_model.safetensors ]]; then mv /workspace/merge_parent_a70/theology_cpt_lora_s5best/* /workspace/merge_parent_a70/ && rmdir /workspace/merge_parent_a70/theology_cpt_lora_s5best 2>/dev/null; echo MERGE_PARENT_LAYOUT_FLATTENED; else echo MERGE_PARENT_LAYOUT_FAIL; ls -laR /workspace/merge_parent_a70 2>/dev/null || true; exit 2; fi'
+Send-ToWorkspace $MergePy "/workspace/merge_cpt_lora.py"
+Invoke-CEvalSsh "chmod +x /workspace/vast_remote_stack_isolation_c.sh && test -f /workspace/theology_cpt_lora/adapter_model.safetensors && test -d /workspace/theology_holdouts/spurgeon && test -f /workspace/merge_parent_a70/adapter_model.safetensors && test -f /workspace/merge_cpt_lora.py && echo REMOTE_LAYOUT_OK"
 if ($Script:LastRemoteExit -ne 0) { throw "remote layout check failed" }
 
 $ht = Convert-SessionToHashtable (Get-VastSession)
@@ -220,7 +240,7 @@ Save-VastSession $ht
 Write-Host "Launching C-eval nohup on remote (Miniforge + eval; poll up to 3h) ..."
 Remove-Item (Join-Path $ResultsDir "theology_cpt_eval_metrics.json") -Force -ErrorAction SilentlyContinue
 Remove-Item (Join-Path $ResultsDir "cpt_eval.log") -Force -ErrorAction SilentlyContinue
-Invoke-CEvalSsh "rm -f /workspace/cpt_eval.log /workspace/theology_cpt_eval_metrics.json /workspace/c_eval_done.txt /workspace/c_eval_rc.txt /workspace/c_eval_launcher.log; export EXPECTED_ADAPTER_SHA256=$ExpectedSha; export UNSLOTH_PIP_SPEC='unsloth[colab-new]==2026.8.22'; export CPT_EVAL_TRAIN_PROBE_DOCS=16; nohup bash -lc 'bash /workspace/vast_remote_stack_isolation_c.sh; echo `$? > /workspace/c_eval_rc.txt; date -u > /workspace/c_eval_done.txt' > /workspace/c_eval_launcher.log 2>&1 & echo LAUNCHED"
+Invoke-CEvalSsh "rm -f /workspace/cpt_eval.log /workspace/theology_cpt_eval_metrics.json /workspace/c_eval_done.txt /workspace/c_eval_rc.txt /workspace/c_eval_launcher.log; export EXPECTED_ADAPTER_SHA256=$ExpectedSha; export MERGE_PARENT_DIR=/workspace/merge_parent_a70; export MERGE_PARENT_SHA=$MergeParentSha; export CPT_MERGED_BASE=/workspace/theology_cpt_merged_a70; export UNSLOTH_PIP_SPEC='unsloth[colab-new]==2026.8.22'; export CPT_EVAL_TRAIN_PROBE_DOCS=16; nohup bash -lc 'bash /workspace/vast_remote_stack_isolation_c.sh; echo `$? > /workspace/c_eval_rc.txt; date -u > /workspace/c_eval_done.txt' > /workspace/c_eval_launcher.log 2>&1 & echo LAUNCHED"
 $deadline = (Get-Date).AddHours(3)
 $rc = -1
 $done = $false
@@ -285,7 +305,7 @@ train_probe_docs=16
 holdouts=a_output_v6_p0
 merge_parent=a70fded8
 eval_base=unsloth/Qwen3.5-4B-Base
-note=S8 m_hi resume isolation C on flat theology_cpt_lora checkpoint-2250 22698039
+note=S8 m_hi resume isolation C on flat theology_cpt_lora checkpoint-2250 22698039; pod rebuilds theology_cpt_merged_a70 from a70 before from_pretrained
 section5_puritan_loss_max=1.6349
 hub_until_win=06354dfc
 "@ | Set-Content (Join-Path $ResultsDir "result.txt")

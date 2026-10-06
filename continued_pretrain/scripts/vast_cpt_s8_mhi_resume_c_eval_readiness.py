@@ -2,11 +2,14 @@
 """Local readiness for S8 m_hi resume Isolation C. No GPU rent, no Hub push.
 
 Pins flat ``theology_cpt_lora`` SHA 22698039 (checkpoint-2250). Refuses Phase A
-06354dfc and other S5/S6/S7 adapters. Does not call vastai.
+06354dfc and other S5/S6/S7 adapters scored as the C candidate. Also requires
+merge-parent a70 + ``merge_cpt_lora.py`` so the pod can rebuild
+``theology_cpt_merged_a70`` before ``from_pretrained``. Does not call vastai.
 """
 from __future__ import annotations
 
 import hashlib
+import json
 import sys
 from pathlib import Path
 
@@ -45,6 +48,18 @@ PS1_PATH = SCRIPTS / PS1_NAME
 RESULTS_DIRNAME = "vast_cpt_s8_mhi_resume_c"
 STACK_SH = "vast_remote_stack_isolation_c.sh"
 S6_STACK_SH = "vast_remote_c_eval.sh"
+# Merge parent for pod-local theology_cpt_merged_a70 rebuild (not the C candidate).
+MERGE_PARENT_SHA = "a70fded8aea1c9cb1a484e640e89137412519c28d95bdbfbf8d73ca2d2e42eac"
+MERGE_PARENT_REL = (
+    "kaggle/runpod_cpt_v3/vast_cpt_s7_p0/fetch/theology_cpt_lora_s5best"
+    "/adapter_model.safetensors"
+)
+MERGE_PY_REL = "fine_tuning/scripts/merge_cpt_lora.py"
+ADAPTER_CONFIG_REL = (
+    "kaggle/runpod_cpt_v3/vast_cpt_s8_mhi_resume/fetch/mhi_resume/theology_cpt_lora"
+    "/adapter_config.json"
+)
+MERGED_BASE_MARKER = "theology_cpt_merged_a70"
 
 _RENT_MARKERS = (
     "vastai",
@@ -187,8 +202,55 @@ def wiring_errors(text: str) -> list[str]:
             errors.append("ps1 results dir points at an S6/S7 session")
     if "06354dfc5a720143617ee2ffeef38faa48200811bed89e71561ff357ed547432" not in text:
         errors.append("ps1 must refuse Phase A 06354dfc when the file hash matches")
+    merge_parents = _assignment_lines(text, "MergeParentDir")
+    if not merge_parents:
+        errors.append("ps1 missing $MergeParentDir")
+    else:
+        flat_parent = (
+            "vast_cpt_s7_p0" + "\\" + "fetch" + "\\" + "theology_cpt_lora_s5best"
+        )
+        if not any(
+            flat_parent in line.replace("/", "\\") for line in merge_parents
+        ):
+            errors.append(
+                "ps1 $MergeParentDir must be vast_cpt_s7_p0/fetch/theology_cpt_lora_s5best"
+            )
+    merge_shas = _assignment_lines(text, "MergeParentSha")
+    if not any(MERGE_PARENT_SHA in line for line in merge_shas):
+        errors.append("ps1 $MergeParentSha is not a70fded8")
+    merge_pys = _assignment_lines(text, "MergePy")
+    if not any("merge_cpt_lora.py" in line for line in merge_pys):
+        errors.append("ps1 $MergePy must point at merge_cpt_lora.py")
+    if "MERGE_PARENT_DIR" not in text:
+        errors.append("ps1 must export MERGE_PARENT_DIR on -Go launch")
+    if "merge_cpt_lora" not in text:
+        errors.append("ps1 must mention merge_cpt_lora")
     errors.extend(dry_head_errors(text))
     return errors
+
+
+def adapter_config_errors(config_path: Path) -> list[str]:
+    """Flat resume must still name the merged a70 base (never stock Qwen remap)."""
+    if not config_path.is_file():
+        return [f"missing flat resume adapter_config.json: {config_path}"]
+    try:
+        raw = json.loads(config_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return [f"unreadable adapter_config.json: {exc}"]
+    base = str(raw.get("base_model_name_or_path") or "").strip()
+    print(f"adapter_config_base={base}")
+    if MERGED_BASE_MARKER in base:
+        return []
+    lowered = base.lower()
+    if "qwen" in lowered or not base:
+        return [
+            "flat resume adapter_config base_model_name_or_path is stock/Qwen "
+            f"({base!r}) — refuse remap; want {MERGED_BASE_MARKER}"
+        ]
+    return [
+        "flat resume adapter_config base_model_name_or_path missing "
+        f"{MERGED_BASE_MARKER} got {base!r}"
+    ]
 
 
 def evaluate(
@@ -197,6 +259,9 @@ def evaluate(
     checkpoints: list[Path],
     holdout_root: Path,
     ps1_text: str,
+    merge_parent: Path | None = None,
+    merge_py: Path | None = None,
+    adapter_config: Path | None = None,
 ) -> list[str]:
     errors: list[str] = []
     if not adapter.is_file():
@@ -226,6 +291,23 @@ def evaluate(
         if not marker.is_file() and not state.is_file():
             errors.append(f"missing a_output_v6_p0 holdout bucket {bucket}")
 
+    if merge_parent is not None:
+        if not merge_parent.is_file():
+            errors.append(f"missing merge parent adapter: {merge_parent}")
+        else:
+            got = sha256_file(merge_parent).lower()
+            print(f"merge_parent_sha={got[:16]}...")
+            if got != MERGE_PARENT_SHA:
+                errors.append(
+                    f"merge parent SHA mismatch got {got} want {MERGE_PARENT_SHA}"
+                )
+
+    if merge_py is not None and not merge_py.is_file():
+        errors.append(f"missing merge_cpt_lora.py: {merge_py}")
+
+    if adapter_config is not None:
+        errors.extend(adapter_config_errors(adapter_config))
+
     errors.extend(wiring_errors(ps1_text))
     return errors
 
@@ -233,11 +315,15 @@ def evaluate(
 def main() -> int:
     print("=== S8 m_hi resume isolation C readiness (no rent, no vastai) ===")
     print(f"expect_sha={EXPECT_RESUME}")
+    print(f"merge_parent_sha={MERGE_PARENT_SHA}")
     print("stack=Unsloth 2026.8.22 + torch 2.8 (vast_remote_stack_isolation_c.sh)")
     print("section5 puritan loss <= 1.6349; else keep Hub Phase A 06354dfc")
     adapter = CPT / ADAPTER_REL
     checkpoints = [CPT / rel for rel in CHECKPOINT_RELS]
     holdouts = CPT / HOLDOUT_REL
+    merge_parent = CPT / MERGE_PARENT_REL
+    merge_py = REPO / MERGE_PY_REL
+    adapter_config = CPT / ADAPTER_CONFIG_REL
     ps1_text = PS1_PATH.read_text(encoding="utf-8") if PS1_PATH.is_file() else ""
     if not ps1_text:
         print("FAIL:")
@@ -248,6 +334,9 @@ def main() -> int:
         checkpoints=checkpoints,
         holdout_root=holdouts,
         ps1_text=ps1_text,
+        merge_parent=merge_parent,
+        merge_py=merge_py,
+        adapter_config=adapter_config,
     )
     results = CPT / "kaggle" / "runpod_cpt_v3" / RESULTS_DIRNAME
     if not errors:
