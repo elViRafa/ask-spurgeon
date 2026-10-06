@@ -1,12 +1,12 @@
----
+﻿---
 store_path: pretraining/cpt-current
 title: "CPT current status"
-summary: "S8 plateau MISS; best m_hi 1.723; Hub Phase A; next knob pending (m_hi continue 800 steps)"
+summary: "m_hi resume done (1.701/2.449 @ ckpt-2250 SHA 22698039); Isolation C paused for Cursor; Hub Phase A; no GPU"
 priority: high
-tags: [cpt, s8, status, hub, gate, m_hi]
+tags: [cpt, s8, m_hi, resume, isolation-c, status, hub]
 schema_version: 1.3
-last_updated: "2026-10-05T14:24:00-03:00"
-evidence: [pretraining/cpt-s8-sweep-complete, pretraining/cpt-next-session-handoff, continued_pretrain/NEXT_CPT_S8_SWEEP.md]
+last_updated: "2026-10-06T17:13:00-03:00"
+evidence: [pretraining/cpt-next-session-handoff, pretraining/cpt-s8-mhi-resume-complete, episodic/2026-10-06]
 ---
 
 # CPT current status
@@ -15,20 +15,26 @@ evidence: [pretraining/cpt-s8-sweep-complete, pretraining/cpt-next-session-hando
 
 | Item | Value |
 |------|--------|
-| **Hub production** | Phase A s5best `06354dfc` |
-| **S8 result (2026-10-05)** | Plateau **MISS** — no isolation C, no Hub |
-| **Best local adapter** | S8 `m_hi` LoRA under `vast_cpt_s8_sweep/fetch/sweep/m_hi/theology_cpt_lora` (best puritan **1.723** / trainer_state step400 **1.7226**; Spurgeon **2.469**) |
-| Prior P0 best | `a70fded8` (checkpoint-600) — merge parent for S8 |
-| **section-5 / S8 break** | In-train puritan **≤1.7204** (ref 1.7354 − 0.015); Spurgeon **≤2.490** |
-| **Pack** | `a_output_v6_p0` / `mix_v6_p0` SHA `ad817213` |
-| **Next (proposed, not approved)** | one-knob: continue from `m_hi`, **MAX_STEPS 400→800**, LR 5e-5, `metric_for_best=eval_puritan_loss`, r=128, new Adam; no rent until go |
-| Vast | **0** instances after destroy `54312477`; credit ~$5.87 |
-| Stack pin | Unsloth 2026.8.22 + torch 2.8 |
+| **Hub production** | Phase A s5best `06354dfc` — **no Hub until Isolation C wins §5** |
+| **Best local adapter** | m_hi **resume** LoRA SHA `2269803948b2accbb132ad7d8386b542aa8c0a10c86cd7b7098b8857fcd2c207` @ `vast_cpt_s8_mhi_resume/fetch/mhi_resume/theology_cpt_lora` (= `checkpoint-2250`) |
+| **In-train (resume)** | puritan **1.701** / Spurgeon **2.449** (proxy ≤1.670 not met) |
+| **Prior continue** | m_hi continue @800: puritan **1.708** / Spurgeon **2.456** — in-train break ≤1.7204 **CLEARED** (instance 54372117) |
+| **S8 sweep** | Plateau MISS; best m_hi 1.723/2.469 before continue |
+| **Pack** | `a_output_v6_p0` / mix SHA `ad817213` |
+| **Merge parent** | P0 `a70fded8` → `/workspace/theology_cpt_merged_a70` |
+| **section-5 / Isolation C** | Puritan PPL −15% → loss ≤ **1.6349**; Spurgeon not worse. **Paused** — Rafael wants Cursor analysis before Foundry ships C playbook / Forge -Go |
+| **Vast** | 0 instances expected after resume destroy; credit was ~$3.86 after continue close |
+| **Stack pin** | Unsloth 2026.8.22 + torch 2.8 |
 
-## S8 arm finals (puritan / Spurgeon)
+## Timeline (brief)
 
-| Arm | Best |
-|-----|------|
-| m_lo (merged, LR 2e-5) | 1.725 / 2.470 |
-| m_hi (merged, LR 5e-5) | **1.723 / 2.469** |
-| f_hi (stock, LR 5e-5) | 1.736 / 2.488 |
+1. S8 sweep (54312477): MISS → fetch `vast_cpt_s8_sweep`
+2. m_hi continue (54372117): gate CLEARED 1.708/2.456 → fetch `vast_cpt_s8_mhi_continue` (lean)
+3. m_hi resume (HF-resume ckpt-800 → 2400): best ckpt-2250 SHA `22698039` → fetch `vast_cpt_s8_mhi_resume`
+4. Isolation C: **hold** for Cursor; do not rent
+
+## Do not
+
+- Forge -Go / rent for Isolation C until Rafael says so after Cursor
+- Hub-push / overwrite Phase A
+- Re-run S8 sweep / S7 / P1 as own GPU sessions
