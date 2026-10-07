@@ -122,6 +122,12 @@ S7_DEFAULT_GENERAL_WARN_DELTA = 0.15
 S7_GATE_EVAL_BUCKETS = ["spurgeon", "puritan", "confession"]
 S7_MONITOR_EVAL_BUCKETS = ["general", "new_authors"]
 S7_DEFAULT_EVAL_BUCKETS = S7_GATE_EVAL_BUCKETS + S7_MONITOR_EVAL_BUCKETS
+
+# S8 rewarm continue defaults (override via env for floor-continue jobs).
+S8_DEFAULT_CONTINUE_MAX_STEPS = 400
+S8_DEFAULT_LEARNING_RATE = 3e-5
+S8_DEFAULT_EMBEDDING_LEARNING_RATE = 3e-6
+S8_DEFAULT_WARMUP_RATIO = 0.05
 # Isolation C preflight requires these HF buckets; new_authors stays optional (report if present).
 C_REQUIRED_HOLDOUT_BUCKETS = ["spurgeon", "puritan", "confession", "general"]
 C_MONITOR_HOLDOUT_BUCKETS = ["new_authors"]
@@ -172,20 +178,30 @@ def resolve_work_root(env=None):
 
 
 def resolve_continue_profile(env=None):
-    """``s7`` when CPT_CONTINUE_PROFILE=s7; otherwise empty (S6 continue defaults)."""
+    """``s7`` or ``s8`` when CPT_CONTINUE_PROFILE is set; otherwise empty (S6 defaults)."""
     env = os.environ if env is None else env
     profile = (env.get("CPT_CONTINUE_PROFILE") or "").strip().lower()
-    return "s7" if profile == "s7" else ""
+    if profile in ("s7", "s8"):
+        return profile
+    return ""
+
+
+def continue_checkpoint_profile(env=None):
+    """``s7``/``s8`` when continue mode writes its own checkpoint dir; else empty."""
+    env = os.environ if env is None else env
+    if resolve_run_mode(env) != "continue":
+        return ""
+    return resolve_continue_profile(env)
 
 
 def layout_paths(work_root, env=None):
-    """Resolve work-root layout. S7 continue writes to checkpoints_s7, not sota."""
+    """Resolve work-root layout. S7/S8 continue write to checkpoints_s7/s8, not sota."""
     env = os.environ if env is None else env
     explicit = (env.get("CPT_OUTPUT_DIR") or "").strip()
     if explicit:
         output_dir = explicit
-    elif resolve_run_mode(env) == "continue" and resolve_continue_profile(env) == "s7":
-        output_dir = os.path.join(work_root, "checkpoints_s7")
+    elif continue_checkpoint_profile(env):
+        output_dir = os.path.join(work_root, "checkpoints_" + continue_checkpoint_profile(env))
     else:
         output_dir = os.path.join(work_root, "checkpoints_sota")
     return {
@@ -395,13 +411,14 @@ def find_highest_checkpoint(root):
 
 
 def collect_checkpoint_roots(work_root, env=None, kaggle_input=None):
-    """Roots searched for auto-resume. S7 never scans leftover checkpoints_sota."""
+    """Roots searched for auto-resume. S7/S8 never scan leftover checkpoints_sota."""
     env = os.environ if env is None else env
     kaggle_input = KAGGLE_INPUT if kaggle_input is None else kaggle_input
     roots = []
-    if resolve_run_mode(env) == "continue" and resolve_continue_profile(env) == "s7":
+    profile = continue_checkpoint_profile(env)
+    if profile:
         explicit = (env.get("CPT_OUTPUT_DIR") or "").strip()
-        local = explicit or os.path.join(work_root, "checkpoints_s7")
+        local = explicit or os.path.join(work_root, "checkpoints_" + profile)
         if os.path.isdir(local):
             roots.append(local)
         return roots
@@ -622,7 +639,9 @@ def resolve_continue_training_config(env=None, packed_epoch_steps=None):
     """Overrides for CPT_RUN_MODE=continue. Empty dict when not in continue mode.
 
     CPT_CONTINUE_PROFILE=s7 selects Phase A knobs (lower LR, checkpoints_s7, seeded
-    4-metric composite). Unset profile keeps S6 continue defaults (4e-6, 0.4 epoch floor).
+    4-metric composite). CPT_CONTINUE_PROFILE=s8 selects rewarm knobs (higher LR,
+    checkpoints_s8, empty composite seeds; constant scheduler clears kwargs).
+    Unset profile keeps S6 continue defaults (4e-6, 0.4 epoch floor).
     """
     env = os.environ if env is None else env
     if resolve_run_mode(env) != "continue":
@@ -686,12 +705,79 @@ def resolve_continue_training_config(env=None, packed_epoch_steps=None):
                 ],
             ),
             "use_composite_early_stop": True,
+            # Hard gate is Puritan; load_best picks best Puritan eval (Spurgeon abort/guardrail remain).
+            "metric_for_best": (env.get("METRIC_FOR_BEST") or "eval_puritan_loss").strip()
+            or "eval_puritan_loss",
             "continue_max_steps": continue_max,
             "output_dir": layout["output_dir"],
             "composite_seed_bests": parse_composite_seed_bests(
                 env, default=S7_DEFAULT_COMPOSITE_SEED_BESTS
             ),
             "s5_best_adapter_dir": os.path.join(work_root, "theology_cpt_lora_s5best"),
+        }
+
+    if profile == "s8":
+        continue_max = _env_int(env, "CONTINUE_MAX_STEPS", S8_DEFAULT_CONTINUE_MAX_STEPS)
+        max_steps_env = (env.get("MAX_STEPS") or "").strip()
+        if max_steps_env:
+            continue_max = int(max_steps_env)
+        explicit_min = (env.get("EARLY_STOP_MIN_STEPS") or "").strip()
+        if explicit_min:
+            min_steps = int(explicit_min)
+        else:
+            min_steps = max(1, math.ceil(0.5 * int(continue_max)))
+        work_root = resolve_work_root(env)
+        layout = layout_paths(work_root, env=env)
+        lr_scheduler_type = (env.get("LR_SCHEDULER") or "cosine_with_min_lr").strip() or "cosine_with_min_lr"
+        # Local name must stay sched_kwargs — readiness greps train_cpt_sota.py for it.
+        if lr_scheduler_type == "constant":
+            sched_kwargs = None
+        else:
+            sched_kwargs = {"min_lr_rate": 0.1}
+        if not buckets_raw:
+            buckets = list(S7_DEFAULT_EVAL_BUCKETS)
+        return {
+            "run_mode": "continue",
+            "continue_profile": "s8",
+            "learning_rate": _env_float(env, "LEARNING_RATE", S8_DEFAULT_LEARNING_RATE),
+            "embedding_learning_rate": _env_float(
+                env, "EMBEDDING_LEARNING_RATE", S8_DEFAULT_EMBEDDING_LEARNING_RATE
+            ),
+            "warmup_ratio": _env_float(env, "WARMUP_RATIO", S8_DEFAULT_WARMUP_RATIO),
+            "eval_docs_per_bucket": _env_int(env, "EVAL_DOCS_PER_BUCKET", 16),
+            "eval_buckets_during_train": buckets,
+            "eval_steps": _env_int(env, "EVAL_STEPS", 50),
+            "save_steps": _env_int(env, "SAVE_STEPS", 50),
+            "lr_scheduler_type": lr_scheduler_type,
+            "lr_scheduler_kwargs": sched_kwargs,
+            "abort_spurgeon_step": _env_int(env, "ABORT_SPURGEON_STEP", 0),
+            "abort_spurgeon_delta": _env_float(env, "ABORT_SPURGEON_DELTA", 0.0),
+            "s5_spurgeon_guardrail": _env_float(
+                env, "S5_SPURGEON_GUARDRAIL", S7_DEFAULT_S5_SPURGEON_GUARDRAIL
+            ),
+            "general_warn_delta": _env_float(
+                env, "GENERAL_WARN_DELTA", S7_DEFAULT_GENERAL_WARN_DELTA
+            ),
+            "early_stop_min_steps": min_steps,
+            "early_stop_epsilon": _env_float(env, "EARLY_STOP_EPSILON", 0.003),
+            "early_stop_patience": _env_int(env, "EARLY_STOPPING_PATIENCE", 4),
+            "composite_early_stop_metrics": resolve_composite_early_stop_metrics(
+                env,
+                [
+                    "eval_spurgeon_loss",
+                    "eval_puritan_loss",
+                    "eval_confession_loss",
+                ],
+            ),
+            "use_composite_early_stop": True,
+            "metric_for_best": (env.get("METRIC_FOR_BEST") or "eval_puritan_loss").strip()
+            or "eval_puritan_loss",
+            "continue_max_steps": continue_max,
+            "output_dir": layout["output_dir"],
+            # Empty: the first in-train eval seeds bests. Do not copy S6 constants.
+            "composite_seed_bests": parse_composite_seed_bests(env, default={}),
+            "s5_best_adapter_dir": os.path.join(work_root, "theology_cpt_lora_s5best"),
+            "save_only_model": False,
         }
 
     min_steps = 0
