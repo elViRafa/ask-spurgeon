@@ -8,6 +8,7 @@ schema_version: 1.3
 last_updated: "2026-09-04T01:20:10-04:00"
 evidence: [fine_tuning/VULTR_RUNBOOK_SFT.md, fine_tuning/scripts/vultr_orchestrate.ps1]
 summary_hash: 245ae3c499ffc4aa9aef564463fa3aeb
+review_status: stale
 ---
 
 **Updated:** 2026-09-04 ~01:20 ET

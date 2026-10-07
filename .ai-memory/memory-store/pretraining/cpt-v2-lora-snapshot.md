@@ -7,6 +7,7 @@ tags: [cpt, lora, runpod, handoff]
 schema_version: 1.3
 last_updated: "2026-08-27T09:50:01-04:00"
 evidence: [continued_pretrain/scripts/upload_cpt_lora_to_hf.py]
+review_status: stale
 ---
 
 # CPT v2 keepable LoRA snapshot

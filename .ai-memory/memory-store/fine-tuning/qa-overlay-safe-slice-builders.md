@@ -7,6 +7,7 @@ tags: [sft, qa-mix, catechism, multi-turn, builder]
 schema_version: 1.3
 last_updated: "2026-08-30T22:07:08-04:00"
 evidence: [fine_tuning/scripts/build_catechism_qa_slice.py, fine_tuning/scripts/merge_catechism_qa_slice.py, fine_tuning/scripts/build_multiturn_qa_slice.py, fine_tuning/scripts/merge_multiturn_qa_slice.py, fine_tuning/data/qa_mix_manifest.json]
+review_status: stale
 ---
 
 # Overlay-safe slice builders — implemented (2026-08-30)

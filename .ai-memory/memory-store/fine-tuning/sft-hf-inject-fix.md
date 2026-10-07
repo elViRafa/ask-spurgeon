@@ -6,6 +6,7 @@ priority: high
 tags: [sft, runpod, hf-token, fix]
 schema_version: 1.3
 last_updated: "2026-09-02T18:43:31-04:00"
+review_status: stale
 ---
 
 **Date:** 2026-09-02 ~18:45 ET

@@ -7,6 +7,7 @@ tags: [vast, sft, gate0, live, peft]
 schema_version: 1.3
 last_updated: "2026-09-06T02:28:24-04:00"
 evidence: [fine_tuning/scripts/train_sft_sota.py, fine_tuning/kaggle/vast_sft_session.json, fine_tuning/scripts/vast_monitor_until_done.py]
+review_status: stale
 ---
 
 # Vast GATE-0 SFT — running (post eval-OOM relaunch)

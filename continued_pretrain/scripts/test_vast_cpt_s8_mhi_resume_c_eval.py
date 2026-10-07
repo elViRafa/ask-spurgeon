@@ -62,6 +62,12 @@ def test_ps1_wiring_and_dry_head() -> None:
     assert "vast_cpt_s8_mhi_resume\\fetch\\mhi_resume\\theology_cpt_lora" in PS1.replace("/", "\\")
     assert "a_output_v6_p0" in PS1
     assert "vast_cpt_s8_mhi_resume_c" in PS1
+    assert "MergeParentDir" in PS1
+    assert "MERGE_PARENT_DIR" in PS1
+    assert "merge_cpt_lora" in PS1
+    assert ready.MERGE_PARENT_SHA in PS1
+    assert ("vast_cpt_s7_p0" + "\\" + "fetch" + "\\" + "theology_cpt_lora_s5best") in PS1.replace("/", "\\")
+    assert "theology_cpt_merged_a70" in PS1
 
 
 def test_dry_head_rejects_rent_before_exit() -> None:
@@ -86,3 +92,49 @@ def test_playbook_dry_and_go_commands() -> None:
     dry_block = PLAYBOOK.split("## `-Go`", 1)[0]
     assert ".\\vast_cpt_s8_mhi_resume_c_eval.ps1 -Go" not in dry_block
     assert "Do not" in PLAYBOOK
+    assert "theology_cpt_merged_a70" in PLAYBOOK
+    assert "merge_cpt_lora.py" in PLAYBOOK
+    assert "a70fded8" in PLAYBOOK
+    assert "EVAL_BASE" in PLAYBOOK
+    assert "rebuilds" in PLAYBOOK or "rebuild" in PLAYBOOK
+    assert "Do not rewrite the adapter onto stock Qwen" in PLAYBOOK or "rewrite the adapter onto stock Qwen" in PLAYBOOK
+
+
+def test_adapter_config_requires_merged_a70(tmp_path) -> None:
+    good = tmp_path / "adapter_config.json"
+    good.write_text(
+        '{"base_model_name_or_path": "/workspace/theology_cpt_merged_a70"}',
+        encoding="utf-8",
+    )
+    assert ready.adapter_config_errors(good) == []
+    stock = tmp_path / "stock.json"
+    stock.write_text(
+        '{"base_model_name_or_path": "unsloth/Qwen3.5-4B-Base"}',
+        encoding="utf-8",
+    )
+    errs = ready.adapter_config_errors(stock)
+    assert errs
+    assert any("stock/Qwen" in e or "theology_cpt_merged_a70" in e for e in errs)
+    missing = tmp_path / "missing.json"
+    assert any("missing" in e for e in ready.adapter_config_errors(missing))
+
+
+def test_stack_script_is_lf_only() -> None:
+    """Windows autocrlf must not leave CR in Isolation C remote stack script."""
+    sh = SCRIPTS / "vast_remote_stack_isolation_c.sh"
+    raw = sh.read_bytes()
+    assert b"\r" not in raw, "vast_remote_stack_isolation_c.sh must be LF-only (no CR)"
+    assert "sed -i" in PS1 and r"s/\r$//" in PS1, "ps1 must strip CR after scp of stack script"
+    ga = CPT.parent / ".gitattributes"
+    assert ga.is_file(), "repo root .gitattributes missing"
+    assert "*.sh text eol=lf" in ga.read_text(encoding="utf-8")
+
+
+def test_wiring_requires_merge_parent_mentions() -> None:
+    stripped = PS1.replace("MergeParentDir", "OtherDir").replace(
+        "MERGE_PARENT_DIR", "OTHER_DIR"
+    ).replace("merge_cpt_lora", "other_merge")
+    errs = ready.wiring_errors(stripped)
+    assert errs
+    assert any("MergeParent" in e or "MERGE_PARENT" in e or "merge_cpt_lora" in e for e in errs)
+

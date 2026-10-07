@@ -6,6 +6,7 @@ priority: medium
 tags: [sft, bulk-rewrite, batch1]
 schema_version: 1.3
 last_updated: "2026-08-29T09:43:48-04:00"
+review_status: stale
 ---
 
 # SFT Track A batch 1 complete (ready state)

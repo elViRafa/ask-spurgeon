@@ -7,6 +7,7 @@ tags: [cpt, eval, early-stop, handoff, corpus-v3]
 schema_version: 1.3
 last_updated: "2026-08-28T00:14:06-04:00"
 evidence: [continued_pretrain/scripts/train_cpt_sota.py, continued_pretrain/scripts/18_prep_hf_dataset.py, continued_pretrain/kaggle/runpod_cpt_v3/cpt_train.log, continued_pretrain/kaggle/runpod_cpt_v3/theology_cpt_eval_metrics.json, continued_pretrain/NEXT_CPT_MORE_TOKENS.md, continued_pretrain/kaggle/c_output/C_EVAL_GATE_REPORT.md]
+review_status: stale
 ---
 
 # CPT B eval strategy (verified 2026-08-28) — next B spec

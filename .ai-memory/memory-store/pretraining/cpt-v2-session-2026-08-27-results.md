@@ -7,6 +7,7 @@ tags: [cpt, runpod, c-eval, lora, handoff]
 schema_version: 1.3
 last_updated: "2026-08-27T09:49:53-04:00"
 evidence: [continued_pretrain/CPT_V2_KAGGLE_STATUS.md, continued_pretrain/kaggle/runpod_cpt_v2/theology_cpt_eval_metrics.json]
+review_status: stale
 ---
 
 # CPT v2 session results 2026-08-27

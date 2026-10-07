@@ -7,6 +7,7 @@ tags: [cpt, s6, c-eval]
 schema_version: 1.3
 last_updated: "2026-08-29T11:07:00-04:00"
 summary_hash: 15b39e7ce3d55ac42863abbd9fe97e5d
+review_status: stale
 ---
 
 # CPT S6 continue-B — interrupted (pointer)

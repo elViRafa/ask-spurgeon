@@ -8,6 +8,7 @@ schema_version: 1.3
 last_updated: "2026-08-27T21:36:49-04:00"
 occurrences: 1
 error_signature: "cpt b early-stop patience=<n> with eval_steps=<n> and <n>-doc eval_spurgeon_loss halted corpus v<n> at step <n> of <n> (~<n>.<n>m of <n>m tokens). mix eval still falling. same absolute tokens as the small v<n> probe."
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-08-27T21:36:49-04:00

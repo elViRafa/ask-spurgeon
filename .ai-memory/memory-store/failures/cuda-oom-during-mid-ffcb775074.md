@@ -9,6 +9,7 @@ last_updated: "2026-09-06T02:28:22-04:00"
 occurrences: 2
 error_signature: "cuda oom during mid-train eval at step ~<n> with peft bf<n> seq <n> on rtx <n> <n>gb"
 failure_key: "cuda|oom"
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-09-06T02:25:26-04:00

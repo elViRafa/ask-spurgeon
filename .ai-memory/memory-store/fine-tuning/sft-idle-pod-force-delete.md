@@ -6,6 +6,7 @@ priority: high
 tags: [sft, runpod, billing, idle]
 schema_version: 1.3
 last_updated: "2026-09-02T17:00:52-04:00"
+review_status: stale
 ---
 
 **Date:** 2026-09-02 ~17:00 ET

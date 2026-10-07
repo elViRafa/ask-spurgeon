@@ -1,0 +1,2 @@
+# Force LF for shell scripts (Windows autocrlf must not ship CRLF to Linux pods).
+*.sh text eol=lf

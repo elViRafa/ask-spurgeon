@@ -6,7 +6,7 @@ priority: high
 tags: [cpt, s7, c-eval, vast, isolation, scorecard, replay, continue-from]
 schema_version: 1.3
 last_updated: "2026-09-26T20:31:48-03:00"
-evidence: [continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7_replay_c/theology_cpt_eval_metrics.json, continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7_replay/CONTINUE_FROM.json, continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7_replay/fetch/theology_cpt_lora_s5best/s5_best.json]
+evidence: [continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7_replay_c/theology_cpt_eval_metrics.json, [REDACTED_SECRET].json, continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7_replay/fetch/theology_cpt_lora_s5best/s5_best.json]
 ---
 
 # S7 holdout-sibling replay isolation C COMPLETE (2026-09-26)

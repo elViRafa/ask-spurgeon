@@ -6,6 +6,7 @@ priority: high
 tags: [sft, stop-tokens, qwen35]
 schema_version: 1.3
 last_updated: "2026-09-02T09:47:29-04:00"
+review_status: stale
 ---
 
 Phased stop-token contract for Qwen3.5 SFT v2:

@@ -8,6 +8,7 @@ schema_version: 1.3
 last_updated: "2026-08-29T11:22:29-04:00"
 evidence: [continued_pretrain/CPT_V2_KAGGLE_STATUS.md]
 summary_hash: ff0e4a961bf41dca633cd820b50305e4
+review_status: stale
 ---
 
 # CPT v2 next-session — HISTORICAL (pointer)

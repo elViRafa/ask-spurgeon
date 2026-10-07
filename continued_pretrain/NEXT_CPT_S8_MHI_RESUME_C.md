@@ -5,6 +5,7 @@ Hub stays Phase A `06354dfc` until this C wins §5. Cursor / Foundry do not pass
 
 Stack: Unsloth **2026.8.22** + torch **2.8** via `vast_remote_stack_isolation_c.sh`.
 Do not use `vast_remote_c_eval.sh` (S6 torch 2.11).
+Shell scripts are LF-only (`.gitattributes` `*.sh text eol=lf`); `-Go` strips `\r` after scp so Windows autocrlf cannot break bash on the pod.
 
 ## Candidate
 
@@ -68,7 +69,7 @@ Equivalent readiness-only check:
 python continued_pretrain\scripts\vast_cpt_s8_mhi_resume_c_eval_readiness.py
 ```
 
-Dry runs readiness and exits 0. It does not load the Vast helpers, search offers, or create an instance. `READY` requires the flat file SHA `22698039…`, a matching checkpoint-2250 cross-check, `a_output_v6_p0` holdout buckets, and the dry-by-default wiring. A Phase A `06354dfc` file is a hard fail.
+Dry runs readiness and exits 0. It does not load the Vast helpers, search offers, or create an instance. `READY` requires the flat file SHA `22698039…`, a matching checkpoint-2250 cross-check, merge-parent `a70fded8…`, `merge_cpt_lora.py`, flat `adapter_config.json` naming `theology_cpt_merged_a70`, `a_output_v6_p0` holdout buckets, and the dry-by-default wiring. A Phase A `06354dfc` file is a hard fail.
 
 ## `-Go` (Forge, only after Rafael says go)
 
@@ -77,11 +78,11 @@ cd continued_pretrain\scripts
 .\vast_cpt_s8_mhi_resume_c_eval.ps1 -Go
 ```
 
-What `-Go` does: rent **one** GPU (4090, else 3090), sync the flat adapter + `a_output_v6_p0` holdouts, run `vast_remote_stack_isolation_c.sh`, fetch into `vast_cpt_s8_mhi_resume_c`, destroy on success. Pass `-KeepInstance` to keep the instance after a successful fetch. A failed eval keeps the instance for log inspection (same as S7 C); destroy it with `fine_tuning\scripts\vast_destroy.ps1` when finished. Optional: `-Go -OfferId <id>`.
+What `-Go` does: rent **one** GPU (4090, else 3090), sync the flat adapter + `a_output_v6_p0` holdouts + merge-parent `a70` + `merge_cpt_lora.py`, rebuild `/workspace/theology_cpt_merged_a70` inside `vast_remote_stack_isolation_c.sh`, fetch into `vast_cpt_s8_mhi_resume_c`, destroy on success. Pass `-KeepInstance` to keep the instance after a successful fetch. A failed eval keeps the instance for log inspection (same as S7 C); destroy it with `fine_tuning\scripts\vast_destroy.ps1` when finished. Optional: `-Go -OfferId <id>`.
 
 Credit check on `-Go` is about `$2`. Memory after the continue close was about `$3.86`. Re-check live credit before renting. Wall cap is 4 hours, disk 80 GB.
 
-If `from_pretrained` fails because `adapter_config.json` names the pod-local merge `/workspace/theology_cpt_merged_a70`, stop. Do not rewrite the adapter onto stock Qwen and do not score Phase A instead. The LoRA was trained on merged `a70fded8`; the report baseline is still stock `unsloth/Qwen3.5-4B-Base`.
+`-Go` syncs merge-parent `a70fded8` (`vast_cpt_s7_p0/fetch/theology_cpt_lora_s5best`) plus `fine_tuning/scripts/merge_cpt_lora.py` and rebuilds `/workspace/theology_cpt_merged_a70` on the pod before `from_pretrained`. Do **not** rewrite the adapter onto stock Qwen and do not score Phase A instead. The LoRA was trained on merged `a70fded8`; `EVAL_BASE` / the report baseline stays stock `unsloth/Qwen3.5-4B-Base`. Older "No merge" notes meant no Hub merge promote — not "skip pod-local merge parent".
 
 ## Do not
 

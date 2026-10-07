@@ -6,6 +6,7 @@ priority: high
 tags: [vultr, billing, sft, gate0, risk]
 schema_version: 1.3
 last_updated: "2026-09-04T08:43:49-04:00"
+review_status: stale
 ---
 
 # Vultr GATE-0 spend risk controls

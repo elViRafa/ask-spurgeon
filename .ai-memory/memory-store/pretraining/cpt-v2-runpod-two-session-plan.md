@@ -8,6 +8,7 @@ schema_version: 1.3
 last_updated: "2026-08-29T11:22:29-04:00"
 evidence: [pretraining/cpt-v2-c-eval-runpod-complete, continued_pretrain/CPT_V2_KAGGLE_STATUS.md]
 summary_hash: cf6902169c6e2730b444909aefbc57a3
+review_status: stale
 ---
 
 # CPT v2 session plan — DONE (pointer)

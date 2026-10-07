@@ -7,6 +7,7 @@ tags: [sft, qa-mix, decision, prompts]
 schema_version: 1.3
 last_updated: "2026-08-30T21:26:18-04:00"
 evidence: ["config.py:115", "utils/prompts.py:16", fine-tuning/qa-knowledge-not-persona, fine-tuning/qa-prompt-strategy-verify]
+review_status: stale
 ---
 
 # Decision: one QA prompt; diversify task slices (2026-08-30)

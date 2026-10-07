@@ -8,6 +8,7 @@ schema_version: 1.3
 last_updated: "2026-09-02T17:00:27-04:00"
 occurrences: 1
 error_signature: "sft capacity watcher kept idle runpod gpu pod billing after orchestrate failed on sft_inject_hf_token.ps<n>; default idle delete was <n> min instead of immediate terminate on failed launch"
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-09-02T17:00:27-04:00

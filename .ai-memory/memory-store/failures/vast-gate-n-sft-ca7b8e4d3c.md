@@ -9,6 +9,7 @@ last_updated: "2026-09-05T21:24:43-04:00"
 occurrences: 1
 error_signature: "vast gate-<n> sft crashed: trl sfttrainer valueerror eos_token <val> not in vocab (unsloth tokenizersbackend placeholder). also earlier typeerror dataset_text_field on sfttrainer with newer trl."
 failure_key: "valueerror|gate-0"
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-09-05T21:24:43-04:00

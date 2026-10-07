@@ -8,6 +8,7 @@ schema_version: 1.3
 last_updated: "2026-08-29T11:22:29-04:00"
 evidence: [continued_pretrain/CORPUS_V3_S4_HANDOFF.md, continued_pretrain/CORPUS_V3_S5_HANDOFF.md]
 summary_hash: 25aecdc17659b3f023916d658ae915d9
+review_status: stale
 ---
 
 # Corpus v3 S4 — DONE (pointer)

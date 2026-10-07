@@ -7,6 +7,7 @@ tags: [cpt, corpus-v3, s5, eval, runpod]
 schema_version: 1.3
 last_updated: "2026-08-27T23:44:42-04:00"
 evidence: [continued_pretrain/NEXT_CPT_MORE_TOKENS.md, continued_pretrain/kaggle/runpod_cpt_v3/theology_cpt_eval_metrics.json, continued_pretrain/kaggle/runpod_cpt_v3/theology_cpt_run_config.json]
+review_status: stale
 ---
 
 # CPT corpus v3 S5 C COMPLETE (2026-08-28)

@@ -6,6 +6,7 @@ priority: high
 tags: [sft, qa-mix, rewrite, prompt]
 schema_version: 1.3
 last_updated: "2026-08-29T17:17:58-04:00"
+review_status: stale
 ---
 
 # QA teacher quote-fidelity prompt fix (2026-08-29)

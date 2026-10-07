@@ -6,6 +6,7 @@ priority: high
 tags: [sft, runpod, billing]
 schema_version: 1.3
 last_updated: "2026-08-28T20:41:31-04:00"
+review_status: stale
 ---
 
 # SFT Phase B dry-run pod terminated (2026-08-28)

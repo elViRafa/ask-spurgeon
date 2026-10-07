@@ -6,6 +6,7 @@ priority: high
 tags: [sft, runpod, decisions, gate0]
 schema_version: 1.3
 last_updated: "2026-09-02T10:13:51-04:00"
+review_status: stale
 ---
 
 **Decision:** Phase C GATE-0 SFT on RunPod (not dry-run). Shared volume `7hb931c5oe` with CPT S6.

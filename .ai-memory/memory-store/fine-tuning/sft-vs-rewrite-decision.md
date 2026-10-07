@@ -6,6 +6,7 @@ priority: high
 tags: [fine-tuning, sft, qa-rewrite, decision]
 schema_version: 1.3
 last_updated: "2026-09-02T08:01:47-04:00"
+review_status: stale
 ---
 
 # SFT vs QA rewrite — decision context (2026-09-02)

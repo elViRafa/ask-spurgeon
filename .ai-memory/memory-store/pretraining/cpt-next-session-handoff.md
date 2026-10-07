@@ -1,51 +1,44 @@
 ---
 store_path: pretraining/cpt-next-session-handoff
 title: "CPT next-session handoff"
-summary: "Isolation C scripts are in draft PR 9"
+summary: "Rafael will run Isolation C in Grok Bot on 2026-10-07"
 priority: high
-tags: [cpt, s8, handoff, isolation-c, forge]
+tags: [cpt, s8, handoff, isolation-c, grok, forge]
 schema_version: 1.3
-last_updated: "2026-10-06T20:53:55+00:00"
-evidence: [continued_pretrain/scripts/vast_cpt_s8_mhi_resume_c_eval.ps1, "commit:e104c25"]
+last_updated: "2026-10-07T07:58:11-03:00"
+evidence: [continued_pretrain/scripts/vast_cpt_s8_mhi_resume_c_eval.ps1, [REDACTED_SECRET].md, "commit:638a249"]
 ---
 
-Isolation C scripts are in draft PR 9. GPU rent stays blocked until Rafael says go.
+Rafael will run Isolation C in Grok Bot on 2026-10-07. Forge rents. Cursor does not.
+
+Checkout `fix/s8-mhi-resume-c-merge-parent` (`638a249`, PR 10). main does not rebuild `/workspace/theology_cpt_merged_a70`, and that missing path is the rc=4 OSError.
 
 ### Candidate
 
 | Field | Value |
 |-------|--------|
 | Adapter SHA | `2269803948b2accbb132ad7d8386b542aa8c0a10c86cd7b7098b8857fcd2c207` |
-| AdapterDir | flat theology_cpt_lora under vast_cpt_s8_mhi_resume/fetch/mhi_resume |
+| AdapterDir | flat `theology_cpt_lora` under `vast_cpt_s8_mhi_resume/fetch/mhi_resume` |
 | Same SHA | checkpoint-2250 (cross-check only) |
-| In-train | puritan 1.701 / Spurgeon 2.449 (proxy ≤1.670 missed) |
-| §5 | puritan loss ≤ 1.6349; Spurgeon not worse than stock base. Expected result is a miss (about minus 9.2 percent PPL versus minus 15 percent) |
-| Stack | Unsloth 2026.8.22 + torch 2.8 (vast_remote_stack_isolation_c.sh) |
+| Merge parent | `a70fded8` at `vast_cpt_s7_p0/fetch/theology_cpt_lora_s5best` plus `fine_tuning/scripts/merge_cpt_lora.py` |
+| Pod base | rebuild `/workspace/theology_cpt_merged_a70` before `from_pretrained`. Do not remap onto stock Qwen |
+| Eval baseline | stock `unsloth/Qwen3.5-4B-Base` |
+| In-train | puritan 1.701 / Spurgeon 2.449 |
+| §5 | puritan loss ≤ 1.6349; Spurgeon not worse than stock base. Expected miss |
+| Stack | Unsloth 2026.8.22 + torch 2.8 |
 | Pack | a_output_v6_p0 |
-| Hub | Phase A 06354dfc |
-| PR | https://github.com/elViRafa/ask-spurgeon/pull/9 |
+| Hub | Phase A `06354dfc` |
+| Dry | READY on the operator PC 2026-10-07 |
+| Vast snapshot | $6.34 credit, 0 instances at 07:56 America/Sao_Paulo. Re-check before -Go |
 
-### Forge commands (operator PC)
-
-Dry, no rent:
-
-```powershell
-cd continued_pretrain\scripts
-.\vast_cpt_s8_mhi_resume_c_eval.ps1
-```
-
--Go only after Rafael says go:
+### Forge command
 
 ```powershell
-.\vast_cpt_s8_mhi_resume_c_eval.ps1 -Go
 ```
-
-Call Forge for this eval. Checkout cursor/s8-mhi-resume-isolation-c-468d until PR 9 merges.
 
 ### Do not
 
-- Rent or Hub-push before Rafael says go
-- Ask Foundry to run -Go
-- Point C at S6 or S7 adapters, or at checkpoint-2250 as AdapterDir
-- Use vast_remote_c_eval.sh or torch 2.11
-- HF-resume checkpoints_sota
+- Launch from main
+- Hub-push
+- Point AdapterDir at checkpoint-2250 or at an S6/S7 tree
+- Train again

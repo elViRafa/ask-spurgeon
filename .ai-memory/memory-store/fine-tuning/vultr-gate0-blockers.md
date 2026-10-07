@@ -6,6 +6,7 @@ priority: high
 tags: [vultr, sft, gate0, blocked, billing]
 schema_version: 1.3
 last_updated: "2026-09-05T18:03:37-04:00"
+review_status: stale
 ---
 
 # Vultr GATE-0 blockers (do not retry GPU until review window)

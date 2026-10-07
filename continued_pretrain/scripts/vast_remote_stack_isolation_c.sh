@@ -143,6 +143,48 @@ ver = tuple(int(x) for x in torch.__version__.split("+")[0].split(".")[:2])
 assert ver == (2, 8), torch.__version__
 PY
 
+# Optional: rebuild merge parent when the C LoRA was trained on theology_cpt_merged_a70.
+# MERGE_PARENT_DIR unset => behavior unchanged (S7 C / stock-base adapters).
+CPT_MERGED_BASE="${CPT_MERGED_BASE:-/workspace/theology_cpt_merged_a70}"
+if [[ -n "${MERGE_PARENT_DIR:-}" ]]; then
+  MERGE_PY="${MERGE_CPT_LORA_PY:-/workspace/merge_cpt_lora.py}"
+  PARENT_WEIGHTS="$MERGE_PARENT_DIR/adapter_model.safetensors"
+  echo "MERGE_PARENT_DIR=$MERGE_PARENT_DIR"
+  echo "MERGE_PARENT_SHA=${MERGE_PARENT_SHA:-}"
+  echo "CPT_MERGED_BASE=$CPT_MERGED_BASE"
+  echo "MERGE_CPT_LORA_PY=$MERGE_PY"
+  if [[ -z "${MERGE_PARENT_SHA:-}" ]]; then
+    echo "FAIL: MERGE_PARENT_SHA required when MERGE_PARENT_DIR is set" >&2
+    exit 2
+  fi
+  if [[ ! -f "$PARENT_WEIGHTS" ]]; then
+    echo "FAIL: missing merge parent weights $PARENT_WEIGHTS" >&2
+    exit 2
+  fi
+  if [[ ! -f "$MERGE_PY" ]]; then
+    echo "FAIL: missing merge_cpt_lora.py at $MERGE_PY" >&2
+    exit 2
+  fi
+  if [[ ! -f "$CPT_MERGED_BASE/config.json" ]]; then
+    echo "Rebuilding merge parent -> $CPT_MERGED_BASE (EXPECTED_ADAPTER_SHA256=$MERGE_PARENT_SHA for merge only)"
+    export SFT_WORK_ROOT=/workspace
+    export SFT_CPT_ADAPTER="$MERGE_PARENT_DIR"
+    export SFT_GATE0_MERGED="$CPT_MERGED_BASE"
+    export EXPECTED_ADAPTER_SHA256="$MERGE_PARENT_SHA"
+    "$PY" -u "$MERGE_PY"
+  else
+    echo "Merged base already present: $CPT_MERGED_BASE"
+  fi
+  if [[ ! -f "$CPT_MERGED_BASE/config.json" ]]; then
+    echo "FAIL: merge produced no config.json at $CPT_MERGED_BASE" >&2
+    exit 4
+  fi
+  # Restore C candidate SHA for eval_cpt_sota.py (do not leave a70 pin in env).
+  export EXPECTED_ADAPTER_SHA256="$PINNED_ADAPTER_SHA256"
+  echo "EXPECTED_ADAPTER_SHA256 restored to C candidate: $EXPECTED_ADAPTER_SHA256"
+  echo "MERGE_PARENT_OK config=$CPT_MERGED_BASE/config.json"
+fi
+
 nvidia-smi || true
 echo "CONDA_SETUP_OK - starting C-eval preflight"
 
