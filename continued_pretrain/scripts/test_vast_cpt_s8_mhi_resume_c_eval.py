@@ -119,6 +119,17 @@ def test_adapter_config_requires_merged_a70(tmp_path) -> None:
     assert any("missing" in e for e in ready.adapter_config_errors(missing))
 
 
+def test_stack_script_is_lf_only() -> None:
+    """Windows autocrlf must not leave CR in Isolation C remote stack script."""
+    sh = SCRIPTS / "vast_remote_stack_isolation_c.sh"
+    raw = sh.read_bytes()
+    assert b"\r" not in raw, "vast_remote_stack_isolation_c.sh must be LF-only (no CR)"
+    assert "sed -i" in PS1 and r"s/\r$//" in PS1, "ps1 must strip CR after scp of stack script"
+    ga = CPT.parent / ".gitattributes"
+    assert ga.is_file(), "repo root .gitattributes missing"
+    assert "*.sh text eol=lf" in ga.read_text(encoding="utf-8")
+
+
 def test_wiring_requires_merge_parent_mentions() -> None:
     stripped = PS1.replace("MergeParentDir", "OtherDir").replace(
         "MERGE_PARENT_DIR", "OTHER_DIR"

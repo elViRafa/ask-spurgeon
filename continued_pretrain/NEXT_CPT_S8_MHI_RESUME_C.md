@@ -5,6 +5,7 @@ Hub stays Phase A `06354dfc` until this C wins §5. Cursor / Foundry do not pass
 
 Stack: Unsloth **2026.8.22** + torch **2.8** via `vast_remote_stack_isolation_c.sh`.
 Do not use `vast_remote_c_eval.sh` (S6 torch 2.11).
+Shell scripts are LF-only (`.gitattributes` `*.sh text eol=lf`); `-Go` strips `\r` after scp so Windows autocrlf cannot break bash on the pod.
 
 ## Candidate
 

@@ -230,7 +230,7 @@ Invoke-CEvalSsh "rm -rf /workspace/merge_parent_a70 && mkdir -p /workspace/merge
 Send-ToWorkspace $MergeParentDir "/workspace/merge_parent_a70"
 Invoke-CEvalSsh 'if [[ -f /workspace/merge_parent_a70/adapter_model.safetensors ]]; then echo MERGE_PARENT_LAYOUT_OK; elif [[ -f /workspace/merge_parent_a70/theology_cpt_lora_s5best/adapter_model.safetensors ]]; then mv /workspace/merge_parent_a70/theology_cpt_lora_s5best/* /workspace/merge_parent_a70/ && rmdir /workspace/merge_parent_a70/theology_cpt_lora_s5best 2>/dev/null; echo MERGE_PARENT_LAYOUT_FLATTENED; else echo MERGE_PARENT_LAYOUT_FAIL; ls -laR /workspace/merge_parent_a70 2>/dev/null || true; exit 2; fi'
 Send-ToWorkspace $MergePy "/workspace/merge_cpt_lora.py"
-Invoke-CEvalSsh "chmod +x /workspace/vast_remote_stack_isolation_c.sh && test -f /workspace/theology_cpt_lora/adapter_model.safetensors && test -d /workspace/theology_holdouts/spurgeon && test -f /workspace/merge_parent_a70/adapter_model.safetensors && test -f /workspace/merge_cpt_lora.py && echo REMOTE_LAYOUT_OK"
+Invoke-CEvalSsh "sed -i 's/\r$//' /workspace/vast_remote_stack_isolation_c.sh && chmod +x /workspace/vast_remote_stack_isolation_c.sh && test -f /workspace/theology_cpt_lora/adapter_model.safetensors && test -d /workspace/theology_holdouts/spurgeon && test -f /workspace/merge_parent_a70/adapter_model.safetensors && test -f /workspace/merge_cpt_lora.py && echo REMOTE_LAYOUT_OK"
 if ($Script:LastRemoteExit -ne 0) { throw "remote layout check failed" }
 
 $ht = Convert-SessionToHashtable (Get-VastSession)
