@@ -7,6 +7,7 @@ tags: [cpt, corpus-v3, s2, mix, tokens]
 schema_version: 1.3
 last_updated: "2026-08-27T13:57:33-04:00"
 evidence: [continued_pretrain/data/theology_mix_manifest.json, continued_pretrain/CORPUS_V3_S2_HANDOFF.md, continued_pretrain/CORPUS_V3_S3_HANDOFF.md, continued_pretrain/data/corpus_v3_catalog.json]
+review_status: stale
 ---
 
 S2 fetch + mix rebuild finished 2026-08-27. No B/C, no Kaggle, no merge, no Hub LoRA overwrite.

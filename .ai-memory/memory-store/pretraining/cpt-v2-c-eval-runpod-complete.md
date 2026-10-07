@@ -7,6 +7,7 @@ tags: [cpt, runpod, c-eval]
 schema_version: 1.3
 last_updated: "2026-08-27T09:01:07-04:00"
 evidence: [continued_pretrain/kaggle/runpod_cpt_v2/theology_cpt_eval_metrics.json, continued_pretrain/kaggle/runpod_cpt_v2/cpt_eval.log, continued_pretrain/scripts/eval_cpt_sota.py]
+review_status: stale
 ---
 
 # CPT v2 Runpod C eval — COMPLETE 2026-08-27

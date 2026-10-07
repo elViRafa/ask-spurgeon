@@ -7,6 +7,7 @@ tags: [cpt, corpus, wave1, mix, puritans]
 schema_version: 1.3
 last_updated: "2026-08-27T11:02:21-04:00"
 evidence: [continued_pretrain/scripts/10_fetch_puritans.py, continued_pretrain/scripts/07_build_theology_mix.py, continued_pretrain/data/theology_mix_manifest.json, data/puritans/PROVENANCE.md, data/confessions/PROVENANCE.md]
+review_status: stale
 ---
 
 # CPT corpus v3 S1 — Wave 1 fetch + mix (2026-08-27)

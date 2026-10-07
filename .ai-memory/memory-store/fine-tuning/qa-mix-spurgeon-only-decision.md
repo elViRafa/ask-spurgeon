@@ -6,6 +6,7 @@ priority: high
 tags: [sft, qa-mix, decision, spurgeon]
 schema_version: 1.3
 last_updated: "2026-08-29T09:53:15-04:00"
+review_status: stale
 ---
 
 # Decision: SFT QA mix stays Spurgeon-only (main slice)

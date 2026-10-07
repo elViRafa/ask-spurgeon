@@ -7,6 +7,7 @@ tags: [sft, qwen35, eos, chatml, tokenizer]
 schema_version: 1.3
 last_updated: "2026-08-28T22:36:58-04:00"
 evidence: [fine_tuning/scripts/audit_qwen35_special_tokens.py, fine_tuning/data/qwen35_special_token_audit.json, fine_tuning/scripts/_gen_sota_sft_notebooks.py, fine_tuning/models/Modelfile.qwen35-spurgeon-qa-v2]
+review_status: stale
 ---
 
 # Qwen3.5-4B SFT special-token contract (2026-08-29)

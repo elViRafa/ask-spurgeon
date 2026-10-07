@@ -7,6 +7,7 @@ tags: [sft, qa-mix, gold, rewrite]
 schema_version: 1.3
 last_updated: "2026-08-28T22:16:08-04:00"
 evidence: [fine_tuning/scripts/merge_qa_gold_rewrite.py, fine_tuning/data/qa_mix_manifest.json, fine_tuning/data/qa_rewrite_pilot/pilot_manifest.json]
+review_status: stale
 ---
 
 # SFT QA gold rewrite pilot (20 rows, 2026-08-29)

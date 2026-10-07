@@ -6,6 +6,7 @@ priority: high
 tags: [sft, phase-b, dry-run]
 schema_version: 1.3
 last_updated: "2026-08-28T20:41:44-04:00"
+review_status: stale
 ---
 
 # Fine-tuning (SFT) prep plan — after CPT

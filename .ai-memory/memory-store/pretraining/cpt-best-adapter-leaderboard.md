@@ -6,7 +6,7 @@ priority: high
 tags: [cpt, s7, best, scorecard, leaderboard, hub, replay]
 schema_version: 1.3
 last_updated: "2026-09-26T20:31:48-03:00"
-evidence: [continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7_replay_c/theology_cpt_eval_metrics.json, continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7_b_c/theology_cpt_eval_metrics.json, pretraining/cpt-hub-keep-phase-a, pretraining/cpt-s7-replay-isolation-c-complete, continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7_replay/CONTINUE_FROM.json]
+evidence: [continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7_replay_c/theology_cpt_eval_metrics.json, continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s7_b_c/theology_cpt_eval_metrics.json, pretraining/cpt-hub-keep-phase-a, pretraining/cpt-s7-replay-isolation-c-complete, [REDACTED_SECRET].json]
 ---
 
 # Best CPT adapter + Hub production (updated 2026-09-26)

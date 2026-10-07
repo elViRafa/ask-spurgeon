@@ -6,6 +6,7 @@ priority: high
 tags: [vast, sft, gate0, live]
 schema_version: 1.3
 last_updated: "2026-09-05T19:55:43-04:00"
+review_status: stale
 ---
 
 # Vast GATE-0 live run

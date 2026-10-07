@@ -7,6 +7,7 @@ tags: [cpt, corpus-v3, recipe, early-stop, lr, eval]
 schema_version: 1.3
 last_updated: "2026-08-28T00:14:16-04:00"
 evidence: [continued_pretrain/NEXT_CPT_MORE_TOKENS.md, continued_pretrain/kaggle/runpod_cpt_v3/theology_cpt_eval_metrics.json, continued_pretrain/scripts/train_cpt_sota.py]
+review_status: stale
 ---
 
 # Next CPT B — continue with more mix tokens (eval strategy agreed)

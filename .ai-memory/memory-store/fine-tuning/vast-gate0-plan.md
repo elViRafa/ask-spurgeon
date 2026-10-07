@@ -7,6 +7,7 @@ tags: [vast, sft, gate0]
 schema_version: 1.3
 last_updated: "2026-09-05T19:18:30-04:00"
 evidence: [fine_tuning/VAST_RUNBOOK_SFT.md, fine_tuning/scripts/vast_orchestrate.ps1]
+review_status: stale
 ---
 
 # Vast.ai GATE-0 — scripts ready (no rent yet)

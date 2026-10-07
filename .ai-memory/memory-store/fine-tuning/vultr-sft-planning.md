@@ -7,6 +7,7 @@ tags: [vast, sft, gate0]
 schema_version: 1.3
 last_updated: "2026-09-05T18:04:00-04:00"
 evidence: [fine_tuning/VULTR_RUNBOOK_SFT.md, fine_tuning/scripts/vultr_orchestrate.ps1, fine_tuning/scripts/merge_cpt_lora.py, fine_tuning/scripts/sft_remote_setup.sh]
+review_status: stale
 ---
 
 **Updated:** 2026-09-03 ~23:00 ET

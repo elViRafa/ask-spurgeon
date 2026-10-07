@@ -8,6 +8,7 @@ schema_version: 1.3
 last_updated: "2026-09-06T00:42:31-04:00"
 occurrences: 2
 error_signature: "segmentation fault (exit <n>) at first sfttrainer.train() step after s<n> masking ok on vast unsloth <n>.<n>.<n> + trl <n>.<n> + qwen<n>.<n> <n>bit. also verify_sft_stop_tokens phase<n> segfaulted. log shows num_items_in_batch warning then silent sigsegv. fake nvml_reader missing."
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-09-05T23:50:01-04:00

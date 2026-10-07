@@ -6,6 +6,7 @@ priority: low
 tags: [cpt, sft, vast, merged-hf]
 schema_version: 1.3
 last_updated: "2026-09-06T02:32:53-04:00"
+review_status: stale
 ---
 
 ## Status (2026-09-06)

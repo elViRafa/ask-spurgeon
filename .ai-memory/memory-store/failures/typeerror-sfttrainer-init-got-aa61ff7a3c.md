@@ -9,6 +9,7 @@ last_updated: "2026-09-05T22:25:35-04:00"
 occurrences: 1
 error_signature: "typeerror: sfttrainer.__init__() got an unexpected keyword argument <val> (trl>=<n>.<n><path> with unslothsfttrainer **kwargs forward)"
 failure_key: typeerror
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-09-05T22:25:35-04:00

@@ -7,6 +7,7 @@ tags: [cpt, eval, early-stop, review]
 schema_version: 1.3
 last_updated: "2026-08-28T00:11:29-04:00"
 evidence: [continued_pretrain/scripts/18_prep_hf_dataset.py, continued_pretrain/kaggle/b_output/checkpoints_sota/checkpoint-250/trainer_state.json, continued_pretrain/kaggle/b_output_v6/checkpoints_sota/checkpoint-75/trainer_state.json, continued_pretrain/kaggle/c_output/C_EVAL_GATE_REPORT.md, continued_pretrain/scripts/train_cpt_sota.py, continued_pretrain/kaggle/runpod_cpt_v3/cpt_train.log]
+review_status: stale
 ---
 
 # Do not collapse C buckets; enlarge B stop sample

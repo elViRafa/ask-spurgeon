@@ -7,6 +7,7 @@ tags: [sft, qa-mix, f5, verification]
 schema_version: 1.3
 last_updated: "2026-08-30T22:07:13-04:00"
 evidence: [fine_tuning/scripts/audit_qa_mix_quality.py, fine_tuning/data/qa_mix_manifest.json]
+review_status: stale
 ---
 
 # QA verify — post slice expansion (2026-08-30)

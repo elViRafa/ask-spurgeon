@@ -6,6 +6,7 @@ priority: high
 tags: [fine-tuning, qa-rewrite, stop-point]
 schema_version: 1.3
 last_updated: "2026-09-02T08:58:42-04:00"
+review_status: stale
 ---
 
 # QA Sources Rewrite Progress

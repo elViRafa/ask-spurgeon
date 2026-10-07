@@ -7,6 +7,7 @@ tags: []
 schema_version: 1.3
 last_updated: "2026-08-29T11:07:00-04:00"
 summary_hash: eda9ebfbc623db8fd9795aea72099fac
+review_status: stale
 ---
 
 # Ask Spurgeon — RAG architecture

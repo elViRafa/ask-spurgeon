@@ -7,6 +7,7 @@ tags: [cpt, corpus-v3, s4, mix, tokens, confession]
 schema_version: 1.3
 last_updated: "2026-08-27T17:01:34-04:00"
 evidence: [continued_pretrain/CORPUS_V3_S4_HANDOFF.md, continued_pretrain/CORPUS_V3_S5_HANDOFF.md, continued_pretrain/data/theology_mix_manifest.json, continued_pretrain/scripts/11_fetch_confessions.py]
+review_status: stale
 ---
 
 S4 fetch + mix rebuild finished 2026-08-27. No B/C, no Kaggle, no merge, no Hub LoRA overwrite. Do not re-fetch Wave 3. Do not add more commentary. Do not grow Puritan treatise mass.

@@ -7,6 +7,7 @@ tags: [cpt, early-stop, recipe, corpus-v3]
 schema_version: 1.3
 last_updated: "2026-08-27T22:06:01-04:00"
 evidence: [continued_pretrain/kaggle/runpod_cpt_v3/theology_cpt_run_config.json, continued_pretrain/kaggle/runpod_cpt_v3/cpt_train.log, continued_pretrain/scripts/train_cpt_sota.py, continued_pretrain/configs/train_config_cpt_theology_sota.json]
+review_status: stale
 ---
 
 # Future CPT B — early-stop vs mix size

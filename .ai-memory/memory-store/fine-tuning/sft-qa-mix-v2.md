@@ -7,6 +7,7 @@ tags: [sft, qa-mix, f3, f5]
 schema_version: 1.3
 last_updated: "2026-08-28T20:41:31-04:00"
 evidence: [fine_tuning/scripts/build_qa_mix_v2.py, fine_tuning/data/qa_mix_manifest.json, "config.py:57", "utils/prompts.py:60"]
+review_status: stale
 ---
 
 # SFT QA mix v2 — serve-shaped (2026-08-28)

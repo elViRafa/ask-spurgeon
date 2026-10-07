@@ -7,6 +7,7 @@ tags: [handoff]
 schema_version: 1.3
 last_updated: "2026-08-29T11:22:29-04:00"
 summary_hash: 12369953e99b588bfe506ced27377723
+review_status: stale
 ---
 
 ## Future CPT quick start

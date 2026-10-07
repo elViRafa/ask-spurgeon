@@ -6,6 +6,7 @@ priority: medium
 tags: [cost, brl]
 schema_version: 1.3
 last_updated: "2026-09-05T18:19:51-04:00"
+review_status: stale
 ---
 
 # Vast.ai for GATE-0 SFT (candidate)

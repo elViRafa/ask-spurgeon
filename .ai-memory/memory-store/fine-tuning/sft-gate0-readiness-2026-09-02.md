@@ -7,6 +7,7 @@ tags: [sft, runpod, gate0, readiness]
 schema_version: 1.3
 last_updated: "2026-09-02T09:28:26-04:00"
 evidence: [fine_tuning/scripts/merge_cpt_lora.py, fine_tuning/scripts/sft_provision_pod_mcp.py, fine_tuning/scripts/sft_provision_pod.ps1, fine_tuning/scripts/sft_runpod_common.ps1, fine_tuning/scripts/13_sft_local_readiness.py, fine_tuning/RUNPOD_RUNBOOK_SFT.md]
+review_status: stale
 ---
 
 **Date:** 2026-09-02 ~09:30 ET

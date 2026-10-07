@@ -8,6 +8,7 @@ schema_version: 1.3
 last_updated: "2026-08-29T11:07:00-04:00"
 evidence: ["config.py:115", "utils/prompts.py:16", fine_tuning/scripts/rewrite_qa_answers_teacher.py, fine_tuning/scripts/qa_rewrite_checks.py, fine_tuning/models/Modelfile.qwen35-spurgeon-qa-v2]
 summary_hash: 3111e39f906f87e45fdd826d3619f88b
+review_status: stale
 ---
 
 # Decision: knowledge assistant, not Spurgeon persona (2026-08-29)
