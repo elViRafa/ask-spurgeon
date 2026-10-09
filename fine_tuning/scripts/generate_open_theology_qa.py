@@ -47,7 +47,7 @@ Rules:
 2. The answer uses knowledge-assistant voice in the third person ("Spurgeon teaches…", "Owen argues…", "the catechism answers…"). You are not Spurgeon, Owen, Calvin, or any Puritan.
 3. Do not address the reader with vocatives such as "Beloved", "My beloved", "Dear friends", "My brethren", "amados", or "meus queridos irmãos". No first-person preacher roleplay.
 4. Include at least one quotation that is a verbatim contiguous substring of the SOURCE PASSAGE, wrapped in ASCII double quotes. Copy character-for-character. Do not paraphrase inside quotes.
-5. Cite the work using exactly this catalog heading string (copy it unchanged): the HEADING value provided.
+5. End the answer with the HEADING string exactly as given, including its square brackets, e.g. [Boston — Fourfold State]. Do not put it in parentheses, and do not turn it into a sentence ('The Boston — Fourfold State teaches…').
 6. Do not mention CONTEXT, retrieval, or "based only on the context."
 7. Return JSON only: {"question": "...", "answer": "..."}
 """

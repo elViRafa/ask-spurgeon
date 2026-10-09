@@ -18,6 +18,7 @@ if str(_SCRIPTS) not in sys.path:
 
 from config import SPURGEON_SFT_SYSTEM_PROMPT, THEOLOGY_CHAT_SYSTEM_PROMPT  # noqa: E402
 from generate_open_theology_qa import (  # noqa: E402
+    OPEN_THEOLOGY_TEACHER_SYSTEM,
     build_accepted_row,
     done_job_ids,
     parse_qa,
@@ -26,6 +27,9 @@ from generate_open_theology_qa import (  # noqa: E402
 from open_theology_qa_checks import (  # noqa: E402
     check_open_theology_record,
     check_open_theology_row,
+    heading_cited,
+    ot_normalize,
+    quote_in_passage,
 )
 from plan_open_theology_jobs import (  # noqa: E402
     load_spurgeon_holdout_numbers,
@@ -98,6 +102,121 @@ def test_check_rejects_bad_quote():
     assert any("quote" in e for e in errs)
 
 
+# Synthetic strings modeled on the 2026-10-09 halt rejects.
+_PUNCT_PASSAGE = (
+    "10. Now because this way of entring into covenant is not between those that are "
+    "equall, but between Lord and servant. Therefore it portaineth to God. Even "
+    "Omnipotence cannot make a part to contain the whole. Divine works are as..."
+)
+
+
+@pytest.mark.parametrize(
+    "assistant",
+    [
+        # train-puritan-121: passage "...servant." quoted as "...servant,"
+        'As the passage states, "Now because this way of entring into covenant is not '
+        'between those that are equall, but between Lord and servant," it follows.',
+        # train-confession-019: curly quotes, passage "...whole." quoted as "...whole,"
+        "He writes that \u201cEven Omnipotence cannot make a part to contain the whole,\u201d indicating.",
+        # trailing "!" / ";" and a line break inside the passage span
+        'He says "Omnipotence cannot make a\npart to contain the whole;" here.',
+    ],
+)
+def test_quote_match_ignores_edge_punctuation(assistant):
+    assert quote_in_passage(assistant, _PUNCT_PASSAGE) == 1
+
+
+def test_quote_match_still_rejects_altered_words():
+    # train-puritan-044: teacher "corrected" Sibbes -> Sibbs; must stay a reject.
+    passage = "we find ' Thomas Sibbes was bmied January ye 18th 1690,' and Elizabeth"
+    assistant = 'The register says: "Thomas Sibbs was bmied January ye 18th 1690."'
+    assert quote_in_passage(assistant, passage) == 0
+
+
+def test_quote_match_rejects_punctuation_only_core():
+    # Stripping edges must not let a tiny core slip through.
+    passage = "a b c d e f g h ... , , , ."
+    assert quote_in_passage('x "  ...,,,.  ." y', passage) == 0
+    assert quote_in_passage('x "a b c,,,,,," y', passage) == 0
+
+
+def test_quote_match_ignores_case():
+    # train-confession-046: passage "The human foetus, \nfor example", quote starts lowercase.
+    passage = (
+        "He lays great stress also on the foetal \ndevelopment of the higher orders of animals. "
+        "The human foetus, \nfor example, assuming in succession the peculiarities of structure of \n"
+        "the reptile, of the fish, of the bird, and of man. This is supposed"
+    )
+    assistant = (
+        'He writes that "the human foetus, for example, assuming in succession the '
+        'peculiarities of structure of the reptile, of the fish, of the bird, and of man."'
+    )
+    assert quote_in_passage(assistant, passage) == 1
+
+
+def test_quote_match_joins_ocr_linebreak_hyphen():
+    # train-puritan-002: passage "be- \nfore", quote "before".
+    passage = (
+        "not considering that their most secret \nthoughts and actions will, at that day, "
+        "be discovered, be- \nfore the great congregation ! How eagerly"
+    )
+    assistant = (
+        '"their most secret thoughts and actions will, at that day, be discovered, '
+        'before the great congregation."'
+    )
+    assert quote_in_passage(assistant, passage) == 1
+
+
+def test_quote_match_keeps_real_hyphen_at_linebreak():
+    passage = "The Lord is our Law-\ngiver, the Lord is our King; he will save us."
+    assert quote_in_passage('"the Lord is our Law-giver, the Lord is our King"', passage) == 1
+    assert quote_in_passage('"the Lord is our Lawgiver, the Lord is our King"', passage) == 1
+
+
+@pytest.mark.parametrize(
+    "text",
+    ["the\u00a0Lord\u2009is  our\nKing", "THE LORD IS OUR KING", "the Lord is our King"],
+)
+def test_ot_normalize_whitespace_and_case(text):
+    assert ot_normalize(text) == "the lord is our king"
+
+
+def test_quote_match_still_rejects_paraphrase_after_normalization():
+    passage = "The human foetus, \nfor example, assuming in succession the peculiarities"
+    assert quote_in_passage('"the human fetus, for example, assuming in succession"', passage) == 0
+
+
+@pytest.mark.parametrize(
+    "cite",
+    [
+        "[Cotton \u2014 Keys Of The Kingdom]",
+        "[Cotton \u2013 Keys Of The Kingdom]",
+        "[Cotton - Keys of the Kingdom]",
+        "[Cotton\u00a0\u2014 Keys  Of The Kingdom]",
+    ],
+)
+def test_heading_cite_normalizes_dash_space_case(cite):
+    assert heading_cited(f'He says "x y z w v u t s". {cite}', "[Cotton \u2014 Keys Of The Kingdom]")
+
+
+@pytest.mark.parametrize(
+    "assistant",
+    [
+        # train-puritan-125: parentheses instead of the catalog brackets.
+        'He says "x y z w v u t s" (Cotton \u2014 Keys Of The Kingdom).',
+        # train-puritan-002: heading named inline in prose, no bracketed cite.
+        'The Boston \u2014 Fourfold State teaches that "x y z w v u t s".',
+        # wrong work
+        'He says "x y z w v u t s". [Cotton \u2014 Way Of The Churches]',
+    ],
+)
+def test_heading_cite_still_requires_brackets_and_right_work(assistant):
+    heading = (
+        "[Boston \u2014 Fourfold State]" if "Boston" in assistant else "[Cotton \u2014 Keys Of The Kingdom]"
+    )
+    assert not heading_cited(assistant, heading)
+
+
 def test_check_rejects_bad_citation():
     passage = 'Christ is the Beloved of the Father. Extra words for length here.'
     heading = '[Sermon 1 — "The Immutability of God"]'
@@ -138,6 +257,16 @@ def test_check_rejects_refusal():
         heading=heading,
     )
     assert any("refusal" in e for e in errs)
+
+
+def test_teacher_prompt_requires_bracketed_heading_at_end():
+    # train-puritan-002 (heading as prose) / train-puritan-125 (heading in parentheses).
+    rule5 = next(l for l in OPEN_THEOLOGY_TEACHER_SYSTEM.splitlines() if l.startswith("5."))
+    assert "End the answer with the HEADING string exactly as given" in rule5
+    assert "including its square brackets" in rule5
+    assert "[Boston \u2014 Fourfold State]" in rule5
+    assert "Do not put it in parentheses" in rule5
+    assert "do not turn it into a sentence" in rule5
 
 
 def test_parse_qa_json():
@@ -271,3 +400,81 @@ def test_dry_generator_writes_zero(tmp_path: Path):
     assert (out / "rejected.jsonl").read_text(encoding="utf-8") == ""
     status = json.loads((out / "status.json").read_text(encoding="utf-8"))
     assert status["counts"]["accepted"] == 0
+
+
+# --- Doubled-quote Spurgeon headings (train-spurgeon-036 / train-spurgeon-031) ---
+from fix_open_theology_catalog_headings import fixed_heading, migrate  # noqa: E402
+from plan_open_theology_jobs import clean_sermon_title, sermon_heading  # noqa: E402
+
+
+@pytest.mark.parametrize(
+    "raw, want",
+    [
+        ('"Jesus Our Lord"', "Jesus Our Lord"),
+        ('""The True Sayings of God""', "The True Sayings of God"),
+        ("\u201cHiding in You!\u201d", "Hiding in You!"),
+        ("The Silver Trumpet", "The Silver Trumpet"),
+        ('How "The Unspeakable" is Spoken of', 'How "The Unspeakable" is Spoken of'),
+        ('"Foo" and "Bar"', '"Foo" and "Bar"'),
+        ("Christ's Yoke and Burden", "Christ's Yoke and Burden"),
+        ("# Three Arrows--or Six? #", "Three Arrows--or Six?"),
+    ],
+)
+def test_clean_sermon_title(raw, want):
+    assert clean_sermon_title(raw) == want
+
+
+def test_sermon_heading_matches_teacher_cite():
+    # What the teacher actually wrote in train-spurgeon-036.
+    assert sermon_heading(2806, '"Jesus Our Lord"') == '[Sermon 2806 \u2014 "Jesus Our Lord"]'
+    assert fixed_heading('[Sermon 2806 \u2014 ""Jesus Our Lord""]') == '[Sermon 2806 \u2014 "Jesus Our Lord"]'
+    assert fixed_heading("[Boston \u2014 Fourfold State]") == "[Boston \u2014 Fourfold State]"
+
+
+def test_fixed_heading_lets_teacher_cite_pass():
+    passage = "She calls Him Lord in every part of His work and suffering, and she believes."
+    stored = '[Sermon 2806 \u2014 ""Jesus Our Lord""]'
+    answer = 'Spurgeon says "calls Him Lord in every part of His work". [Sermon 2806 \u2014 "Jesus Our Lord"]'
+    kw = dict(system=THEOLOGY_CHAT_SYSTEM_PROMPT, user="Why Lord?", assistant=answer, passage=passage)
+    assert any("heading" in e for e in check_open_theology_row(heading=stored, **kw))
+    assert check_open_theology_row(heading=fixed_heading(stored), **kw) == []
+
+
+def _write_queue(d: Path) -> None:
+    bad = lambda n, t: f'[Sermon {n} \u2014 ""{t}""]'  # noqa: E731
+    entries = [
+        {"job_id": "train-spurgeon-001", "heading": bad(1, "A B")},
+        {"job_id": "train-spurgeon-002", "heading": bad(2, "C D")},
+        {"job_id": "train-puritan-003", "heading": "[Owen \u2014 Mortification]"},
+    ]
+    (d / "catalog.json").write_text(json.dumps({"entries": entries}, indent=2), encoding="utf-8")
+    jobs = [dict(e, title=e["heading"].split("\u2014 ")[1][:-1]) for e in entries]
+    (d / "jobs.jsonl").write_text("".join(json.dumps(j, ensure_ascii=False) + "\n" for j in jobs), encoding="utf-8")
+    (d / "rejected.jsonl").write_text(json.dumps({"job_id": "train-spurgeon-001"}) + "\n", encoding="utf-8")
+    (d / "accepted.jsonl").write_text("", encoding="utf-8")
+
+
+def test_migration_dry_run_writes_nothing(tmp_path: Path):
+    _write_queue(tmp_path)
+    before = {p.name: p.read_bytes() for p in tmp_path.iterdir()}
+    res = migrate(tmp_path, apply=False)
+    assert res["catalog"] == 2 and res["jobs"] == 1 and res["skipped_done"] == ["train-spurgeon-001"]
+    assert {p.name: p.read_bytes() for p in tmp_path.iterdir()} == before
+
+
+def test_migration_apply_pending_only_with_backup(tmp_path: Path):
+    _write_queue(tmp_path)
+    rejected_before = (tmp_path / "rejected.jsonl").read_bytes()
+    migrate(tmp_path, apply=True)
+    assert len(list(tmp_path.glob("catalog.json.bak-*"))) == 1
+    assert len(list(tmp_path.glob("jobs.jsonl.bak-*"))) == 1
+    cat = json.loads((tmp_path / "catalog.json").read_text(encoding="utf-8"))["entries"]
+    assert [e["heading"] for e in cat] == [
+        '[Sermon 1 \u2014 "A B"]', '[Sermon 2 \u2014 "C D"]', "[Owen \u2014 Mortification]",
+    ]
+    jobs = {j["job_id"]: j for j in map(json.loads, (tmp_path / "jobs.jsonl").read_text(encoding="utf-8").splitlines())}
+    assert jobs["train-spurgeon-001"]["heading"] == '[Sermon 1 \u2014 ""A B""]'  # done: untouched
+    assert jobs["train-spurgeon-002"]["heading"] == '[Sermon 2 \u2014 "C D"]'
+    assert jobs["train-spurgeon-002"]["title"] == "C D"
+    assert (tmp_path / "rejected.jsonl").read_bytes() == rejected_before
+    assert migrate(tmp_path, apply=False)["jobs"] == 0  # idempotent
