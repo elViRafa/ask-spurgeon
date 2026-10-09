@@ -7,8 +7,10 @@ Do not loosen the RAG contract to accept these rows.
 
 from __future__ import annotations
 
+import html
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 _SCRIPTS = Path(__file__).resolve().parent
@@ -20,7 +22,7 @@ if str(_SCRIPTS) not in sys.path:
 
 from build_qa_mix import is_refusal  # noqa: E402
 from config import THEOLOGY_CHAT_SYSTEM_PROMPT  # noqa: E402
-from qa_rewrite_checks import QUOTE_RE, caricature_errors, norm_ws, role  # noqa: E402
+from qa_rewrite_checks import QUOTE_RE, caricature_errors, role  # noqa: E402
 
 CONTEXT_LEAK_RE = re.compile(r"\bCONTEXT\b")
 ONLY_CONTEXT_RE = re.compile(r"answer\s+based\s+ONLY", re.I)
@@ -45,20 +47,61 @@ def citation_headings(assistant: str) -> list[str]:
 _QUOTE_EDGE_PUNCT = " \t\n.,;:!?'\"‘’“”"
 _MIN_QUOTE_CHARS = 8
 
+# Every dash/hyphen variant the teacher or OCR may emit; all compare as ASCII "-".
+_DASHES_RE = re.compile("[\u2010\u2011\u2012\u2013\u2014\u2015\u2212\ufe58\ufe63\uff0d]")
+# OCR line-break hyphenation: "be- \nfore" in the passage, "before" in the quote.
+_LINEBREAK_HYPHEN_RE = re.compile(r"(\w)-[ \t]*\r?\n\s*(\w)")
+
+
+def ot_normalize(text: str, *, dehyphenate: bool = False, keep_hyphen: bool = False) -> str:
+    """Single normalizer for quote/passage and heading/cite comparison.
+
+    NFKC (NBSP -> space, ellipsis -> "...", ligatures), drop soft hyphens, dash
+    variants -> "-", curly quotes -> straight, optional OCR line-break de-hyphenation,
+    collapse whitespace, casefold. No fuzzy matching: callers still use exact containment.
+    """
+    text = unicodedata.normalize("NFKC", html.unescape(text or ""))
+    text = text.replace("\u00ad", "")
+    text = _DASHES_RE.sub("-", text)
+    text = text.replace("\u2018", "'").replace("\u2019", "'")
+    text = text.replace("\u201c", '"').replace("\u201d", '"')
+    if dehyphenate:
+        text = _LINEBREAK_HYPHEN_RE.sub(r"\1-\2" if keep_hyphen else r"\1\2", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    return text.casefold()
+
 
 def quote_core(quote: str) -> str:
     """Normalize a quoted span and strip leading/trailing punctuation for matching."""
-    return norm_ws(quote).strip(_QUOTE_EDGE_PUNCT)
+    return ot_normalize(quote).strip(_QUOTE_EDGE_PUNCT)
+
+
+def passage_variants(passage: str) -> tuple[str, ...]:
+    """Normalized passage, with OCR line-break hyphens joined ("be-fore" -> "before")
+    and kept ("Law-\ngiver" -> "Law-giver"), so either quote form is an exact substring."""
+    return (
+        ot_normalize(passage, dehyphenate=True),
+        ot_normalize(passage, dehyphenate=True, keep_hyphen=True),
+    )
 
 
 def quote_in_passage(assistant: str, passage: str) -> int:
-    passage_n = norm_ws(passage)
+    variants = passage_variants(passage)
     hits = 0
     for q in QUOTE_RE.findall(assistant):
         core = quote_core(q)
-        if len(core) >= _MIN_QUOTE_CHARS and core in passage_n:
+        if len(core) >= _MIN_QUOTE_CHARS and any(core in v for v in variants):
             hits += 1
     return hits
+
+
+def heading_cited(assistant: str, heading: str) -> bool:
+    """Bracketed catalog heading present, compared after the shared normalization
+    (dash variants, NBSP/whitespace, case). Brackets are still required."""
+    want = ot_normalize(heading)
+    if any(ot_normalize(c) == want for c in citation_headings(assistant)):
+        return True
+    return want in ot_normalize(assistant)
 
 
 def check_open_theology_row(
@@ -87,10 +130,9 @@ def check_open_theology_row(
     if quote_in_passage(assistant, passage) < 1:
         errors.append("answerable row has no quote found in source passage")
 
-    cites = citation_headings(assistant)
     heading_n = (heading or "").strip()
     if heading_n:
-        if heading_n not in cites and heading_n not in (assistant or ""):
+        if not heading_cited(assistant, heading_n):
             errors.append(f"missing catalog heading cite: {heading_n}")
     else:
         errors.append("empty catalog heading")

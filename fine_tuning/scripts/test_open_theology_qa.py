@@ -26,6 +26,8 @@ from generate_open_theology_qa import (  # noqa: E402
 from open_theology_qa_checks import (  # noqa: E402
     check_open_theology_record,
     check_open_theology_row,
+    heading_cited,
+    ot_normalize,
     quote_in_passage,
 )
 from plan_open_theology_jobs import (  # noqa: E402
@@ -135,6 +137,83 @@ def test_quote_match_rejects_punctuation_only_core():
     passage = "a b c d e f g h ... , , , ."
     assert quote_in_passage('x "  ...,,,.  ." y', passage) == 0
     assert quote_in_passage('x "a b c,,,,,," y', passage) == 0
+
+
+def test_quote_match_ignores_case():
+    # train-confession-046: passage "The human foetus, \nfor example", quote starts lowercase.
+    passage = (
+        "He lays great stress also on the foetal \ndevelopment of the higher orders of animals. "
+        "The human foetus, \nfor example, assuming in succession the peculiarities of structure of \n"
+        "the reptile, of the fish, of the bird, and of man. This is supposed"
+    )
+    assistant = (
+        'He writes that "the human foetus, for example, assuming in succession the '
+        'peculiarities of structure of the reptile, of the fish, of the bird, and of man."'
+    )
+    assert quote_in_passage(assistant, passage) == 1
+
+
+def test_quote_match_joins_ocr_linebreak_hyphen():
+    # train-puritan-002: passage "be- \nfore", quote "before".
+    passage = (
+        "not considering that their most secret \nthoughts and actions will, at that day, "
+        "be discovered, be- \nfore the great congregation ! How eagerly"
+    )
+    assistant = (
+        '"their most secret thoughts and actions will, at that day, be discovered, '
+        'before the great congregation."'
+    )
+    assert quote_in_passage(assistant, passage) == 1
+
+
+def test_quote_match_keeps_real_hyphen_at_linebreak():
+    passage = "The Lord is our Law-\ngiver, the Lord is our King; he will save us."
+    assert quote_in_passage('"the Lord is our Law-giver, the Lord is our King"', passage) == 1
+    assert quote_in_passage('"the Lord is our Lawgiver, the Lord is our King"', passage) == 1
+
+
+@pytest.mark.parametrize(
+    "text",
+    ["the\u00a0Lord\u2009is  our\nKing", "THE LORD IS OUR KING", "the Lord is our King"],
+)
+def test_ot_normalize_whitespace_and_case(text):
+    assert ot_normalize(text) == "the lord is our king"
+
+
+def test_quote_match_still_rejects_paraphrase_after_normalization():
+    passage = "The human foetus, \nfor example, assuming in succession the peculiarities"
+    assert quote_in_passage('"the human fetus, for example, assuming in succession"', passage) == 0
+
+
+@pytest.mark.parametrize(
+    "cite",
+    [
+        "[Cotton \u2014 Keys Of The Kingdom]",
+        "[Cotton \u2013 Keys Of The Kingdom]",
+        "[Cotton - Keys of the Kingdom]",
+        "[Cotton\u00a0\u2014 Keys  Of The Kingdom]",
+    ],
+)
+def test_heading_cite_normalizes_dash_space_case(cite):
+    assert heading_cited(f'He says "x y z w v u t s". {cite}', "[Cotton \u2014 Keys Of The Kingdom]")
+
+
+@pytest.mark.parametrize(
+    "assistant",
+    [
+        # train-puritan-125: parentheses instead of the catalog brackets.
+        'He says "x y z w v u t s" (Cotton \u2014 Keys Of The Kingdom).',
+        # train-puritan-002: heading named inline in prose, no bracketed cite.
+        'The Boston \u2014 Fourfold State teaches that "x y z w v u t s".',
+        # wrong work
+        'He says "x y z w v u t s". [Cotton \u2014 Way Of The Churches]',
+    ],
+)
+def test_heading_cite_still_requires_brackets_and_right_work(assistant):
+    heading = (
+        "[Boston \u2014 Fourfold State]" if "Boston" in assistant else "[Cotton \u2014 Keys Of The Kingdom]"
+    )
+    assert not heading_cited(assistant, heading)
 
 
 def test_check_rejects_bad_citation():
