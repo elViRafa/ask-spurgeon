@@ -40,9 +40,25 @@ def citation_headings(assistant: str) -> list[str]:
     return HEADING_CITE_RE.findall(assistant)
 
 
+# Quote-edge punctuation the teacher adapts to its own sentence ("...servant," where
+# the passage has "...servant."). Stripped from the quote only; still a containment check.
+_QUOTE_EDGE_PUNCT = " \t\n.,;:!?'\"‘’“”"
+_MIN_QUOTE_CHARS = 8
+
+
+def quote_core(quote: str) -> str:
+    """Normalize a quoted span and strip leading/trailing punctuation for matching."""
+    return norm_ws(quote).strip(_QUOTE_EDGE_PUNCT)
+
+
 def quote_in_passage(assistant: str, passage: str) -> int:
     passage_n = norm_ws(passage)
-    return sum(1 for q in QUOTE_RE.findall(assistant) if norm_ws(q) in passage_n)
+    hits = 0
+    for q in QUOTE_RE.findall(assistant):
+        core = quote_core(q)
+        if len(core) >= _MIN_QUOTE_CHARS and core in passage_n:
+            hits += 1
+    return hits
 
 
 def check_open_theology_row(
@@ -158,6 +174,16 @@ def _self_check() -> None:
         heading=heading,
     )
     assert any("quote" in e for e in bad_quote), bad_quote
+
+    # Teacher ends the quote with "," where the passage has "." (train-puritan-121 / confession-019).
+    comma_end = check_open_theology_row(
+        system=THEOLOGY_CHAT_SYSTEM_PROMPT,
+        user="What does Spurgeon teach?",
+        assistant=f'He writes that "Christ is the Beloved of the Father," and so on. {heading}',
+        passage=passage,
+        heading=heading,
+    )
+    assert comma_end == [], comma_end
 
     bad_cite = check_open_theology_row(
         system=THEOLOGY_CHAT_SYSTEM_PROMPT,

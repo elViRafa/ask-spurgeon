@@ -26,6 +26,7 @@ from generate_open_theology_qa import (  # noqa: E402
 from open_theology_qa_checks import (  # noqa: E402
     check_open_theology_record,
     check_open_theology_row,
+    quote_in_passage,
 )
 from plan_open_theology_jobs import (  # noqa: E402
     load_spurgeon_holdout_numbers,
@@ -96,6 +97,44 @@ def test_check_rejects_bad_quote():
         heading=heading,
     )
     assert any("quote" in e for e in errs)
+
+
+# Synthetic strings modeled on the 2026-10-09 halt rejects.
+_PUNCT_PASSAGE = (
+    "10. Now because this way of entring into covenant is not between those that are "
+    "equall, but between Lord and servant. Therefore it portaineth to God. Even "
+    "Omnipotence cannot make a part to contain the whole. Divine works are as..."
+)
+
+
+@pytest.mark.parametrize(
+    "assistant",
+    [
+        # train-puritan-121: passage "...servant." quoted as "...servant,"
+        'As the passage states, "Now because this way of entring into covenant is not '
+        'between those that are equall, but between Lord and servant," it follows.',
+        # train-confession-019: curly quotes, passage "...whole." quoted as "...whole,"
+        "He writes that \u201cEven Omnipotence cannot make a part to contain the whole,\u201d indicating.",
+        # trailing "!" / ";" and a line break inside the passage span
+        'He says "Omnipotence cannot make a\npart to contain the whole;" here.',
+    ],
+)
+def test_quote_match_ignores_edge_punctuation(assistant):
+    assert quote_in_passage(assistant, _PUNCT_PASSAGE) == 1
+
+
+def test_quote_match_still_rejects_altered_words():
+    # train-puritan-044: teacher "corrected" Sibbes -> Sibbs; must stay a reject.
+    passage = "we find ' Thomas Sibbes was bmied January ye 18th 1690,' and Elizabeth"
+    assistant = 'The register says: "Thomas Sibbs was bmied January ye 18th 1690."'
+    assert quote_in_passage(assistant, passage) == 0
+
+
+def test_quote_match_rejects_punctuation_only_core():
+    # Stripping edges must not let a tiny core slip through.
+    passage = "a b c d e f g h ... , , , ."
+    assert quote_in_passage('x "  ...,,,.  ." y', passage) == 0
+    assert quote_in_passage('x "a b c,,,,,," y', passage) == 0
 
 
 def test_check_rejects_bad_citation():
