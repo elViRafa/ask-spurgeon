@@ -1,0 +1,37 @@
+{
+  "created_at": "2026-10-09T13:38:24.925340+00:00",
+  "seed": 3407,
+  "version": "qa_open_theology_v1",
+  "targets": {
+    "train": {
+      "puritan": 150,
+      "spurgeon": 100,
+      "confession": 50
+    },
+    "eval": {
+      "puritan": 20,
+      "spurgeon": 12,
+      "confession": 8
+    }
+  },
+  "counts": {
+    "train_jobs": 300,
+    "eval_jobs": 40,
+    "catalog": 340,
+    "accepted": 0,
+    "rejected": 0,
+    "remaining": 300
+  },
+  "halted": false,
+  "halt_reason": "",
+  "last_error": "",
+  "next_job_id": "train-puritan-144",
+  "holdout_dir": "continued_pretrain/data/mix_v7/holdouts",
+  "spurgeon_holdout_sermons_skipped": 50,
+  "candidate_pool": {
+    "spurgeon": 3454,
+    "puritan": 99919,
+    "confession_files": 11034,
+    "catechism": 52
+  }
+}
