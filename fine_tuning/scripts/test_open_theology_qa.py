@@ -400,3 +400,81 @@ def test_dry_generator_writes_zero(tmp_path: Path):
     assert (out / "rejected.jsonl").read_text(encoding="utf-8") == ""
     status = json.loads((out / "status.json").read_text(encoding="utf-8"))
     assert status["counts"]["accepted"] == 0
+
+
+# --- Doubled-quote Spurgeon headings (train-spurgeon-036 / train-spurgeon-031) ---
+from fix_open_theology_catalog_headings import fixed_heading, migrate  # noqa: E402
+from plan_open_theology_jobs import clean_sermon_title, sermon_heading  # noqa: E402
+
+
+@pytest.mark.parametrize(
+    "raw, want",
+    [
+        ('"Jesus Our Lord"', "Jesus Our Lord"),
+        ('""The True Sayings of God""', "The True Sayings of God"),
+        ("\u201cHiding in You!\u201d", "Hiding in You!"),
+        ("The Silver Trumpet", "The Silver Trumpet"),
+        ('How "The Unspeakable" is Spoken of', 'How "The Unspeakable" is Spoken of'),
+        ('"Foo" and "Bar"', '"Foo" and "Bar"'),
+        ("Christ's Yoke and Burden", "Christ's Yoke and Burden"),
+        ("# Three Arrows--or Six? #", "Three Arrows--or Six?"),
+    ],
+)
+def test_clean_sermon_title(raw, want):
+    assert clean_sermon_title(raw) == want
+
+
+def test_sermon_heading_matches_teacher_cite():
+    # What the teacher actually wrote in train-spurgeon-036.
+    assert sermon_heading(2806, '"Jesus Our Lord"') == '[Sermon 2806 \u2014 "Jesus Our Lord"]'
+    assert fixed_heading('[Sermon 2806 \u2014 ""Jesus Our Lord""]') == '[Sermon 2806 \u2014 "Jesus Our Lord"]'
+    assert fixed_heading("[Boston \u2014 Fourfold State]") == "[Boston \u2014 Fourfold State]"
+
+
+def test_fixed_heading_lets_teacher_cite_pass():
+    passage = "She calls Him Lord in every part of His work and suffering, and she believes."
+    stored = '[Sermon 2806 \u2014 ""Jesus Our Lord""]'
+    answer = 'Spurgeon says "calls Him Lord in every part of His work". [Sermon 2806 \u2014 "Jesus Our Lord"]'
+    kw = dict(system=THEOLOGY_CHAT_SYSTEM_PROMPT, user="Why Lord?", assistant=answer, passage=passage)
+    assert any("heading" in e for e in check_open_theology_row(heading=stored, **kw))
+    assert check_open_theology_row(heading=fixed_heading(stored), **kw) == []
+
+
+def _write_queue(d: Path) -> None:
+    bad = lambda n, t: f'[Sermon {n} \u2014 ""{t}""]'  # noqa: E731
+    entries = [
+        {"job_id": "train-spurgeon-001", "heading": bad(1, "A B")},
+        {"job_id": "train-spurgeon-002", "heading": bad(2, "C D")},
+        {"job_id": "train-puritan-003", "heading": "[Owen \u2014 Mortification]"},
+    ]
+    (d / "catalog.json").write_text(json.dumps({"entries": entries}, indent=2), encoding="utf-8")
+    jobs = [dict(e, title=e["heading"].split("\u2014 ")[1][:-1]) for e in entries]
+    (d / "jobs.jsonl").write_text("".join(json.dumps(j, ensure_ascii=False) + "\n" for j in jobs), encoding="utf-8")
+    (d / "rejected.jsonl").write_text(json.dumps({"job_id": "train-spurgeon-001"}) + "\n", encoding="utf-8")
+    (d / "accepted.jsonl").write_text("", encoding="utf-8")
+
+
+def test_migration_dry_run_writes_nothing(tmp_path: Path):
+    _write_queue(tmp_path)
+    before = {p.name: p.read_bytes() for p in tmp_path.iterdir()}
+    res = migrate(tmp_path, apply=False)
+    assert res["catalog"] == 2 and res["jobs"] == 1 and res["skipped_done"] == ["train-spurgeon-001"]
+    assert {p.name: p.read_bytes() for p in tmp_path.iterdir()} == before
+
+
+def test_migration_apply_pending_only_with_backup(tmp_path: Path):
+    _write_queue(tmp_path)
+    rejected_before = (tmp_path / "rejected.jsonl").read_bytes()
+    migrate(tmp_path, apply=True)
+    assert len(list(tmp_path.glob("catalog.json.bak-*"))) == 1
+    assert len(list(tmp_path.glob("jobs.jsonl.bak-*"))) == 1
+    cat = json.loads((tmp_path / "catalog.json").read_text(encoding="utf-8"))["entries"]
+    assert [e["heading"] for e in cat] == [
+        '[Sermon 1 \u2014 "A B"]', '[Sermon 2 \u2014 "C D"]', "[Owen \u2014 Mortification]",
+    ]
+    jobs = {j["job_id"]: j for j in map(json.loads, (tmp_path / "jobs.jsonl").read_text(encoding="utf-8").splitlines())}
+    assert jobs["train-spurgeon-001"]["heading"] == '[Sermon 1 \u2014 ""A B""]'  # done: untouched
+    assert jobs["train-spurgeon-002"]["heading"] == '[Sermon 2 \u2014 "C D"]'
+    assert jobs["train-spurgeon-002"]["title"] == "C D"
+    assert (tmp_path / "rejected.jsonl").read_bytes() == rejected_before
+    assert migrate(tmp_path, apply=False)["jobs"] == 0  # idempotent
