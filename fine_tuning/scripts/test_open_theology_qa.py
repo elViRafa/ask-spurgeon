@@ -18,6 +18,7 @@ if str(_SCRIPTS) not in sys.path:
 
 from config import SPURGEON_SFT_SYSTEM_PROMPT, THEOLOGY_CHAT_SYSTEM_PROMPT  # noqa: E402
 from generate_open_theology_qa import (  # noqa: E402
+    OPEN_THEOLOGY_TEACHER_SYSTEM,
     build_accepted_row,
     done_job_ids,
     parse_qa,
@@ -256,6 +257,16 @@ def test_check_rejects_refusal():
         heading=heading,
     )
     assert any("refusal" in e for e in errs)
+
+
+def test_teacher_prompt_requires_bracketed_heading_at_end():
+    # train-puritan-002 (heading as prose) / train-puritan-125 (heading in parentheses).
+    rule5 = next(l for l in OPEN_THEOLOGY_TEACHER_SYSTEM.splitlines() if l.startswith("5."))
+    assert "End the answer with the HEADING string exactly as given" in rule5
+    assert "including its square brackets" in rule5
+    assert "[Boston \u2014 Fourfold State]" in rule5
+    assert "Do not put it in parentheses" in rule5
+    assert "do not turn it into a sentence" in rule5
 
 
 def test_parse_qa_json():
