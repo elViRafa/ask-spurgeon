@@ -118,6 +118,32 @@ def _title_case_work(stem: str) -> str:
     return stem.replace("_", " ").replace("-", " ").strip().title()
 
 
+_QUOTE_CHARS = "\"\u201c\u201d"
+
+
+def clean_sermon_title(raw: str) -> str:
+    """Canonical sermon title for catalog headings.
+
+    Some sermon .md headers quote the title themselves (`# Sermon 2806 | "Jesus Our Lord"`,
+    a scripture-phrase title). The heading template adds its own quotes, which produced
+    `[Sermon 2806 — ""Jesus Our Lord""]`. Collapse doubled quotes and strip ONE wrapping
+    pair when nothing else is quoted inside, so the heading is `[Sermon 2806 — "Jesus Our Lord"]`.
+    Inner quotes (`How "The Unspeakable" is Spoken of`) are kept.
+    """
+    title = (raw or "").strip().strip("#").strip()
+    while '""' in title:
+        title = title.replace('""', '"')
+    if len(title) >= 2 and title[0] in _QUOTE_CHARS and title[-1] in _QUOTE_CHARS:
+        inner = title[1:-1].strip()
+        if inner and not any(ch in inner for ch in _QUOTE_CHARS):
+            title = inner
+    return title
+
+
+def sermon_heading(num: int | str, title: str) -> str:
+    return f'[Sermon {num} — "{clean_sermon_title(title)}"]'
+
+
 def scan_spurgeon(
     sermons_dir: Path,
     holdout_nums: set[int],
@@ -134,7 +160,7 @@ def scan_spurgeon(
         if not m:
             continue
         num = int(m.group(1))
-        title = m.group(2).strip().strip("#").strip()
+        title = clean_sermon_title(m.group(2))
         if num in holdout_nums:
             continue
         body = SERMON_TITLE_RE.sub("", raw, count=1)
@@ -146,7 +172,7 @@ def scan_spurgeon(
         passage = chunks[min(1, len(chunks) - 1)]
         if _fingerprint(passage) in holdout_fps:
             continue
-        heading = f'[Sermon {num} — "{title}"]'
+        heading = sermon_heading(num, title)
         rel = path.relative_to(_REPO).as_posix()
         rows.append(
             {
