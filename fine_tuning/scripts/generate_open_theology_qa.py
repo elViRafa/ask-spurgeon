@@ -226,7 +226,7 @@ def run_batch(
                 teacher_user_prompt(job),
                 slice_name="open_theology",
                 system_prompt=OPEN_THEOLOGY_TEACHER_SYSTEM,
-                max_tokens=700,
+                max_tokens=1500,
                 temperature=0.5,
             )
             question, answer = parse_qa(raw)
