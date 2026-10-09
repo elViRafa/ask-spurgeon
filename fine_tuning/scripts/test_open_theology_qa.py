@@ -478,3 +478,115 @@ def test_migration_apply_pending_only_with_backup(tmp_path: Path):
     assert jobs["train-spurgeon-002"]["title"] == "C D"
     assert (tmp_path / "rejected.jsonl").read_bytes() == rejected_before
     assert migrate(tmp_path, apply=False)["jobs"] == 0  # idempotent
+
+
+# --- Teacher 429 / quota is not a quality reject (2026-10-09 15:30 BRT halt) ---
+import generate_open_theology_qa as _gen  # noqa: E402
+from generate_open_theology_qa import is_rate_limit_error  # noqa: E402
+from requeue_open_theology_teacher_errors import maintain  # noqa: E402
+
+_GOOD_PASSAGE = "Christ is the Beloved of the Father. What a remarkable instance of love."
+_GOOD_HEADING = '[Sermon 1 \u2014 "The Immutability of God"]'
+_GOOD_RAW = json.dumps({
+    "question": "What does Spurgeon teach about Christ?",
+    "answer": f'Spurgeon teaches that Christ is "the Beloved of the Father." {_GOOD_HEADING}',
+})
+_429 = ('teacher failed after 4 tries: 429: {"error":{"message":"Rate limit reached for model '
+        '`openai/gpt-oss-120b` ... tokens per day (TPD): Limit 200000, Used 199111')
+
+
+def _gen_dir(tmp_path: Path, n: int) -> Path:
+    out = tmp_path / "qa"
+    out.mkdir()
+    jobs = [{"job_id": f"train-spurgeon-{i:03d}", "role": "train", "work_id": f"w{i}",
+             "bucket": "spurgeon", "heading": _GOOD_HEADING, "source_path": f"s{i}.md",
+             "passage": _GOOD_PASSAGE, "title": "t"} for i in range(n)]
+    (out / "jobs.jsonl").write_text("".join(json.dumps(j) + "\n" for j in jobs), encoding="utf-8")
+    (out / "status.json").write_text(json.dumps({"halted": False, "counts": {}}), encoding="utf-8")
+    return out
+
+
+def _fake_teacher(script):
+    it = iter(script)
+
+    def fake(*a, **k):
+        x = next(it)
+        if isinstance(x, Exception):
+            raise x
+        return x
+    return fake
+
+
+def test_is_rate_limit_error():
+    assert is_rate_limit_error("teacher error: " + _429)
+    assert not is_rate_limit_error("teacher error: bad response shape: KeyError('choices')")
+
+
+def test_429_halts_without_writing_reject(tmp_path: Path, monkeypatch):
+    out = _gen_dir(tmp_path, 4)
+    monkeypatch.setattr(_gen, "call_teacher", _fake_teacher([_GOOD_RAW, RuntimeError(_429)]))
+    rep = run_batch(out_dir=out, limit=4, apply=True, provider="groq", model="m", sleep_s=0)
+    assert rep["halted"] and "rate limit" in rep["halt_reason"]
+    assert rep["rejected_new"] == 0 and rep["accepted_new"] == 1
+    assert not (out / "rejected.jsonl").exists() or (out / "rejected.jsonl").read_text(encoding="utf-8") == ""
+    st = json.loads((out / "status.json").read_text(encoding="utf-8"))
+    assert st["halted"] and "429" in st["last_error"]
+    done = done_job_ids(_gen.read_jsonl(out / "accepted.jsonl"), _gen.read_jsonl(out / "rejected.jsonl"))
+    assert "train-spurgeon-001" not in done  # 429 job still pending
+
+
+def test_transport_errors_do_not_trip_reject_rate(tmp_path: Path, monkeypatch):
+    # 2 non-429 transport errors among 6 jobs: no rejects written, no reject-rate halt.
+    out = _gen_dir(tmp_path, 6)
+    err = RuntimeError("bad response shape")
+    monkeypatch.setattr(_gen, "call_teacher", _fake_teacher(
+        [_GOOD_RAW, err, _GOOD_RAW, _GOOD_RAW, err, _GOOD_RAW]))
+    rep = run_batch(out_dir=out, limit=6, apply=True, provider="groq", model="m", sleep_s=0)
+    assert not rep["halted"]
+    assert rep["accepted_new"] == 4 and rep["rejected_new"] == 0 and rep["teacher_errors"] == 2
+
+
+def test_three_consecutive_transport_errors_still_halt(tmp_path: Path, monkeypatch):
+    out = _gen_dir(tmp_path, 5)
+    err = RuntimeError("connection reset")
+    monkeypatch.setattr(_gen, "call_teacher", _fake_teacher([err, err, err, _GOOD_RAW, _GOOD_RAW]))
+    rep = run_batch(out_dir=out, limit=5, apply=True, provider="groq", model="m", sleep_s=0)
+    assert rep["halted"] and "consecutive" in rep["halt_reason"]
+    assert rep["rejected_new"] == 0
+
+
+def _maint_dir(tmp_path: Path) -> Path:
+    d = tmp_path / "m"
+    d.mkdir()
+    jobs = [{"job_id": i, "bucket": "confession", "work_id": i, "source_path": "x", "heading": "[H]"}
+            for i in ("j-429", "j-quote", "j-bad", "j-acc")]
+    (d / "jobs.jsonl").write_text("".join(json.dumps(j) + "\n" for j in jobs), encoding="utf-8")
+    (d / "accepted.jsonl").write_text(json.dumps({"job_id": "j-acc"}) + "\n", encoding="utf-8")
+    rej = [{"job_id": "j-429", "errors": ["teacher error: " + _429]},
+           {"job_id": "j-quote", "errors": ["answerable row has no quote found in source passage"]}]
+    (d / "rejected.jsonl").write_text("".join(json.dumps(r) + "\r\n" for r in rej), encoding="utf-8",
+                                      newline="")
+    return d
+
+
+def test_maintain_dry_run_writes_nothing(tmp_path: Path):
+    d = _maint_dir(tmp_path)
+    before = {p.name: p.read_bytes() for p in d.iterdir()}
+    res = maintain(d, skip=["j-bad", "j-acc"], apply=False)
+    assert res == {"requeue": ["j-429"], "skip": ["j-bad"], "ignored": ["j-acc"]}
+    assert {p.name: p.read_bytes() for p in d.iterdir()} == before
+
+
+def test_maintain_apply_requeues_429_and_skips(tmp_path: Path):
+    d = _maint_dir(tmp_path)
+    acc_before = (d / "accepted.jsonl").read_bytes()
+    maintain(d, skip=["j-bad"], apply=True)
+    raw = (d / "rejected.jsonl").read_bytes()
+    assert b"\r\n" in raw  # line endings kept
+    ids = [json.loads(l)["job_id"] for l in raw.decode().splitlines() if l.strip()]
+    assert ids == ["j-quote", "j-bad"]
+    rq = [json.loads(l)["job_id"] for l in (d / "requeued_from_rejected.jsonl").read_text().splitlines()]
+    assert rq == ["j-429"]
+    assert len(list(d.glob("rejected.jsonl.bak-*"))) == 1
+    assert (d / "accepted.jsonl").read_bytes() == acc_before
+    assert maintain(d, apply=False)["requeue"] == []

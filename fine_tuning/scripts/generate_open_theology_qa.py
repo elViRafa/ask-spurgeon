@@ -146,6 +146,12 @@ def build_accepted_row(job: dict, question: str, answer: str, provider: str, mod
     }
 
 
+def is_rate_limit_error(err: str) -> bool:
+    """True for provider quota / rate-limit failures (e.g. groq TPD 429)."""
+    low = (err or "").lower()
+    return "429" in low or "rate limit" in low or "rate_limit" in low
+
+
 def reject_rate(accepted_n: int, rejected_n: int) -> float:
     total = accepted_n + rejected_n
     if total == 0:
@@ -277,27 +283,26 @@ def run_batch(
                 )
                 _log("  ACCEPT")
         except Exception as e:
-            consecutive_fail += 1
-            rejected_n += 1
-            report["rejected_new"] += 1
+            # Teacher transport failure (429 quota, network, bad response): not a quality
+            # reject. Do not write rejected.jsonl and do not count toward the reject rate,
+            # so the job stays pending and is retried on the next run.
             err = f"teacher error: {e}"
-            append_jsonl(
-                rejected_path,
-                {
-                    "job_id": job["job_id"],
-                    "ok": False,
-                    "errors": [err],
-                    "created_at": datetime.now(timezone.utc).isoformat(),
-                    "meta": {
-                        "bucket": job["bucket"],
-                        "work_id": job["work_id"],
-                        "source_path": job["source_path"],
-                        "heading": job["heading"],
-                    },
-                },
-            )
             status["last_error"] = err
-            _log(f"  ERROR: {e}")
+            report["teacher_errors"] = report.get("teacher_errors", 0) + 1
+            _log(f"  TEACHER ERROR (job left pending): {e}")
+            if is_rate_limit_error(err):
+                halt_reason = (
+                    "teacher rate limit/quota (429); job left pending, rerun after quota resets"
+                )
+                status["halted"] = True
+                status["halt_reason"] = halt_reason
+                status["updated_at"] = datetime.now(timezone.utc).isoformat()
+                report["halted"] = True
+                report["halt_reason"] = halt_reason
+                save_status(status_path, status)
+                _log(f"HALT: {halt_reason}")
+                break
+            consecutive_fail += 1
 
         rate = reject_rate(
             report["accepted_new"],
