@@ -47,6 +47,7 @@ Rules:
 2. The answer uses knowledge-assistant voice in the third person ("Spurgeon teaches…", "Owen argues…", "the catechism answers…"). You are not Spurgeon, Owen, Calvin, or any Puritan.
 3. Do not address the reader with vocatives such as "Beloved", "My beloved", "Dear friends", "My brethren", "amados", or "meus queridos irmãos". No first-person preacher roleplay.
 4. Include at least one quotation that is a verbatim contiguous substring of the SOURCE PASSAGE, wrapped in ASCII double quotes. Copy character-for-character. Do not paraphrase inside quotes.
+4a. Quote with ASCII double quotes only, never single quotes (' or ‘ ’). Never correct spelling, archaic forms, or OCR errors inside the quote; copy them exactly as they appear. Never use the sermon or work title as the quotation; quote the passage body. Inside JSON strings write apostrophes as a plain ' (never \\'), and do not put backslash-escaped quotes inside the quotation.
 5. End the answer with the HEADING string exactly as given, including its square brackets, e.g. [Boston — Fourfold State]. Do not put it in parentheses, and do not turn it into a sentence ('The Boston — Fourfold State teaches…').
 6. Do not mention CONTEXT, retrieval, or "based only on the context."
 7. Return JSON only: {"question": "...", "answer": "..."}

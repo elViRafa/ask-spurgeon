@@ -269,6 +269,16 @@ def test_teacher_prompt_requires_bracketed_heading_at_end():
     assert "do not turn it into a sentence" in rule5
 
 
+def test_teacher_prompt_quote_format_rule():
+    # train-puritan-057/049 (single quotes), -145 (OCR corrected), spurgeon-042 (title quoted),
+    # puritan-031 (\\' in JSON), puritan-110 (backslash-escaped quote inside quote).
+    rule = next(l for l in OPEN_THEOLOGY_TEACHER_SYSTEM.splitlines() if l.startswith("4a."))
+    assert "ASCII double quotes only, never single quotes" in rule
+    assert "Never correct spelling, archaic forms, or OCR errors inside the quote" in rule
+    assert "Never use the sermon or work title as the quotation" in rule
+    assert "write apostrophes as a plain '" in rule and "(never \\')" in rule
+
+
 def test_parse_qa_json():
     q, a = parse_qa('{"question": "Why faith?", "answer": "Because grace."}')
     assert q == "Why faith?"
