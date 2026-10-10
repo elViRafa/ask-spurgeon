@@ -8,6 +8,7 @@ Usage (repo root):
   python fine_tuning/scripts/generate_open_theology_qa.py
   python fine_tuning/scripts/generate_open_theology_qa.py --limit 25
   python fine_tuning/scripts/generate_open_theology_qa.py --apply --limit 25 --provider groq
+  python fine_tuning/scripts/generate_open_theology_qa.py --split eval --apply --limit 40 --provider groq
 """
 
 from __future__ import annotations
@@ -154,6 +155,21 @@ def is_rate_limit_error(err: str) -> bool:
     return "429" in low or "rate limit" in low or "rate_limit" in low
 
 
+SPLIT_FILES = {
+    "train": {"jobs": "jobs.jsonl", "status": "status.json",
+              "accepted": "accepted.jsonl", "rejected": "rejected.jsonl"},
+    "eval": {"jobs": "eval_jobs.jsonl", "status": "eval_status.json",
+             "accepted": "eval_accepted.jsonl", "rejected": "eval_rejected.jsonl"},
+}
+
+
+def split_paths(out_dir: Path, split: str) -> dict[str, Path]:
+    """File set for a split; eval never touches the train files."""
+    if split not in SPLIT_FILES:
+        raise SystemExit(f"ERROR: unknown split {split!r}")
+    return {k: out_dir / v for k, v in SPLIT_FILES[split].items()}
+
+
 def reject_rate(accepted_n: int, rejected_n: int) -> float:
     total = accepted_n + rejected_n
     if total == 0:
@@ -169,17 +185,24 @@ def run_batch(
     provider: str,
     model: str,
     sleep_s: float,
+    split: str = "train",
 ) -> dict:
-    jobs_path = out_dir / "jobs.jsonl"
-    status_path = out_dir / "status.json"
-    accepted_path = out_dir / "accepted.jsonl"
-    rejected_path = out_dir / "rejected.jsonl"
+    paths = split_paths(out_dir, split)
+    jobs_path = paths["jobs"]
+    status_path = paths["status"]
+    accepted_path = paths["accepted"]
+    rejected_path = paths["rejected"]
 
     jobs = read_jsonl(jobs_path)
     if not jobs:
         raise SystemExit(f"ERROR: no jobs in {jobs_path}; run plan_open_theology_jobs.py")
 
-    status = load_status(status_path)
+    if split == "eval" and not status_path.exists():
+        # First eval run: fresh status in memory; written only when apply=True.
+        status = {"split": "eval", "halted": False, "halt_reason": "", "last_error": "",
+                  "counts": {}}
+    else:
+        status = load_status(status_path)
     if status.get("halted"):
         _log(f"HALTED: {status.get('halt_reason') or 'campaign halted'}")
         return {"halted": True, "status": status}
@@ -338,7 +361,7 @@ def run_batch(
             "accepted": accepted_n,
             "rejected": rejected_n,
             "remaining": remaining,
-            "train_jobs": len(jobs),
+            f"{split}_jobs": len(jobs),
         }
         status["next_job_id"] = still[0]["job_id"] if still else ""
         status["updated_at"] = datetime.now(timezone.utc).isoformat()
@@ -382,13 +405,20 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Clear halted flag in status.json before running",
     )
+    p.add_argument(
+        "--split",
+        choices=tuple(SPLIT_FILES),
+        default="train",
+        help="train: jobs.jsonl -> accepted/rejected/status; "
+        "eval: eval_jobs.jsonl -> eval_accepted/eval_rejected/eval_status",
+    )
     args = p.parse_args(argv)
 
     out_dir = Path(args.out_dir)
     if not out_dir.is_absolute():
         out_dir = _REPO / out_dir
 
-    status_path = out_dir / "status.json"
+    status_path = split_paths(out_dir, args.split)["status"]
     if args.clear_halt and status_path.exists():
         status = load_status(status_path)
         status["halted"] = False
@@ -403,6 +433,7 @@ def main(argv: list[str] | None = None) -> int:
         provider=args.provider,
         model=args.model,
         sleep_s=args.sleep,
+        split=args.split,
     )
     return 0
 

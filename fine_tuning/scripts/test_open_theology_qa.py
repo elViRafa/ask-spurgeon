@@ -730,3 +730,39 @@ def test_meta_wording_is_warning_not_reject(tmp_path: Path, monkeypatch):
     assert row["meta"]["warnings"] == ["meta wording in question: 'the passage'"]
     st = json.loads((out / "status.json").read_text(encoding="utf-8"))
     assert st["counts"]["meta_wording_warnings"] == 1
+
+
+# --- --split eval ---
+def _eval_dir(tmp_path: Path, n_eval: int) -> tuple[Path, dict]:
+    out = _gen_dir(tmp_path, 2)  # train jobs + status.json
+    ev = [{"job_id": f"eval-spurgeon-{i:03d}", "role": "eval", "work_id": f"e{i}",
+           "bucket": "spurgeon", "heading": _GOOD_HEADING, "source_path": f"e{i}.md",
+           "passage": _GOOD_PASSAGE, "title": "t"} for i in range(n_eval)]
+    (out / "eval_jobs.jsonl").write_text("".join(json.dumps(j) + "\n" for j in ev), encoding="utf-8")
+    (out / "accepted.jsonl").write_text(json.dumps({"job_id": "train-spurgeon-000"}) + "\n", encoding="utf-8")
+    before = {p.name: p.read_bytes() for p in out.iterdir()}
+    return out, before
+
+
+def test_eval_split_dry_writes_nothing(tmp_path: Path):
+    out, before = _eval_dir(tmp_path, 3)
+    rep = run_batch(out_dir=out, limit=5, apply=False, provider="groq", model="", sleep_s=0, split="eval")
+    assert rep["pending"] == 3 and rep["next_job_ids"][0] == "eval-spurgeon-000"
+    assert {p.name: p.read_bytes() for p in out.iterdir()} == before
+
+
+def test_eval_split_apply_writes_only_eval_files(tmp_path: Path, monkeypatch):
+    out, before = _eval_dir(tmp_path, 3)
+    bad = json.dumps({"question": "Q?", "answer": "no quote, no heading"})
+    monkeypatch.setattr(_gen, "call_teacher", _fake_teacher([_GOOD_RAW, _GOOD_RAW, bad]))
+    rep = run_batch(out_dir=out, limit=5, apply=True, provider="groq", model="m", sleep_s=0, split="eval")
+    assert rep["accepted_new"] == 2 and rep["rejected_new"] == 1
+    for name, data in before.items():  # train files byte-identical
+        assert (out / name).read_bytes() == data, name
+    assert len((out / "eval_accepted.jsonl").read_text(encoding="utf-8").splitlines()) == 2
+    assert len((out / "eval_rejected.jsonl").read_text(encoding="utf-8").splitlines()) == 1
+    st = json.loads((out / "eval_status.json").read_text(encoding="utf-8"))
+    assert st["counts"]["eval_jobs"] == 3 and st["counts"]["remaining"] == 0
+    # rerun: nothing pending
+    rep2 = run_batch(out_dir=out, limit=5, apply=False, provider="groq", model="", sleep_s=0, split="eval")
+    assert rep2["pending"] == 0
