@@ -612,3 +612,81 @@ def test_maintain_ids_requeues_quality_reject(tmp_path: Path):
     assert (d / "rejected.jsonl").read_text(encoding="utf-8").strip() == ""
     rq = [json.loads(l)["job_id"] for l in (d / "requeued_from_rejected.jsonl").read_text().splitlines()]
     assert rq == ["j-429", "j-quote"]
+
+
+# --- plan --append N (grow the train queue) ---
+from plan_open_theology_jobs import append_jobs, append_split  # noqa: E402
+
+
+def test_append_split_scales_150_100_50():
+    assert append_split(300) == {"puritan": 150, "spurgeon": 100, "confession": 50}
+    assert append_split(30) == {"puritan": 15, "spurgeon": 10, "confession": 5}
+    assert sum(append_split(7).values()) == 7
+
+
+def _cand(bucket: str, i: int, path_i: int | None = None) -> dict:
+    pi = i if path_i is None else path_i
+    return {"work_id": f"{bucket}-w{i}", "bucket": bucket, "heading": f"[A \u2014 W{pi}]",
+            "source_path": f"data/{bucket}/f{pi}.txt", "passage": f"{bucket} passage {i} " * 30,
+            "title": f"W{pi}"}
+
+
+def _append_dir(tmp_path: Path) -> tuple[Path, dict]:
+    d = tmp_path / "q"
+    d.mkdir()
+    pools = {b: [_cand(b, i) for i in range(40)] for b in ("puritan", "spurgeon", "confession")}
+    used = [pools["puritan"][0], pools["spurgeon"][0], pools["confession"][0]]
+    jobs = [dict(build_job_like(c, f"train-{c['bucket']}-{k:03d}")) for k, c in
+            zip((149, 99, 49), used)]
+    ev = dict(build_job_like(pools["puritan"][1], "eval-puritan-000"), role="eval")
+    (d / "jobs.jsonl").write_bytes("".join(json.dumps(j) + "\r\n" for j in jobs).encode())
+    (d / "eval_jobs.jsonl").write_text(json.dumps(ev) + "\n", encoding="utf-8")
+    cat = {"created_at": "x", "entries": [{"work_id": j["work_id"], "source_path": j["source_path"],
+                                           "job_id": j["job_id"]} for j in jobs + [ev]]}
+    (d / "catalog.json").write_text(json.dumps(cat, indent=2), encoding="utf-8")
+    return d, pools
+
+
+def build_job_like(c: dict, job_id: str) -> dict:
+    return {"job_id": job_id, "role": "train", **{k: c[k] for k in
+            ("work_id", "bucket", "heading", "source_path", "passage", "title")}}
+
+
+def test_append_dry_writes_nothing_and_is_deterministic(tmp_path: Path):
+    d, pools = _append_dir(tmp_path)
+    before = {p.name: p.read_bytes() for p in d.iterdir()}
+    a = append_jobs(out_dir=d, holdout_dir=d, n=12, pools=pools)
+    b = append_jobs(out_dir=d, holdout_dir=d, n=12, pools=pools)
+    assert a == b and a["apply"] is False and a["batch"] == 1
+    assert a["by_bucket"] == {"puritan": 6, "spurgeon": 4, "confession": 2}
+    assert a["id_ranges"]["puritan"] == ["train-puritan-150", "train-puritan-155"]
+    assert {p.name: p.read_bytes() for p in d.iterdir()} == before
+
+
+def test_append_apply_appends_excludes_used_and_backs_up(tmp_path: Path):
+    d, pools = _append_dir(tmp_path)
+    old = (d / "jobs.jsonl").read_bytes()
+    res = append_jobs(out_dir=d, holdout_dir=d, n=12, pools=pools, apply=True)
+    raw = (d / "jobs.jsonl").read_bytes()
+    assert raw.startswith(old)  # existing rows untouched
+    assert raw.count(b"\r\n") == 15  # CRLF kept, 3 old + 12 new
+    rows = [json.loads(l) for l in raw.decode().splitlines()]
+    new = rows[3:]
+    assert len(new) == 12 and len({r["job_id"] for r in rows}) == 15
+    used = {"puritan-w0", "spurgeon-w0", "confession-w0", "puritan-w1"}  # train + eval
+    assert not ({r["work_id"] for r in new} & used)
+    assert len(list(d.glob("jobs.jsonl.bak-*"))) == 1 and len(list(d.glob("catalog.json.bak-*"))) == 1
+    cat = json.loads((d / "catalog.json").read_text(encoding="utf-8"))
+    assert len(cat["entries"]) == 16 and cat["appends"][0]["batch"] == 1
+    assert res["new_source_files"] == 12
+    # Second append: new batch/seed, continues ids, no reuse of batch-1 passages.
+    res2 = append_jobs(out_dir=d, holdout_dir=d, n=6, pools=pools, apply=True)
+    assert res2["batch"] == 2 and res2["id_ranges"]["puritan"] == ["train-puritan-156", "train-puritan-158"]
+    rows2 = [json.loads(l) for l in (d / "jobs.jsonl").read_text(encoding="utf-8").splitlines()]
+    assert len({r["work_id"] for r in rows2}) == len(rows2) == 21
+
+
+def test_append_raises_when_pool_exhausted(tmp_path: Path):
+    d, pools = _append_dir(tmp_path)
+    with pytest.raises(RuntimeError):
+        append_jobs(out_dir=d, holdout_dir=d, n=300, pools=pools)
