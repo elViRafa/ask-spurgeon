@@ -4,6 +4,8 @@
 1. Requeue: move rejected.jsonl rows whose ONLY errors are teacher transport errors
    ("teacher error: ..." e.g. groq 429 TPD quota) out of rejected.jsonl and append them to
    requeued_from_rejected.jsonl, so those jobs are pending again. Quality rejects stay.
+   With --ids JOB_ID ..., also requeue those specific rejected rows (any error type),
+   e.g. teacher-format quote rejects worth retrying after a prompt change.
 2. Skip (optional, --skip JOB_ID ...): append a rejected row for pending jobs whose
    passage is unusable (link lists, index pages), so the teacher is never called for them.
 
@@ -13,6 +15,7 @@ status.json counts are refreshed by the next generator run.
 
 Usage (repo root):
   python fine_tuning/scripts/requeue_open_theology_teacher_errors.py
+  python fine_tuning/scripts/requeue_open_theology_teacher_errors.py --ids train-puritan-057 train-puritan-049
   python fine_tuning/scripts/requeue_open_theology_teacher_errors.py \
       --skip train-confession-030 train-confession-032 --apply
 """
@@ -48,15 +51,28 @@ def is_teacher_error_only(row: dict) -> bool:
     return bool(errs) and all(str(e).startswith("teacher error:") for e in errs)
 
 
-def maintain(data_dir: Path, *, skip: list[str] | None = None, apply: bool = False) -> dict:
+def maintain(
+    data_dir: Path,
+    *,
+    skip: list[str] | None = None,
+    ids: list[str] | None = None,
+    apply: bool = False,
+) -> dict:
     rejected_p = data_dir / "rejected.jsonl"
     requeued_p = data_dir / "requeued_from_rejected.jsonl"
     rejected = _read(rejected_p)
     accepted_ids = {r.get("job_id") for r in _read(data_dir / "accepted.jsonl")}
     jobs = {j["job_id"]: j for j in _read(data_dir / "jobs.jsonl")}
 
-    move = [r for r in rejected if is_teacher_error_only(r)]
-    keep = [r for r in rejected if not is_teacher_error_only(r)]
+    want = set(ids or [])
+    rejected_ids = {r.get("job_id") for r in rejected}
+    ids_missing = sorted(want - rejected_ids)
+
+    def _move(r: dict) -> bool:
+        return is_teacher_error_only(r) or r.get("job_id") in want
+
+    move = [r for r in rejected if _move(r)]
+    keep = [r for r in rejected if not _move(r)]
     kept_ids = {r.get("job_id") for r in keep}
 
     skip_rows, skip_bad = [], []
@@ -74,8 +90,10 @@ def maintain(data_dir: Path, *, skip: list[str] | None = None, apply: bool = Fal
         })
 
     print(f"[{'APPLY' if apply else 'DRY RUN'}] {data_dir}")
-    print(f"rejected.jsonl: {len(rejected)} rows; {len(move)} teacher-error-only -> requeue, "
-          f"{len(keep)} quality rejects kept")
+    print(f"rejected.jsonl: {len(rejected)} rows; {len(move)} -> requeue "
+          f"(teacher-error-only or --ids), {len(keep)} kept")
+    if ids_missing:
+        print(f"  --ids not in rejected.jsonl (ignored): {ids_missing}")
     for r in move:
         print(f"  requeue {r.get('job_id')}: {str(r['errors'][0])[:90]}")
     print(f"skip: {len(skip_rows)} job(s) {[r['job_id'] for r in skip_rows]}"
@@ -98,16 +116,17 @@ def maintain(data_dir: Path, *, skip: list[str] | None = None, apply: bool = Fal
     elif not apply:
         print("dry run: nothing written (pass --apply)")
     return {"requeue": [r.get("job_id") for r in move], "skip": [r["job_id"] for r in skip_rows],
-            "ignored": skip_bad}
+            "ignored": skip_bad, "ids_missing": ids_missing}
 
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--data-dir", type=Path, default=OUT_DIR)
     ap.add_argument("--skip", nargs="*", default=[], help="pending job_ids to mark skipped")
+    ap.add_argument("--ids", nargs="*", default=[], help="rejected job_ids to requeue (any error)")
     ap.add_argument("--apply", action="store_true")
     args = ap.parse_args()
-    maintain(args.data_dir, skip=args.skip, apply=args.apply)
+    maintain(args.data_dir, skip=args.skip, ids=args.ids, apply=args.apply)
 
 
 if __name__ == "__main__":

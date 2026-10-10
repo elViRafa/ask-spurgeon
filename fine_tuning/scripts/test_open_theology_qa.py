@@ -583,7 +583,7 @@ def test_maintain_dry_run_writes_nothing(tmp_path: Path):
     d = _maint_dir(tmp_path)
     before = {p.name: p.read_bytes() for p in d.iterdir()}
     res = maintain(d, skip=["j-bad", "j-acc"], apply=False)
-    assert res == {"requeue": ["j-429"], "skip": ["j-bad"], "ignored": ["j-acc"]}
+    assert res == {"requeue": ["j-429"], "skip": ["j-bad"], "ignored": ["j-acc"], "ids_missing": []}
     assert {p.name: p.read_bytes() for p in d.iterdir()} == before
 
 
@@ -600,3 +600,15 @@ def test_maintain_apply_requeues_429_and_skips(tmp_path: Path):
     assert len(list(d.glob("rejected.jsonl.bak-*"))) == 1
     assert (d / "accepted.jsonl").read_bytes() == acc_before
     assert maintain(d, apply=False)["requeue"] == []
+
+
+def test_maintain_ids_requeues_quality_reject(tmp_path: Path):
+    d = _maint_dir(tmp_path)
+    before = (d / "rejected.jsonl").read_bytes()
+    res = maintain(d, ids=["j-quote", "nope"], apply=False)
+    assert res["requeue"] == ["j-429", "j-quote"] and res["ids_missing"] == ["nope"]
+    assert (d / "rejected.jsonl").read_bytes() == before
+    maintain(d, ids=["j-quote"], apply=True)
+    assert (d / "rejected.jsonl").read_text(encoding="utf-8").strip() == ""
+    rq = [json.loads(l)["job_id"] for l in (d / "requeued_from_rejected.jsonl").read_text().splitlines()]
+    assert rq == ["j-429", "j-quote"]
