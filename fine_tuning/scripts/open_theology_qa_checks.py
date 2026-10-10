@@ -104,6 +104,20 @@ def heading_cited(assistant: str, heading: str) -> bool:
     return want in ot_normalize(assistant)
 
 
+# Rule 6a: the user never sees the passage. Measured as a warning, not a reject.
+META_WORDING_RE = re.compile(r"\b(?:the|this)\s+(?:passage|text|excerpt|quote)\b", re.I)
+
+
+def meta_wording_warnings(user: str, assistant: str) -> list[str]:
+    """Warnings for 'the passage' / 'the text' / 'the excerpt' / 'this quote' wording."""
+    out: list[str] = []
+    for field, text in (("question", user), ("answer", assistant)):
+        m = META_WORDING_RE.search(text or "")
+        if m:
+            out.append(f"meta wording in {field}: {m.group(0)!r}")
+    return out
+
+
 def check_open_theology_row(
     *,
     system: str,

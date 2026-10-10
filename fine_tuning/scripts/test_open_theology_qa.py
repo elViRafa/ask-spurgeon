@@ -690,3 +690,43 @@ def test_append_raises_when_pool_exhausted(tmp_path: Path):
     d, pools = _append_dir(tmp_path)
     with pytest.raises(RuntimeError):
         append_jobs(out_dir=d, holdout_dir=d, n=300, pools=pools)
+
+
+# --- Rule 6a: no "the passage" wording (warning only) ---
+from open_theology_qa_checks import meta_wording_warnings  # noqa: E402
+
+
+def test_teacher_prompt_forbids_passage_wording():
+    rule = next(l for l in OPEN_THEOLOGY_TEACHER_SYSTEM.splitlines() if l.startswith("6a."))
+    for w in ('"the passage"', '"the text"', '"the excerpt"', '"this quote"'):
+        assert w in rule
+    assert "Attribute to the author or work" in rule and "Boston teaches" in rule
+
+
+@pytest.mark.parametrize(
+    "user, assistant, n",
+    [
+        ("According to the passage, what is grace?", "The passage states that grace is free.", 2),
+        ("What does Boston teach about grace?", 'Boston teaches that "grace is free." [Boston \u2014 Fourfold State]', 0),
+        ("Why?", "As this quote shows, it is free.", 1),
+        ("Why?", "In the Text he cites, it is free.", 1),
+        ("What is the context of Romans 8?", "Paul's textual argument and contextual point.", 0),
+    ],
+)
+def test_meta_wording_warnings(user, assistant, n):
+    assert len(meta_wording_warnings(user, assistant)) == n
+
+
+def test_meta_wording_is_warning_not_reject(tmp_path: Path, monkeypatch):
+    out = _gen_dir(tmp_path, 1)
+    raw = json.dumps({
+        "question": "What does the passage say about Christ?",
+        "answer": f'Spurgeon teaches that Christ is "the Beloved of the Father." {_GOOD_HEADING}',
+    })
+    monkeypatch.setattr(_gen, "call_teacher", _fake_teacher([raw]))
+    rep = run_batch(out_dir=out, limit=1, apply=True, provider="groq", model="m", sleep_s=0)
+    assert rep["accepted_new"] == 1 and rep["rejected_new"] == 0 and rep["meta_wording_warnings"] == 1
+    row = json.loads((out / "accepted.jsonl").read_text(encoding="utf-8").splitlines()[0])
+    assert row["meta"]["warnings"] == ["meta wording in question: 'the passage'"]
+    st = json.loads((out / "status.json").read_text(encoding="utf-8"))
+    assert st["counts"]["meta_wording_warnings"] == 1

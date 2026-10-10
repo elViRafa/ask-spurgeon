@@ -27,7 +27,7 @@ if str(_SCRIPTS) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS))
 
 from config import THEOLOGY_CHAT_SYSTEM_PROMPT  # noqa: E402
-from open_theology_qa_checks import check_open_theology_row  # noqa: E402
+from open_theology_qa_checks import check_open_theology_row, meta_wording_warnings  # noqa: E402
 from rewrite_qa_answers_teacher import (  # noqa: E402
     CONSECUTIVE_FAIL_ABORT,
     DEFAULT_MODELS,
@@ -50,6 +50,7 @@ Rules:
 4a. Quote with ASCII double quotes only, never single quotes (' or ‘ ’). Never correct spelling, archaic forms, or OCR errors inside the quote; copy them exactly as they appear. Never use the sermon or work title as the quotation; quote the passage body. Inside JSON strings write apostrophes as a plain ' (never \\'), and do not put backslash-escaped quotes inside the quotation.
 5. End the answer with the HEADING string exactly as given, including its square brackets, e.g. [Boston — Fourfold State]. Do not put it in parentheses, and do not turn it into a sentence ('The Boston — Fourfold State teaches…').
 6. Do not mention CONTEXT, retrieval, or "based only on the context."
+6a. The user will never see the SOURCE PASSAGE. Never write "the passage", "the text", "the excerpt", or "this quote" in the question or the answer. Attribute to the author or work instead (e.g. "Boston teaches…", "According to Owen…", "the Westminster Confession states…").
 7. Return JSON only: {"question": "...", "answer": "..."}
 """
 
@@ -278,11 +279,16 @@ def run_batch(
                 consecutive_fail = 0
                 accepted_n += 1
                 report["accepted_new"] += 1
-                append_jsonl(
-                    accepted_path,
-                    build_accepted_row(job, question, answer, provider, model),
-                )
-                _log("  ACCEPT")
+                row = build_accepted_row(job, question, answer, provider, model)
+                warns = meta_wording_warnings(question, answer)
+                if warns:
+                    # Measured, not rejected (rule 6a).
+                    row["meta"]["warnings"] = warns
+                    report["meta_wording_warnings"] = report.get("meta_wording_warnings", 0) + 1
+                    counts = status.setdefault("counts", {})
+                    counts["meta_wording_warnings"] = counts.get("meta_wording_warnings", 0) + 1
+                append_jsonl(accepted_path, row)
+                _log("  ACCEPT" + (f" (warn: {warns[0]})" if warns else ""))
         except Exception as e:
             # Teacher transport failure (429 quota, network, bad response): not a quality
             # reject. Do not write rejected.jsonl and do not count toward the reject rate,
