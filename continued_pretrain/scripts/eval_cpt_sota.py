@@ -198,6 +198,7 @@ import hashlib
 import json
 import math
 import os
+import random
 import re
 
 KAGGLE_WORKING = "/kaggle/working"
@@ -222,6 +223,19 @@ S7_DEFAULT_EARLY_STOP_MIN_STEPS = 400
 S7_DEFAULT_ABORT_SPURGEON_DELTA = 0.12
 S7_DEFAULT_S5_SPURGEON_GUARDRAIL = 0.01
 S7_DEFAULT_GENERAL_WARN_DELTA = 0.15
+
+# S8 rewarm: higher LR / rank than the 2e-6 plateau. Composite seeds stay empty so the
+# first in-train eval sets the bests (do not reuse the S6 constants 2.4987/1.751/1.668).
+S8_DEFAULT_LEARNING_RATE = 3e-5
+S8_DEFAULT_EMBEDDING_LEARNING_RATE = 3e-6
+S8_DEFAULT_WARMUP_RATIO = 0.05
+S8_DEFAULT_CONTINUE_MAX_STEPS = 400
+FLAGSHIP_BASE_MODEL = "unsloth/Qwen3.5-4B-Base"
+# Diagnostic only. Pinned holdout bytes stay the gate. Indices are <|endoftext|> docs.
+CLEAN_HOLDOUT_EXCLUDE = {
+    "puritan": (7, 10, 11),
+    "confession": (3,),
+}
 
 # S7 eval buckets: gate metrics stay spurgeon/puritan/confession (composite + §5/Hub).
 # general + new_authors are monitor-only (loaded/reported; not in COMPOSITE_EARLY_STOP_METRICS).
@@ -278,10 +292,20 @@ def resolve_work_root(env=None):
 
 
 def resolve_continue_profile(env=None):
-    """``s7`` when CPT_CONTINUE_PROFILE=s7; otherwise empty (S6 continue defaults)."""
+    """``s7`` or ``s8`` when CPT_CONTINUE_PROFILE is set; otherwise empty (S6 defaults)."""
     env = os.environ if env is None else env
     profile = (env.get("CPT_CONTINUE_PROFILE") or "").strip().lower()
-    return "s7" if profile == "s7" else ""
+    if profile in ("s7", "s8"):
+        return profile
+    return ""
+
+
+def continue_checkpoint_profile(env=None):
+    """``s7``/``s8`` when continue mode writes its own checkpoint dir; else empty."""
+    env = os.environ if env is None else env
+    if resolve_run_mode(env) != "continue":
+        return ""
+    return resolve_continue_profile(env)
 
 
 def layout_paths(work_root, env=None):
@@ -290,8 +314,8 @@ def layout_paths(work_root, env=None):
     explicit = (env.get("CPT_OUTPUT_DIR") or "").strip()
     if explicit:
         output_dir = explicit
-    elif resolve_run_mode(env) == "continue" and resolve_continue_profile(env) == "s7":
-        output_dir = os.path.join(work_root, "checkpoints_s7")
+    elif continue_checkpoint_profile(env):
+        output_dir = os.path.join(work_root, "checkpoints_" + continue_checkpoint_profile(env))
     else:
         output_dir = os.path.join(work_root, "checkpoints_sota")
     return {
@@ -356,22 +380,26 @@ def dataset_search_roots(work_root, env=None, kaggle_input=None, cwd=None):
             os.path.join(work_root, "theology_dataset"),
             os.path.join(work_root, "theology-cpt-dataset"),
             os.path.join(work_root, "a_output"),
-            os.path.join(work_root, "a_output_v6"),
+            os.path.join(work_root, "a_output_v6_p0"),
+        os.path.join(work_root, "a_output_v6"),
             os.path.join(work_root, "a_output_v5"),
             os.path.join(work_root, "a_output_v4"),
             os.path.join(work_root, "a_output_v3"),
             os.path.join(work_root, "kaggle", "a_output"),
-            os.path.join(work_root, "kaggle", "a_output_v6"),
+            os.path.join(work_root, "kaggle", "a_output_v6_p0"),
+        os.path.join(work_root, "kaggle", "a_output_v6"),
             os.path.join(work_root, "kaggle", "a_output_v5"),
             os.path.join(work_root, "kaggle", "a_output_v4"),
             os.path.join(work_root, "kaggle", "a_output_v3"),
             os.path.join(cwd, "continued_pretrain", "kaggle", "a_output"),
-            os.path.join(cwd, "continued_pretrain", "kaggle", "a_output_v6"),
+            os.path.join(cwd, "continued_pretrain", "kaggle", "a_output_v6_p0"),
+        os.path.join(cwd, "continued_pretrain", "kaggle", "a_output_v6"),
             os.path.join(cwd, "continued_pretrain", "kaggle", "a_output_v5"),
             os.path.join(cwd, "continued_pretrain", "kaggle", "a_output_v4"),
             os.path.join(cwd, "continued_pretrain", "kaggle", "a_output_v3"),
             os.path.join(cwd, "kaggle", "a_output"),
-            os.path.join(cwd, "kaggle", "a_output_v6"),
+            os.path.join(cwd, "kaggle", "a_output_v6_p0"),
+        os.path.join(cwd, "kaggle", "a_output_v6"),
             os.path.join(cwd, "kaggle", "a_output_v5"),
             os.path.join(cwd, "kaggle", "a_output_v4"),
             os.path.join(cwd, "kaggle", "a_output_v3"),
@@ -505,9 +533,10 @@ def collect_checkpoint_roots(work_root, env=None, kaggle_input=None):
     env = os.environ if env is None else env
     kaggle_input = KAGGLE_INPUT if kaggle_input is None else kaggle_input
     roots = []
-    if resolve_run_mode(env) == "continue" and resolve_continue_profile(env) == "s7":
+    profile = continue_checkpoint_profile(env)
+    if profile:
         explicit = (env.get("CPT_OUTPUT_DIR") or "").strip()
-        local = explicit or os.path.join(work_root, "checkpoints_s7")
+        local = explicit or os.path.join(work_root, "checkpoints_" + profile)
         if os.path.isdir(local):
             roots.append(local)
         return roots
@@ -728,7 +757,9 @@ def resolve_continue_training_config(env=None, packed_epoch_steps=None):
     """Overrides for CPT_RUN_MODE=continue. Empty dict when not in continue mode.
 
     CPT_CONTINUE_PROFILE=s7 selects Phase A knobs (lower LR, checkpoints_s7, seeded
-    4-metric composite). Unset profile keeps S6 continue defaults (4e-6, 0.4 epoch floor).
+    4-metric composite). CPT_CONTINUE_PROFILE=s8 is the rewarm profile (higher LR,
+    empty composite seeds, optimizer checkpoints). Unset profile keeps S6 continue
+    defaults (4e-6, 0.4 epoch floor).
     """
     env = os.environ if env is None else env
     if resolve_run_mode(env) != "continue":
@@ -741,6 +772,69 @@ def resolve_continue_training_config(env=None, packed_epoch_steps=None):
         buckets = [part.strip() for part in buckets_raw.split(",") if part.strip()]
     else:
         buckets = ["spurgeon", "puritan", "confession"]
+
+    if profile == "s8":
+        continue_max = _env_int(env, "CONTINUE_MAX_STEPS", S8_DEFAULT_CONTINUE_MAX_STEPS)
+        max_steps_env = (env.get("MAX_STEPS") or "").strip()
+        if max_steps_env:
+            continue_max = int(max_steps_env)
+        explicit_min = (env.get("EARLY_STOP_MIN_STEPS") or "").strip()
+        if explicit_min:
+            min_steps = int(explicit_min)
+        else:
+            min_steps = max(1, math.ceil(0.5 * int(continue_max)))
+        work_root = resolve_work_root(env)
+        layout = layout_paths(work_root, env=env)
+        lr_scheduler_type = (env.get("LR_SCHEDULER") or "cosine_with_min_lr").strip() or "cosine_with_min_lr"
+        if lr_scheduler_type == "constant":
+            sched_kwargs = None
+        else:
+            sched_kwargs = {"min_lr_rate": 0.1}
+        if not buckets_raw:
+            buckets = list(S7_DEFAULT_EVAL_BUCKETS)
+        return {
+            "run_mode": "continue",
+            "continue_profile": "s8",
+            "learning_rate": _env_float(env, "LEARNING_RATE", S8_DEFAULT_LEARNING_RATE),
+            "embedding_learning_rate": _env_float(
+                env, "EMBEDDING_LEARNING_RATE", S8_DEFAULT_EMBEDDING_LEARNING_RATE
+            ),
+            "warmup_ratio": _env_float(env, "WARMUP_RATIO", S8_DEFAULT_WARMUP_RATIO),
+            "eval_docs_per_bucket": _env_int(env, "EVAL_DOCS_PER_BUCKET", 16),
+            "eval_buckets_during_train": buckets,
+            "eval_steps": _env_int(env, "EVAL_STEPS", 50),
+            "save_steps": _env_int(env, "SAVE_STEPS", 50),
+            "lr_scheduler_type": lr_scheduler_type,
+            "lr_scheduler_kwargs": sched_kwargs,
+            "abort_spurgeon_step": _env_int(env, "ABORT_SPURGEON_STEP", 0),
+            "abort_spurgeon_delta": _env_float(env, "ABORT_SPURGEON_DELTA", 0.0),
+            "s5_spurgeon_guardrail": _env_float(
+                env, "S5_SPURGEON_GUARDRAIL", S7_DEFAULT_S5_SPURGEON_GUARDRAIL
+            ),
+            "general_warn_delta": _env_float(
+                env, "GENERAL_WARN_DELTA", S7_DEFAULT_GENERAL_WARN_DELTA
+            ),
+            "early_stop_min_steps": min_steps,
+            "early_stop_epsilon": _env_float(env, "EARLY_STOP_EPSILON", 0.003),
+            "early_stop_patience": _env_int(env, "EARLY_STOPPING_PATIENCE", 4),
+            "composite_early_stop_metrics": resolve_composite_early_stop_metrics(
+                env,
+                [
+                    "eval_spurgeon_loss",
+                    "eval_puritan_loss",
+                    "eval_confession_loss",
+                ],
+            ),
+            "use_composite_early_stop": True,
+            "metric_for_best": (env.get("METRIC_FOR_BEST") or "eval_puritan_loss").strip()
+            or "eval_puritan_loss",
+            "continue_max_steps": continue_max,
+            "output_dir": layout["output_dir"],
+            # Empty: the first in-train eval seeds bests. Do not copy S6 constants.
+            "composite_seed_bests": parse_composite_seed_bests(env, default={}),
+            "s5_best_adapter_dir": os.path.join(work_root, "theology_cpt_lora_s5best"),
+            "save_only_model": False,
+        }
 
     if profile == "s7":
         min_steps = S7_DEFAULT_EARLY_STOP_MIN_STEPS
@@ -792,6 +886,9 @@ def resolve_continue_training_config(env=None, packed_epoch_steps=None):
                 ],
             ),
             "use_composite_early_stop": True,
+            # Hard gate is Puritan; load_best picks best Puritan eval (Spurgeon abort/guardrail remain).
+            "metric_for_best": (env.get("METRIC_FOR_BEST") or "eval_puritan_loss").strip()
+            or "eval_puritan_loss",
             "continue_max_steps": continue_max,
             "output_dir": layout["output_dir"],
             "composite_seed_bests": parse_composite_seed_bests(
@@ -984,6 +1081,254 @@ def find_file(filename, search_roots, prefer_substrings=()):
                 return hit
     return hits[0]
 
+
+def resolve_eval_base_model(env=None):
+    """Isolation-C base is the stock flagship. CPT_BASE_MODEL is the train base only."""
+    env = os.environ if env is None else env
+    explicit = (env.get("CPT_EVAL_BASE_MODEL") or "").strip()
+    if explicit:
+        return explicit
+    return FLAGSHIP_BASE_MODEL
+
+
+def apply_env_model_overrides(values, env=None):
+    """Copy of model/rank/alpha with CPT_BASE_MODEL, LORA_RANK, LORA_ALPHA applied."""
+    env = os.environ if env is None else env
+    out = dict(values or {})
+    base = (env.get("CPT_BASE_MODEL") or "").strip()
+    if base:
+        out["model_name"] = base
+    rank = (env.get("LORA_RANK") or "").strip()
+    if rank:
+        out["lora_rank"] = int(rank)
+    alpha = (env.get("LORA_ALPHA") or "").strip()
+    if alpha:
+        out["lora_alpha"] = int(alpha)
+    return out
+
+
+def _env_flag(env, key):
+    raw = (env.get(key) or "").strip().lower()
+    if raw in ("1", "true", "yes", "on"):
+        return True
+    if raw in ("0", "false", "no", "off"):
+        return False
+    return None
+
+
+def resolve_fresh_training_env(env=None):
+    """Env overrides for CPT_RUN_MODE=fresh. Missing keys stay at the cell defaults."""
+    env = os.environ if env is None else env
+    out = {}
+    for key, caster in (
+        ("LEARNING_RATE", float),
+        ("EMBEDDING_LEARNING_RATE", float),
+        ("WARMUP_RATIO", float),
+        ("MAX_STEPS", int),
+        ("ABORT_SPURGEON_STEP", int),
+        ("EARLY_STOP_MIN_STEPS", int),
+        ("EARLY_STOPPING_PATIENCE", int),
+        ("EVAL_STEPS", int),
+        ("SAVE_STEPS", int),
+        ("EVAL_DOCS_PER_BUCKET", int),
+    ):
+        raw = (env.get(key) or "").strip()
+        if raw:
+            out[key.lower()] = caster(raw)
+    buckets_raw = (env.get("EVAL_BUCKETS_DURING_TRAIN") or "").strip()
+    if buckets_raw:
+        out["eval_buckets_during_train"] = [
+            part.strip() for part in buckets_raw.split(",") if part.strip()
+        ]
+    sched = (env.get("LR_SCHEDULER") or "").strip()
+    if sched:
+        out["lr_scheduler_type"] = sched
+        if sched == "cosine_with_min_lr":
+            out["lr_scheduler_kwargs"] = {"min_lr_rate": 0.1}
+    metric = (env.get("METRIC_FOR_BEST") or "").strip()
+    if metric:
+        out["metric_for_best"] = metric
+    composite = _env_flag(env, "USE_COMPOSITE_EARLY_STOP")
+    if composite is not None:
+        out["use_composite_early_stop"] = composite
+        if composite:
+            out["composite_early_stop_metrics"] = resolve_composite_early_stop_metrics(
+                env,
+                [
+                    "eval_spurgeon_loss",
+                    "eval_puritan_loss",
+                    "eval_confession_loss",
+                ],
+            )
+    return out
+
+
+def aggregate_token_losses(doc_rows):
+    """Token-weighted mean loss. Rows need index, tokens, loss. Drops tokens < 2."""
+    total_loss = 0.0
+    total_tokens = 0
+    kept = []
+    for row in doc_rows or []:
+        try:
+            tokens = int(row.get("tokens") or 0)
+        except (TypeError, ValueError):
+            continue
+        if tokens < 2 or row.get("loss") is None:
+            continue
+        loss = float(row["loss"])
+        total_loss += loss * tokens
+        total_tokens += tokens
+        kept.append(
+            {
+                "index": int(row.get("index", len(kept))),
+                "tokens": tokens,
+                "loss": loss,
+            }
+        )
+    if total_tokens == 0:
+        return {"tokens": 0, "loss": None, "ppl": None, "docs": 0, "per_doc": kept}
+    avg = total_loss / float(total_tokens)
+    return {
+        "tokens": total_tokens,
+        "loss": avg,
+        "ppl": math.exp(avg),
+        "docs": len(kept),
+        "per_doc": kept,
+    }
+
+
+def exclude_doc_indices(bucket):
+    """Diagnostic exclusions. Empty for buckets that are not on the noisy list."""
+    raw = CLEAN_HOLDOUT_EXCLUDE.get(bucket) or ()
+    return set(int(i) for i in raw)
+
+
+def clean_subset_rows(bucket, doc_rows):
+    skip = exclude_doc_indices(bucket)
+    return [row for row in (doc_rows or []) if int(row.get("index", -1)) not in skip]
+
+
+def _percentile(sorted_vals, q):
+    if not sorted_vals:
+        return None
+    if len(sorted_vals) == 1:
+        return float(sorted_vals[0])
+    pos = float(q) * (len(sorted_vals) - 1)
+    lo = int(math.floor(pos))
+    hi = int(math.ceil(pos))
+    if lo == hi:
+        return float(sorted_vals[lo])
+    weight = pos - lo
+    return float(sorted_vals[lo]) * (1.0 - weight) + float(sorted_vals[hi]) * weight
+
+
+def _rows_by_index(doc_rows):
+    out = {}
+    for row in doc_rows or []:
+        if row.get("loss") is None:
+            continue
+        try:
+            tokens = int(row.get("tokens") or 0)
+            index = int(row.get("index"))
+        except (TypeError, ValueError):
+            continue
+        if tokens < 2:
+            continue
+        out[index] = {"index": index, "tokens": tokens, "loss": float(row["loss"])}
+    return out
+
+
+def _weighted_loss(rows_by, indices):
+    total_loss = 0.0
+    total_tokens = 0.0
+    for index in indices:
+        row = rows_by[index]
+        tokens = float(row["tokens"])
+        total_loss += float(row["loss"]) * tokens
+        total_tokens += tokens
+    if total_tokens <= 0:
+        return None
+    return total_loss / total_tokens
+
+
+def bootstrap_ppl_delta_ci(adapter_rows, base_rows, n_resamples=1000, seed=42, alpha=0.05):
+    """95% CI on PPL percent change, resampling paired documents with replacement."""
+    by_adapter = _rows_by_index(adapter_rows)
+    by_base = _rows_by_index(base_rows)
+    common = sorted(set(by_adapter) & set(by_base))
+    empty = {
+        "n": len(common),
+        "delta_loss": None,
+        "delta_pct": None,
+        "ci_low": None,
+        "ci_high": None,
+        "n_resamples": 0,
+    }
+    if len(common) < 2:
+        return empty
+    point_adapter = _weighted_loss(by_adapter, common)
+    point_base = _weighted_loss(by_base, common)
+    if point_adapter is None or point_base is None:
+        return empty
+    base_ppl = math.exp(point_base)
+    adapter_ppl = math.exp(point_adapter)
+    rng = random.Random(int(seed))
+    samples = []
+    n = len(common)
+    draws = int(n_resamples)
+    for _ in range(draws):
+        picked = [common[rng.randrange(n)] for _ in range(n)]
+        a_loss = _weighted_loss(by_adapter, picked)
+        b_loss = _weighted_loss(by_base, picked)
+        if a_loss is None or b_loss is None:
+            continue
+        b_ppl = math.exp(b_loss)
+        if b_ppl == 0:
+            continue
+        samples.append(100.0 * (math.exp(a_loss) - b_ppl) / b_ppl)
+    samples.sort()
+    return {
+        "n": n,
+        "delta_loss": point_adapter - point_base,
+        "delta_pct": 100.0 * (adapter_ppl - base_ppl) / base_ppl,
+        "ci_low": _percentile(samples, alpha / 2.0),
+        "ci_high": _percentile(samples, 1.0 - alpha / 2.0),
+        "n_resamples": len(samples),
+    }
+
+
+def attach_holdout_diagnostics(metrics, buckets, n_resamples=1000, seed=42):
+    """Add clean sub-score and bootstrap CI. Does not change pinned holdout bytes."""
+    metrics["clean"] = {}
+    metrics["delta_clean_vs_base_pct"] = {}
+    metrics["delta_ci95"] = {}
+    v2 = metrics.get("v2") or {}
+    base = metrics.get("base") or {}
+    for name in buckets or []:
+        v_rows = list((v2.get(name) or {}).get("per_doc") or [])
+        b_rows = list((base.get(name) or {}).get("per_doc") or [])
+        if v_rows and b_rows:
+            metrics["delta_ci95"][name] = bootstrap_ppl_delta_ci(
+                v_rows, b_rows, n_resamples=n_resamples, seed=seed
+            )
+        excluded = sorted(exclude_doc_indices(name))
+        v_clean = aggregate_token_losses(clean_subset_rows(name, v_rows))
+        b_clean = aggregate_token_losses(clean_subset_rows(name, b_rows))
+        v_clean.pop("per_doc", None)
+        b_clean.pop("per_doc", None)
+        metrics["clean"][name] = {
+            "v2": v_clean,
+            "base": b_clean,
+            "excluded_doc_indices": excluded,
+        }
+        b_ppl = b_clean.get("ppl")
+        v_ppl = v_clean.get("ppl")
+        if b_ppl and v_ppl:
+            metrics["delta_clean_vs_base_pct"][name] = round(
+                100.0 * (v_ppl - b_ppl) / b_ppl, 2
+            )
+    return metrics
+
 # skipped notebook Unsloth install cell (use --install)
 
 import torch
@@ -1003,7 +1348,12 @@ import os
 import json
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
-MODEL_NAME = "unsloth/Qwen3.5-4B-Base"  # must match training base
+# Stock flagship. CPT_BASE_MODEL is the train base (merged weights) and is not the C reference.
+MODEL_NAME = resolve_eval_base_model()
+_train_base = (os.environ.get("CPT_BASE_MODEL") or "").strip()
+if _train_base and _train_base != MODEL_NAME:
+    print("CPT_BASE_MODEL", _train_base, "is the train base; eval base stays", MODEL_NAME)
+print("eval base model", MODEL_NAME)
 MAX_SEQ_LENGTH = 2048
 _cc_major = None
 try:
@@ -1249,24 +1599,20 @@ if len(_smoke) < 2:
     raise RuntimeError("text tokenize smoke failed")
 
 def eval_ppl(model, tokenizer, dataset, max_docs=None, max_seq=MAX_SEQ_LENGTH):
-    total_loss = 0.0
-    total_tokens = 0
     n = len(dataset) if max_docs is None else min(len(dataset), max_docs)
+    rows = []
     for i in range(n):
         text = dataset[i]["text"]
         inputs = tokenize_text(tokenizer, text, max_seq=max_seq, add_special_tokens=False)
         num_tokens = inputs["input_ids"].size(1)
         if num_tokens < 2:
+            rows.append({"index": i, "tokens": int(num_tokens), "loss": None})
             continue
         with torch.no_grad():
             out = model(**inputs, labels=inputs["input_ids"])
             loss = out.loss.item()
-        total_loss += loss * num_tokens
-        total_tokens += num_tokens
-    if total_tokens == 0:
-        return {"tokens": 0, "loss": None, "ppl": None, "docs": 0}
-    avg = total_loss / total_tokens
-    return {"tokens": total_tokens, "loss": avg, "ppl": math.exp(avg), "docs": n}
+        rows.append({"index": i, "tokens": int(num_tokens), "loss": float(loss)})
+    return aggregate_token_losses(rows)
 
 # §5 / Hub gate: spurgeon + puritan + confession (pinned v3). general + new_authors = monitor-only.
 _gate_buckets = ["spurgeon", "puritan", "confession", "general"]
@@ -1442,6 +1788,21 @@ for name in buckets:
         pct = 100.0 * (v - b) / b
         metrics["delta_vs_base_pct"][name] = round(pct, 2)
         print(f"{name:12s}  {b:8.2f}  {v:8.2f}  {pct:7.1f}%")
+
+attach_holdout_diagnostics(metrics, buckets)
+print("\n=== clean sub-score + bootstrap 95% CI on %Δ (gate bytes unchanged) ===")
+for name in buckets:
+    pct = (metrics.get("delta_clean_vs_base_pct") or {}).get(name)
+    ci = (metrics.get("delta_ci95") or {}).get(name) or {}
+    excl = ((metrics.get("clean") or {}).get(name) or {}).get("excluded_doc_indices")
+    lo = ci.get("ci_low")
+    hi = ci.get("ci_high")
+    if pct is None and lo is None:
+        continue
+    lo_s = f"{lo:.2f}" if isinstance(lo, float) else str(lo)
+    hi_s = f"{hi:.2f}" if isinstance(hi, float) else str(hi)
+    pct_s = f"{pct:.2f}" if isinstance(pct, float) else str(pct)
+    print(f"{name:12s}  clean %Δ={pct_s}  ci95=[{lo_s}, {hi_s}]  excluded={excl}")
 
 # Confirm load_best_model_at_end: PPL on highest checkpoint-* vs scored adapter (best LoRA).
 metrics["last_ckpt"] = {}

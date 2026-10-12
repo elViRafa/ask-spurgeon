@@ -374,6 +374,139 @@ def test_s7_empty_prev_ignores_leftover_sota(tmp_path: Path) -> None:
     assert found == str(s7 / "checkpoint-250")
 
 
+def test_s8_rewarm_profile(tmp_path: Path) -> None:
+    work = tmp_path / "s8work"
+    work.mkdir(parents=True)
+    env = {
+        "CPT_RUN_MODE": "continue",
+        "CPT_CONTINUE_PROFILE": "s8",
+        "CPT_WORK_ROOT": str(work),
+    }
+    cfg = cr.resolve_continue_training_config(env=env, packed_epoch_steps=4128)
+    assert cfg["continue_profile"] == "s8"
+    assert cfg["learning_rate"] == 3e-5
+    assert cfg["embedding_learning_rate"] == 3e-6
+    assert cfg["warmup_ratio"] == 0.05
+    assert cfg["continue_max_steps"] == 400
+    assert cfg["early_stop_min_steps"] == 200  # half of max, not the S7 floor of 400
+    assert cfg["abort_spurgeon_step"] == 0
+    assert cfg["abort_spurgeon_delta"] == 0.0
+    assert cfg["composite_seed_bests"] == {}
+    assert cfg["save_only_model"] is False
+    assert cfg["lr_scheduler_type"] == "cosine_with_min_lr"
+    assert cfg["lr_scheduler_kwargs"] == {"min_lr_rate": 0.1}
+    assert cfg["metric_for_best"] == "eval_puritan_loss"
+    assert cfg["output_dir"] == str(work / "checkpoints_s8")
+    assert cr.layout_paths(str(work), env=env)["output_dir"] == str(work / "checkpoints_s8")
+    longer = dict(env)
+    longer["MAX_STEPS"] = "2200"
+    longer["LEARNING_RATE"] = "2e-5"
+    cfg_long = cr.resolve_continue_training_config(env=longer, packed_epoch_steps=100)
+    assert cfg_long["continue_max_steps"] == 2200
+    assert cfg_long["early_stop_min_steps"] == 1100
+    assert cfg_long["learning_rate"] == 2e-5
+    pinned = dict(env)
+    pinned["EARLY_STOP_MIN_STEPS"] = "400"
+    assert cr.resolve_continue_training_config(env=pinned)["early_stop_min_steps"] == 400
+    flat = dict(env)
+    flat["LR_SCHEDULER"] = "constant"
+    cfg_flat = cr.resolve_continue_training_config(env=flat)
+    assert cfg_flat["lr_scheduler_type"] == "constant"
+    assert cfg_flat["lr_scheduler_kwargs"] is None
+
+
+def test_s8_empty_prev_ignores_leftover_sota(tmp_path: Path) -> None:
+    sota = tmp_path / "checkpoints_sota" / "checkpoint-2400"
+    sota.mkdir(parents=True)
+    _write(sota / "trainer_state.json")
+    env = {"CPT_RUN_MODE": "continue", "CPT_CONTINUE_PROFILE": "s8"}
+    assert (
+        cr.resolve_prev_checkpoint(str(tmp_path), env=env, kaggle_input=str(tmp_path / "none"))
+        is None
+    )
+    s8 = tmp_path / "checkpoints_s8"
+    _write(s8 / "checkpoint-100" / "trainer_state.json")
+    found = cr.resolve_prev_checkpoint(
+        str(tmp_path), env=env, kaggle_input=str(tmp_path / "none")
+    )
+    assert found == str(s8 / "checkpoint-100")
+
+
+def test_eval_base_ignores_cpt_base_model() -> None:
+    env = {"CPT_BASE_MODEL": "/workspace/theology_cpt_merged_a70"}
+    assert cr.resolve_eval_base_model(env) == "unsloth/Qwen3.5-4B-Base"
+    env["CPT_EVAL_BASE_MODEL"] = "other/model"
+    assert cr.resolve_eval_base_model(env) == "other/model"
+
+
+def test_fresh_and_rank_env_overrides() -> None:
+    env = {
+        "LEARNING_RATE": "5e-5",
+        "EMBEDDING_LEARNING_RATE": "5e-6",
+        "LORA_RANK": "128",
+        "LORA_ALPHA": "64",
+        "CPT_BASE_MODEL": "unsloth/Qwen3.5-4B-Base",
+        "MAX_STEPS": "400",
+        "ABORT_SPURGEON_STEP": "0",
+        "USE_COMPOSITE_EARLY_STOP": "1",
+        "EVAL_BUCKETS_DURING_TRAIN": "spurgeon,puritan",
+        "LR_SCHEDULER": "cosine_with_min_lr",
+        "METRIC_FOR_BEST": "eval_puritan_loss",
+    }
+    over = cr.apply_env_model_overrides(
+        {"model_name": "default", "lora_rank": 32, "lora_alpha": 32}, env
+    )
+    assert over["model_name"] == "unsloth/Qwen3.5-4B-Base"
+    assert over["lora_rank"] == 128
+    assert over["lora_alpha"] == 64
+    fresh = cr.resolve_fresh_training_env(env)
+    assert fresh["learning_rate"] == 5e-5
+    assert fresh["embedding_learning_rate"] == 5e-6
+    assert fresh["max_steps"] == 400
+    assert fresh["abort_spurgeon_step"] == 0
+    assert fresh["use_composite_early_stop"] is True
+    assert fresh["eval_buckets_during_train"] == ["spurgeon", "puritan"]
+    assert fresh["lr_scheduler_kwargs"] == {"min_lr_rate": 0.1}
+    assert fresh["metric_for_best"] == "eval_puritan_loss"
+
+
+def test_clean_subset_and_bootstrap_ci() -> None:
+    rows_a = [
+        {"index": 0, "tokens": 100, "loss": 1.0},
+        {"index": 1, "tokens": 100, "loss": 2.0},
+        {"index": 3, "tokens": 100, "loss": 1.5},
+    ]
+    rows_b = [
+        {"index": 0, "tokens": 100, "loss": 1.2},
+        {"index": 1, "tokens": 100, "loss": 2.2},
+        {"index": 3, "tokens": 100, "loss": 1.7},
+    ]
+    clean = cr.clean_subset_rows("confession", rows_a)
+    assert [row["index"] for row in clean] == [0, 1]
+    agg = cr.aggregate_token_losses(clean)
+    assert agg["docs"] == 2
+    assert abs(agg["loss"] - 1.5) < 1e-9
+    ci = cr.bootstrap_ppl_delta_ci(rows_a, rows_b, n_resamples=200, seed=1)
+    assert ci["n"] == 3
+    assert ci["delta_loss"] < 0
+    assert ci["ci_low"] <= ci["delta_pct"] <= ci["ci_high"]
+    puritan = [{"index": i, "tokens": 10, "loss": 1.0} for i in range(12)]
+    kept = cr.clean_subset_rows("puritan", puritan)
+    assert {row["index"] for row in kept}.isdisjoint({7, 10, 11})
+    metrics = {
+        "v2": {"confession": {"per_doc": rows_a}, "puritan": {"per_doc": puritan}},
+        "base": {
+            "confession": {"per_doc": rows_b},
+            "puritan": {"per_doc": puritan},
+        },
+    }
+    cr.attach_holdout_diagnostics(metrics, ["confession", "puritan"], n_resamples=40, seed=1)
+    assert metrics["clean"]["confession"]["excluded_doc_indices"] == [3]
+    assert metrics["clean"]["confession"]["v2"]["docs"] == 2
+    assert metrics["clean"]["puritan"]["v2"]["docs"] == 9
+    assert "confession" in metrics["delta_ci95"]
+
+
 def test_composite_flat_state_s5_like() -> None:
     """Spurgeon flat while mix still improves — streak must not accumulate to halt."""
     metrics = [
@@ -602,6 +735,11 @@ def main() -> None:
         test_seed_regression_abort_two_cycles()
         test_composite_seed_bests_spike_does_not_replace_seed()
         test_s7_empty_prev_ignores_leftover_sota(tmp_path / "s7prev")
+        test_s8_rewarm_profile(tmp_path / "s8cfg")
+        test_s8_empty_prev_ignores_leftover_sota(tmp_path / "s8prev")
+        test_eval_base_ignores_cpt_base_model()
+        test_fresh_and_rank_env_overrides()
+        test_clean_subset_and_bootstrap_ci()
         test_composite_flat_state_s5_like()
         test_composite_flat_state_both_flat_halts()
         test_merge_eval_event_split_hf_cycle()
