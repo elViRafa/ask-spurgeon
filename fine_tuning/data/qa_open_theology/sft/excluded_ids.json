@@ -1,0 +1,6 @@
+{
+  "train-confession-003": "junk passage: list of file:/// CCEL links; Q/A is about URL strings",
+  "train-confession-023": "junk passage: CCEL page-header boilerplate; date trivia, 148-char answer",
+  "train-puritan-087": "junk passage: book INDEX page",
+  "train-spurgeon-083": "teacher openrouter/free (single row from an unvetted free model)"
+}

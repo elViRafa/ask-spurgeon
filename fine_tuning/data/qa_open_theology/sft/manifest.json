@@ -1,0 +1,84 @@
+{
+  "export_version": "open_theology_sft_v1",
+  "slice": "open_theology",
+  "created_at": "2026-10-12T10:47:07.484782+00:00",
+  "source_commit": "763cbc680144599808c1c58e25a4648e7d143016",
+  "generator_version": "qa_open_theology_v1",
+  "format": {
+    "row": {
+      "id": "str (job_id)",
+      "slice": "open_theology",
+      "messages": "[system, user, assistant] chat; no CONTEXT turn"
+    },
+    "system_prompt": "config.THEOLOGY_CHAT_SYSTEM_PROMPT",
+    "system_prompt_sha256": "dd293f701c7520186e2fb38c26629af95eca94502c3bc223e16b8edcf8899083"
+  },
+  "files": {
+    "train": {
+      "path": "sft/open_theology_train.jsonl",
+      "rows": 565,
+      "sha256": "7b4c53b16491706014034281fb9eddd6a41b5a746ff7ec3f42728e61072fd8e7"
+    },
+    "eval": {
+      "path": "sft/open_theology_eval.jsonl",
+      "rows": 9,
+      "sha256": "ffe99d11128d80694f637e264ff9981fe7f7c3aa7db8be244efe2aeb6a8b18f1"
+    }
+  },
+  "sources": {
+    "accepted.jsonl": {
+      "rows": 569,
+      "sha256": "899f7f4b08966937f40502c2388c0892eb05eaf8c5b8bde04e2c41b9f2d58667"
+    },
+    "eval_accepted.jsonl": {
+      "rows": 9,
+      "sha256": "cdc5afd93d1b6036e46fa348c5e29461cc3674e030215dde7cc9297e55c884c6"
+    }
+  },
+  "eval_partial": true,
+  "eval_note": "eval is partial: 9/40 accepted; rerun this export after the remaining eval jobs land",
+  "excluded_ids": {
+    "train-confession-003": "junk passage: list of file:/// CCEL links; Q/A is about URL strings",
+    "train-confession-023": "junk passage: CCEL page-header boilerplate; date trivia, 148-char answer",
+    "train-puritan-087": "junk passage: book INDEX page",
+    "train-spurgeon-083": "teacher openrouter/free (single row from an unvetted free model)"
+  },
+  "validation": {
+    "invalid": {},
+    "duplicates": [],
+    "holdout_hits": [],
+    "overlap_removed": []
+  },
+  "meta_wording_counts": {
+    "train": {
+      "question": 133,
+      "answer": 72,
+      "any": 150
+    },
+    "eval": {
+      "question": 0,
+      "answer": 0,
+      "any": 0
+    }
+  },
+  "by_bucket": {
+    "train": {
+      "confession": 90,
+      "puritan": 285,
+      "spurgeon": 190
+    },
+    "eval": {
+      "puritan": 9
+    }
+  },
+  "by_teacher": {
+    "train": {
+      "gemini/gemini-2.5-flash": 17,
+      "groq/openai/gpt-oss-120b": 548
+    },
+    "eval": {
+      "groq/openai/gpt-oss-120b": 9
+    }
+  },
+  "usage": "separate side dataset; add with its own weight; never merge into qa_mix_train.jsonl"
+}
