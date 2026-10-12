@@ -1,8 +1,8 @@
 {
   "export_version": "open_theology_sft_v1",
   "slice": "open_theology",
-  "created_at": "2026-10-12T10:47:07.484782+00:00",
-  "source_commit": "763cbc680144599808c1c58e25a4648e7d143016",
+  "created_at": "2026-10-12T16:13:48.799390+00:00",
+  "source_commit": "c1b0929677fd4a838436b26db4c031f002f72b8c",
   "generator_version": "qa_open_theology_v1",
   "format": {
     "row": {
@@ -21,8 +21,8 @@
     },
     "eval": {
       "path": "sft/open_theology_eval.jsonl",
-      "rows": 9,
-      "sha256": "ffe99d11128d80694f637e264ff9981fe7f7c3aa7db8be244efe2aeb6a8b18f1"
+      "rows": 40,
+      "sha256": "d8ab7084e733f2ac320851e0a260343b7ff26bd9521bc578a9479af225b82412"
     }
   },
   "sources": {
@@ -31,12 +31,12 @@
       "sha256": "899f7f4b08966937f40502c2388c0892eb05eaf8c5b8bde04e2c41b9f2d58667"
     },
     "eval_accepted.jsonl": {
-      "rows": 9,
-      "sha256": "cdc5afd93d1b6036e46fa348c5e29461cc3674e030215dde7cc9297e55c884c6"
+      "rows": 40,
+      "sha256": "1c819c9e0974d49e5e20f68f026827ad2c699e58e54d5a6ed9bea4e94bdb186e"
     }
   },
-  "eval_partial": true,
-  "eval_note": "eval is partial: 9/40 accepted; rerun this export after the remaining eval jobs land",
+  "eval_partial": false,
+  "eval_note": "eval complete",
   "excluded_ids": {
     "train-confession-003": "junk passage: list of file:/// CCEL links; Q/A is about URL strings",
     "train-confession-023": "junk passage: CCEL page-header boilerplate; date trivia, 148-char answer",
@@ -56,9 +56,9 @@
       "any": 150
     },
     "eval": {
-      "question": 0,
+      "question": 1,
       "answer": 0,
-      "any": 0
+      "any": 1
     }
   },
   "by_bucket": {
@@ -68,7 +68,9 @@
       "spurgeon": 190
     },
     "eval": {
-      "puritan": 9
+      "confession": 8,
+      "puritan": 20,
+      "spurgeon": 12
     }
   },
   "by_teacher": {
@@ -77,7 +79,7 @@
       "groq/openai/gpt-oss-120b": 548
     },
     "eval": {
-      "groq/openai/gpt-oss-120b": 9
+      "groq/openai/gpt-oss-120b": 40
     }
   },
   "usage": "separate side dataset; add with its own weight; never merge into qa_mix_train.jsonl"

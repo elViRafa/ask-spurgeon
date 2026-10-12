@@ -1,14 +1,15 @@
 {
   "split": "eval",
-  "halted": true,
-  "halt_reason": "teacher rate limit/quota (429); job left pending, rerun after quota resets",
-  "last_error": "teacher error: teacher failed after 4 tries: 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kswe8f3vfzgrff9dt4dq1tha` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198856, Re",
+  "halted": false,
+  "halt_reason": "",
+  "last_error": "teacher error: teacher failed after 4 tries: 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kswe8f3vfzgrff9dt4dq1tha` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198913, Re",
   "counts": {
-    "accepted": 9,
+    "accepted": 40,
     "rejected": 0,
-    "remaining": 31,
-    "eval_jobs": 40
+    "remaining": 0,
+    "eval_jobs": 40,
+    "meta_wording_warnings": 1
   },
-  "next_job_id": "eval-puritan-009",
-  "updated_at": "2026-10-12T10:25:54.908327+00:00"
+  "next_job_id": "",
+  "updated_at": "2026-10-12T16:13:41.326111+00:00"
 }
