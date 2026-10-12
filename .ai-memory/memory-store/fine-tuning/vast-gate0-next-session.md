@@ -7,6 +7,7 @@ tags: [huggingface, sft, ollama, vast, complete, done]
 schema_version: 1.3
 last_updated: "2026-09-06T20:06:23-04:00"
 evidence: [fine_tuning/scripts/train_sft_sota.py, fine_tuning/scripts/smoke_test_ollama.py, fine_tuning/kaggle/vast_sft_gate0/spurgeon_qa_gguf/spurgeon-qa-v2.Q4_K_M.gguf]
+review_status: stale
 ---
 
 # DONE — Vast GATE-0 SFT + merge → GGUF → Ollama

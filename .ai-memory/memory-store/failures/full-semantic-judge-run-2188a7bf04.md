@@ -8,6 +8,7 @@ schema_version: 1.3
 last_updated: "2026-09-07T22:16:20-04:00"
 occurrences: 1
 error_signature: "full semantic judge run stalled or failed due groq<path> <n>, openrouter daily quota <n>, and transient gemini <n> responses."
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-09-07T22:16:20-04:00

@@ -6,7 +6,7 @@ priority: high
 tags: [cpt, s8, merge, hf-export, merged-16bit]
 schema_version: 1.3
 last_updated: "2026-10-07T09:43:18-03:00"
-evidence: [continued_pretrain/NEXT_CPT_S8_MHI_RESUME_HF_EXPORT.md, fine_tuning/scripts/merge_cpt_s8_mhi_resume.py]
+evidence: [[REDACTED_SECRET].md, fine_tuning/scripts/merge_cpt_s8_mhi_resume.py]
 ---
 
 # S8 m_hi resume merged 16-bit HF export (prepared 2026-10-07)

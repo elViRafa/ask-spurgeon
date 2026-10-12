@@ -7,6 +7,7 @@ tags: [sft, evaluation, ollama, cpt, release-gate]
 schema_version: 1.3
 last_updated: "2026-09-07T22:16:54-04:00"
 evidence: [fine_tuning/eval_results/post_sft_eval.json, fine_tuning/eval_results/post_sft_eval_human_review.md, fine_tuning/scripts/evaluate.py]
+review_status: stale
 ---
 
 # Post-SFT evaluation complete (2026-09-07)

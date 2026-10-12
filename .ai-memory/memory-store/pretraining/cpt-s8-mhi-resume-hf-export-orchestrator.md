@@ -6,7 +6,7 @@ priority: high
 tags: [cpt, s8, merge, hf-export, grok, vast]
 schema_version: 1.3
 last_updated: "2026-10-07T10:05:20-03:00"
-evidence: [continued_pretrain/scripts/vast_cpt_s8_mhi_resume_hf_export_orchestrate.ps1, continued_pretrain/NEXT_CPT_S8_MHI_RESUME_HF_EXPORT.md, fine_tuning/scripts/cpt_remote_merge_s8_mhi_resume.sh]
+evidence: [continued_pretrain/scripts/vast_cpt_s8_mhi_resume_hf_export_orchestrate.ps1, [REDACTED_SECRET].md, fine_tuning/scripts/cpt_remote_merge_s8_mhi_resume.sh]
 ---
 
 Cursor prepared the S8 m_hi resume 16-bit merge so Grok Bot can rent. Cursor does not rent, SSH, fetch, destroy, or upload.

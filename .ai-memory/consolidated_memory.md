@@ -59,7 +59,7 @@ summary: "Map of available project memory sections."
 priority: high
 tags: [index, memory]
 schema_version: 1.3
-last_updated: "2026-10-07T09:10:13-03:00"
+last_updated: "2026-10-09T11:19:04-03:00"
 consolidation_hash: acd058fab27bf79aa31f9bd2e3dc7172
 contradictions: ["`fine-tuning/hf-spurgeon-qa-v2-gguf` and `fine-tuning/plans/ollama-merge-gguf` cover similar content but state different numbers (2.71 vs 07) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-next-session-handoff` cover similar content but state different numbers (1 vs 1.701 / 2.449 / 2250) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-s8-mhi-resume-c-merge-parent` cover similar content but state different numbers (1 / 1.6349 / 132 vs 22698039 / 54545345) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-s8-mhi-resume-c-prepared` cover similar content but state different numbers (1 / 2.8 / 2026.8 vs -) - review for conflict [heuristic]", "`pretraining/cpt-b-eval-strategy` and `pretraining/cpt-eval-unify-vs-buckets` cover similar content but state different numbers (0 / 1650 / 17 vs 0.2 / 1.2 / 18) - review for conflict [heuristic]"]
 consolidation_warnings: ["Skipped bugs\\gemma4-chat-template-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped bugs\\ollama-tokenizer-corruption-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped decisions\\gemma4-local-ollama.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-12.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-14.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-08-23.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-08-28.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-09-15.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\runpod-sft-gate0-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-b-eval-strategy-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-expansion-plan.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-s1-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-s5-b-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-s6-c-eval-next-session.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-s6-phase0-prepared.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-implementation-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-next-steps-after-v13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-plan-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-runpod-mcp-volume-gap.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v3-s6-handoff.md during index regeneration: Missing YAML frontmatter delimiter"]
@@ -77,12 +77,12 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `bugs` | medium | Generated map of memory-store/bugs/ (5 entries). | • **Qwen3.5 processor text-as-image in C_eval** (`bugs/qwen...<br>• **Bug Fix: Unsloth Embedding Offload on Read-Only Filesys...<br>• **Bug Fix: Training embed_tokens and lm_head when resizin... |
 | `debt` | low | App debt (hybrid search, rate limits) plus 2026-08-29 memory-fabric LLM/host hygiene notes. | • Known Technical Debt & Limits<br>• Roadmap & Pending Features |
 | `decisions` | medium | Generated map of memory-store/decisions/ (1 entries). | • **Gemma 4 Fine-Tuning Transition** (`decisions/gemma4-fin... |
-| `episodic` | medium | Generated map of memory-store/episodic/ (29 entries). | • **2026-09-28** (`episodic/2026-09-28`, medium) — Reframed...<br>• **2026-10-02** (`episodic/2026-10-02`, medium) —<br>• **2026-10-05** (`episodic/2026-10-05`, medium) — |
+| `episodic` | medium | Generated map of memory-store/episodic/ (30 entries). | • **2026-09-28** (`episodic/2026-09-28`, medium) — Reframed...<br>• **2026-10-02** (`episodic/2026-10-02`, medium) —<br>• **2026-10-05** (`episodic/2026-10-05`, medium) — |
 | `failures` | medium | Generated map of memory-store/failures/ (32 entries). | • **Vast official Unsloth image smoke blocked; LD_LIBRARY_P...<br>• **asyncua write_value BadTypeMismatch when writing int to...<br>• **B_training_sota: EarlyStopping disabled — metric_for_be... |
-| `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (38 entries). | • **Fine-tuning next session handoff** (`fine-tuning/next-s...<br>• **SFT QA gold rewrite pilot (20 rows, merged)** (`fine-tu...<br>• **SFT/serve: knowledge assistant, not Spurgeon persona** ... |
+| `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (42 entries). | • **Fine-tuning next session handoff** (`fine-tuning/next-s...<br>• **Open theology QA slice tooling ready for Clerk** (`fine...<br>• **Next session: plan open theological QA slice** (`fine-t... |
 | `framework-rules` | medium | Defines coding standards, required libraries (Streamlit, LlamaIndex), environment setup (.env), and database rules for the codebase. | • 1. Runtime Environment<br>• 2. Core Libraries & Packages<br>• 3. Vector Database Rules<br>• 4. Agent Memory Guidelines |
-| `grok` | medium | Generated map of memory-store/grok/ (5 entries). | • **Grok Bot Forge for Vast/Runpod training** (`grok/forge-...<br>• **Grok Bot Foundry for train/export code** (`grok/foundry...<br>• **Grok Integration with Memory Fabric (MCP + Docs + Nativ... |
-| `pretraining` | medium | Generated map of memory-store/pretraining/ (96 entries). | • **CPT B_training_sota known issues (P1 closed — log spam)...<br>• **Composite CPT early stop merges split HF eval events** ...<br>• **Confessions + Institutes corpus (WCF, 1689, Calvin)** (... |
+| `grok` | medium | Generated map of memory-store/grok/ (6 entries). | • **Grok Bot Clerk for open-theology QA generation** (`grok...<br>• **Grok Bot Forge for Vast/Runpod training** (`grok/forge-...<br>• **Grok Bot Foundry for train/export code** (`grok/foundry... |
+| `pretraining` | medium | Generated map of memory-store/pretraining/ (101 entries). | • **CPT B_training_sota known issues (P1 closed — log spam)...<br>• **Composite CPT early stop merges split HF eval events** ...<br>• **Confessions + Institutes corpus (WCF, 1689, Calvin)** (... |
 | `schemas` | high | Defines data contracts, metadata schemas for ingested texts, and environment variable configurations. | • 1. Document & Chunk Metadata Schema<br>• 2. Ingestion Parameters<br>• 3. Environment Variables (Configuration Schema) |
 | `ubiquitous-language` | medium | Defines consistent domain language used throughout the codebase for clarity and shared understanding. | None recorded |
 
@@ -172,6 +172,28 @@ Do **not** regress: Qwen3.5 Processor ignores native `packing=True`. Keep `build
 - [ ] T4: try embed LoRA at batch 1; peak reserved headroom
 - [ ] If eval_spurgeon **rises** by step 50 with embeds: halve body LR (1e-5), do not just push steps
 - [ ] C only after B v7; ship only on §5 holdout PPL
+
+<!-- memory-fabric:store/grok/clerk-qa-generation -->
+---
+store_path: grok/clerk-qa-generation
+title: "Grok Bot Clerk for open-theology QA generation"
+summary: "Clerk is the third Grok Bot teammate (alongside Forge and Foundry)"
+priority: high
+tags: [grok, clerk, qa-generation, sft]
+schema_version: 1.3
+last_updated: "2026-10-09T10:38:09-03:00"
+evidence: [fine_tuning/GROK_BOT_CLERK.md, .cursor/skills/qa-generation-ops/SKILL.md, fine_tuning/NEXT_QA_OPEN_THEOLOGY.md]
+---
+
+Clerk is the third Grok Bot teammate (alongside Forge and Foundry).
+
+- Profile: `fine_tuning/GROK_BOT_CLERK.md`
+- Skill: `.cursor/skills/qa-generation-ops/SKILL.md`
+- Job: administer `fine_tuning/data/qa_open_theology/` status and batches.
+- Allowed without go: status / dry generate.
+- Needs go: `--apply`.
+- Never: `build_qa_mix_v2.py`, edit RAG mix, GPU rent, Hub upload, paste API keys.
+- Create in the Grok Bot app (no create API from Cursor).
 
 <!-- memory-fabric:store/pretraining/bugs/composite-early-stop-eval-cycle -->
 ---
@@ -604,9 +626,9 @@ store_path: pretraining/cpt-current
 title: "CPT current status"
 summary: "Isolation C for m_hi resume adapter 22698039 finished on 2026-10-07"
 priority: high
-tags: [cpt, s8, isolation-c, hub]
+tags: [cpt, s8, hub, merge]
 schema_version: 1.3
-last_updated: "2026-10-07T08:49:34-03:00"
+last_updated: "2026-10-07T11:53:11-03:00"
 evidence: [continued_pretrain/scripts/vast_cpt_s8_mhi_resume_c_eval.ps1, "[REDACTED_SECRET].md", "commit:638a249"]
 ---
 
@@ -620,6 +642,12 @@ Isolation C for m_hi resume adapter 22698039 finished on 2026-10-07. Section 5 m
 | Full card | `pretraining/cpt-s8-mhi-resume-isolation-c-complete` |
 
 Do not Hub-push. Do not start another train without operator go.
+
+Merged 16-bit HF export is prepared (not run). See `pretraining/cpt-s8-mhi-resume-hf-export-prepared` and `[REDACTED_SECRET].md`. Default new Hub repo `qwen3.5-4b-theology-cpt-s8-mhi-resume-merged-16bit`; do not overwrite LoRA v2 `06354dfc`.
+
+## Merged 16-bit HF uploaded 2026-10-07
+
+Experimental private Hub: `rafaelvieirar1r/qwen3.5-4b-theology-cpt-s8-mhi-resume-merged-16bit`. Local `LOCAL_MERGED_OK` then upload. Production LoRA v2 `06354dfc` unchanged. Still not a §5 win.
 
 <!-- memory-fabric:store/pretraining/cpt-eval-stack-pin-s5 -->
 ---
@@ -1605,6 +1633,136 @@ Operator will run Isolation C in Grok Bot from PR 10. Cursor does not rent.
 
 Forge command is in grok/s8-mhi-resume-c-run. main lacks the merge rebuild.
 
+<!-- memory-fabric:store/pretraining/cpt-s8-mhi-resume-hf-export-orchestrator -->
+---
+store_path: pretraining/cpt-s8-mhi-resume-hf-export-orchestrator
+title: "S8 merge export orchestrator ready for Grok Bot"
+summary: "Cursor prepared the S8 m_hi resume 16-bit merge so Grok Bot can rent"
+priority: high
+tags: [cpt, s8, merge, hf-export, grok, vast]
+schema_version: 1.3
+last_updated: "2026-10-07T10:05:20-03:00"
+evidence: [continued_pretrain/scripts/vast_cpt_s8_mhi_resume_hf_export_orchestrate.ps1, "[REDACTED_SECRET].md", fine_tuning/scripts/cpt_remote_merge_s8_mhi_resume.sh]
+---
+
+Cursor prepared the S8 m_hi resume 16-bit merge so Grok Bot can rent. Cursor does not rent, SSH, fetch, destroy, or upload.
+
+- Orchestrator: `continued_pretrain/scripts/vast_cpt_s8_mhi_resume_hf_export_orchestrate.ps1`
+- Dry on 2026-10-07 printed READY. Adapter `22698039`, merge parent `a70fded8`. Fetch disk free about 34.6 GB (gate is 30 GB). No vastai call.
+- Pod merge script pins torch 2.8 + Unsloth 2026.8.22 and passes adapter paths to preflight. It does not upload.
+- Grok Bot command after operator go: `.\vast_cpt_s8_mhi_resume_hf_export_orchestrate.ps1 -Go` from `continued_pretrain/scripts`.
+- Local check before that go: `LOCAL_MERGED_NOT_READY` (folder not fetched yet).
+- Hub target after a later local upload: `rafaelvieirar1r/qwen3.5-4b-theology-cpt-s8-mhi-resume-merged-16bit`. Do not overwrite LoRA v2 `06354dfc`.
+- Runbook: `[REDACTED_SECRET].md`
+
+<!-- memory-fabric:store/pretraining/cpt-s8-mhi-resume-hf-export-prepared -->
+---
+store_path: pretraining/cpt-s8-mhi-resume-hf-export-prepared
+title: "S8 m_hi resume merged HF export prepared"
+summary: "Experimental upload path"
+priority: high
+tags: [cpt, s8, merge, hf-export, merged-16bit]
+schema_version: 1.3
+last_updated: "2026-10-07T09:43:18-03:00"
+evidence: ["[REDACTED_SECRET].md", fine_tuning/scripts/merge_cpt_s8_mhi_resume.py]
+---
+
+# S8 m_hi resume merged 16-bit HF export (prepared 2026-10-07)
+
+Experimental upload path. **Do not** overwrite production CPT LoRA v2 (`rafaelvieirar1r/qwen3.5-4b-theology-cpt-lora-v2`, Phase A `06354dfc`). Isolation C §5 miss stands.
+
+## Artifacts
+
+| Step | Path / repo |
+|------|-------------|
+| Runbook | `[REDACTED_SECRET].md` |
+| Two-stage merge | `fine_tuning/scripts/merge_cpt_s8_mhi_resume.py` |
+| Readiness | `fine_tuning/scripts/cpt_s8_mhi_resume_merge_readiness.py` |
+| Pod merge | `fine_tuning/scripts/cpt_remote_merge_s8_mhi_resume.sh` |
+| Hub upload | `fine_tuning/scripts/upload_cpt_s8_mhi_resume_merged_hf.py` |
+| Tests | `fine_tuning/scripts/test_merge_cpt_s8_mhi_resume_readiness.py` |
+
+## Merge chain
+
+1. P0 s5best LoRA `a70fded8` @ `vast_cpt_s7_p0/fetch/theology_cpt_lora_s5best` → `fine_tuning/models/theology_cpt_merged_a70`
+2. Resume LoRA `22698039` @ `vast_cpt_s8_mhi_resume/fetch/mhi_resume/theology_cpt_lora` (patch `adapter_config` base to step 1) → `fine_tuning/models/qwen35-4b-theology-cpt-s8-mhi-resume-merged-16bit`
+
+Uses existing `merge_cpt_lora.py` twice. Ampere bf16 GPU required; `--cpu` fallback for OOM.
+
+## Default Hub target
+
+`rafaelvieirar1r/qwen3.5-4b-theology-cpt-s8-mhi-resume-merged-16bit` (private). README marks experimental + §5 miss + general +3.8% vs base.
+
+## Operator commands
+
+```powershell
+python fine_tuning\scripts\cpt_s8_mhi_resume_merge_readiness.py
+python fine_tuning\scripts\merge_cpt_s8_mhi_resume.py --preflight
+python fine_tuning\scripts\merge_cpt_s8_mhi_resume.py
+python fine_tuning\scripts\upload_cpt_s8_mhi_resume_merged_hf.py
+```
+
+Local readiness printed READY; pytest 2 passed. Merge not run on operator PC (needs GPU).
+
+## Do not
+
+- Overwrite Hub LoRA v2
+- Merge resume LoRA on stock Qwen without merged a70 first
+- Promote to production or start SFT without explicit decision (general regression)
+
+<!-- memory-fabric:store/pretraining/cpt-s8-mhi-resume-merged-hf-uploaded -->
+---
+store_path: pretraining/cpt-s8-mhi-resume-merged-hf-uploaded
+title: "S8 m_hi resume merged 16-bit on Hub"
+summary: "Uploaded experimental S8 m_hi resume merged 16-bit HF on 2026-10-07 after LOCAL_MERGED_OK"
+priority: high
+tags: [cpt, s8, merge, hf-export, hub]
+schema_version: 1.3
+last_updated: "2026-10-07T11:53:09-03:00"
+evidence: [fine_tuning/scripts/upload_cpt_s8_mhi_resume_merged_hf.py, fine_tuning/models/qwen35-4b-theology-cpt-s8-mhi-resume-merged-16bit]
+---
+
+Uploaded experimental S8 m_hi resume merged 16-bit HF on 2026-10-07 after LOCAL_MERGED_OK.
+
+| Field | Value |
+|-------|--------|
+| Hub | https://huggingface.co/rafaelvieirar1r/qwen3.5-4b-theology-cpt-s8-mhi-resume-merged-16bit (private) |
+| Local | `fine_tuning/models/qwen35-4b-theology-cpt-s8-mhi-resume-merged-16bit` |
+| Shards | 8.46 GiB (2 safetensors) + config + tokenizer |
+| Resume LoRA | `22698039` |
+| Merge parent | `a70fded8` |
+| Isolation C | §5 miss; general +3.8% vs base |
+
+Production LoRA v2 `rafaelvieirar1r/qwen3.5-4b-theology-cpt-lora-v2` (`06354dfc`) unchanged. Not a §5 promote. Do not start SFT on this base without an explicit decision.
+
+<!-- memory-fabric:store/pretraining/cpt-s8-mhi-resume-ollama -->
+---
+store_path: pretraining/cpt-s8-mhi-resume-ollama
+title: "S8 merged CPT loaded in Ollama as spurgeon-cpt-s8"
+summary: "Loaded the S8 m_hi resume merged 16-bit HF into local Ollama on 2026-10-07"
+priority: high
+tags: [cpt, s8, ollama, gguf]
+schema_version: 1.3
+last_updated: "2026-10-07T16:11:17-03:00"
+evidence: ["D:/models/spurgeon-cpt-s8/spurgeon-cpt-s8.Q8_0.gguf", continued_pretrain/scripts/smoke_test_ollama_cpt.py]
+---
+
+Loaded the S8 m_hi resume merged 16-bit HF into local Ollama on 2026-10-07.
+
+| Field | Value |
+|-------|--------|
+| Ollama name | `spurgeon-cpt-s8` (does not replace `spurgeon-cpt`) |
+| GGUF | `D:\models\spurgeon-cpt-s8\spurgeon-cpt-s8.Q8_0.gguf` (~4.17 GB) |
+| Convert | llama.cpp `convert_hf_to_gguf.py --outtype q8_0 --no-nextn` |
+| Source HF | `fine_tuning/models/qwen35-4b-theology-cpt-s8-mhi-resume-merged-16bit` |
+| Smoke | `smoke_test_ollama_cpt.py --model spurgeon-cpt-s8` — 9/9 PASS |
+
+`--no-nextn` is required: without it GGUF sets `block_count=33` but only has blk.0–31, and Ollama fails looking for `blk.32.attn_norm.weight`.
+
+Ollama 0.35 safetensors `-q int4` path wants MLX on this Windows box — use GGUF instead.
+
+Try: `ollama run spurgeon-cpt-s8`
+
 <!-- memory-fabric:store/pretraining/cpt-s8-mhi-resume-ready -->
 ---
 store_path: pretraining/cpt-s8-mhi-resume-ready
@@ -1624,6 +1782,32 @@ One-knob escape after the continue: HF-resume checkpoint-800 so Adam, RNG, and t
 Do not start new Adam. Do not leave PREV_RUN_CHECKPOINT empty. That is the waste the last continue paid for.
 
 Dry command: `continued_pretrain/scripts/vast_cpt_s8_mhi_resume_orchestrate.ps1`. Local pytest 6 passed. Forge rents only after Rafael says go.
+
+<!-- memory-fabric:store/pretraining/cpt-s8-next-is-sft -->
+---
+store_path: pretraining/cpt-s8-next-is-sft
+title: "After S8 Isolation C, next job is SFT"
+summary: "After S8 Isolation C (2026-10-07), the next GPU job is SFT on the merged S8 weights, not another CPT resume"
+priority: high
+tags: [cpt, s8, sft, decision]
+schema_version: 1.3
+last_updated: "2026-10-09T09:08:40-03:00"
+evidence: [fine_tuning/NEXT_SFT_S8.md, fine_tuning/scripts/sft_s8_plan.py, fine_tuning/scripts/vast_sft_s8_orchestrate.ps1]
+---
+
+After S8 Isolation C (2026-10-07), the next GPU job is SFT on the merged S8 weights, not another CPT resume.
+
+| Evidence | Value |
+|----------|--------|
+| Adapter | `22698039` step 2250 |
+| Puritan loss | 1.6605 vs gate 1.6349 (gap 0.0256) |
+| Last resume slope | in-train puritan 1.708 to 1.701 from step 800 to 2250 |
+| General | +3.8% vs untrained base |
+| Prior SFT `spurgeon-qa-v2` | groundedness 4.51, refusal 0.54 vs 0.85 |
+
+One knob: base is private Hub `rafaelvieirar1r/qwen3.5-4b-theology-cpt-s8-mhi-resume-merged-16bit`. QA mix and PEFT 4090 recipe stay. Hub LoRA v2 `06354dfc` stays. `SFT_EXPORT=0` until F gates. If refusal is still the only miss, the next knob is the refusal slice. If groundedness falls under 4.0, keep the adapter experimental.
+
+Dry: `fine_tuning/scripts/vast_sft_s8_orchestrate.ps1` (refuses `-Go`). Pytest `test_sft_s8_plan.py` 5 passed. Runbook `fine_tuning/NEXT_SFT_S8.md`. Forge rents only after a later operator go.
 
 <!-- memory-fabric:store/pretraining/cpt-s8-sweep-complete -->
 ---
@@ -2605,6 +2789,118 @@ Allowlist agent IP **159.26.98.242** on the Vultr API key (or "any IP" temporari
 - EXPORT only after F §5 gates
 - Never log VULTR_API_KEY / HF_TOKEN
 
+<!-- memory-fabric:store/fine-tuning/open-theology-qa-implemented -->
+---
+store_path: fine-tuning/open-theology-qa-implemented
+title: "Open theology QA slice tooling ready for Clerk"
+summary: "Implemented the open-theology SFT side slice (2026-10-09)"
+priority: high
+tags: [sft, qa-mix, open-theology, grok, clerk]
+schema_version: 1.3
+last_updated: "2026-10-09T10:38:07-03:00"
+evidence: [config.py, fine_tuning/scripts/plan_open_theology_jobs.py, fine_tuning/scripts/generate_open_theology_qa.py, fine_tuning/GROK_BOT_CLERK.md, fine_tuning/NEXT_QA_OPEN_THEOLOGY.md]
+---
+
+Implemented the open-theology SFT side slice (2026-10-09). RAG mix stays frozen.
+
+## Delivered
+
+- `THEOLOGY_CHAT_SYSTEM_PROMPT` in `config.py` (no CONTEXT; RAG prompt unchanged).
+- Planner `fine_tuning/scripts/plan_open_theology_jobs.py`: 300 train + 40 eval jobs under `fine_tuning/data/qa_open_theology/`, skips mix_v7 holdouts.
+- Generator `generate_open_theology_qa.py` (dry by default; `--apply` needs go).
+- Checks in `open_theology_qa_checks.py` (CONTEXT leak, vocative, quote, citation).
+- Clerk bot profile `fine_tuning/GROK_BOT_CLERK.md`, skill `.cursor/skills/qa-generation-ops/SKILL.md`, runbook `fine_tuning/NEXT_QA_OPEN_THEOLOGY.md`.
+- Pytest `test_open_theology_qa.py` 15 passed.
+
+## Next
+
+Operator creates Clerk in Grok Bot from `GROK_BOT_CLERK.md`. After go: `python fine_tuning/scripts/generate_open_theology_qa.py --apply --limit 25 --provider groq`.
+
+Do not merge into `qa_mix_train.jsonl` or attach to S8 SFT.
+
+<!-- memory-fabric:store/fine-tuning/open-theology-qa-next-session -->
+---
+store_path: fine-tuning/open-theology-qa-next-session
+title: "Next session: plan open theological QA slice"
+summary: "Operator intent: the model should be a theological Puritan/Spurgeon LLM as well as a RAG assistant"
+priority: high
+tags: [sft, qa-mix, puritan, spurgeon, handoff]
+schema_version: 1.3
+last_updated: "2026-10-09T10:24:53-03:00"
+evidence: ["config.py:149", fine_tuning/data/qa_mix_manifest.json, fine_tuning/NEXT_SFT_S8.md, fine_tuning/eval_results/post_sft_eval.json]
+---
+
+# Open theological QA — planning handoff (2026-10-09)
+
+Operator intent: the model should be a theological Puritan/Spurgeon LLM as well as a RAG assistant. Plan the new QA data in a later session. Do not generate the rows in the session that only saved this note. No GPU.
+
+## What to add
+
+A new SFT slice of open theological questions. A few hundred rows is the first slice.
+
+- The assistant speaks about Spurgeon and the Puritans (distinctions, doctrines, citations). It does not speak as Spurgeon, Owen, Calvin, or any Puritan.
+- No vocatives: Beloved, My beloved, Dear friends, My brethren, amados, meus queridos irmãos. No first-person preacher roleplay.
+- The user message has no CONTEXT block and does not say "answer based ONLY on the context."
+- Gold answers stay inside the CPT corpus (Spurgeon sermons, Puritan works, confessions/catechisms). Cite a work the corpus actually contains.
+- This slice has its own later eval. Do not merge it into `qa_test_frozen.jsonl` (50 answerable / 50 refusal). That test measures the RAG refusal gate.
+
+## What stays frozen
+
+| Item | Value |
+|------|--------|
+| RAG train | 3264 rows in `fine_tuning/data/qa_mix_train.jsonl` |
+| Slices | answerable 2793, refusal 370 (11.34%), multiturn 100, catechism overlay 241 |
+| Val / frozen test | 153 / 100 |
+| Manifest | `fine_tuning/data/qa_mix_manifest.json` version `qa_mix_v2` |
+| RAG prompt | `SPURGEON_SFT_SYSTEM_PROMPT` in `config.py` (about line 149): answer only from CONTEXT; refuse when CONTEXT is silent |
+| Rebuild | Do not run `build_qa_mix_v2.py`. It wipes overlays. |
+
+Leave those RAG rows unchanged. Dropping open Puritan answers into the CONTEXT template trains "refuse" and "answer from memory" on the same prompt. GATE-0 already missed 23/50 refusals that way (tp 27, fp 1, tn 49, fn 23, recall 0.54, precision 0.96).
+
+## Why a second prompt is an open decision
+
+`fine-tuning/qa-prompt-type-decision` locked one system string for the RAG app. This slice cannot reuse that string, because the string forbids answering from memory. The planning session writes the theology-chat system prompt and says when the app sends it. The RAG path keeps the current string.
+
+## Order
+
+1. S8 SFT on the frozen RAG mix is already dry-ready (`fine_tuning/NEXT_SFT_S8.md`). Base is `rafaelvieirar1r/qwen3.5-4b-theology-cpt-s8-mhi-resume-merged-16bit`. Hub LoRA v2 `06354dfc` stays. That run does not include this slice.
+2. This data plan is the following job.
+3. CPT already holds the domain language. Isolation C on adapter `22698039`: Spurgeon PPL 11.88 (−17.0%), Puritan 5.26 (−12.8%), confession 5.01 (−10.7%), general 12.50 (+3.8% vs base). Puritan loss 1.6605 vs gate 1.6349. Do not resume CPT to create this chat behavior.
+
+## Related memories
+
+- `fine-tuning/qa-knowledge-not-persona`
+- `fine-tuning/qa-prompt-type-decision`
+- `fine-tuning/qa-mix-spurgeon-only-decision`
+- `fine-tuning/qa-mix-size-vs-refusal`
+- `pretraining/cpt-s8-next-is-sft`
+
+<!-- memory-fabric:store/fine-tuning/open-theology-slice-vs-rag -->
+---
+store_path: fine-tuning/open-theology-slice-vs-rag
+title: "Open theological QA is a new slice; RAG mix stays"
+summary: "Operator decision 2026-10-09: the product is a RAG assistant and a theological Puritan/Spurgeon LLM"
+priority: high
+tags: [sft, qa-mix, puritan, spurgeon, decision]
+schema_version: 1.3
+last_updated: "2026-10-09T10:24:55-03:00"
+evidence: ["config.py:149", fine_tuning/data/qa_mix_manifest.json, fine_tuning/NEXT_SFT_S8.md]
+---
+
+Operator decision 2026-10-09: the product is a RAG assistant and a theological Puritan/Spurgeon LLM. The chat behavior is a new SFT slice, planned in a later session.
+
+Full planning brief: `fine-tuning/open-theology-qa-next-session`.
+
+Locked for that plan:
+
+- Add a few hundred open theological rows. User message has no CONTEXT block.
+- Knowledge-assistant voice about Spurgeon and the Puritans. Never as them.
+- Gold stays inside the CPT corpus.
+- Do not edit the 3264-row RAG mix. Do not run `build_qa_mix_v2.py`.
+- Do not fold the new rows into the 50/50 frozen refusal test.
+- The second system prompt is undecided; the RAG prompt in `config.py` stays answer-from-CONTEXT only.
+- S8 SFT on the frozen mix (`fine_tuning/NEXT_SFT_S8.md`) does not include this slice.
+
 <!-- memory-fabric:store/pretraining/puritan-corpus-fetch -->
 ---
 store_path: pretraining/puritan-corpus-fetch
@@ -2702,6 +2998,22 @@ Keep the name `SPURGEON_SFT_SYSTEM_PROMPT`. `SYSTEM_PROMPT_NEUTRAL` is an alias.
 
 ## Out of scope until quote gate + operator go
 No GPU, no D→E→F run, no EXPORT/GGUF, no full rewrite of all ~2859 originals via teacher.
+
+<!-- memory-fabric:store/fine-tuning/qa-mix-size-vs-refusal -->
+---
+store_path: fine-tuning/qa-mix-size-vs-refusal
+title: "QA mix size is enough; refusal slice is the later knob"
+summary: "Do not grow the whole QA mix before the S8 SFT run"
+priority: high
+tags: [sft, qa-mix, refusal, decision]
+schema_version: 1.3
+last_updated: "2026-10-09T10:17:18-03:00"
+evidence: [fine_tuning/data/qa_mix_manifest.json, fine_tuning/eval_results/post_sft_eval.json]
+---
+
+Do not grow the whole QA mix before the S8 SFT run. Train is already 3264 rows (answerable 2793, refusal 370 at 11.34%, multiturn 100, catechism overlay 241). The frozen test is 50 answerable / 50 refusal. GATE-0 confusion was tp 27, fp 1, tn 49, fn 23: refusal recall 0.54, precision 0.96, false-refusal rate 0.02. Format, stop, and judge groundedness already passed.
+
+More copies of the same sermon answers would dilute the 11% refusal share. The useful later knob, after the S8 base run, is a harder refusal slice under the same system prompt (near-miss context, anachronism, CPT knowledge the chunks do not support). Keep speakers Spurgeon-sermon-heavy. Do not add a second system prompt. Quote grounding was 0.415 (31/100 ungrounded-quote rows); that is a gold-quality knob, separate from row count.
 
 <!-- memory-fabric:store/fine-tuning/qa-mix-spurgeon-only-decision -->
 ---
@@ -4749,15 +5061,15 @@ Execution configurations and dependency management rules for continued pretraini
 <!-- memory-fabric:local/episodic -->
 ---
 section: episodic
-summary: "Generated map of memory-store/episodic/ (29 entries)."
+summary: "Generated map of memory-store/episodic/ (30 entries)."
 priority: medium
 tags: [episodic]
 schema_version: 1.3
-last_updated: "2026-10-07T07:31:00-03:00"
+last_updated: "2026-10-09T09:08:43-03:00"
 generated: true
 generated_from: memory-store/episodic
-store_fingerprint: 38236b1067ab762717182b414a026191
-body_hash: f36edabdf1ef183077e0752a142205c6
+store_fingerprint: f42e9f200a92d3822ed638cec66d4da4
+body_hash: 6b2c3c943df93b097f857abc2967252f
 ---
 
 # Episodic Map
@@ -4778,7 +5090,7 @@ Generated by Memory Fabric from `memory-store/episodic/` — do not edit by hand
 - **Episodic Journal — 2026-08-31** (`episodic/2026-08-31`, low) — Verified live QA mix against serve contract and F5 targets
 - **Episodic Journal — 2026-09-01** (`episodic/2026-09-01`, low) — Verified QA teacher rewrite resume point (line 1786 per handoff, confirmed live)
 - **Episodic Journal — 2026-09-02** (`episodic/2026-09-02`, low) — Saved QA rewrite stop point to memory: pass 1 complete (3244/3244 attempted), 1466 ok / 1778 drops remaining for --retry-drops, 1465 bulk merged, quote 49.1%, teacherish 1485
-- …and 15 more entries — see `memory-store/index.md`.
+- …and 16 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:store/pretraining/eval-and-export -->
 ---
@@ -4830,15 +5142,15 @@ Generated by Memory Fabric from `memory-store/failures/` — do not edit by hand
 <!-- memory-fabric:local/fine-tuning -->
 ---
 section: fine-tuning
-summary: "Generated map of memory-store/fine-tuning/ (38 entries)."
+summary: "Generated map of memory-store/fine-tuning/ (42 entries)."
 priority: medium
 tags: [fine-tuning]
 schema_version: 1.3
-last_updated: "2026-09-27T09:59:27-03:00"
+last_updated: "2026-10-09T10:38:07-03:00"
 generated: true
 generated_from: memory-store/fine-tuning
-store_fingerprint: 8f1ed296e32a11ee471036764b819e26
-body_hash: a873c67a3a8400fa7141169c06f2881a
+store_fingerprint: 50e754e9345c5170bb8ebf041ba852a5
+body_hash: 1deb1606b15d97ef6d351c1446494836
 ---
 
 # Fine Tuning Map
@@ -4846,19 +5158,18 @@ body_hash: a873c67a3a8400fa7141169c06f2881a
 Generated by Memory Fabric from `memory-store/fine-tuning/` — do not edit by hand. Write facts with `write_memory_store_tool`; Dreaming rebuilds this map.
 
 - **Fine-tuning next session handoff** (`fine-tuning/next-session-handoff`, high) — **Updated:** 2026-09-04 ~01:20 ET
+- **Open theology QA slice tooling ready for Clerk** (`fine-tuning/open-theology-qa-implemented`, high) — Implemented the open-theology SFT side slice (2026-10-09)
+- **Next session: plan open theological QA slice** (`fine-tuning/open-theology-qa-next-session`, high) — Operator intent: the model should be a theological Puritan/Spurgeon LLM as well as a RAG assistant
+- **Open theological QA is a new slice; RAG mix stays** (`fine-tuning/open-theology-slice-vs-rag`, high) — Operator decision 2026-10-09: the product is a RAG assistant and a theological Puritan/Spurgeon LLM
 - **SFT QA gold rewrite pilot (20 rows, merged)** (`fine-tuning/qa-gold-rewrite-pilot`, high) — **Status:** Complete and **merged** into `qa_mix_train.jsonl`
 - **SFT/serve: knowledge assistant, not Spurgeon persona** (`fine-tuning/qa-knowledge-not-persona`, high) — SFT/chat must be knowledge assistant about texts, never Spurgeon persona; catechism CONTEXT landed.
+- **QA mix size is enough; refusal slice is the later knob** (`fine-tuning/qa-mix-size-vs-refusal`, high) — Do not grow the whole QA mix before the S8 SFT run
 - **SFT QA stays Spurgeon-only (decision)** (`fine-tuning/qa-mix-spurgeon-only-decision`, high) — **Decided 2026-08-29** after operator question on mixing writers in QA SFT data
 - **Overlay-safe catechism + multi-turn builders** (`fine-tuning/qa-overlay-safe-slice-builders`, high) — | `build_catechism_qa_slice.py` | `--variants`, `--target-new`, `--output` for phrasing variants |
 - **QA verify + F5 slice gap report** (`fine-tuning/qa-prompt-strategy-verify`, high) — After overlay-safe catechism variants + multiturn merge:
 - **One prompt; diversify task slices** (`fine-tuning/qa-prompt-type-decision`, high) — **Locked after live verify.** Improves SFT via example-type diversity, not multiple prompts
 - **QA Sources Rewrite Progress** (`fine-tuning/qa-sources-rewrite-progress`, high) — Cross-session log of QA answer rewrite pipeline for SFT teacherish/quote fidelity
-- **QA teacher prompt — quote fidelity fix** (`fine-tuning/qa-teacher-quote-fidelity-prompt`, high) — `fine_tuning/scripts/rewrite_qa_answers_teacher.py` TEACHER_SYSTEM rule 5 strengthened:
-- **Qwen3.5-4B SFT special-token contract** (`fine-tuning/qwen35-sft-special-tokens`, high) — **Model:** `unsloth/Qwen3.5-4B-Base` (GATE-0 uses the same tokenizer on the CPT merge)
-- **RunPod billing and local backup** (`fine-tuning/runpod-sft-gate0-decisions`, high) — **Decision:** Phase C GATE-0 SFT on RunPod (not dry-run)
-- **SFT GATE-0 readiness revision (2026-09-02)** (`fine-tuning/sft-gate0-readiness-2026-09-02`, high) — **Date:** 2026-09-02 ~09:30 ET
-- **SFT HF inject fix — urllib verify, no BOM** (`fine-tuning/sft-hf-inject-fix`, high) — **Date:** 2026-09-02 ~18:45 ET
-- …and 25 more entries — see `memory-store/index.md`.
+- …and 30 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:store/failures/full-semantic-judge-run-2188a7bf04 -->
 ---
@@ -4871,6 +5182,7 @@ schema_version: 1.3
 last_updated: "2026-09-07T22:16:20-04:00"
 occurrences: 1
 error_signature: "full semantic judge run stalled or failed due groq<path> <n>, openrouter daily quota <n>, and transient gemini <n> responses."
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-09-07T22:16:20-04:00
@@ -4954,21 +5266,22 @@ Reject empty/quoted-empty apikey values in s6_runpod_common.ps1 Get-RunpodApiKey
 <!-- memory-fabric:local/grok -->
 ---
 section: grok
-summary: "Generated map of memory-store/grok/ (5 entries)."
+summary: "Generated map of memory-store/grok/ (6 entries)."
 priority: medium
 tags: [grok]
 schema_version: 1.3
-last_updated: "2026-10-07T07:58:15-03:00"
+last_updated: "2026-10-09T10:38:09-03:00"
 generated: true
 generated_from: memory-store/grok
-store_fingerprint: af20d6b915c05ad78254660fa71319c2
-body_hash: 78b4ae105166a2e6e874d84171ab15c4
+store_fingerprint: 0f629d6ae28269c5b75f0d4e4190ce5f
+body_hash: 725e288edd4987fc530382fd5c410371
 ---
 
 # Grok Map
 
 Generated by Memory Fabric from `memory-store/grok/` — do not edit by hand. Write facts with `write_memory_store_tool`; Dreaming rebuilds this map.
 
+- **Grok Bot Clerk for open-theology QA generation** (`grok/clerk-qa-generation`, high) — Clerk is the third Grok Bot teammate (alongside Forge and Foundry)
 - **Grok Bot Forge for Vast/Runpod training** (`grok/forge-training-ops`, high) — - **Title:** Vast / Runpod training watch
 - **Grok Bot Foundry for train/export code** (`grok/foundry-train-export`, high) — - **Foundry** — write/refine CPT+SFT+export code via Cursor Cloud Agents
 - **Grok Integration with Memory Fabric (MCP + Docs + Native Layer)** (`grok/integration`, high) — Grok Integration with Memory Fabric (MCP + Docs + Native Layer)
@@ -4985,6 +5298,7 @@ tags: [huggingface, gguf, sft, merged, bf16]
 schema_version: 1.3
 last_updated: "2026-09-06T20:45:41-04:00"
 evidence: [fine_tuning/kaggle/vast_sft_gate0/spurgeon_qa_merged_hf, fine_tuning/models/spurgeon-qa-v2.Q4_K_M.gguf, fine_tuning/scripts/merge_sft_lora_local.py]
+review_status: stale
 ---
 
 # HF: Spurgeon QA v2 (GGUF + merged BF16)
@@ -5145,6 +5459,7 @@ tags: [ollama, complete, done, sft, gguf]
 schema_version: 1.3
 last_updated: "2026-09-06T20:06:17-04:00"
 evidence: [fine_tuning/scripts/smoke_test_ollama.py, fine_tuning/kaggle/vast_sft_gate0/spurgeon_qa_gguf/spurgeon-qa-v2.Q4_K_M.gguf, fine_tuning/models/spurgeon-qa-v2.Q4_K_M.gguf]
+review_status: stale
 ---
 
 # DONE — Ollama local test (spurgeon-qa-v2)
@@ -5176,6 +5491,7 @@ tags: [ollama, gguf, huggingface, sft, merged, done]
 schema_version: 1.3
 last_updated: "2026-09-06T20:45:20-04:00"
 evidence: [fine_tuning/kaggle/vast_sft_gate0/spurgeon_qa_merged_hf, fine_tuning/models/spurgeon-qa-v2.Q4_K_M.gguf, fine_tuning/scripts/merge_sft_lora_local.py]
+review_status: stale
 ---
 
 # Local + Hub: merged Spurgeon QA v2 (DONE)
@@ -5254,6 +5570,7 @@ schema_version: 1.3
 last_updated: "2026-09-06T20:04:46-04:00"
 occurrences: 1
 error_signature: "peft sft lora merge onto qwen<n>.<n> cpt-merged hf silently no-ops when loaded as qwen<n>_<n>forconditionalgeneration (config architectures) because adapter keys use model.layers.* (causallm training) but condgen expects model.language_model.layers.*; peft warns missing adapter keys and merge_and_un"
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-09-06T20:04:46-04:00
@@ -5274,6 +5591,7 @@ tags: [sft, evaluation, ollama, gemini, gates]
 schema_version: 1.3
 last_updated: "2026-09-07T22:16:20-04:00"
 evidence: [fine_tuning/eval_results/post_sft_eval.json, fine_tuning/eval_results/post_sft_eval_human_review.md, fine_tuning/data/qa_test_frozen.sha256]
+review_status: stale
 ---
 
 Full post-SFT evaluation completed on all 100 frozen fixed-context examples (50 answerable, 50 refusal), comparing Ollama `spurgeon-qa-v2` against `spurgeon-cpt` with identical raw ChatML and temperature 0. Gemini 3.5 Flash Lite judged 200 order-swapped pairs: candidate groundedness 4.51, correctness 4.455, citation quality 4.19, honesty 4.49, style 4.615; candidate won 171/200 judgments vs 21 losses and 8 ties. Deterministic SFT results: format 100%, echo 0%, corruption 0%, valid citations 100%, stop 100%, leaked turns 0%, false-refusal 2%, but refusal recall only 54% (27/50), precision 96.43%, F1 69.23%, and 2% persona violations. Release verdict: FAIL only the refusal-recall >=85% hard gate; export remains blocked. Baseline was much worse: groundedness 2.485, corruption 24%, echo 9%, refusal recall 18%, stop 78%.
@@ -5288,6 +5606,7 @@ tags: [sft, evaluation, ollama, cpt, release-gate]
 schema_version: 1.3
 last_updated: "2026-09-07T22:16:54-04:00"
 evidence: [fine_tuning/eval_results/post_sft_eval.json, fine_tuning/eval_results/post_sft_eval_human_review.md, fine_tuning/scripts/evaluate.py]
+review_status: stale
 ---
 
 # Post-SFT evaluation complete (2026-09-07)
@@ -5318,6 +5637,7 @@ schema_version: 1.3
 last_updated: "2026-09-07T22:16:20-04:00"
 occurrences: 1
 error_signature: "post-sft stop-token phases falsely failed raw-id generations, while ollama api stops could falsely pass after stripping leaked im_start turns."
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-09-07T22:16:20-04:00
@@ -5353,15 +5673,15 @@ Use ASCII -- in PowerShell scripts instead of Unicode em-dashes. Windows PowerSh
 <!-- memory-fabric:local/pretraining -->
 ---
 section: pretraining
-summary: "Generated map of memory-store/pretraining/ (96 entries)."
+summary: "Generated map of memory-store/pretraining/ (101 entries)."
 priority: medium
 tags: [pretraining]
 schema_version: 1.3
-last_updated: "2026-10-07T09:10:03-03:00"
+last_updated: "2026-10-09T09:08:40-03:00"
 generated: true
 generated_from: memory-store/pretraining
-store_fingerprint: 0910c25e36ac5e6d9a8ea95badee515d
-body_hash: fcc30090baf312ea2dbc6b3664f9789a
+store_fingerprint: ddbf8a10f826a444cb452b2adde3f5ae
+body_hash: ed746c0919f31790aa2fb8efd8f0bf89
 ---
 
 # Pretraining Map
@@ -5381,7 +5701,7 @@ Generated by Memory Fabric from `memory-store/pretraining/` — do not edit by h
 - **CPT corpus v3 S3 handoff (done this session)** (`pretraining/cpt-corpus-v3-s3-handoff`, high) — S3 done; pointer to s3-complete.
 - **CPT corpus v3 S4 complete (confession/ST lift, no training)** (`pretraining/cpt-corpus-v3-s4-complete`, high) — S4 fetch + mix rebuild finished 2026-08-27
 - **CPT corpus v3 S4 handoff (done this session)** (`pretraining/cpt-corpus-v3-s4-handoff`, high) — S4 done; pointer to s4-complete.
-- …and 83 more entries — see `memory-store/index.md`.
+- …and 88 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:store/fine-tuning/qwen-sft-alpaca-reversion -->
 ---
@@ -6040,6 +6360,7 @@ tags: [huggingface, sft, ollama, vast, complete, done]
 schema_version: 1.3
 last_updated: "2026-09-06T20:06:23-04:00"
 evidence: [fine_tuning/scripts/train_sft_sota.py, fine_tuning/scripts/smoke_test_ollama.py, fine_tuning/kaggle/vast_sft_gate0/spurgeon_qa_gguf/spurgeon-qa-v2.Q4_K_M.gguf]
+review_status: stale
 ---
 
 # DONE — Vast GATE-0 SFT + merge → GGUF → Ollama
@@ -7357,6 +7678,7 @@ priority: low
 tags: [episodic, session-journal]
 schema_version: 1.3
 last_updated: "2026-09-06T19:33:39-04:00"
+review_status: stale
 ---
 
 ## vast-gate0-launch
@@ -7456,6 +7778,7 @@ priority: low
 tags: [episodic, session-journal]
 schema_version: 1.3
 last_updated: "2026-09-07T18:20:19-04:00"
+review_status: stale
 ---
 
 ## vast-sft-merge-ollama
@@ -7519,6 +7842,7 @@ priority: low
 tags: [episodic, session-journal]
 schema_version: 1.3
 last_updated: "2026-09-07T22:16:54-04:00"
+review_status: stale
 ---
 
 ## post-sft-evaluation
@@ -8232,7 +8556,7 @@ summary: "Continued open PR 10, which rebuilds /workspace/theology_cpt_merged_a7
 priority: low
 tags: [episodic, session-journal]
 schema_version: 1.3
-last_updated: "2026-10-07T09:05:37-03:00"
+last_updated: "2026-10-07T16:20:00-03:00"
 ---
 
 ## s8-c-merge-parent-dry
@@ -8267,6 +8591,132 @@ Explained the S8 plateau exit from the loss curves. The old 2e-6 / r=32 continue
 
 - Plateau exit attributed to r=128 plus LR 5e-5 on merged a70, then body LR 5e-6 after the wasted new-Adam replay
 - HF-resume to step 2250 added little once the slope flattened again
+
+## plateau-escape-playbook
+
+Saved the CPT plateau-escape rule as a high-priority memory for future domains and models. The rule is: a flat loss with a holdout still beating the base is an optimizer no-op; raise LoRA rank about 4x and learning rate about 10-25x on a short sweep from the merged checkpoint, then continue at a mid rate without resetting Adam. Mix reweight and longer runs at the old tiny rate do not break it.
+
+- Saved a high-priority standing playbook for leaving a CPT plateau on other domains or models
+- Indexed it with a light dream so later sessions retrieve it
+
+## s8-hf-export-prep
+
+Saved memory for S8 m_hi resume merged 16-bit HF export prep: runbook, two-stage merge script, pod shell, upload helper, readiness tests. Default private Hub repo qwen3.5-4b-theology-cpt-s8-mhi-resume-merged-16bit. Production LoRA v2 06354dfc unchanged.
+
+- New experimental merged HF repo, not Hub LoRA v2 overwrite
+- Two-stage merge a70 then resume 22698039
+
+## s8-merge-hf-orchestrator
+
+Fixed the S8 two-stage merge so a pod copy uses SFT_WORK_ROOT and preflight receives the adapter paths, and pinned the remote shell to torch 2.8 plus Unsloth 2026.8.22. Added a merge-only Vast orchestrator and a Grok Bot handoff. Dry readiness printed READY with no GPU rent. The local merged folder is not on disk yet, so Hub upload waits.
+
+- Grok Bot owns rent, merge, fetch, destroy, and the later Hub upload.
+- Pod merge uses torch 2.8 + Unsloth 2026.8.22 and does not upload.
+- New private Hub repo only; production LoRA v2 stays 06354dfc.
+
+- `fine_tuning/scripts/merge_cpt_s8_mhi_resume.py`
+- `fine_tuning/scripts/cpt_s8_mhi_resume_merge_readiness.py`
+- `fine_tuning/scripts/cpt_remote_merge_s8_mhi_resume.sh`
+- `fine_tuning/scripts/test_merge_cpt_s8_mhi_resume_readiness.py`
+- `continued_pretrain/scripts/vast_cpt_s8_mhi_resume_hf_export_orchestrate.ps1`
+- `[REDACTED_SECRET].md`
+
+## grok-bot-merge-handoff
+
+The operator asked Cursor to start Grok Bot on the S8 16-bit merge. The grok CLI is installed but not signed in, and there is no API to message the Forge teammate. The go command stays the local orchestrator -Go, which Forge must run from this checkout.
+
+- Did not rent from Cursor. Grok Bot has no launch API from this chat, and grok.exe is not signed in.
+
+## s8-merged-hf-hub-upload
+
+Verified LOCAL_MERGED_OK on the S8 m_hi resume 16-bit folder (8.46 GiB, config + tokenizer + two shards), then uploaded to the new private Hub repo qwen3.5-4b-theology-cpt-s8-mhi-resume-merged-16bit. Production LoRA v2 06354dfc was not overwritten.
+
+- Upload went to the experimental merged-16bit repo only, not LoRA v2.
+- Operator asked Cursor to upload after the local merge was ready.
+
+## s8-ollama-load
+
+Converted the S8 m_hi resume merged HF to Q8_0 GGUF with llama.cpp --no-nextn, created Ollama model spurgeon-cpt-s8, and passed the 9-prompt CPT smoke test. Left the older spurgeon-cpt tag alone.
+
+- Used Q8_0 GGUF on D: because Ollama 0.35 safetensors import requires MLX on this Windows install.
+- Must pass --no-nextn or Ollama looks for missing blk.32.
+
+- `fine_tuning/models/Modelfile.spurgeon-cpt-s8`
+- `[REDACTED_SECRET]`
+- `D:/models/spurgeon-cpt-s8/Modelfile`
+
+## cpt-ollama-think-fix
+
+Diagnosed why spurgeon-cpt-s8 looked like a chat answer with <think> instead of CPT next-token continuation: Ollama treats Qwen3.5 as a thinking model by default. Verified think=False restores catechism-style completion. PARAMETER think cannot be baked into Modelfile on this Ollama; documented --think=false /set nothink / API think:false in Modelfile comments.
+
+- CPT completion requires Ollama thinking disabled at runtime; cannot set PARAMETER think in Modelfile on current Ollama
+
+- `D:\models\spurgeon-cpt-s8\Modelfile`
+
+<!-- memory-fabric:store/episodic/2026-10-09 -->
+---
+store_path: episodic/2026-10-09
+title: "Episodic Journal — 2026-10-09"
+summary: "Decided the next model step is supervised fine-tuning on the S8 merged CPT weights"
+priority: low
+tags: [episodic, session-journal]
+schema_version: 1.3
+last_updated: "2026-10-09T10:38:30-03:00"
+---
+
+## sft-on-s8-decision
+
+Decided the next model step is supervised fine-tuning on the S8 merged CPT weights. Isolation C missed the puritan gate by 0.0256 nats and the last resume was flat, while the existing SFT already fails only on refusal. Built a dry-ready SFT-on-S8 plan, pod launcher, and orchestrator that refuses rent. Pytest 5 passed and the dry command printed READY.
+
+**Key decisions:**
+- Stop CPT resumes after the flat S8 Isolation C miss.
+- Next train is SFT on the S8 merged 16-bit base, one knob, export off until F gates.
+- Dry orchestrator refuses -Go; Forge rents only after a later operator go.
+
+**Files changed:**
+- `fine_tuning/NEXT_SFT_S8.md`
+- `fine_tuning/scripts/sft_s8_plan.py`
+- `fine_tuning/scripts/sft_remote_train_s8.sh`
+- `fine_tuning/scripts/vast_sft_s8_orchestrate.ps1`
+- `fine_tuning/scripts/test_sft_s8_plan.py`
+
+## qa-mix-size-advice
+
+Advised against growing the QA dataset for the upcoming SFT. The current 3264-row mix already passes groundedness and almost never false-refuses; the 0.54 refusal recall comes from an 11% refusal share against a 50% test. A harder refusal slice is the later knob, after the S8 base run.
+
+- Do not enlarge the whole QA mix before the S8 SFT run.
+- If refusal stays the miss, the next knob is a harder refusal slice, not more sermon answers.
+
+## open-theology-qa-advice
+
+Advised that a theological Puritan/Spurgeon LLM needs new fine-tune examples, not a rewrite of the RAG mix. Continued pretraining already holds the domain language. The current prompt forbids answering from memory, so open theological questions have to use a separate user shape or they will collide with the refusal gate.
+
+- A Puritan/Spurgeon chat model needs a new open-theology QA slice with no CONTEXT block.
+- Existing RAG rows stay answer-from-context. Do not mix the two shapes in one prompt.
+
+## open-theology-qa-handoff
+
+Saved two memories for the next session that will plan the open theological QA slice. The brief keeps the 3264-row RAG mix frozen, requires a no-CONTEXT user shape, and leaves the second system prompt undecided. The S8 fine-tune on the frozen mix stays the current train.
+
+- Saved the open theological QA as a later data plan, separate from the frozen RAG mix and from the S8 SFT run.
+
+## open-theology-qa-slice
+
+Implemented the open theological QA side slice: THEOLOGY_CHAT_SYSTEM_PROMPT, planner (300 train + 40 eval jobs, mix_v7 holdouts skipped), dry-by-default generator with open-slice checks, Clerk Grok Bot profile, qa-generation-ops skill, and NEXT_QA_OPEN_THEOLOGY runbook. Pytest 15 passed. RAG mix and S8 SFT stay untouched.
+
+- Open theology uses a second system prompt; RAG CONTEXT prompt unchanged
+- Clerk administers generation; Cursor owns code; --apply needs operator go
+- Side JSONL under qa_open_theology; never merge into qa_mix_train or frozen refusal test
+
+- `config.py`
+- `fine_tuning/scripts/plan_open_theology_jobs.py`
+- `fine_tuning/scripts/generate_open_theology_qa.py`
+- `fine_tuning/scripts/open_theology_qa_checks.py`
+- `fine_tuning/scripts/test_open_theology_qa.py`
+- `fine_tuning/GROK_BOT_CLERK.md`
+- `fine_tuning/NEXT_QA_OPEN_THEOLOGY.md`
+- `.cursor/skills/qa-generation-ops/SKILL.md`
+- `fine_tuning/data/qa_open_theology/`
 
 <!-- memory-fabric:store/fine-tuning/cpt-merged-hf-local-complete -->
 ---

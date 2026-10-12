@@ -7,6 +7,7 @@ tags: [ollama, complete, done, sft, gguf]
 schema_version: 1.3
 last_updated: "2026-09-06T20:06:17-04:00"
 evidence: [fine_tuning/scripts/smoke_test_ollama.py, fine_tuning/kaggle/vast_sft_gate0/spurgeon_qa_gguf/spurgeon-qa-v2.Q4_K_M.gguf, fine_tuning/models/spurgeon-qa-v2.Q4_K_M.gguf]
+review_status: stale
 ---
 
 # DONE — Ollama local test (spurgeon-qa-v2)

@@ -15,17 +15,18 @@
     }
   },
   "counts": {
-    "train_jobs": 300,
+    "train_jobs": 600,
     "eval_jobs": 40,
     "catalog": 340,
-    "accepted": 0,
-    "rejected": 0,
-    "remaining": 300
+    "accepted": 569,
+    "rejected": 31,
+    "remaining": 0,
+    "meta_wording_warnings": 15
   },
   "halted": false,
   "halt_reason": "",
-  "last_error": "",
-  "next_job_id": "train-puritan-144",
+  "last_error": "teacher error: teacher failed after 4 tries: 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kswe8f3vfzgrff9dt4dq1tha` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198591, Re",
+  "next_job_id": "",
   "holdout_dir": "continued_pretrain/data/mix_v7/holdouts",
   "spurgeon_holdout_sermons_skipped": 50,
   "candidate_pool": {
@@ -33,5 +34,6 @@
     "puritan": 99919,
     "confession_files": 11034,
     "catechism": 52
-  }
+  },
+  "updated_at": "2026-10-12T10:13:54.953079+00:00"
 }

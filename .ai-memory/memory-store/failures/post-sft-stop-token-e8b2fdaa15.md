@@ -8,6 +8,7 @@ schema_version: 1.3
 last_updated: "2026-09-07T22:16:20-04:00"
 occurrences: 1
 error_signature: "post-sft stop-token phases falsely failed raw-id generations, while ollama api stops could falsely pass after stripping leaked im_start turns."
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-09-07T22:16:20-04:00

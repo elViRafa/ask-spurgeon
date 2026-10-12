@@ -7,6 +7,7 @@ tags: [huggingface, gguf, sft, merged, bf16]
 schema_version: 1.3
 last_updated: "2026-09-06T20:45:41-04:00"
 evidence: [fine_tuning/kaggle/vast_sft_gate0/spurgeon_qa_merged_hf, fine_tuning/models/spurgeon-qa-v2.Q4_K_M.gguf, fine_tuning/scripts/merge_sft_lora_local.py]
+review_status: stale
 ---
 
 # HF: Spurgeon QA v2 (GGUF + merged BF16)
