@@ -1,2 +1,4 @@
 # Force LF for shell scripts (Windows autocrlf must not ship CRLF to Linux pods).
 *.sh text eol=lf
+fine_tuning/data/qa_open_theology/sft/*.jsonl text eol=lf
+fine_tuning/data/qa_open_theology/sft/*.json text eol=lf
