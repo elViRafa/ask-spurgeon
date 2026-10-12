@@ -3,9 +3,9 @@ store_path: pretraining/cpt-current
 title: "CPT current status"
 summary: "Isolation C for m_hi resume adapter 22698039 finished on 2026-10-07"
 priority: high
-tags: [cpt, s8, isolation-c, hub]
+tags: [cpt, s8, hub, merge]
 schema_version: 1.3
-last_updated: "2026-10-07T08:49:34-03:00"
+last_updated: "2026-10-07T11:53:11-03:00"
 evidence: [continued_pretrain/scripts/vast_cpt_s8_mhi_resume_c_eval.ps1, "[REDACTED_SECRET].md", "commit:638a249"]
 ---
 
@@ -19,3 +19,9 @@ Isolation C for m_hi resume adapter 22698039 finished on 2026-10-07. Section 5 m
 | Full card | `pretraining/cpt-s8-mhi-resume-isolation-c-complete` |
 
 Do not Hub-push. Do not start another train without operator go.
+
+Merged 16-bit HF export is prepared (not run). See `pretraining/cpt-s8-mhi-resume-hf-export-prepared` and `[REDACTED_SECRET].md`. Default new Hub repo `qwen3.5-4b-theology-cpt-s8-mhi-resume-merged-16bit`; do not overwrite LoRA v2 `06354dfc`.
+
+## Merged 16-bit HF uploaded 2026-10-07
+
+Experimental private Hub: `rafaelvieirar1r/qwen3.5-4b-theology-cpt-s8-mhi-resume-merged-16bit`. Local `LOCAL_MERGED_OK` then upload. Production LoRA v2 `06354dfc` unchanged. Still not a §5 win.

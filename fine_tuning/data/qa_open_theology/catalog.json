@@ -1,0 +1,2725 @@
+{
+  "created_at": "2026-10-09T13:38:24.925340+00:00",
+  "entries": [
+    {
+      "work_id": "puritan-godly_sermons-75",
+      "bucket": "puritan",
+      "heading": "[Dod \u2014 Godly Sermons]",
+      "source_path": "data/puritans/dod/godly_sermons.txt",
+      "role": "train",
+      "job_id": "train-puritan-000"
+    },
+    {
+      "work_id": "puritan-lex_rex-468",
+      "bucket": "puritan",
+      "heading": "[Rutherford \u2014 Lex Rex]",
+      "source_path": "data/puritans/rutherford/lex_rex.txt",
+      "role": "train",
+      "job_id": "train-puritan-001"
+    },
+    {
+      "work_id": "puritan-fourfold_state-398",
+      "bucket": "puritan",
+      "heading": "[Boston \u2014 Fourfold State]",
+      "source_path": "data/puritans/boston/fourfold_state.txt",
+      "role": "train",
+      "job_id": "train-puritan-002"
+    },
+    {
+      "work_id": "puritan-disputation_on_holy_scripture-524",
+      "bucket": "puritan",
+      "heading": "[Whitaker \u2014 Disputation On Holy Scripture]",
+      "source_path": "data/puritans/whitaker/disputation_on_holy_scripture.txt",
+      "role": "train",
+      "job_id": "train-puritan-003"
+    },
+    {
+      "work_id": "puritan-anatomy_of_secret_sins-240",
+      "bucket": "puritan",
+      "heading": "[Sedgwick \u2014 Anatomy Of Secret Sins]",
+      "source_path": "data/puritans/sedgwick/anatomy_of_secret_sins.txt",
+      "role": "train",
+      "job_id": "train-puritan-004"
+    },
+    {
+      "work_id": "puritan-works_vol01-33",
+      "bucket": "puritan",
+      "heading": "[Goodwin \u2014 Works Vol01]",
+      "source_path": "data/puritans/goodwin/works_vol01.txt",
+      "role": "train",
+      "job_id": "train-puritan-005"
+    },
+    {
+      "work_id": "puritan-works_vol07-169",
+      "bucket": "puritan",
+      "heading": "[Owen \u2014 Works Vol07]",
+      "source_path": "data/puritans/owen/works_vol07.txt",
+      "role": "train",
+      "job_id": "train-puritan-006"
+    },
+    {
+      "work_id": "puritan-works_vol12-404",
+      "bucket": "puritan",
+      "heading": "[Manton \u2014 Works Vol12]",
+      "source_path": "data/puritans/manton/works_vol12.txt",
+      "role": "train",
+      "job_id": "train-puritan-007"
+    },
+    {
+      "work_id": "puritan-sermons_worcester_vol8-128",
+      "bucket": "puritan",
+      "heading": "[Edwards \u2014 Sermons Worcester Vol8]",
+      "source_path": "data/puritans/edwards/sermons_worcester_vol8.txt",
+      "role": "train",
+      "job_id": "train-puritan-008"
+    },
+    {
+      "work_id": "puritan-works_vol05-56",
+      "bucket": "puritan",
+      "heading": "[Sibbes \u2014 Works Vol05]",
+      "source_path": "data/puritans/sibbes/works_vol05.txt",
+      "role": "train",
+      "job_id": "train-puritan-009"
+    },
+    {
+      "work_id": "puritan-works_vol01-248",
+      "bucket": "puritan",
+      "heading": "[Flavel \u2014 Works Vol01]",
+      "source_path": "data/puritans/flavel/works_vol01.txt",
+      "role": "train",
+      "job_id": "train-puritan-010"
+    },
+    {
+      "work_id": "puritan-grace_abounding-49",
+      "bucket": "puritan",
+      "heading": "[Bunyan \u2014 Grace Abounding]",
+      "source_path": "data/puritans/bunyan/grace_abounding.txt",
+      "role": "train",
+      "job_id": "train-puritan-011"
+    },
+    {
+      "work_id": "puritan-the_holy_war-380",
+      "bucket": "puritan",
+      "heading": "[Bunyan \u2014 The Holy War]",
+      "source_path": "data/puritans/bunyan/the_holy_war.txt",
+      "role": "train",
+      "job_id": "train-puritan-012"
+    },
+    {
+      "work_id": "puritan-golden_chain-237",
+      "bucket": "puritan",
+      "heading": "[Perkins \u2014 Golden Chain]",
+      "source_path": "data/puritans/perkins/golden_chain.txt",
+      "role": "train",
+      "job_id": "train-puritan-013"
+    },
+    {
+      "work_id": "puritan-works_vol11-111",
+      "bucket": "puritan",
+      "heading": "[Manton \u2014 Works Vol11]",
+      "source_path": "data/puritans/manton/works_vol11.txt",
+      "role": "train",
+      "job_id": "train-puritan-014"
+    },
+    {
+      "work_id": "puritan-sinners_sanctuary-433",
+      "bucket": "puritan",
+      "heading": "[Binning \u2014 Sinners Sanctuary]",
+      "source_path": "data/puritans/binning/sinners_sanctuary.txt",
+      "role": "train",
+      "job_id": "train-puritan-015"
+    },
+    {
+      "work_id": "puritan-communicants_companion-260",
+      "bucket": "puritan",
+      "heading": "[Henry \u2014 Communicants Companion]",
+      "source_path": "data/puritans/henry/communicants_companion.txt",
+      "role": "train",
+      "job_id": "train-puritan-016"
+    },
+    {
+      "work_id": "puritan-sound_believer-309",
+      "bucket": "puritan",
+      "heading": "[Shepard \u2014 Sound Believer]",
+      "source_path": "data/puritans/shepard/sound_believer.txt",
+      "role": "train",
+      "job_id": "train-puritan-017"
+    },
+    {
+      "work_id": "puritan-works_vol10-1",
+      "bucket": "puritan",
+      "heading": "[Manton \u2014 Works Vol10]",
+      "source_path": "data/puritans/manton/works_vol10.txt",
+      "role": "train",
+      "job_id": "train-puritan-018"
+    },
+    {
+      "work_id": "puritan-commentary_1corinthians-19",
+      "bucket": "puritan",
+      "heading": "[Hodge \u2014 Commentary 1Corinthians]",
+      "source_path": "data/puritans/hodge/commentary_1corinthians.txt",
+      "role": "train",
+      "job_id": "train-puritan-019"
+    },
+    {
+      "work_id": "puritan-trial_of_a_christians_estate-18",
+      "bucket": "puritan",
+      "heading": "[Baynes \u2014 Trial Of A Christians Estate]",
+      "source_path": "data/puritans/baynes/trial_of_a_christians_estate.txt",
+      "role": "train",
+      "job_id": "train-puritan-020"
+    },
+    {
+      "work_id": "puritan-works_vol10-121",
+      "bucket": "puritan",
+      "heading": "[Owen \u2014 Works Vol10]",
+      "source_path": "data/puritans/owen/works_vol10.txt",
+      "role": "train",
+      "job_id": "train-puritan-021"
+    },
+    {
+      "work_id": "puritan-commentary_romans-205",
+      "bucket": "puritan",
+      "heading": "[Hodge \u2014 Commentary Romans]",
+      "source_path": "data/puritans/hodge/commentary_romans.txt",
+      "role": "train",
+      "job_id": "train-puritan-022"
+    },
+    {
+      "work_id": "puritan-commentary_romans-568",
+      "bucket": "puritan",
+      "heading": "[Calvin \u2014 Commentary Romans]",
+      "source_path": "data/puritans/calvin/commentary_romans.txt",
+      "role": "train",
+      "job_id": "train-puritan-023"
+    },
+    {
+      "work_id": "puritan-sermons_worcester_vol7-242",
+      "bucket": "puritan",
+      "heading": "[Edwards \u2014 Sermons Worcester Vol7]",
+      "source_path": "data/puritans/edwards/sermons_worcester_vol7.txt",
+      "role": "train",
+      "job_id": "train-puritan-024"
+    },
+    {
+      "work_id": "puritan-poor_doubting_christian-87",
+      "bucket": "puritan",
+      "heading": "[Hooker \u2014 Poor Doubting Christian]",
+      "source_path": "data/puritans/hooker/poor_doubting_christian.txt",
+      "role": "train",
+      "job_id": "train-puritan-025"
+    },
+    {
+      "work_id": "puritan-spiritual_refining-230",
+      "bucket": "puritan",
+      "heading": "[Burgess \u2014 Spiritual Refining]",
+      "source_path": "data/puritans/burgess/spiritual_refining.txt",
+      "role": "train",
+      "job_id": "train-puritan-026"
+    },
+    {
+      "work_id": "puritan-sincere_convert-175",
+      "bucket": "puritan",
+      "heading": "[Shepard \u2014 Sincere Convert]",
+      "source_path": "data/puritans/shepard/sincere_convert.txt",
+      "role": "train",
+      "job_id": "train-puritan-027"
+    },
+    {
+      "work_id": "puritan-works_vol07-805",
+      "bucket": "puritan",
+      "heading": "[Manton \u2014 Works Vol07]",
+      "source_path": "data/puritans/manton/works_vol07.txt",
+      "role": "train",
+      "job_id": "train-puritan-028"
+    },
+    {
+      "work_id": "puritan-guide_to_godliness-559",
+      "bucket": "puritan",
+      "heading": "[Downame \u2014 Guide To Godliness]",
+      "source_path": "data/puritans/downame/guide_to_godliness.txt",
+      "role": "train",
+      "job_id": "train-puritan-029"
+    },
+    {
+      "work_id": "puritan-works_vol11-508",
+      "bucket": "puritan",
+      "heading": "[Owen \u2014 Works Vol11]",
+      "source_path": "data/puritans/owen/works_vol11.txt",
+      "role": "train",
+      "job_id": "train-puritan-030"
+    },
+    {
+      "work_id": "puritan-commentary_2corinthians-341",
+      "bucket": "puritan",
+      "heading": "[Calvin \u2014 Commentary 2Corinthians]",
+      "source_path": "data/puritans/calvin/commentary_2corinthians.txt",
+      "role": "train",
+      "job_id": "train-puritan-031"
+    },
+    {
+      "work_id": "puritan-works_vol09-71",
+      "bucket": "puritan",
+      "heading": "[Manton \u2014 Works Vol09]",
+      "source_path": "data/puritans/manton/works_vol09.txt",
+      "role": "train",
+      "job_id": "train-puritan-032"
+    },
+    {
+      "work_id": "puritan-complete_works_vol2-416",
+      "bucket": "puritan",
+      "heading": "[Brooks \u2014 Complete Works Vol2]",
+      "source_path": "data/puritans/brooks/complete_works_vol2.txt",
+      "role": "train",
+      "job_id": "train-puritan-033"
+    },
+    {
+      "work_id": "puritan-armilla_catechetica-169",
+      "bucket": "puritan",
+      "heading": "[Arrowsmith \u2014 Armilla Catechetica]",
+      "source_path": "data/puritans/arrowsmith/armilla_catechetica.txt",
+      "role": "train",
+      "job_id": "train-puritan-034"
+    },
+    {
+      "work_id": "puritan-mute_christian-13",
+      "bucket": "puritan",
+      "heading": "[Brooks \u2014 Mute Christian]",
+      "source_path": "data/puritans/brooks/mute_christian.txt",
+      "role": "train",
+      "job_id": "train-puritan-035"
+    },
+    {
+      "work_id": "puritan-works_vol15-226",
+      "bucket": "puritan",
+      "heading": "[Manton \u2014 Works Vol15]",
+      "source_path": "data/puritans/manton/works_vol15.txt",
+      "role": "train",
+      "job_id": "train-puritan-036"
+    },
+    {
+      "work_id": "puritan-works_vol03-163",
+      "bucket": "puritan",
+      "heading": "[Goodwin \u2014 Works Vol03]",
+      "source_path": "data/puritans/goodwin/works_vol03.txt",
+      "role": "train",
+      "job_id": "train-puritan-037"
+    },
+    {
+      "work_id": "puritan-gospel_worship-60",
+      "bucket": "puritan",
+      "heading": "[Burroughs \u2014 Gospel Worship]",
+      "source_path": "data/puritans/burroughs/gospel_worship.txt",
+      "role": "train",
+      "job_id": "train-puritan-038"
+    },
+    {
+      "work_id": "puritan-precious_remedies-155",
+      "bucket": "puritan",
+      "heading": "[Brooks \u2014 Precious Remedies]",
+      "source_path": "data/puritans/brooks/precious_remedies.txt",
+      "role": "train",
+      "job_id": "train-puritan-039"
+    },
+    {
+      "work_id": "puritan-mortification_of_sin-13",
+      "bucket": "puritan",
+      "heading": "[Owen \u2014 Mortification Of Sin]",
+      "source_path": "data/puritans/owen/mortification_of_sin.txt",
+      "role": "train",
+      "job_id": "train-puritan-040"
+    },
+    {
+      "work_id": "puritan-true_bounds_of_christian_freedom-182",
+      "bucket": "puritan",
+      "heading": "[Bolton \u2014 True Bounds Of Christian Freedom]",
+      "source_path": "data/puritans/bolton/true_bounds_of_christian_freedom.txt",
+      "role": "train",
+      "job_id": "train-puritan-041"
+    },
+    {
+      "work_id": "puritan-christian_in_complete_armour-480",
+      "bucket": "puritan",
+      "heading": "[Gurnall \u2014 Christian In Complete Armour]",
+      "source_path": "data/puritans/gurnall/christian_in_complete_armour.txt",
+      "role": "train",
+      "job_id": "train-puritan-042"
+    },
+    {
+      "work_id": "puritan-blessedness_of_the_righteous-209",
+      "bucket": "puritan",
+      "heading": "[Howe \u2014 Blessedness Of The Righteous]",
+      "source_path": "data/puritans/howe/blessedness_of_the_righteous.txt",
+      "role": "train",
+      "job_id": "train-puritan-043"
+    },
+    {
+      "work_id": "puritan-works_vol01-265",
+      "bucket": "puritan",
+      "heading": "[Sibbes \u2014 Works Vol01]",
+      "source_path": "data/puritans/sibbes/works_vol01.txt",
+      "role": "train",
+      "job_id": "train-puritan-044"
+    },
+    {
+      "work_id": "puritan-works_vol02-307",
+      "bucket": "puritan",
+      "heading": "[Goodwin \u2014 Works Vol02]",
+      "source_path": "data/puritans/goodwin/works_vol02.txt",
+      "role": "train",
+      "job_id": "train-puritan-045"
+    },
+    {
+      "work_id": "puritan-life_and_death_of_mr_badman-162",
+      "bucket": "puritan",
+      "heading": "[Bunyan \u2014 Life And Death Of Mr Badman]",
+      "source_path": "data/puritans/bunyan/life_and_death_of_mr_badman.txt",
+      "role": "train",
+      "job_id": "train-puritan-046"
+    },
+    {
+      "work_id": "puritan-christian_warfare-1094",
+      "bucket": "puritan",
+      "heading": "[Downame \u2014 Christian Warfare]",
+      "source_path": "data/puritans/downame/christian_warfare.txt",
+      "role": "train",
+      "job_id": "train-puritan-047"
+    },
+    {
+      "work_id": "puritan-works_1665-233",
+      "bucket": "puritan",
+      "heading": "[Swinnock \u2014 Works 1665]",
+      "source_path": "data/puritans/swinnock/works_1665.txt",
+      "role": "train",
+      "job_id": "train-puritan-048"
+    },
+    {
+      "work_id": "puritan-works_vol07-582",
+      "bucket": "puritan",
+      "heading": "[Sibbes \u2014 Works Vol07]",
+      "source_path": "data/puritans/sibbes/works_vol07.txt",
+      "role": "train",
+      "job_id": "train-puritan-049"
+    },
+    {
+      "work_id": "puritan-milk_for_babes-3",
+      "bucket": "puritan",
+      "heading": "[Cotton \u2014 Milk For Babes]",
+      "source_path": "data/puritans/cotton/milk_for_babes.txt",
+      "role": "train",
+      "job_id": "train-puritan-050"
+    },
+    {
+      "work_id": "puritan-tracts_vol3-376",
+      "bucket": "puritan",
+      "heading": "[Calvin \u2014 Tracts Vol3]",
+      "source_path": "data/puritans/calvin/tracts_vol3.txt",
+      "role": "train",
+      "job_id": "train-puritan-051"
+    },
+    {
+      "work_id": "puritan-distinguishing_marks-254",
+      "bucket": "puritan",
+      "heading": "[Edwards \u2014 Distinguishing Marks]",
+      "source_path": "data/puritans/edwards/distinguishing_marks.txt",
+      "role": "train",
+      "job_id": "train-puritan-052"
+    },
+    {
+      "work_id": "puritan-works_vol13-503",
+      "bucket": "puritan",
+      "heading": "[Manton \u2014 Works Vol13]",
+      "source_path": "data/puritans/manton/works_vol13.txt",
+      "role": "train",
+      "job_id": "train-puritan-053"
+    },
+    {
+      "work_id": "puritan-effectual_calling-306",
+      "bucket": "puritan",
+      "heading": "[Love \u2014 Effectual Calling]",
+      "source_path": "data/puritans/love/effectual_calling.txt",
+      "role": "train",
+      "job_id": "train-puritan-054"
+    },
+    {
+      "work_id": "puritan-practice_of_piety-312",
+      "bucket": "puritan",
+      "heading": "[Bayly \u2014 Practice Of Piety]",
+      "source_path": "data/puritans/bayly/practice_of_piety.txt",
+      "role": "train",
+      "job_id": "train-puritan-055"
+    },
+    {
+      "work_id": "puritan-plague_of_plagues-220",
+      "bucket": "puritan",
+      "heading": "[Venning \u2014 Plague Of Plagues]",
+      "source_path": "data/puritans/venning/plague_of_plagues.txt",
+      "role": "train",
+      "job_id": "train-puritan-056"
+    },
+    {
+      "work_id": "puritan-treatise_of_the_passions-0",
+      "bucket": "puritan",
+      "heading": "[Reynolds \u2014 Treatise Of The Passions]",
+      "source_path": "data/puritans/reynolds/treatise_of_the_passions.txt",
+      "role": "train",
+      "job_id": "train-puritan-057"
+    },
+    {
+      "work_id": "puritan-commentary_catholic_epistles-28",
+      "bucket": "puritan",
+      "heading": "[Calvin \u2014 Commentary Catholic Epistles]",
+      "source_path": "data/puritans/calvin/commentary_catholic_epistles.txt",
+      "role": "train",
+      "job_id": "train-puritan-058"
+    },
+    {
+      "work_id": "puritan-works_vol04-158",
+      "bucket": "puritan",
+      "heading": "[Manton \u2014 Works Vol04]",
+      "source_path": "data/puritans/manton/works_vol04.txt",
+      "role": "train",
+      "job_id": "train-puritan-059"
+    },
+    {
+      "work_id": "puritan-helps_for_discovery-5",
+      "bucket": "puritan",
+      "heading": "[Cartwright \u2014 Helps For Discovery]",
+      "source_path": "data/puritans/cartwright/helps_for_discovery.txt",
+      "role": "train",
+      "job_id": "train-puritan-060"
+    },
+    {
+      "work_id": "puritan-works_vol05-84",
+      "bucket": "puritan",
+      "heading": "[Flavel \u2014 Works Vol05]",
+      "source_path": "data/puritans/flavel/works_vol05.txt",
+      "role": "train",
+      "job_id": "train-puritan-061"
+    },
+    {
+      "work_id": "puritan-freedom_of_the_will-303",
+      "bucket": "puritan",
+      "heading": "[Edwards \u2014 Freedom Of The Will]",
+      "source_path": "data/puritans/edwards/freedom_of_the_will.txt",
+      "role": "train",
+      "job_id": "train-puritan-062"
+    },
+    {
+      "work_id": "puritan-almost_christian_discovered-181",
+      "bucket": "puritan",
+      "heading": "[Mead \u2014 Almost Christian Discovered]",
+      "source_path": "data/puritans/mead/almost_christian_discovered.txt",
+      "role": "train",
+      "job_id": "train-puritan-063"
+    },
+    {
+      "work_id": "puritan-works_vol02-279",
+      "bucket": "puritan",
+      "heading": "[Sibbes \u2014 Works Vol02]",
+      "source_path": "data/puritans/sibbes/works_vol02.txt",
+      "role": "train",
+      "job_id": "train-puritan-064"
+    },
+    {
+      "work_id": "puritan-works_vol19-474",
+      "bucket": "puritan",
+      "heading": "[Manton \u2014 Works Vol19]",
+      "source_path": "data/puritans/manton/works_vol19.txt",
+      "role": "train",
+      "job_id": "train-puritan-065"
+    },
+    {
+      "work_id": "puritan-history_of_redemption-477",
+      "bucket": "puritan",
+      "heading": "[Edwards \u2014 History Of Redemption]",
+      "source_path": "data/puritans/edwards/history_of_redemption.txt",
+      "role": "train",
+      "job_id": "train-puritan-066"
+    },
+    {
+      "work_id": "puritan-works_vol01-558",
+      "bucket": "puritan",
+      "heading": "[Owen \u2014 Works Vol01]",
+      "source_path": "data/puritans/owen/works_vol01.txt",
+      "role": "train",
+      "job_id": "train-puritan-067"
+    },
+    {
+      "work_id": "puritan-works_vol03-122",
+      "bucket": "puritan",
+      "heading": "[Flavel \u2014 Works Vol03]",
+      "source_path": "data/puritans/flavel/works_vol03.txt",
+      "role": "train",
+      "job_id": "train-puritan-068"
+    },
+    {
+      "work_id": "puritan-glory_of_christ-248",
+      "bucket": "puritan",
+      "heading": "[Owen \u2014 Glory Of Christ]",
+      "source_path": "data/puritans/owen/glory_of_christ.txt",
+      "role": "train",
+      "job_id": "train-puritan-069"
+    },
+    {
+      "work_id": "puritan-alarm_to_the_unconverted-14",
+      "bucket": "puritan",
+      "heading": "[Alleine \u2014 Alarm To The Unconverted]",
+      "source_path": "data/puritans/alleine/alarm_to_the_unconverted.txt",
+      "role": "train",
+      "job_id": "train-puritan-070"
+    },
+    {
+      "work_id": "puritan-works_vol13-451",
+      "bucket": "puritan",
+      "heading": "[Owen \u2014 Works Vol13]",
+      "source_path": "data/puritans/owen/works_vol13.txt",
+      "role": "train",
+      "job_id": "train-puritan-071"
+    },
+    {
+      "work_id": "puritan-works_vol16-111",
+      "bucket": "puritan",
+      "heading": "[Manton \u2014 Works Vol16]",
+      "source_path": "data/puritans/manton/works_vol16.txt",
+      "role": "train",
+      "job_id": "train-puritan-072"
+    },
+    {
+      "work_id": "puritan-justification_by_faith_alone-171",
+      "bucket": "puritan",
+      "heading": "[Edwards \u2014 Justification By Faith Alone]",
+      "source_path": "data/puritans/edwards/justification_by_faith_alone.txt",
+      "role": "train",
+      "job_id": "train-puritan-073"
+    },
+    {
+      "work_id": "puritan-mystery_of_providence-42",
+      "bucket": "puritan",
+      "heading": "[Flavel \u2014 Mystery Of Providence]",
+      "source_path": "data/puritans/flavel/mystery_of_providence.txt",
+      "role": "train",
+      "job_id": "train-puritan-074"
+    },
+    {
+      "work_id": "puritan-works_vol05-244",
+      "bucket": "puritan",
+      "heading": "[Owen \u2014 Works Vol05]",
+      "source_path": "data/puritans/owen/works_vol05.txt",
+      "role": "train",
+      "job_id": "train-puritan-075"
+    },
+    {
+      "work_id": "puritan-all_things_for_good-116",
+      "bucket": "puritan",
+      "heading": "[Watson \u2014 All Things For Good]",
+      "source_path": "data/puritans/watson/all_things_for_good.txt",
+      "role": "train",
+      "job_id": "train-puritan-076"
+    },
+    {
+      "work_id": "puritan-works_vol20-783",
+      "bucket": "puritan",
+      "heading": "[Manton \u2014 Works Vol20]",
+      "source_path": "data/puritans/manton/works_vol20.txt",
+      "role": "train",
+      "job_id": "train-puritan-077"
+    },
+    {
+      "work_id": "puritan-crook_in_the_lot-62",
+      "bucket": "puritan",
+      "heading": "[Boston \u2014 Crook In The Lot]",
+      "source_path": "data/puritans/boston/crook_in_the_lot.txt",
+      "role": "train",
+      "job_id": "train-puritan-078"
+    },
+    {
+      "work_id": "puritan-incomparableness_of_god-136",
+      "bucket": "puritan",
+      "heading": "[Swinnock \u2014 Incomparableness Of God]",
+      "source_path": "data/puritans/swinnock/incomparableness_of_god.txt",
+      "role": "train",
+      "job_id": "train-puritan-079"
+    },
+    {
+      "work_id": "puritan-unconquerable_soldier-66",
+      "bucket": "puritan",
+      "heading": "[Shepard Jr \u2014 Unconquerable Soldier]",
+      "source_path": "data/puritans/shepard_jr/unconquerable_soldier.txt",
+      "role": "train",
+      "job_id": "train-puritan-080"
+    },
+    {
+      "work_id": "puritan-rare_jewel_of_christian_contentment-302",
+      "bucket": "puritan",
+      "heading": "[Burroughs \u2014 Rare Jewel Of Christian Contentment]",
+      "source_path": "data/puritans/burroughs/rare_jewel_of_christian_contentment.txt",
+      "role": "train",
+      "job_id": "train-puritan-081"
+    },
+    {
+      "work_id": "puritan-country_parson-72",
+      "bucket": "puritan",
+      "heading": "[Herbert \u2014 Country Parson]",
+      "source_path": "data/puritans/herbert/country_parson.txt",
+      "role": "train",
+      "job_id": "train-puritan-082"
+    },
+    {
+      "work_id": "puritan-marrow_of_the_oracles-329",
+      "bucket": "puritan",
+      "heading": "[Byfield \u2014 Marrow Of The Oracles]",
+      "source_path": "data/puritans/byfield/marrow_of_the_oracles.txt",
+      "role": "train",
+      "job_id": "train-puritan-083"
+    },
+    {
+      "work_id": "puritan-of_domestical_duties-599",
+      "bucket": "puritan",
+      "heading": "[William Gouge \u2014 Of Domestical Duties]",
+      "source_path": "data/puritans/william_gouge/of_domestical_duties.txt",
+      "role": "train",
+      "job_id": "train-puritan-084"
+    },
+    {
+      "work_id": "puritan-religious_affections-49",
+      "bucket": "puritan",
+      "heading": "[Edwards \u2014 Religious Affections]",
+      "source_path": "data/puritans/edwards/religious_affections.txt",
+      "role": "train",
+      "job_id": "train-puritan-085"
+    },
+    {
+      "work_id": "puritan-saints_everlasting_rest-51",
+      "bucket": "puritan",
+      "heading": "[Baxter \u2014 Saints Everlasting Rest]",
+      "source_path": "data/puritans/baxter/saints_everlasting_rest.txt",
+      "role": "train",
+      "job_id": "train-puritan-086"
+    },
+    {
+      "work_id": "puritan-works_vol22-321",
+      "bucket": "puritan",
+      "heading": "[Manton \u2014 Works Vol22]",
+      "source_path": "data/puritans/manton/works_vol22.txt",
+      "role": "train",
+      "job_id": "train-puritan-087"
+    },
+    {
+      "work_id": "puritan-exposition_vol5-55",
+      "bucket": "puritan",
+      "heading": "[Henry \u2014 Exposition Vol5]",
+      "source_path": "data/puritans/henry/exposition_vol5.txt",
+      "role": "train",
+      "job_id": "train-puritan-088"
+    },
+    {
+      "work_id": "puritan-bonifacius_essays_to_do_good-125",
+      "bucket": "puritan",
+      "heading": "[Cotton Mather \u2014 Bonifacius Essays To Do Good]",
+      "source_path": "data/puritans/cotton_mather/bonifacius_essays_to_do_good.txt",
+      "role": "train",
+      "job_id": "train-puritan-089"
+    },
+    {
+      "work_id": "puritan-works_vol21-239",
+      "bucket": "puritan",
+      "heading": "[Manton \u2014 Works Vol21]",
+      "source_path": "data/puritans/manton/works_vol21.txt",
+      "role": "train",
+      "job_id": "train-puritan-090"
+    },
+    {
+      "work_id": "puritan-pilgrims_progress-146",
+      "bucket": "puritan",
+      "heading": "[Bunyan \u2014 Pilgrims Progress]",
+      "source_path": "data/puritans/bunyan/pilgrims_progress.txt",
+      "role": "train",
+      "job_id": "train-puritan-091"
+    },
+    {
+      "work_id": "puritan-poems-216",
+      "bucket": "puritan",
+      "heading": "[Bradstreet \u2014 Poems]",
+      "source_path": "data/puritans/bradstreet/poems.txt",
+      "role": "train",
+      "job_id": "train-puritan-092"
+    },
+    {
+      "work_id": "puritan-illustrious_providences-74",
+      "bucket": "puritan",
+      "heading": "[Increase Mather \u2014 Illustrious Providences]",
+      "source_path": "data/puritans/increase_mather/illustrious_providences.txt",
+      "role": "train",
+      "job_id": "train-puritan-093"
+    },
+    {
+      "work_id": "puritan-commentary_2corinthians-120",
+      "bucket": "puritan",
+      "heading": "[Hodge \u2014 Commentary 2Corinthians]",
+      "source_path": "data/puritans/hodge/commentary_2corinthians.txt",
+      "role": "train",
+      "job_id": "train-puritan-094"
+    },
+    {
+      "work_id": "puritan-looking_unto_jesus-858",
+      "bucket": "puritan",
+      "heading": "[Ambrose \u2014 Looking Unto Jesus]",
+      "source_path": "data/puritans/ambrose/looking_unto_jesus.txt",
+      "role": "train",
+      "job_id": "train-puritan-095"
+    },
+    {
+      "work_id": "puritan-existence_and_attributes_of_god-821",
+      "bucket": "puritan",
+      "heading": "[Charnock \u2014 Existence And Attributes Of God]",
+      "source_path": "data/puritans/charnock/existence_and_attributes_of_god.txt",
+      "role": "train",
+      "job_id": "train-puritan-096"
+    },
+    {
+      "work_id": "puritan-works_vol12-712",
+      "bucket": "puritan",
+      "heading": "[Owen \u2014 Works Vol12]",
+      "source_path": "data/puritans/owen/works_vol12.txt",
+      "role": "train",
+      "job_id": "train-puritan-097"
+    },
+    {
+      "work_id": "puritan-method_of_prayer-50",
+      "bucket": "puritan",
+      "heading": "[Henry \u2014 Method Of Prayer]",
+      "source_path": "data/puritans/henry/method_of_prayer.txt",
+      "role": "train",
+      "job_id": "train-puritan-098"
+    },
+    {
+      "work_id": "puritan-fountain_of_life-376",
+      "bucket": "puritan",
+      "heading": "[Flavel \u2014 Fountain Of Life]",
+      "source_path": "data/puritans/flavel/fountain_of_life.txt",
+      "role": "train",
+      "job_id": "train-puritan-099"
+    },
+    {
+      "work_id": "puritan-works_vol18-122",
+      "bucket": "puritan",
+      "heading": "[Manton \u2014 Works Vol18]",
+      "source_path": "data/puritans/manton/works_vol18.txt",
+      "role": "train",
+      "job_id": "train-puritan-100"
+    },
+    {
+      "work_id": "puritan-works_vol09-240",
+      "bucket": "puritan",
+      "heading": "[Owen \u2014 Works Vol09]",
+      "source_path": "data/puritans/owen/works_vol09.txt",
+      "role": "train",
+      "job_id": "train-puritan-101"
+    },
+    {
+      "work_id": "puritan-works_vol02-366",
+      "bucket": "puritan",
+      "heading": "[Manton \u2014 Works Vol02]",
+      "source_path": "data/puritans/manton/works_vol02.txt",
+      "role": "train",
+      "job_id": "train-puritan-102"
+    },
+    {
+      "work_id": "puritan-reformed_pastor-110",
+      "bucket": "puritan",
+      "heading": "[Baxter \u2014 Reformed Pastor]",
+      "source_path": "data/puritans/baxter/reformed_pastor.txt",
+      "role": "train",
+      "job_id": "train-puritan-103"
+    },
+    {
+      "work_id": "puritan-complete_works_vol5-139",
+      "bucket": "puritan",
+      "heading": "[Brooks \u2014 Complete Works Vol5]",
+      "source_path": "data/puritans/brooks/complete_works_vol5.txt",
+      "role": "train",
+      "job_id": "train-puritan-104"
+    },
+    {
+      "work_id": "puritan-works_vol17-149",
+      "bucket": "puritan",
+      "heading": "[Manton \u2014 Works Vol17]",
+      "source_path": "data/puritans/manton/works_vol17.txt",
+      "role": "train",
+      "job_id": "train-puritan-105"
+    },
+    {
+      "work_id": "puritan-complete_works_vol1-528",
+      "bucket": "puritan",
+      "heading": "[Brooks \u2014 Complete Works Vol1]",
+      "source_path": "data/puritans/brooks/complete_works_vol1.txt",
+      "role": "train",
+      "job_id": "train-puritan-106"
+    },
+    {
+      "work_id": "puritan-complete_works_vol4-437",
+      "bucket": "puritan",
+      "heading": "[Brooks \u2014 Complete Works Vol4]",
+      "source_path": "data/puritans/brooks/complete_works_vol4.txt",
+      "role": "train",
+      "job_id": "train-puritan-107"
+    },
+    {
+      "work_id": "puritan-communion_with_god-33",
+      "bucket": "puritan",
+      "heading": "[Owen \u2014 Communion With God]",
+      "source_path": "data/puritans/owen/communion_with_god.txt",
+      "role": "train",
+      "job_id": "train-puritan-108"
+    },
+    {
+      "work_id": "puritan-true_christians_love_of_the_unseen_christ-171",
+      "bucket": "puritan",
+      "heading": "[Vincent \u2014 True Christians Love Of The Unseen Christ]",
+      "source_path": "data/puritans/vincent/true_christians_love_of_the_unseen_christ.txt",
+      "role": "train",
+      "job_id": "train-puritan-109"
+    },
+    {
+      "work_id": "puritan-original_sin-7",
+      "bucket": "puritan",
+      "heading": "[Edwards \u2014 Original Sin]",
+      "source_path": "data/puritans/edwards/original_sin.txt",
+      "role": "train",
+      "job_id": "train-puritan-110"
+    },
+    {
+      "work_id": "puritan-breastplate_of_faith_and_love-318",
+      "bucket": "puritan",
+      "heading": "[Preston \u2014 Breastplate Of Faith And Love]",
+      "source_path": "data/puritans/preston/breastplate_of_faith_and_love.txt",
+      "role": "train",
+      "job_id": "train-puritan-111"
+    },
+    {
+      "work_id": "puritan-cases_of_conscience-556",
+      "bucket": "puritan",
+      "heading": "[Perkins \u2014 Cases Of Conscience]",
+      "source_path": "data/puritans/perkins/cases_of_conscience.txt",
+      "role": "train",
+      "job_id": "train-puritan-112"
+    },
+    {
+      "work_id": "puritan-letters-529",
+      "bucket": "puritan",
+      "heading": "[Rutherford \u2014 Letters]",
+      "source_path": "data/puritans/rutherford/letters.txt",
+      "role": "train",
+      "job_id": "train-puritan-113"
+    },
+    {
+      "work_id": "puritan-tracts_vol2-24",
+      "bucket": "puritan",
+      "heading": "[Calvin \u2014 Tracts Vol2]",
+      "source_path": "data/puritans/calvin/tracts_vol2.txt",
+      "role": "train",
+      "job_id": "train-puritan-114"
+    },
+    {
+      "work_id": "puritan-works_vol08-192",
+      "bucket": "puritan",
+      "heading": "[Owen \u2014 Works Vol08]",
+      "source_path": "data/puritans/owen/works_vol08.txt",
+      "role": "train",
+      "job_id": "train-puritan-115"
+    },
+    {
+      "work_id": "puritan-lifting_up_for_the_downcast-243",
+      "bucket": "puritan",
+      "heading": "[Bridge \u2014 Lifting Up For The Downcast]",
+      "source_path": "data/puritans/bridge/lifting_up_for_the_downcast.txt",
+      "role": "train",
+      "job_id": "train-puritan-116"
+    },
+    {
+      "work_id": "puritan-tracts_vol1-20",
+      "bucket": "puritan",
+      "heading": "[Calvin \u2014 Tracts Vol1]",
+      "source_path": "data/puritans/calvin/tracts_vol1.txt",
+      "role": "train",
+      "job_id": "train-puritan-117"
+    },
+    {
+      "work_id": "puritan-indwelling_sin-46",
+      "bucket": "puritan",
+      "heading": "[Owen \u2014 Indwelling Sin]",
+      "source_path": "data/puritans/owen/indwelling_sin.txt",
+      "role": "train",
+      "job_id": "train-puritan-118"
+    },
+    {
+      "work_id": "puritan-works_vol08-1005",
+      "bucket": "puritan",
+      "heading": "[Manton \u2014 Works Vol08]",
+      "source_path": "data/puritans/manton/works_vol08.txt",
+      "role": "train",
+      "job_id": "train-puritan-119"
+    },
+    {
+      "work_id": "puritan-unsearchable_riches_of_christ-109",
+      "bucket": "puritan",
+      "heading": "[Durham \u2014 Unsearchable Riches Of Christ]",
+      "source_path": "data/puritans/durham/unsearchable_riches_of_christ.txt",
+      "role": "train",
+      "job_id": "train-puritan-120"
+    },
+    {
+      "work_id": "puritan-marrow_of_sacred_divinity-67",
+      "bucket": "puritan",
+      "heading": "[Ames \u2014 Marrow Of Sacred Divinity]",
+      "source_path": "data/puritans/ames/marrow_of_sacred_divinity.txt",
+      "role": "train",
+      "job_id": "train-puritan-121"
+    },
+    {
+      "work_id": "puritan-commentary_ephesians-169",
+      "bucket": "puritan",
+      "heading": "[Hodge \u2014 Commentary Ephesians]",
+      "source_path": "data/puritans/hodge/commentary_ephesians.txt",
+      "role": "train",
+      "job_id": "train-puritan-122"
+    },
+    {
+      "work_id": "puritan-journal-45",
+      "bucket": "puritan",
+      "heading": "[Winthrop \u2014 Journal]",
+      "source_path": "data/puritans/winthrop/journal.txt",
+      "role": "train",
+      "job_id": "train-puritan-123"
+    },
+    {
+      "work_id": "puritan-riches_of_grace-41",
+      "bucket": "puritan",
+      "heading": "[Fenner \u2014 Riches Of Grace]",
+      "source_path": "data/puritans/fenner/riches_of_grace.txt",
+      "role": "train",
+      "job_id": "train-puritan-124"
+    },
+    {
+      "work_id": "puritan-keys_of_the_kingdom-18",
+      "bucket": "puritan",
+      "heading": "[Cotton \u2014 Keys Of The Kingdom]",
+      "source_path": "data/puritans/cotton/keys_of_the_kingdom.txt",
+      "role": "train",
+      "job_id": "train-puritan-125"
+    },
+    {
+      "work_id": "puritan-works_vol03-730",
+      "bucket": "puritan",
+      "heading": "[Manton \u2014 Works Vol03]",
+      "source_path": "data/puritans/manton/works_vol03.txt",
+      "role": "train",
+      "job_id": "train-puritan-126"
+    },
+    {
+      "work_id": "puritan-godly_mans_picture-15",
+      "bucket": "puritan",
+      "heading": "[Watson \u2014 Godly Mans Picture]",
+      "source_path": "data/puritans/watson/godly_mans_picture.txt",
+      "role": "train",
+      "job_id": "train-puritan-127"
+    },
+    {
+      "work_id": "puritan-souls_conflict-232",
+      "bucket": "puritan",
+      "heading": "[Sibbes \u2014 Souls Conflict]",
+      "source_path": "data/puritans/sibbes/souls_conflict.txt",
+      "role": "train",
+      "job_id": "train-puritan-128"
+    },
+    {
+      "work_id": "puritan-works_vol03-401",
+      "bucket": "puritan",
+      "heading": "[Sibbes \u2014 Works Vol03]",
+      "source_path": "data/puritans/sibbes/works_vol03.txt",
+      "role": "train",
+      "job_id": "train-puritan-129"
+    },
+    {
+      "work_id": "puritan-works_vol16-407",
+      "bucket": "puritan",
+      "heading": "[Owen \u2014 Works Vol16]",
+      "source_path": "data/puritans/owen/works_vol16.txt",
+      "role": "train",
+      "job_id": "train-puritan-130"
+    },
+    {
+      "work_id": "puritan-works_vol14-397",
+      "bucket": "puritan",
+      "heading": "[Owen \u2014 Works Vol14]",
+      "source_path": "data/puritans/owen/works_vol14.txt",
+      "role": "train",
+      "job_id": "train-puritan-131"
+    },
+    {
+      "work_id": "puritan-works_vol06-676",
+      "bucket": "puritan",
+      "heading": "[Flavel \u2014 Works Vol06]",
+      "source_path": "data/puritans/flavel/works_vol06.txt",
+      "role": "train",
+      "job_id": "train-puritan-132"
+    },
+    {
+      "work_id": "puritan-works_vol04-178",
+      "bucket": "puritan",
+      "heading": "[Goodwin \u2014 Works Vol04]",
+      "source_path": "data/puritans/goodwin/works_vol04.txt",
+      "role": "train",
+      "job_id": "train-puritan-133"
+    },
+    {
+      "work_id": "puritan-on_the_christian_life-71",
+      "bucket": "puritan",
+      "heading": "[Calvin \u2014 On The Christian Life]",
+      "source_path": "data/puritans/calvin/on_the_christian_life.txt",
+      "role": "train",
+      "job_id": "train-puritan-134"
+    },
+    {
+      "work_id": "puritan-doctrine_of_fasting-1",
+      "bucket": "puritan",
+      "heading": "[Hildersham \u2014 Doctrine Of Fasting]",
+      "source_path": "data/puritans/hildersham/doctrine_of_fasting.txt",
+      "role": "train",
+      "job_id": "train-puritan-135"
+    },
+    {
+      "work_id": "puritan-complete_works_vol3-267",
+      "bucket": "puritan",
+      "heading": "[Brooks \u2014 Complete Works Vol3]",
+      "source_path": "data/puritans/brooks/complete_works_vol3.txt",
+      "role": "train",
+      "job_id": "train-puritan-136"
+    },
+    {
+      "work_id": "puritan-works_vol02-1700",
+      "bucket": "puritan",
+      "heading": "[Flavel \u2014 Works Vol02]",
+      "source_path": "data/puritans/flavel/works_vol02.txt",
+      "role": "train",
+      "job_id": "train-puritan-137"
+    },
+    {
+      "work_id": "puritan-works_vol05-226",
+      "bucket": "puritan",
+      "heading": "[Manton \u2014 Works Vol05]",
+      "source_path": "data/puritans/manton/works_vol05.txt",
+      "role": "train",
+      "job_id": "train-puritan-138"
+    },
+    {
+      "work_id": "puritan-commentary_galatians_ephesians-114",
+      "bucket": "puritan",
+      "heading": "[Calvin \u2014 Commentary Galatians Ephesians]",
+      "source_path": "data/puritans/calvin/commentary_galatians_ephesians.txt",
+      "role": "train",
+      "job_id": "train-puritan-139"
+    },
+    {
+      "work_id": "puritan-commentary_1corinthians-227",
+      "bucket": "puritan",
+      "heading": "[Calvin \u2014 Commentary 1Corinthians]",
+      "source_path": "data/puritans/calvin/commentary_1corinthians.txt",
+      "role": "train",
+      "job_id": "train-puritan-140"
+    },
+    {
+      "work_id": "puritan-complete_works_vol6-228",
+      "bucket": "puritan",
+      "heading": "[Brooks \u2014 Complete Works Vol6]",
+      "source_path": "data/puritans/brooks/complete_works_vol6.txt",
+      "role": "train",
+      "job_id": "train-puritan-141"
+    },
+    {
+      "work_id": "puritan-works_vol04-383",
+      "bucket": "puritan",
+      "heading": "[Owen \u2014 Works Vol04]",
+      "source_path": "data/puritans/owen/works_vol04.txt",
+      "role": "train",
+      "job_id": "train-puritan-142"
+    },
+    {
+      "work_id": "puritan-bruised_reed-131",
+      "bucket": "puritan",
+      "heading": "[Sibbes \u2014 Bruised Reed]",
+      "source_path": "data/puritans/sibbes/bruised_reed.txt",
+      "role": "train",
+      "job_id": "train-puritan-143"
+    },
+    {
+      "work_id": "puritan-works_vol14-412",
+      "bucket": "puritan",
+      "heading": "[Manton \u2014 Works Vol14]",
+      "source_path": "data/puritans/manton/works_vol14.txt",
+      "role": "train",
+      "job_id": "train-puritan-144"
+    },
+    {
+      "work_id": "puritan-works_vol03-404",
+      "bucket": "puritan",
+      "heading": "[Owen \u2014 Works Vol03]",
+      "source_path": "data/puritans/owen/works_vol03.txt",
+      "role": "train",
+      "job_id": "train-puritan-145"
+    },
+    {
+      "work_id": "puritan-works_vol15-392",
+      "bucket": "puritan",
+      "heading": "[Owen \u2014 Works Vol15]",
+      "source_path": "data/puritans/owen/works_vol15.txt",
+      "role": "train",
+      "job_id": "train-puritan-146"
+    },
+    {
+      "work_id": "puritan-works-2513",
+      "bucket": "puritan",
+      "heading": "[Greenham \u2014 Works]",
+      "source_path": "data/puritans/greenham/works.txt",
+      "role": "train",
+      "job_id": "train-puritan-147"
+    },
+    {
+      "work_id": "puritan-seven_treatises-1438",
+      "bucket": "puritan",
+      "heading": "[Richard Rogers \u2014 Seven Treatises]",
+      "source_path": "data/puritans/richard_rogers/seven_treatises.txt",
+      "role": "train",
+      "job_id": "train-puritan-148"
+    },
+    {
+      "work_id": "puritan-keeping_the_heart-43",
+      "bucket": "puritan",
+      "heading": "[Flavel \u2014 Keeping The Heart]",
+      "source_path": "data/puritans/flavel/keeping_the_heart.txt",
+      "role": "train",
+      "job_id": "train-puritan-149"
+    },
+    {
+      "work_id": "puritan-works_vol06-247",
+      "bucket": "puritan",
+      "heading": "[Manton \u2014 Works Vol06]",
+      "source_path": "data/puritans/manton/works_vol06.txt",
+      "role": "eval",
+      "job_id": "eval-puritan-000"
+    },
+    {
+      "work_id": "puritan-works_vol06-68",
+      "bucket": "puritan",
+      "heading": "[Sibbes \u2014 Works Vol06]",
+      "source_path": "data/puritans/sibbes/works_vol06.txt",
+      "role": "eval",
+      "job_id": "eval-puritan-001"
+    },
+    {
+      "work_id": "puritan-church_covenant-31",
+      "bucket": "puritan",
+      "heading": "[Richard Mather \u2014 Church Covenant]",
+      "source_path": "data/puritans/richard_mather/church_covenant.txt",
+      "role": "eval",
+      "job_id": "eval-puritan-002"
+    },
+    {
+      "work_id": "puritan-beatitudes-479",
+      "bucket": "puritan",
+      "heading": "[Watson \u2014 Beatitudes]",
+      "source_path": "data/puritans/watson/beatitudes.txt",
+      "role": "eval",
+      "job_id": "eval-puritan-003"
+    },
+    {
+      "work_id": "puritan-works_vol01-1205",
+      "bucket": "puritan",
+      "heading": "[Manton \u2014 Works Vol01]",
+      "source_path": "data/puritans/manton/works_vol01.txt",
+      "role": "eval",
+      "job_id": "eval-puritan-004"
+    },
+    {
+      "work_id": "puritan-works_vol04-5",
+      "bucket": "puritan",
+      "heading": "[Flavel \u2014 Works Vol04]",
+      "source_path": "data/puritans/flavel/works_vol04.txt",
+      "role": "eval",
+      "job_id": "eval-puritan-005"
+    },
+    {
+      "work_id": "puritan-surest_and_safest_way_of_thriving-103",
+      "bucket": "puritan",
+      "heading": "[Thomas Gouge \u2014 Surest And Safest Way Of Thriving]",
+      "source_path": "data/puritans/thomas_gouge/surest_and_safest_way_of_thriving.txt",
+      "role": "eval",
+      "job_id": "eval-puritan-006"
+    },
+    {
+      "work_id": "puritan-works_vol04-153",
+      "bucket": "puritan",
+      "heading": "[Sibbes \u2014 Works Vol04]",
+      "source_path": "data/puritans/sibbes/works_vol04.txt",
+      "role": "eval",
+      "job_id": "eval-puritan-007"
+    },
+    {
+      "work_id": "puritan-the_temple-0",
+      "bucket": "puritan",
+      "heading": "[Herbert \u2014 The Temple]",
+      "source_path": "data/puritans/herbert/the_temple.txt",
+      "role": "eval",
+      "job_id": "eval-puritan-008"
+    },
+    {
+      "work_id": "puritan-christians_great_interest-136",
+      "bucket": "puritan",
+      "heading": "[Guthrie \u2014 Christians Great Interest]",
+      "source_path": "data/puritans/guthrie/christians_great_interest.txt",
+      "role": "eval",
+      "job_id": "eval-puritan-009"
+    },
+    {
+      "work_id": "puritan-body_of_divinity-586",
+      "bucket": "puritan",
+      "heading": "[Watson \u2014 Body Of Divinity]",
+      "source_path": "data/puritans/watson/body_of_divinity.txt",
+      "role": "eval",
+      "job_id": "eval-puritan-010"
+    },
+    {
+      "work_id": "puritan-seven_treatises-914",
+      "bucket": "puritan",
+      "heading": "[Richard Rogers \u2014 Seven Treatises]",
+      "source_path": "data/puritans/richard_rogers/seven_treatises.txt",
+      "role": "eval",
+      "job_id": "eval-puritan-011"
+    },
+    {
+      "work_id": "puritan-exposition_vol5-1153",
+      "bucket": "puritan",
+      "heading": "[Henry \u2014 Exposition Vol5]",
+      "source_path": "data/puritans/henry/exposition_vol5.txt",
+      "role": "eval",
+      "job_id": "eval-puritan-012"
+    },
+    {
+      "work_id": "puritan-works-1375",
+      "bucket": "puritan",
+      "heading": "[Greenham \u2014 Works]",
+      "source_path": "data/puritans/greenham/works.txt",
+      "role": "eval",
+      "job_id": "eval-puritan-013"
+    },
+    {
+      "work_id": "puritan-fourfold_state-59",
+      "bucket": "puritan",
+      "heading": "[Boston \u2014 Fourfold State]",
+      "source_path": "data/puritans/boston/fourfold_state.txt",
+      "role": "eval",
+      "job_id": "eval-puritan-014"
+    },
+    {
+      "work_id": "puritan-works_vol02-201",
+      "bucket": "puritan",
+      "heading": "[Goodwin \u2014 Works Vol02]",
+      "source_path": "data/puritans/goodwin/works_vol02.txt",
+      "role": "eval",
+      "job_id": "eval-puritan-015"
+    },
+    {
+      "work_id": "puritan-beatitudes-127",
+      "bucket": "puritan",
+      "heading": "[Watson \u2014 Beatitudes]",
+      "source_path": "data/puritans/watson/beatitudes.txt",
+      "role": "eval",
+      "job_id": "eval-puritan-016"
+    },
+    {
+      "work_id": "puritan-works_vol01-483",
+      "bucket": "puritan",
+      "heading": "[Goodwin \u2014 Works Vol01]",
+      "source_path": "data/puritans/goodwin/works_vol01.txt",
+      "role": "eval",
+      "job_id": "eval-puritan-017"
+    },
+    {
+      "work_id": "puritan-unsearchable_riches_of_christ-77",
+      "bucket": "puritan",
+      "heading": "[Durham \u2014 Unsearchable Riches Of Christ]",
+      "source_path": "data/puritans/durham/unsearchable_riches_of_christ.txt",
+      "role": "eval",
+      "job_id": "eval-puritan-018"
+    },
+    {
+      "work_id": "puritan-works_vol07-1044",
+      "bucket": "puritan",
+      "heading": "[Sibbes \u2014 Works Vol07]",
+      "source_path": "data/puritans/sibbes/works_vol07.txt",
+      "role": "eval",
+      "job_id": "eval-puritan-019"
+    },
+    {
+      "work_id": "spurgeon-2579",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2579 \u2014 \"Waiting, Hoping, Watching\"]",
+      "source_path": "data/chspurgeon-sermons/volume-44/sermon_2579.md",
+      "role": "train",
+      "job_id": "train-spurgeon-000"
+    },
+    {
+      "work_id": "spurgeon-564",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 564 \u2014 \"A Promise For Us And For Our Children\"]",
+      "source_path": "data/chspurgeon-sermons/volume-10/sermon_564.md",
+      "role": "train",
+      "job_id": "train-spurgeon-001"
+    },
+    {
+      "work_id": "spurgeon-1867",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1867 \u2014 \"Untitled Sermon\"]",
+      "source_path": "data/chspurgeon-sermons/volume-31/sermon_1867.md",
+      "role": "train",
+      "job_id": "train-spurgeon-002"
+    },
+    {
+      "work_id": "spurgeon-580",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 580 \u2014 \"God Is With Us\"]",
+      "source_path": "data/chspurgeon-sermons/volume-10/sermon_580.md",
+      "role": "train",
+      "job_id": "train-spurgeon-003"
+    },
+    {
+      "work_id": "spurgeon-2028",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2028 \u2014 \"The Love of God and the Patience of Christ\"]",
+      "source_path": "data/chspurgeon-sermons/volume-34/sermon_2028.md",
+      "role": "train",
+      "job_id": "train-spurgeon-004"
+    },
+    {
+      "work_id": "spurgeon-2912",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2912 \u2014 \"Comfort for Tried Believers\"]",
+      "source_path": "data/chspurgeon-sermons/volume-50/sermon_2912.md",
+      "role": "train",
+      "job_id": "train-spurgeon-005"
+    },
+    {
+      "work_id": "spurgeon-3237",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 3237 \u2014 \"Our Lord's Preaching\"]",
+      "source_path": "data/chspurgeon-sermons/volume-57/sermon_3237.md",
+      "role": "train",
+      "job_id": "train-spurgeon-006"
+    },
+    {
+      "work_id": "spurgeon-3415",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 3415 \u2014 \"Right-hand Sins\"]",
+      "source_path": "data/chspurgeon-sermons/volume-60/sermon_3415.md",
+      "role": "train",
+      "job_id": "train-spurgeon-007"
+    },
+    {
+      "work_id": "spurgeon-633",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 633 \u2014 \"Two Loving Invitations\"]",
+      "source_path": "data/chspurgeon-sermons/volume-11/sermon_633.md",
+      "role": "train",
+      "job_id": "train-spurgeon-008"
+    },
+    {
+      "work_id": "spurgeon-2303",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2303 \u2014 \"Three Arrows--or Six?\"]",
+      "source_path": "data/chspurgeon-sermons/volume-39/sermon_2303.md",
+      "role": "train",
+      "job_id": "train-spurgeon-009"
+    },
+    {
+      "work_id": "spurgeon-480",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 480 \u2014 \"A Message from God for Thee\"]",
+      "source_path": "data/chspurgeon-sermons/volume-8/sermon_480.md",
+      "role": "train",
+      "job_id": "train-spurgeon-010"
+    },
+    {
+      "work_id": "spurgeon-265",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 265 \u2014 \"The Meek and Lowly One\"]",
+      "source_path": "data/chspurgeon-sermons/volume-5/sermon-265.md",
+      "role": "train",
+      "job_id": "train-spurgeon-011"
+    },
+    {
+      "work_id": "spurgeon-1366",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1366 \u2014 \"The Danger of Unconfessed Sin\"]",
+      "source_path": "data/chspurgeon-sermons/volume-23/sermon_1366.md",
+      "role": "train",
+      "job_id": "train-spurgeon-012"
+    },
+    {
+      "work_id": "spurgeon-1987",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1987 \u2014 \"\"Behold the Lamb of God\"\"]",
+      "source_path": "data/chspurgeon-sermons/volume-33/sermon_1987.md",
+      "role": "train",
+      "job_id": "train-spurgeon-013"
+    },
+    {
+      "work_id": "spurgeon-3020",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 3020 \u2014 \"Good Cheer From Grace Received\"]",
+      "source_path": "data/chspurgeon-sermons/volume-53/sermon_3020.md",
+      "role": "train",
+      "job_id": "train-spurgeon-014"
+    },
+    {
+      "work_id": "spurgeon-3447",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 3447 \u2014 \"A Present Helper\"]",
+      "source_path": "data/chspurgeon-sermons/volume-61/sermon_3447.md",
+      "role": "train",
+      "job_id": "train-spurgeon-015"
+    },
+    {
+      "work_id": "spurgeon-2148",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2148 \u2014 \"The Tenderness of Jesus\"]",
+      "source_path": "data/chspurgeon-sermons/volume-36/sermon_2148.md",
+      "role": "train",
+      "job_id": "train-spurgeon-016"
+    },
+    {
+      "work_id": "spurgeon-3424",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 3424 \u2014 \"Meat Indeed, and Drink Indeed\"]",
+      "source_path": "data/chspurgeon-sermons/volume-60/sermon_3424.md",
+      "role": "train",
+      "job_id": "train-spurgeon-017"
+    },
+    {
+      "work_id": "spurgeon-2782",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2782 \u2014 \"Love's Lamentation\"]",
+      "source_path": "data/chspurgeon-sermons/volume-48/sermon_2782.md",
+      "role": "train",
+      "job_id": "train-spurgeon-018"
+    },
+    {
+      "work_id": "spurgeon-1066",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1066 \u2014 \"A Call For Revival\"]",
+      "source_path": "data/chspurgeon-sermons/volume-18/sermon_1066.md",
+      "role": "train",
+      "job_id": "train-spurgeon-019"
+    },
+    {
+      "work_id": "spurgeon-2832",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2832 \u2014 \"Christ's Yoke and Burden\"]",
+      "source_path": "data/chspurgeon-sermons/volume-49/sermon_2832.md",
+      "role": "train",
+      "job_id": "train-spurgeon-020"
+    },
+    {
+      "work_id": "spurgeon-1715",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1715 \u2014 \"A Description of Young Men in Christ\"]",
+      "source_path": "data/chspurgeon-sermons/volume-29/sermon_1715.md",
+      "role": "train",
+      "job_id": "train-spurgeon-021"
+    },
+    {
+      "work_id": "spurgeon-812",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 812 \u2014 \"The Deep-Seated Character of Sin\"]",
+      "source_path": "data/chspurgeon-sermons/volume-14/sermon_812.md",
+      "role": "train",
+      "job_id": "train-spurgeon-022"
+    },
+    {
+      "work_id": "spurgeon-311",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 311 \u2014 \"The Beginning, Increase, and End of the Divine Life\"]",
+      "source_path": "data/chspurgeon-sermons/volume-6/sermon-311.md",
+      "role": "train",
+      "job_id": "train-spurgeon-023"
+    },
+    {
+      "work_id": "spurgeon-3492",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 3492 \u2014 \"God's Word Not to Be Refused\"]",
+      "source_path": "data/chspurgeon-sermons/volume-61/sermon_3492.md",
+      "role": "train",
+      "job_id": "train-spurgeon-024"
+    },
+    {
+      "work_id": "spurgeon-1586",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1586 \u2014 \"Holy Longings\"]",
+      "source_path": "data/chspurgeon-sermons/volume-27/sermon_1586.md",
+      "role": "train",
+      "job_id": "train-spurgeon-025"
+    },
+    {
+      "work_id": "spurgeon-1547",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1547 \u2014 \"Samuel and the Young Man Saul\"]",
+      "source_path": "data/chspurgeon-sermons/volume-26/sermon_1547.md",
+      "role": "train",
+      "job_id": "train-spurgeon-026"
+    },
+    {
+      "work_id": "spurgeon-776",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 776 \u2014 \"A Song at the Wellhead\"]",
+      "source_path": "data/chspurgeon-sermons/volume-13/sermon_776.md",
+      "role": "train",
+      "job_id": "train-spurgeon-027"
+    },
+    {
+      "work_id": "spurgeon-1163",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1163 \u2014 \"Redemption and Its Claims\"]",
+      "source_path": "data/chspurgeon-sermons/volume-20/sermon_1163.md",
+      "role": "train",
+      "job_id": "train-spurgeon-028"
+    },
+    {
+      "work_id": "spurgeon-1946",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1946 \u2014 \"Eternal Life Within Present Grasp\"]",
+      "source_path": "data/chspurgeon-sermons/volume-33/sermon_1946.md",
+      "role": "train",
+      "job_id": "train-spurgeon-029"
+    },
+    {
+      "work_id": "spurgeon-599",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 599 \u2014 \"The Certainty And Freeness Of Divine Grace\"]",
+      "source_path": "data/chspurgeon-sermons/volume-10/sermon_599.md",
+      "role": "train",
+      "job_id": "train-spurgeon-030"
+    },
+    {
+      "work_id": "spurgeon-3144",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 3144 \u2014 \"\"The True Sayings of God\"\"]",
+      "source_path": "data/chspurgeon-sermons/volume-55/sermon_3144.md",
+      "role": "train",
+      "job_id": "train-spurgeon-031"
+    },
+    {
+      "work_id": "spurgeon-1323",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1323 \u2014 \"And Why Not?\"]",
+      "source_path": "data/chspurgeon-sermons/volume-22/sermon_1323.md",
+      "role": "train",
+      "job_id": "train-spurgeon-032"
+    },
+    {
+      "work_id": "spurgeon-3436",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 3436 \u2014 \"Christ Glorified\"]",
+      "source_path": "data/chspurgeon-sermons/volume-60/sermon_3436.md",
+      "role": "train",
+      "job_id": "train-spurgeon-033"
+    },
+    {
+      "work_id": "spurgeon-3403",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 3403 \u2014 \"The Multitude Before the Throne\"]",
+      "source_path": "data/chspurgeon-sermons/volume-60/sermon_3403.md",
+      "role": "train",
+      "job_id": "train-spurgeon-034"
+    },
+    {
+      "work_id": "spurgeon-271",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 271 \u2014 \"Faith Illustrated\"]",
+      "source_path": "data/chspurgeon-sermons/volume-5/sermon-271.md",
+      "role": "train",
+      "job_id": "train-spurgeon-035"
+    },
+    {
+      "work_id": "spurgeon-2806",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2806 \u2014 \"\"Jesus Our Lord\"\"]",
+      "source_path": "data/chspurgeon-sermons/volume-48/sermon_2806.md",
+      "role": "train",
+      "job_id": "train-spurgeon-036"
+    },
+    {
+      "work_id": "spurgeon-2759",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2759 \u2014 \"The Pleasures of Piety\"]",
+      "source_path": "data/chspurgeon-sermons/volume-47/sermon_2759.md",
+      "role": "train",
+      "job_id": "train-spurgeon-037"
+    },
+    {
+      "work_id": "spurgeon-2614",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2614 \u2014 \"Strange Things\"]",
+      "source_path": "data/chspurgeon-sermons/volume-45/sermon_2614.md",
+      "role": "train",
+      "job_id": "train-spurgeon-038"
+    },
+    {
+      "work_id": "spurgeon-1414",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1414 \u2014 \"No Difference\"]",
+      "source_path": "data/chspurgeon-sermons/volume-24/sermon_1414.md",
+      "role": "train",
+      "job_id": "train-spurgeon-039"
+    },
+    {
+      "work_id": "spurgeon-2364",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2364 \u2014 \"Poverty and Riches\"]",
+      "source_path": "data/chspurgeon-sermons/volume-40/sermon_2364.md",
+      "role": "train",
+      "job_id": "train-spurgeon-040"
+    },
+    {
+      "work_id": "spurgeon-1526",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1526 \u2014 \"The Fair Portrait of a Saint\"]",
+      "source_path": "data/chspurgeon-sermons/volume-26/sermon_1526.md",
+      "role": "train",
+      "job_id": "train-spurgeon-041"
+    },
+    {
+      "work_id": "spurgeon-2649",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2649 \u2014 \"Girded for the Work\"]",
+      "source_path": "data/chspurgeon-sermons/volume-45/sermon_2649.md",
+      "role": "train",
+      "job_id": "train-spurgeon-042"
+    },
+    {
+      "work_id": "spurgeon-2301",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2301 \u2014 \"Marah Better Than Elim\"]",
+      "source_path": "data/chspurgeon-sermons/volume-39/sermon_2301.md",
+      "role": "train",
+      "job_id": "train-spurgeon-043"
+    },
+    {
+      "work_id": "spurgeon-1280",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1280 \u2014 \"An Objection and an Answer\"]",
+      "source_path": "data/chspurgeon-sermons/volume-22/sermon_1280.md",
+      "role": "train",
+      "job_id": "train-spurgeon-044"
+    },
+    {
+      "work_id": "spurgeon-1506",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1506 \u2014 \"Choice Comfort for a Young Believer\"]",
+      "source_path": "data/chspurgeon-sermons/volume-25/sermon_1506.md",
+      "role": "train",
+      "job_id": "train-spurgeon-045"
+    },
+    {
+      "work_id": "spurgeon-1267",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1267 \u2014 \"The God of Bethel\"]",
+      "source_path": "data/chspurgeon-sermons/volume-21/sermon_1267.md",
+      "role": "train",
+      "job_id": "train-spurgeon-046"
+    },
+    {
+      "work_id": "spurgeon-3079",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 3079 \u2014 \"A Searching Question\"]",
+      "source_path": "data/chspurgeon-sermons/volume-54/sermon_3079.md",
+      "role": "train",
+      "job_id": "train-spurgeon-047"
+    },
+    {
+      "work_id": "spurgeon-2643",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2643 \u2014 \"The Honored Servant\"]",
+      "source_path": "data/chspurgeon-sermons/volume-45/sermon_2643.md",
+      "role": "train",
+      "job_id": "train-spurgeon-048"
+    },
+    {
+      "work_id": "spurgeon-2656",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2656 \u2014 \"The Death of Christ for His People\"]",
+      "source_path": "data/chspurgeon-sermons/volume-46/sermon_2656.md",
+      "role": "train",
+      "job_id": "train-spurgeon-049"
+    },
+    {
+      "work_id": "spurgeon-300",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 300 \u2014 \"Spiritual Peace\"]",
+      "source_path": "data/chspurgeon-sermons/volume-6/sermon-300.md",
+      "role": "train",
+      "job_id": "train-spurgeon-050"
+    },
+    {
+      "work_id": "spurgeon-1642",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1642 \u2014 \"\"Verily, Verily\"\"]",
+      "source_path": "data/chspurgeon-sermons/volume-28/sermon_1642.md",
+      "role": "train",
+      "job_id": "train-spurgeon-051"
+    },
+    {
+      "work_id": "spurgeon-51",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 51 \u2014 \"Comfort for the Desponding\"]",
+      "source_path": "data/chspurgeon-sermons/volume-1/sermon-51.md",
+      "role": "train",
+      "job_id": "train-spurgeon-052"
+    },
+    {
+      "work_id": "spurgeon-1077",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1077 \u2014 \"The Lord Blessing His Saints\"]",
+      "source_path": "data/chspurgeon-sermons/volume-18/sermon_1077.md",
+      "role": "train",
+      "job_id": "train-spurgeon-053"
+    },
+    {
+      "work_id": "spurgeon-410",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 410 \u2014 \"Not Now, But Hereafter!\"]",
+      "source_path": "data/chspurgeon-sermons/volume-7/sermon_410.md",
+      "role": "train",
+      "job_id": "train-spurgeon-054"
+    },
+    {
+      "work_id": "spurgeon-846",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 846 \u2014 \"Good Cheer for Christians\"]",
+      "source_path": "data/chspurgeon-sermons/volume-14/sermon_846.md",
+      "role": "train",
+      "job_id": "train-spurgeon-055"
+    },
+    {
+      "work_id": "spurgeon-2446",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2446 \u2014 \"Carte Blanche\"]",
+      "source_path": "data/chspurgeon-sermons/volume-42/sermon_2446.md",
+      "role": "train",
+      "job_id": "train-spurgeon-056"
+    },
+    {
+      "work_id": "spurgeon-3406",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 3406 \u2014 \"Fullness of Joy Our Privilege\"]",
+      "source_path": "data/chspurgeon-sermons/volume-60/sermon_3406.md",
+      "role": "train",
+      "job_id": "train-spurgeon-057"
+    },
+    {
+      "work_id": "spurgeon-548",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 548 \u2014 \"Forward! Forward! Forward!\"]",
+      "source_path": "data/chspurgeon-sermons/volume-10/sermon_548.md",
+      "role": "train",
+      "job_id": "train-spurgeon-058"
+    },
+    {
+      "work_id": "spurgeon-3455",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 3455 \u2014 \"A Message From God\"]",
+      "source_path": "data/chspurgeon-sermons/volume-61/sermon_3455.md",
+      "role": "train",
+      "job_id": "train-spurgeon-059"
+    },
+    {
+      "work_id": "spurgeon-1268",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1268 \u2014 \"The Story of a Runaway Slave\"]",
+      "source_path": "data/chspurgeon-sermons/volume-21/sermon_1268.md",
+      "role": "train",
+      "job_id": "train-spurgeon-060"
+    },
+    {
+      "work_id": "spurgeon-3030",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 3030 \u2014 \"A Consistent Walk for Time to Come\"]",
+      "source_path": "data/chspurgeon-sermons/volume-53/sermon_3030.md",
+      "role": "train",
+      "job_id": "train-spurgeon-061"
+    },
+    {
+      "work_id": "spurgeon-565",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 565 \u2014 \"The Great Liberator\"]",
+      "source_path": "data/chspurgeon-sermons/volume-10/sermon_565.md",
+      "role": "train",
+      "job_id": "train-spurgeon-062"
+    },
+    {
+      "work_id": "spurgeon-2000",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2000 \u2014 \"Number Two-thousand--Healing by the Stripes of Jesus\"]",
+      "source_path": "data/chspurgeon-sermons/volume-33/sermon_2000.md",
+      "role": "train",
+      "job_id": "train-spurgeon-063"
+    },
+    {
+      "work_id": "spurgeon-1064",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1064 \u2014 \"Salvation All of Grace\"]",
+      "source_path": "data/chspurgeon-sermons/volume-18/sermon_1064.md",
+      "role": "train",
+      "job_id": "train-spurgeon-064"
+    },
+    {
+      "work_id": "spurgeon-1071",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1071 \u2014 \"The Ministry Of Gratitude\"]",
+      "source_path": "data/chspurgeon-sermons/volume-18/sermon_1071.md",
+      "role": "train",
+      "job_id": "train-spurgeon-065"
+    },
+    {
+      "work_id": "spurgeon-366",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 366 \u2014 \"The Silver Trumpet\"]",
+      "source_path": "data/chspurgeon-sermons/volume-7/sermon_366.md",
+      "role": "train",
+      "job_id": "train-spurgeon-066"
+    },
+    {
+      "work_id": "spurgeon-2420",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2420 \u2014 \"\"The King Can Do No Wrong\"\"]",
+      "source_path": "data/chspurgeon-sermons/volume-41/sermon_2420.md",
+      "role": "train",
+      "job_id": "train-spurgeon-067"
+    },
+    {
+      "work_id": "spurgeon-2005",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2005 \u2014 \"The Hairs of Your Head Numbered\"]",
+      "source_path": "data/chspurgeon-sermons/volume-34/sermon_2005.md",
+      "role": "train",
+      "job_id": "train-spurgeon-068"
+    },
+    {
+      "work_id": "spurgeon-2039",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2039 \u2014 \"Crossing the Jordan\"]",
+      "source_path": "data/chspurgeon-sermons/volume-34/sermon_2039.md",
+      "role": "train",
+      "job_id": "train-spurgeon-069"
+    },
+    {
+      "work_id": "spurgeon-1631",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1631 \u2014 \"The Main Matter\"]",
+      "source_path": "data/chspurgeon-sermons/volume-27/sermon_1631.md",
+      "role": "train",
+      "job_id": "train-spurgeon-070"
+    },
+    {
+      "work_id": "spurgeon-2322",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2322 \u2014 \"When Can We Find Comforters?\"]",
+      "source_path": "data/chspurgeon-sermons/volume-39/sermon_2322.md",
+      "role": "train",
+      "job_id": "train-spurgeon-071"
+    },
+    {
+      "work_id": "spurgeon-322",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 322 \u2014 \"A Divine Challenge!\"]",
+      "source_path": "data/chspurgeon-sermons/volume-6/sermon-322.md",
+      "role": "train",
+      "job_id": "train-spurgeon-072"
+    },
+    {
+      "work_id": "spurgeon-2775",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2775 \u2014 \"David Warned and Rewarded\"]",
+      "source_path": "data/chspurgeon-sermons/volume-48/sermon_2775.md",
+      "role": "train",
+      "job_id": "train-spurgeon-073"
+    },
+    {
+      "work_id": "spurgeon-2944",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2944 \u2014 \"Urging Lot\"]",
+      "source_path": "data/chspurgeon-sermons/volume-51/sermon_2944.md",
+      "role": "train",
+      "job_id": "train-spurgeon-074"
+    },
+    {
+      "work_id": "spurgeon-3487",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 3487 \u2014 \"The Honored Guest\"]",
+      "source_path": "data/chspurgeon-sermons/volume-61/sermon_3487.md",
+      "role": "train",
+      "job_id": "train-spurgeon-075"
+    },
+    {
+      "work_id": "spurgeon-1169",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1169 \u2014 \"The Fullness of Christ the Treasury of the Saints\"]",
+      "source_path": "data/chspurgeon-sermons/volume-20/sermon_1169.md",
+      "role": "train",
+      "job_id": "train-spurgeon-076"
+    },
+    {
+      "work_id": "spurgeon-4",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 4 \u2014 \"The Personality of the Holy Ghost\"]",
+      "source_path": "data/chspurgeon-sermons/volume-1/sermon-4.md",
+      "role": "train",
+      "job_id": "train-spurgeon-077"
+    },
+    {
+      "work_id": "spurgeon-2185",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2185 \u2014 \"Our Manifesto\"]",
+      "source_path": "data/chspurgeon-sermons/volume-37/sermon_2185.md",
+      "role": "train",
+      "job_id": "train-spurgeon-078"
+    },
+    {
+      "work_id": "spurgeon-1745",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1745 \u2014 \"Abijah, or Some Good Thing Towards the Lord\"]",
+      "source_path": "data/chspurgeon-sermons/volume-29/sermon_1745.md",
+      "role": "train",
+      "job_id": "train-spurgeon-079"
+    },
+    {
+      "work_id": "spurgeon-2930",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2930 \u2014 \"\"Hiding in You!\"\"]",
+      "source_path": "data/chspurgeon-sermons/volume-51/sermon_2930.md",
+      "role": "train",
+      "job_id": "train-spurgeon-080"
+    },
+    {
+      "work_id": "spurgeon-489",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 489 \u2014 \"Broad Rivers And Streams\"]",
+      "source_path": "data/chspurgeon-sermons/volume-9/sermon_489.md",
+      "role": "train",
+      "job_id": "train-spurgeon-081"
+    },
+    {
+      "work_id": "spurgeon-115",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 115 \u2014 \"Why Are Men Saved?\"]",
+      "source_path": "data/chspurgeon-sermons/volume-3/sermon-115.md",
+      "role": "train",
+      "job_id": "train-spurgeon-082"
+    },
+    {
+      "work_id": "spurgeon-2011",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2011 \u2014 \"Abram's Call--or, Half-Way--and All the Way\"]",
+      "source_path": "data/chspurgeon-sermons/volume-34/sermon_2011.md",
+      "role": "train",
+      "job_id": "train-spurgeon-083"
+    },
+    {
+      "work_id": "spurgeon-1317",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1317 \u2014 \"Overcome Evil With Good\"]",
+      "source_path": "data/chspurgeon-sermons/volume-22/sermon_1317.md",
+      "role": "train",
+      "job_id": "train-spurgeon-084"
+    },
+    {
+      "work_id": "spurgeon-2353",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2353 \u2014 \"\"Out Of The Depths\"\"]",
+      "source_path": "data/chspurgeon-sermons/volume-40/sermon_2353.md",
+      "role": "train",
+      "job_id": "train-spurgeon-085"
+    },
+    {
+      "work_id": "spurgeon-536",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 536 \u2014 \"Jehovah-Shammah\"]",
+      "source_path": "data/chspurgeon-sermons/volume-9/sermon_536.md",
+      "role": "train",
+      "job_id": "train-spurgeon-086"
+    },
+    {
+      "work_id": "spurgeon-761",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 761 \u2014 \"The Shrill Trumpet of Admonition\"]",
+      "source_path": "data/chspurgeon-sermons/volume-13/sermon_761.md",
+      "role": "train",
+      "job_id": "train-spurgeon-087"
+    },
+    {
+      "work_id": "spurgeon-261",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 261 \u2014 \"The Call of Abraham\"]",
+      "source_path": "data/chspurgeon-sermons/volume-5/sermon-261.md",
+      "role": "train",
+      "job_id": "train-spurgeon-088"
+    },
+    {
+      "work_id": "spurgeon-2797",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2797 \u2014 \"The Need and Nature of Conversion\"]",
+      "source_path": "data/chspurgeon-sermons/volume-48/sermon_2797.md",
+      "role": "train",
+      "job_id": "train-spurgeon-089"
+    },
+    {
+      "work_id": "spurgeon-695",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 695 \u2014 \"The Axe at the Root--A Testimony Against Puseyite Idolatry\"]",
+      "source_path": "data/chspurgeon-sermons/volume-12/sermon_695.md",
+      "role": "train",
+      "job_id": "train-spurgeon-090"
+    },
+    {
+      "work_id": "spurgeon-2539",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2539 \u2014 \"The Joy of Holy Households\"]",
+      "source_path": "data/chspurgeon-sermons/volume-43/sermon_2539.md",
+      "role": "train",
+      "job_id": "train-spurgeon-091"
+    },
+    {
+      "work_id": "spurgeon-515",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 515 \u2014 \"The Sinner's Advocate\"]",
+      "source_path": "data/chspurgeon-sermons/volume-9/sermon_515.md",
+      "role": "train",
+      "job_id": "train-spurgeon-092"
+    },
+    {
+      "work_id": "spurgeon-1708",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1708 \u2014 \"The Holy Spirit's Threefold Conviction of Men\"]",
+      "source_path": "data/chspurgeon-sermons/volume-29/sermon_1708.md",
+      "role": "train",
+      "job_id": "train-spurgeon-093"
+    },
+    {
+      "work_id": "spurgeon-1516",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1516 \u2014 \"Salvation by Knowing the Truth\"]",
+      "source_path": "data/chspurgeon-sermons/volume-26/sermon_1516.md",
+      "role": "train",
+      "job_id": "train-spurgeon-094"
+    },
+    {
+      "work_id": "spurgeon-977",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 977 \u2014 \"The Master's Profession--The Disciple's Pursuit\"]",
+      "source_path": "data/chspurgeon-sermons/volume-17/sermon_977.md",
+      "role": "train",
+      "job_id": "train-spurgeon-095"
+    },
+    {
+      "work_id": "spurgeon-2320",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2320 \u2014 \"The Beloved Pastor's Plea for Unity\"]",
+      "source_path": "data/chspurgeon-sermons/volume-39/sermon_2320.md",
+      "role": "train",
+      "job_id": "train-spurgeon-096"
+    },
+    {
+      "work_id": "spurgeon-221",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 221 \u2014 \"Comfort Proclaimed\"]",
+      "source_path": "data/chspurgeon-sermons/volume-4/sermon-221.md",
+      "role": "train",
+      "job_id": "train-spurgeon-097"
+    },
+    {
+      "work_id": "spurgeon-1828",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1828 \u2014 \"How \"The Unspeakable\" is Spoken of\"]",
+      "source_path": "data/chspurgeon-sermons/volume-31/sermon_1828.md",
+      "role": "train",
+      "job_id": "train-spurgeon-098"
+    },
+    {
+      "work_id": "spurgeon-1018",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1018 \u2014 \"Pleading\"]",
+      "source_path": "data/chspurgeon-sermons/volume-17/sermon_1018.md",
+      "role": "train",
+      "job_id": "train-spurgeon-099"
+    },
+    {
+      "work_id": "spurgeon-123",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 123 \u2014 \"Particular Election\"]",
+      "source_path": "data/chspurgeon-sermons/volume-3/sermon-123.md",
+      "role": "eval",
+      "job_id": "eval-spurgeon-000"
+    },
+    {
+      "work_id": "spurgeon-1533",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1533 \u2014 \"Fear Not\"]",
+      "source_path": "data/chspurgeon-sermons/volume-26/sermon_1533.md",
+      "role": "eval",
+      "job_id": "eval-spurgeon-001"
+    },
+    {
+      "work_id": "spurgeon-46",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 46 \u2014 \"The Glorious Habitation\"]",
+      "source_path": "data/chspurgeon-sermons/volume-1/sermon-46.md",
+      "role": "eval",
+      "job_id": "eval-spurgeon-002"
+    },
+    {
+      "work_id": "spurgeon-1761",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1761 \u2014 \"The Lord with Two or Three\"]",
+      "source_path": "data/chspurgeon-sermons/volume-30/sermon_1761.md",
+      "role": "eval",
+      "job_id": "eval-spurgeon-003"
+    },
+    {
+      "work_id": "spurgeon-2062",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2062 \u2014 \"Shoes of Iron, and Strength Sufficient: A New Year's Promise\"]",
+      "source_path": "data/chspurgeon-sermons/volume-35/sermon_2062.md",
+      "role": "eval",
+      "job_id": "eval-spurgeon-004"
+    },
+    {
+      "work_id": "spurgeon-116",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 116 \u2014 \"Secret Sins\"]",
+      "source_path": "data/chspurgeon-sermons/volume-3/sermon-116.md",
+      "role": "eval",
+      "job_id": "eval-spurgeon-005"
+    },
+    {
+      "work_id": "spurgeon-3060",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 3060 \u2014 \"The Good Shepherd\"]",
+      "source_path": "data/chspurgeon-sermons/volume-53/sermon_3060.md",
+      "role": "eval",
+      "job_id": "eval-spurgeon-006"
+    },
+    {
+      "work_id": "spurgeon-2629",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2629 \u2014 \"God's Work in Man\"]",
+      "source_path": "data/chspurgeon-sermons/volume-45/sermon_2629.md",
+      "role": "eval",
+      "job_id": "eval-spurgeon-007"
+    },
+    {
+      "work_id": "spurgeon-3486",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 3486 \u2014 \"God's Desire for Us, and His Work in Us\"]",
+      "source_path": "data/chspurgeon-sermons/volume-61/sermon_3486.md",
+      "role": "eval",
+      "job_id": "eval-spurgeon-008"
+    },
+    {
+      "work_id": "spurgeon-1224",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1224 \u2014 \"Jesus, The Stumbling Stone Of Unbelievers\"]",
+      "source_path": "data/chspurgeon-sermons/volume-21/sermon_1224.md",
+      "role": "eval",
+      "job_id": "eval-spurgeon-009"
+    },
+    {
+      "work_id": "spurgeon-1291",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 1291 \u2014 \"The Best Burden for Young Shoulders\"]",
+      "source_path": "data/chspurgeon-sermons/volume-22/sermon_1291.md",
+      "role": "eval",
+      "job_id": "eval-spurgeon-010"
+    },
+    {
+      "work_id": "spurgeon-2754",
+      "bucket": "spurgeon",
+      "heading": "[Sermon 2754 \u2014 \"Strange Dispensations and Matchless Consolations\"]",
+      "source_path": "data/chspurgeon-sermons/volume-47/sermon_2754.md",
+      "role": "eval",
+      "job_id": "eval-spurgeon-011"
+    },
+    {
+      "work_id": "catechism-06",
+      "bucket": "confession",
+      "heading": "[Puritan Catechism Q.6 \u2014 \"Puritan Catechism\"]",
+      "source_path": "data/catechism/puritan_catechism.json",
+      "role": "train",
+      "job_id": "train-confession-000"
+    },
+    {
+      "work_id": "confession-scots_confession_1560-23",
+      "bucket": "confession",
+      "heading": "[Reformed \u2014 Scots Confession 1560]",
+      "source_path": "data/confessions/reformed/scots_confession_1560.txt",
+      "role": "train",
+      "job_id": "train-confession-001"
+    },
+    {
+      "work_id": "confession-witsius_economy_of_the_covenants_vol2-33",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Witsius Economy Of The Covenants Vol2]",
+      "source_path": "data/confessions/systematic/witsius_economy_of_the_covenants_vol2.txt",
+      "role": "train",
+      "job_id": "train-confession-002"
+    },
+    {
+      "work_id": "confession-gill_body_of_doctrinal_divinity-2993",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Gill Body Of Doctrinal Divinity]",
+      "source_path": "data/confessions/systematic/gill_body_of_doctrinal_divinity.txt",
+      "role": "train",
+      "job_id": "train-confession-003"
+    },
+    {
+      "work_id": "confession-institutes_beveridge_vol2-164",
+      "bucket": "confession",
+      "heading": "[Institutes \u2014 Institutes Beveridge Vol2]",
+      "source_path": "data/confessions/institutes/institutes_beveridge_vol2.txt",
+      "role": "train",
+      "job_id": "train-confession-004"
+    },
+    {
+      "work_id": "confession-shedd_dogmatic_theology_vol2-427",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Shedd Dogmatic Theology Vol2]",
+      "source_path": "data/confessions/systematic/shedd_dogmatic_theology_vol2.txt",
+      "role": "train",
+      "job_id": "train-confession-005"
+    },
+    {
+      "work_id": "confession-canons_of_dort-63",
+      "bucket": "confession",
+      "heading": "[Reformed \u2014 Canons Of Dort]",
+      "source_path": "data/confessions/reformed/canons_of_dort.txt",
+      "role": "train",
+      "job_id": "train-confession-006"
+    },
+    {
+      "work_id": "confession-second_helvetic_confession-40",
+      "bucket": "confession",
+      "heading": "[Reformed \u2014 Second Helvetic Confession]",
+      "source_path": "data/confessions/reformed/second_helvetic_confession.txt",
+      "role": "train",
+      "job_id": "train-confession-007"
+    },
+    {
+      "work_id": "confession-aa_hodge_outlines_of_theology-375",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Aa Hodge Outlines Of Theology]",
+      "source_path": "data/confessions/systematic/aa_hodge_outlines_of_theology.txt",
+      "role": "train",
+      "job_id": "train-confession-008"
+    },
+    {
+      "work_id": "confession-witsius_economy_of_the_covenants_vol1-110",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Witsius Economy Of The Covenants Vol1]",
+      "source_path": "data/confessions/systematic/witsius_economy_of_the_covenants_vol1.txt",
+      "role": "train",
+      "job_id": "train-confession-009"
+    },
+    {
+      "work_id": "confession-wcf_catechisms_1756-696",
+      "bucket": "confession",
+      "heading": "[Westminster \u2014 Wcf Catechisms 1756]",
+      "source_path": "data/confessions/westminster/wcf_catechisms_1756.txt",
+      "role": "train",
+      "job_id": "train-confession-010"
+    },
+    {
+      "work_id": "confession-westminster_confession-11",
+      "bucket": "confession",
+      "heading": "[Westminster \u2014 Westminster Confession]",
+      "source_path": "data/confessions/westminster/westminster_confession.txt",
+      "role": "train",
+      "job_id": "train-confession-011"
+    },
+    {
+      "work_id": "confession-institutes_beveridge_vol1-59",
+      "bucket": "confession",
+      "heading": "[Institutes \u2014 Institutes Beveridge Vol1]",
+      "source_path": "data/confessions/institutes/institutes_beveridge_vol1.txt",
+      "role": "train",
+      "job_id": "train-confession-012"
+    },
+    {
+      "work_id": "confession-systematic_theology_vol2-220",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Systematic Theology Vol2]",
+      "source_path": "data/confessions/systematic/systematic_theology_vol2.txt",
+      "role": "train",
+      "job_id": "train-confession-013"
+    },
+    {
+      "work_id": "confession-systematic_theology_vol3-78",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Systematic Theology Vol3]",
+      "source_path": "data/confessions/systematic/systematic_theology_vol3.txt",
+      "role": "train",
+      "job_id": "train-confession-014"
+    },
+    {
+      "work_id": "confession-shedd_dogmatic_theology_vol1-142",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Shedd Dogmatic Theology Vol1]",
+      "source_path": "data/confessions/systematic/shedd_dogmatic_theology_vol1.txt",
+      "role": "train",
+      "job_id": "train-confession-015"
+    },
+    {
+      "work_id": "confession-boyce_abstract_of_systematic_theology-31",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Boyce Abstract Of Systematic Theology]",
+      "source_path": "data/confessions/systematic/boyce_abstract_of_systematic_theology.txt",
+      "role": "train",
+      "job_id": "train-confession-016"
+    },
+    {
+      "work_id": "confession-second_london_confession-14",
+      "bucket": "confession",
+      "heading": "[1689 \u2014 Second London Confession]",
+      "source_path": "data/confessions/1689/second_london_confession.txt",
+      "role": "train",
+      "job_id": "train-confession-017"
+    },
+    {
+      "work_id": "confession-shedd_dogmatic_theology_vol3-179",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Shedd Dogmatic Theology Vol3]",
+      "source_path": "data/confessions/systematic/shedd_dogmatic_theology_vol3.txt",
+      "role": "train",
+      "job_id": "train-confession-018"
+    },
+    {
+      "work_id": "confession-dabney_systematic_theology-232",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Dabney Systematic Theology]",
+      "source_path": "data/confessions/systematic/dabney_systematic_theology.txt",
+      "role": "train",
+      "job_id": "train-confession-019"
+    },
+    {
+      "work_id": "confession-westminster_shorter_catechism-2",
+      "bucket": "confession",
+      "heading": "[Westminster \u2014 Westminster Shorter Catechism]",
+      "source_path": "data/confessions/westminster/westminster_shorter_catechism.txt",
+      "role": "train",
+      "job_id": "train-confession-020"
+    },
+    {
+      "work_id": "confession-systematic_theology_vol1-35",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Systematic Theology Vol1]",
+      "source_path": "data/confessions/systematic/systematic_theology_vol1.txt",
+      "role": "train",
+      "job_id": "train-confession-021"
+    },
+    {
+      "work_id": "confession-wcf_catechisms_1756-833",
+      "bucket": "confession",
+      "heading": "[Westminster \u2014 Wcf Catechisms 1756]",
+      "source_path": "data/confessions/westminster/wcf_catechisms_1756.txt",
+      "role": "train",
+      "job_id": "train-confession-022"
+    },
+    {
+      "work_id": "confession-canons_of_dort-0",
+      "bucket": "confession",
+      "heading": "[Reformed \u2014 Canons Of Dort]",
+      "source_path": "data/confessions/reformed/canons_of_dort.txt",
+      "role": "train",
+      "job_id": "train-confession-023"
+    },
+    {
+      "work_id": "confession-gill_body_of_doctrinal_divinity-1585",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Gill Body Of Doctrinal Divinity]",
+      "source_path": "data/confessions/systematic/gill_body_of_doctrinal_divinity.txt",
+      "role": "train",
+      "job_id": "train-confession-024"
+    },
+    {
+      "work_id": "confession-gill_body_of_doctrinal_divinity-799",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Gill Body Of Doctrinal Divinity]",
+      "source_path": "data/confessions/systematic/gill_body_of_doctrinal_divinity.txt",
+      "role": "train",
+      "job_id": "train-confession-025"
+    },
+    {
+      "work_id": "confession-aa_hodge_outlines_of_theology-51",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Aa Hodge Outlines Of Theology]",
+      "source_path": "data/confessions/systematic/aa_hodge_outlines_of_theology.txt",
+      "role": "train",
+      "job_id": "train-confession-026"
+    },
+    {
+      "work_id": "confession-gill_body_of_doctrinal_divinity-686",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Gill Body Of Doctrinal Divinity]",
+      "source_path": "data/confessions/systematic/gill_body_of_doctrinal_divinity.txt",
+      "role": "train",
+      "job_id": "train-confession-027"
+    },
+    {
+      "work_id": "confession-gill_body_of_doctrinal_divinity-1717",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Gill Body Of Doctrinal Divinity]",
+      "source_path": "data/confessions/systematic/gill_body_of_doctrinal_divinity.txt",
+      "role": "train",
+      "job_id": "train-confession-028"
+    },
+    {
+      "work_id": "confession-witsius_economy_of_the_covenants_vol2-380",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Witsius Economy Of The Covenants Vol2]",
+      "source_path": "data/confessions/systematic/witsius_economy_of_the_covenants_vol2.txt",
+      "role": "train",
+      "job_id": "train-confession-029"
+    },
+    {
+      "work_id": "confession-gill_body_of_doctrinal_divinity-3075",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Gill Body Of Doctrinal Divinity]",
+      "source_path": "data/confessions/systematic/gill_body_of_doctrinal_divinity.txt",
+      "role": "train",
+      "job_id": "train-confession-030"
+    },
+    {
+      "work_id": "confession-gill_body_of_doctrinal_divinity-1058",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Gill Body Of Doctrinal Divinity]",
+      "source_path": "data/confessions/systematic/gill_body_of_doctrinal_divinity.txt",
+      "role": "train",
+      "job_id": "train-confession-031"
+    },
+    {
+      "work_id": "confession-shedd_dogmatic_theology_vol2-563",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Shedd Dogmatic Theology Vol2]",
+      "source_path": "data/confessions/systematic/shedd_dogmatic_theology_vol2.txt",
+      "role": "train",
+      "job_id": "train-confession-032"
+    },
+    {
+      "work_id": "confession-institutes_beveridge_vol2-26",
+      "bucket": "confession",
+      "heading": "[Institutes \u2014 Institutes Beveridge Vol2]",
+      "source_path": "data/confessions/institutes/institutes_beveridge_vol2.txt",
+      "role": "train",
+      "job_id": "train-confession-033"
+    },
+    {
+      "work_id": "confession-gill_body_of_doctrinal_divinity-1453",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Gill Body Of Doctrinal Divinity]",
+      "source_path": "data/confessions/systematic/gill_body_of_doctrinal_divinity.txt",
+      "role": "train",
+      "job_id": "train-confession-034"
+    },
+    {
+      "work_id": "confession-wcf_catechisms_1756-886",
+      "bucket": "confession",
+      "heading": "[Westminster \u2014 Wcf Catechisms 1756]",
+      "source_path": "data/confessions/westminster/wcf_catechisms_1756.txt",
+      "role": "train",
+      "job_id": "train-confession-035"
+    },
+    {
+      "work_id": "confession-shedd_dogmatic_theology_vol2-315",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Shedd Dogmatic Theology Vol2]",
+      "source_path": "data/confessions/systematic/shedd_dogmatic_theology_vol2.txt",
+      "role": "train",
+      "job_id": "train-confession-036"
+    },
+    {
+      "work_id": "confession-witsius_economy_of_the_covenants_vol2-384",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Witsius Economy Of The Covenants Vol2]",
+      "source_path": "data/confessions/systematic/witsius_economy_of_the_covenants_vol2.txt",
+      "role": "train",
+      "job_id": "train-confession-037"
+    },
+    {
+      "work_id": "confession-witsius_economy_of_the_covenants_vol2-35",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Witsius Economy Of The Covenants Vol2]",
+      "source_path": "data/confessions/systematic/witsius_economy_of_the_covenants_vol2.txt",
+      "role": "train",
+      "job_id": "train-confession-038"
+    },
+    {
+      "work_id": "confession-dabney_systematic_theology-1238",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Dabney Systematic Theology]",
+      "source_path": "data/confessions/systematic/dabney_systematic_theology.txt",
+      "role": "train",
+      "job_id": "train-confession-039"
+    },
+    {
+      "work_id": "confession-dabney_systematic_theology-484",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Dabney Systematic Theology]",
+      "source_path": "data/confessions/systematic/dabney_systematic_theology.txt",
+      "role": "train",
+      "job_id": "train-confession-040"
+    },
+    {
+      "work_id": "confession-boyce_abstract_of_systematic_theology-261",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Boyce Abstract Of Systematic Theology]",
+      "source_path": "data/confessions/systematic/boyce_abstract_of_systematic_theology.txt",
+      "role": "train",
+      "job_id": "train-confession-041"
+    },
+    {
+      "work_id": "confession-boyce_abstract_of_systematic_theology-66",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Boyce Abstract Of Systematic Theology]",
+      "source_path": "data/confessions/systematic/boyce_abstract_of_systematic_theology.txt",
+      "role": "train",
+      "job_id": "train-confession-042"
+    },
+    {
+      "work_id": "confession-gill_body_of_doctrinal_divinity-773",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Gill Body Of Doctrinal Divinity]",
+      "source_path": "data/confessions/systematic/gill_body_of_doctrinal_divinity.txt",
+      "role": "train",
+      "job_id": "train-confession-043"
+    },
+    {
+      "work_id": "confession-shedd_dogmatic_theology_vol1-331",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Shedd Dogmatic Theology Vol1]",
+      "source_path": "data/confessions/systematic/shedd_dogmatic_theology_vol1.txt",
+      "role": "train",
+      "job_id": "train-confession-044"
+    },
+    {
+      "work_id": "confession-aa_hodge_outlines_of_theology-446",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Aa Hodge Outlines Of Theology]",
+      "source_path": "data/confessions/systematic/aa_hodge_outlines_of_theology.txt",
+      "role": "train",
+      "job_id": "train-confession-045"
+    },
+    {
+      "work_id": "confession-systematic_theology_vol2-27",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Systematic Theology Vol2]",
+      "source_path": "data/confessions/systematic/systematic_theology_vol2.txt",
+      "role": "train",
+      "job_id": "train-confession-046"
+    },
+    {
+      "work_id": "confession-gill_body_of_doctrinal_divinity-2367",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Gill Body Of Doctrinal Divinity]",
+      "source_path": "data/confessions/systematic/gill_body_of_doctrinal_divinity.txt",
+      "role": "train",
+      "job_id": "train-confession-047"
+    },
+    {
+      "work_id": "confession-systematic_theology_vol3-361",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Systematic Theology Vol3]",
+      "source_path": "data/confessions/systematic/systematic_theology_vol3.txt",
+      "role": "train",
+      "job_id": "train-confession-048"
+    },
+    {
+      "work_id": "confession-gill_body_of_doctrinal_divinity-310",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Gill Body Of Doctrinal Divinity]",
+      "source_path": "data/confessions/systematic/gill_body_of_doctrinal_divinity.txt",
+      "role": "train",
+      "job_id": "train-confession-049"
+    },
+    {
+      "work_id": "confession-gill_body_of_doctrinal_divinity-224",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Gill Body Of Doctrinal Divinity]",
+      "source_path": "data/confessions/systematic/gill_body_of_doctrinal_divinity.txt",
+      "role": "eval",
+      "job_id": "eval-confession-000"
+    },
+    {
+      "work_id": "confession-shedd_dogmatic_theology_vol3-27",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Shedd Dogmatic Theology Vol3]",
+      "source_path": "data/confessions/systematic/shedd_dogmatic_theology_vol3.txt",
+      "role": "eval",
+      "job_id": "eval-confession-001"
+    },
+    {
+      "work_id": "confession-gill_body_of_doctrinal_divinity-2587",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Gill Body Of Doctrinal Divinity]",
+      "source_path": "data/confessions/systematic/gill_body_of_doctrinal_divinity.txt",
+      "role": "eval",
+      "job_id": "eval-confession-002"
+    },
+    {
+      "work_id": "confession-institutes_beveridge_vol1-88",
+      "bucket": "confession",
+      "heading": "[Institutes \u2014 Institutes Beveridge Vol1]",
+      "source_path": "data/confessions/institutes/institutes_beveridge_vol1.txt",
+      "role": "eval",
+      "job_id": "eval-confession-003"
+    },
+    {
+      "work_id": "confession-dabney_systematic_theology-161",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Dabney Systematic Theology]",
+      "source_path": "data/confessions/systematic/dabney_systematic_theology.txt",
+      "role": "eval",
+      "job_id": "eval-confession-004"
+    },
+    {
+      "work_id": "confession-gill_body_of_doctrinal_divinity-394",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Gill Body Of Doctrinal Divinity]",
+      "source_path": "data/confessions/systematic/gill_body_of_doctrinal_divinity.txt",
+      "role": "eval",
+      "job_id": "eval-confession-005"
+    },
+    {
+      "work_id": "confession-wcf_catechisms_1756-607",
+      "bucket": "confession",
+      "heading": "[Westminster \u2014 Wcf Catechisms 1756]",
+      "source_path": "data/confessions/westminster/wcf_catechisms_1756.txt",
+      "role": "eval",
+      "job_id": "eval-confession-006"
+    },
+    {
+      "work_id": "confession-systematic_theology_vol3-442",
+      "bucket": "confession",
+      "heading": "[Systematic \u2014 Systematic Theology Vol3]",
+      "source_path": "data/confessions/systematic/systematic_theology_vol3.txt",
+      "role": "eval",
+      "job_id": "eval-confession-007"
+    }
+  ]
+}

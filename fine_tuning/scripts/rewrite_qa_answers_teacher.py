@@ -128,6 +128,9 @@ def _openai_compatible_chat(
     model: str,
     prompt: str,
     timeout: float = TEACHER_TIMEOUT_S,
+    system_prompt: str | None = None,
+    max_tokens: int = 500,
+    temperature: float = 0.4,
 ) -> str:
     import requests
 
@@ -143,11 +146,11 @@ def _openai_compatible_chat(
     payload = {
         "model": model,
         "messages": [
-            {"role": "system", "content": TEACHER_SYSTEM},
+            {"role": "system", "content": system_prompt or TEACHER_SYSTEM},
             {"role": "user", "content": prompt},
         ],
-        "temperature": 0.4,
-        "max_tokens": 500,
+        "temperature": temperature,
+        "max_tokens": max_tokens,
     }
     last_err: Exception | None = None
     for attempt in range(1, TEACHER_RETRIES + 1):
@@ -189,7 +192,16 @@ def _openai_compatible_chat(
     raise RuntimeError(f"teacher failed after {TEACHER_RETRIES} tries: {last_err}")
 
 
-def call_teacher(provider: str, model: str, user_content: str, slice_name: str) -> str:
+def call_teacher(
+    provider: str,
+    model: str,
+    user_content: str,
+    slice_name: str,
+    *,
+    system_prompt: str | None = None,
+    max_tokens: int = 500,
+    temperature: float = 0.4,
+) -> str:
     extra = ""
     if slice_name == "refusal":
         extra = (
@@ -201,48 +213,46 @@ def call_teacher(provider: str, model: str, user_content: str, slice_name: str) 
     if not key:
         raise SystemExit(f"ERROR: missing API key for provider={provider}")
     model = _default_model(provider, model)
+    chat_kwargs = {
+        "api_key": key,
+        "model": model,
+        "prompt": prompt,
+        "system_prompt": system_prompt,
+        "max_tokens": max_tokens,
+        "temperature": temperature,
+    }
 
     if provider == "openrouter":
         return _openai_compatible_chat(
             base_url="https://openrouter.ai/api/v1",
-            api_key=key,
-            model=model,
-            prompt=prompt,
+            **chat_kwargs,
         )
 
     if provider == "groq":
         return _openai_compatible_chat(
             base_url="https://api.groq.com/openai/v1",
-            api_key=key,
-            model=model,
-            prompt=prompt,
+            **chat_kwargs,
         )
 
     if provider == "cerebras":
         return _openai_compatible_chat(
             base_url="https://api.cerebras.ai/v1",
-            api_key=key,
-            model=model,
-            prompt=prompt,
+            **chat_kwargs,
         )
 
     if provider == "gemini":
         # OpenAI-compatible Gemini endpoint (AI Studio).
         return _openai_compatible_chat(
             base_url="https://generativelanguage.googleapis.com/v1beta/openai",
-            api_key=key,
-            model=model,
-            prompt=prompt,
+            **chat_kwargs,
         )
 
     if provider == "ollama":
         host = os.getenv("OLLAMA_HOST", "http://localhost:11434")
         return _openai_compatible_chat(
             base_url=f"{host.rstrip('/')}/v1",
-            api_key="ollama",
-            model=model,
-            prompt=prompt,
             timeout=180,
+            **chat_kwargs,
         )
 
     raise SystemExit(f"unknown provider {provider}")

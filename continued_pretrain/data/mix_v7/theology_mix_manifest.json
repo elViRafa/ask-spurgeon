@@ -1,0 +1,261 @@
+{
+  "created_at": "2026-10-06T00:32:51.771637+00:00",
+  "seed": 42,
+  "plan": "PLAN_FABLE5_TO_IMPROVE_CPT v2",
+  "max_chunk_chars": 7000,
+  "spurgeon_weight": 1.0,
+  "spurgeon_weight_mode": "explicit",
+  "spurgeon_keep_all": false,
+  "other_bucket_weight": 1.0,
+  "other_weight_capped": false,
+  "target_spurgeon_share": 0.45,
+  "replay_frac_target": 0.1,
+  "allow_spurgeon_only": false,
+  "author_tags": false,
+  "doc_separator": "<|endoftext|>",
+  "train_path": "C:\\Users\\rafael\\Projetos\\search-sermons\\continued_pretrain\\data\\mix_v7\\theology_mix_train.txt",
+  "train_docs": 19527,
+  "train_chars": 119988628,
+  "train_approx_tokens": 29997157,
+  "max_doc_chars": 7000,
+  "docs_over_8k_chars": 0,
+  "buckets": {
+    "confession": {
+      "docs": 2762,
+      "chars": 17465432,
+      "approx_tokens": 4366358,
+      "char_share": 0.1456
+    },
+    "puritan": {
+      "docs": 10836,
+      "chars": 66520183,
+      "approx_tokens": 16630045,
+      "char_share": 0.5544
+    },
+    "spurgeon": {
+      "docs": 5929,
+      "chars": 36003013,
+      "approx_tokens": 9000753,
+      "char_share": 0.3001
+    }
+  },
+  "domain_buckets_present": [
+    "spurgeon",
+    "puritan",
+    "confession",
+    "bible"
+  ],
+  "holdouts": {
+    "spurgeon": 298,
+    "puritan": 20,
+    "confession": 10,
+    "general": 10
+  },
+  "dedup": {
+    "dropped_duplicate_paragraphs": 18899,
+    "dropped_docs_after_dedup": 815,
+    "docs_in": 55174,
+    "docs_out": 54359,
+    "unique_long_paragraphs": 325317,
+    "top_frequent_paragraphs": [
+      {
+        "preview": "_for if her knowledge was not very extended, she knew two things which only genius knows. the one was humanity, and the other was art. on the first head she cou",
+        "count": 3,
+        "chars": 1358
+      },
+      {
+        "preview": "_this swiftian quality appears in the present novel as it appears nowhere else in the character of the immortal, the ineffable mr. collins. mr. collins is reall",
+        "count": 3,
+        "chars": 1559
+      },
+      {
+        "preview": "_but the greatness of mr. collins could not have been so satisfactorily exhibited if his creatress had not adjusted so artfully to him the figures of mr. bennet",
+        "count": 3,
+        "chars": 2509
+      },
+      {
+        "preview": "_the goodness of the minor characters in_ pride and prejudice _has been already alluded to, and it makes a detailed dwelling on their beauties difficult in any ",
+        "count": 3,
+        "chars": 1556
+      },
+      {
+        "preview": "however little known the feelings or views of such a man may be on his first entering a neighbourhood, this truth is so well fixed in the minds of the surroundi",
+        "count": 3,
+        "chars": 260
+      },
+      {
+        "preview": "\u201cwhy, my dear, you must know, mrs. long says that netherfield is taken by a young man of large fortune from the north of england; that he came down on monday in",
+        "count": 3,
+        "chars": 397
+      },
+      {
+        "preview": "\u201ci see no occasion for that. you and the girls may go--or you may send them by themselves, which perhaps will be still better; for as you are as handsome as any",
+        "count": 3,
+        "chars": 220
+      },
+      {
+        "preview": "\u201cmy dear, you flatter me. i certainly _have_ had my share of beauty, but i do not pretend to be anything extraordinary now. when a woman has five grown-up daugh",
+        "count": 3,
+        "chars": 217
+      },
+      {
+        "preview": "\u201cbut consider your daughters. only think what an establishment it would be for one of them. sir william and lady lucas are determined to go, merely on that acco",
+        "count": 3,
+        "chars": 301
+      },
+      {
+        "preview": "\u201cyou are over scrupulous, surely. i dare say mr. bingley will be very glad to see you; and i will send a few lines by you to assure him of my hearty consent to ",
+        "count": 3,
+        "chars": 264
+      },
+      {
+        "preview": "\u201ci desire you will do no such thing. lizzy is not a bit better than the others: and i am sure she is not half so handsome as jane, nor half so good-humoured as ",
+        "count": 3,
+        "chars": 215
+      },
+      {
+        "preview": "mr. bennet was so odd a mixture of quick parts, sarcastic humour, reserve, and caprice, that the experience of three-and-twenty years had been insufficient to m",
+        "count": 3,
+        "chars": 471
+      },
+      {
+        "preview": "mr. bennet was among the earliest of those who waited on mr. bingley. he had always intended to visit him, though to the last always assuring his wife that he s",
+        "count": 3,
+        "chars": 386
+      },
+      {
+        "preview": "\u201cdid not you? _i_ did for you. but that is one great difference between us. compliments always take _you_ by surprise, and _me_ never. what could be more natura",
+        "count": 3,
+        "chars": 437
+      },
+      {
+        "preview": "\u201coh, you are a great deal too apt, you know, to like people in general. you never see a fault in anybody. all the world are good and agreeable in your eyes. i n",
+        "count": 3,
+        "chars": 214
+      },
+      {
+        "preview": "\u201ci know you do: and it is _that_ which makes the wonder. with _your_ good sense, to be so honestly blind to the follies and nonsense of others! affectation of c",
+        "count": 3,
+        "chars": 469
+      },
+      {
+        "preview": "\u201ccertainly not, at first; but they are very pleasing women when you converse with them. miss bingley is to live with her brother, and keep his house; and i am m",
+        "count": 3,
+        "chars": 228
+      },
+      {
+        "preview": "elizabeth listened in silence, but was not convinced: their behaviour at the assembly had not been calculated to please in general; and with more quickness of o",
+        "count": 3,
+        "chars": 1012
+      },
+      {
+        "preview": "mr. bingley inherited property to the amount of nearly a hundred thousand pounds from his father, who had intended to purchase an estate, but did not live to do",
+        "count": 3,
+        "chars": 500
+      },
+      {
+        "preview": "his sisters were very anxious for his having an estate of his own; but though he was now established only as a tenant, miss bingley was by no means unwilling to",
+        "count": 3,
+        "chars": 629
+      }
+    ]
+  },
+  "continue_reweight_share": null,
+  "continue_reweight": null,
+  "holdout_sibling_share": null,
+  "holdout_sibling": null,
+  "target_confession_share": null,
+  "confession_target": null,
+  "puritan_scale_total_chars": 120000000,
+  "puritan_scale": {
+    "total_chars_target": 120000000,
+    "total_chars_out": 120001915,
+    "spurgeon_share_target": 0.3,
+    "sibling_stems": [
+      "c:/users/rafael/projetos/search-sermons/data/confessions/institutes/institutes_beveridge_vol2.txt",
+      "c:/users/rafael/projetos/search-sermons/data/confessions/systematic/dabney_systematic_theology.txt",
+      "c:/users/rafael/projetos/search-sermons/data/confessions/systematic/gill_body_of_doctrinal_divinity.txt",
+      "c:/users/rafael/projetos/search-sermons/data/confessions/systematic/shedd_dogmatic_theology_vol1.txt",
+      "c:/users/rafael/projetos/search-sermons/data/confessions/systematic/shedd_dogmatic_theology_vol2.txt",
+      "c:/users/rafael/projetos/search-sermons/data/confessions/systematic/systematic_theology_vol3.txt",
+      "c:/users/rafael/projetos/search-sermons/data/confessions/systematic/witsius_economy_of_the_covenants_vol1.txt",
+      "c:/users/rafael/projetos/search-sermons/data/confessions/westminster/wcf_catechisms_1756.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/boston/fourfold_state.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/bridge/lifting_up_for_the_downcast.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/brooks/complete_works_vol1.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/burgess/spiritual_refining.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/byfield/marrow_of_the_oracles.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/calvin/commentary_1corinthians.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/calvin/commentary_catholic_epistles.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/calvin/tracts_vol3.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/flavel/works_vol05.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/flavel/works_vol06.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/goodwin/works_vol01.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/goodwin/works_vol03.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/greenham/works.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/manton/works_vol12.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/owen/works_vol05.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/owen/works_vol14.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/richard_rogers/seven_treatises.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/rutherford/letters.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/sibbes/works_vol02.txt",
+      "c:/users/rafael/projetos/search-sermons/data/puritans/watson/body_of_divinity.txt"
+    ],
+    "sibling_docs": 6932,
+    "sibling_chars": 42343477,
+    "sibling_char_share": 0.3529,
+    "confession_nonsibling_docs": 821,
+    "confession_char_share": 0.1455,
+    "spurgeon_docs": 5929,
+    "spurgeon_char_share": 0.3,
+    "spurgeon_unseen_chars": 36003013,
+    "puritan_fill_docs": 5847,
+    "puritan_fill_chars": 36350659,
+    "puritan_fill_unseen_chars": 36350659,
+    "puritan_char_share": 0.5544,
+    "puritan_available_chars": 128365017,
+    "dropped_buckets": [
+      "bible",
+      "general"
+    ],
+    "prefer_unseen": true
+  },
+  "prefer_unseen_from": "continued_pretrain/data/mix_v6_p0/theology_mix_train.txt",
+  "holdout_overlap_gate": {
+    "min_hits": 2,
+    "probes_per_holdout": 12,
+    "probe_chars": 80,
+    "holdout_docs": 30,
+    "dropped_docs": 2,
+    "dropped_chars": 13287,
+    "dropped_sources": [
+      "C:/Users/rafael/Projetos/search-sermons/data/puritans/byfield/marrow_of_the_oracles.txt#14",
+      "C:/Users/rafael/Projetos/search-sermons/data/puritans/byfield/marrow_of_the_oracles.txt#15"
+    ]
+  },
+  "holdouts_pinned": {
+    "puritan": "continued_pretrain\\data\\holdouts_pinned_v3\\puritan_holdout.txt",
+    "confession": "continued_pretrain\\data\\holdouts_pinned_v3\\confession_holdout.txt",
+    "spurgeon": "continued_pretrain\\data\\holdouts_pinned_v3\\spurgeon_holdout.txt",
+    "new_authors_diagnostic": null,
+    "new_authors_diagnostic_docs": null
+  },
+  "sources": {
+    "spurgeon_train": "C:\\Users\\rafael\\Projetos\\search-sermons\\continued_pretrain\\data\\spurgeon_train.txt",
+    "puritans_dir": "C:\\Users\\rafael\\Projetos\\search-sermons\\data\\puritans",
+    "confessions_dir": "C:\\Users\\rafael\\Projetos\\search-sermons\\data\\confessions",
+    "bible_dir": "C:\\Users\\rafael\\Projetos\\search-sermons\\data\\bible",
+    "hymns_dir": "C:\\Users\\rafael\\Projetos\\search-sermons\\data\\hymns",
+    "exclude_globs": [
+      "henry/exposition*",
+      "**/henry/exposition*"
+    ],
+    "replay_txt": "continued_pretrain\\data\\replay\\general_replay.txt",
+    "replay_hf": null
+  },
+  "notes": [
+    "approx_tokens uses chars/4; run 06_verify_tokens.py --mix to fill verified_tokens.",
+    "Heidelberg Catechism + Belgic Confession belong in continued_pretrain/data/holdouts_manual/ (not training dirs).",
+    "Flagship base: Qwen3.5-4B-Base (see plan \u00a74.1). Baseline Spurgeon path remains B_training.ipynb."
+  ]
+}
