@@ -766,3 +766,81 @@ def test_eval_split_apply_writes_only_eval_files(tmp_path: Path, monkeypatch):
     # rerun: nothing pending
     rep2 = run_batch(out_dir=out, limit=5, apply=False, provider="groq", model="", sleep_s=0, split="eval")
     assert rep2["pending"] == 0
+
+
+# --- requeue --requeue-accepted ---
+from requeue_open_theology_teacher_errors import load_ids_file, requeue_accepted  # noqa: E402
+
+
+def _acc_dir(tmp_path: Path) -> Path:
+    d = tmp_path / "ra"
+    d.mkdir()
+    crlf = lambda rows: "".join(json.dumps(r) + "\r\n" for r in rows).encode()  # noqa: E731
+    tj = [{"job_id": f"train-puritan-{i:03d}"} for i in range(4)]
+    ej = [{"job_id": f"eval-puritan-{i:03d}"} for i in range(3)]
+    (d / "jobs.jsonl").write_bytes(crlf(tj))
+    (d / "eval_jobs.jsonl").write_bytes(crlf(ej))
+    (d / "accepted.jsonl").write_bytes(crlf([{"job_id": j["job_id"], "x": 1} for j in tj[:3]]))
+    (d / "rejected.jsonl").write_bytes(crlf([{"job_id": "train-puritan-003", "errors": ["q"]}]))
+    (d / "eval_accepted.jsonl").write_bytes(crlf([{"job_id": j["job_id"]} for j in ej]))
+    (d / "eval_rejected.jsonl").write_bytes(b"")
+    (d / "catalog.json").write_text("{}", encoding="utf-8")
+    for name in ("status.json", "eval_status.json"):
+        (d / name).write_bytes(json.dumps({"version": "v1", "halted": False,
+                                           "counts": {"accepted": 3, "remaining": 0}}, indent=2)
+                               .replace("\n", "\r\n").encode())
+    return d
+
+
+def test_load_ids_file_shapes(tmp_path: Path):
+    p = tmp_path / "ids.json"
+    p.write_text(json.dumps(["a", "b"]), encoding="utf-8")
+    assert load_ids_file(p) == ["a", "b"]
+    p.write_text(json.dumps({"note": "x", "train": {"question": ["t1"], "any": ["t1", "t2"]},
+                             "eval": {"either": ["e1"]}}), encoding="utf-8")
+    assert load_ids_file(p) == ["t1", "t2", "e1"]
+
+
+def test_requeue_accepted_dry_writes_nothing(tmp_path: Path):
+    d = _acc_dir(tmp_path)
+    before = {p.name: p.read_bytes() for p in d.iterdir()}
+    res = requeue_accepted(d, ["train-puritan-001", "eval-puritan-002", "train-puritan-003", "zzz"])
+    assert res["splits"]["train"]["requeue"] == ["train-puritan-001"]
+    assert res["splits"]["train"]["not_in_accepted"] == ["train-puritan-003"]
+    assert res["splits"]["eval"]["requeue"] == ["eval-puritan-002"]
+    assert res["unknown"] == ["zzz"]
+    assert {p.name: p.read_bytes() for p in d.iterdir()} == before
+
+
+def test_requeue_accepted_apply_both_splits(tmp_path: Path):
+    d = _acc_dir(tmp_path)
+    keep_same = {n: (d / n).read_bytes() for n in
+                 ("jobs.jsonl", "eval_jobs.jsonl", "rejected.jsonl", "eval_rejected.jsonl", "catalog.json")}
+    acc_before = (d / "accepted.jsonl").read_bytes()
+    requeue_accepted(d, ["train-puritan-001", "eval-puritan-002"], apply=True)
+    for n, b in keep_same.items():
+        assert (d / n).read_bytes() == b, n
+    acc = (d / "accepted.jsonl").read_bytes()
+    assert acc.count(b"\r\n") == 2 and b"train-puritan-001" not in acc
+    # remaining rows byte-identical to their original lines
+    assert all(line in acc_before for line in acc.split(b"\r\n") if line)
+    assert list(d.glob("accepted.jsonl.bak-requeue-accepted-*"))[0].read_bytes() == acc_before
+    assert len(list(d.glob("eval_accepted.jsonl.bak-requeue-accepted-*"))) == 1
+    log = [json.loads(l) for l in (d / "requeued_from_accepted.jsonl").read_text().splitlines()]
+    assert [(r["job_id"], r["requeued_split"]) for r in log] == [
+        ("train-puritan-001", "train"), ("eval-puritan-002", "eval")]
+    st = json.loads((d / "status.json").read_text(encoding="utf-8"))
+    assert st["counts"]["accepted"] == 2 and st["counts"]["remaining"] == 1
+    assert st["next_job_id"] == "train-puritan-001" and st["version"] == "v1"
+    assert b"\r\n" in (d / "status.json").read_bytes()
+    est = json.loads((d / "eval_status.json").read_text(encoding="utf-8"))
+    assert est["counts"]["remaining"] == 1 and est["next_job_id"] == "eval-puritan-002"
+    # the generator now sees it as pending
+    done = done_job_ids(_gen.read_jsonl(d / "accepted.jsonl"), _gen.read_jsonl(d / "rejected.jsonl"))
+    assert "train-puritan-001" not in done
+
+
+def test_requeue_accepted_forced_split(tmp_path: Path):
+    d = _acc_dir(tmp_path)
+    res = requeue_accepted(d, ["eval-puritan-001"], split="train")
+    assert res["splits"]["train"]["not_in_accepted"] == ["eval-puritan-001"]
