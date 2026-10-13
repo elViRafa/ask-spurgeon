@@ -5,7 +5,7 @@ summary: "Index of all semantic memory store files."
 priority: high
 tags: [index, memory-store]
 schema_version: 1.3
-last_updated: "2026-10-09T11:19:04-03:00"
+last_updated: "2026-10-12T07:36:28-03:00"
 ---
 
 # Memory Store Index
@@ -50,7 +50,7 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `episodic/2026-10-05` | medium |  | • S8 sweep go → DONE → fetch → destroy | episodic, cpt, s8 |
 | `episodic/2026-10-06` | low | - Forge asked Foundry for Isolation C playbook/orchestrator for m_hi resume SHA `22698039` | • s8-mhi-resume-isolation-c | episodic, session-journal |
 | `episodic/2026-10-07` | low | Continued open PR 10, which rebuilds /workspace/theology_cpt_merged_a70 from merge parent a70fded8 plus merge_cpt_lora.py before Isolation C eval so the m_hi resume adapter 22698039 can load | • s8-c-merge-parent-dry<br>• grok-bot-runs-isolation-c<br>• s8-isolation-c-report<br>• plateau-exit-cause<br>• plateau-escape-playbook<br>• s8-hf-export-prep<br>• s8-merge-hf-orchestrator<br>• grok-bot-merge-handoff<br>• s8-merged-hf-hub-upload<br>• s8-ollama-load<br>• cpt-ollama-think-fix | episodic, session-journal |
-| `episodic/2026-10-09` | low | Decided the next model step is supervised fine-tuning on the S8 merged CPT weights | • sft-on-s8-decision<br>• qa-mix-size-advice<br>• open-theology-qa-advice<br>• open-theology-qa-handoff<br>• open-theology-qa-slice | episodic, session-journal |
+| `episodic/2026-10-09` | low | Decided the next model step is supervised fine-tuning on the S8 merged CPT weights | • sft-on-s8-decision<br>• qa-mix-size-advice<br>• open-theology-qa-advice<br>• open-theology-qa-handoff<br>• open-theology-qa-slice<br>• commit-push-sft-qa | episodic, session-journal |
 | `failures/asyncua-write-value-badtypemismatch-188c68c9d2` | medium | asyncua write_value BadTypeMismatch when writing int to UInt16 or Double node wi | • Occurrence 1 — 2026-08-12T08:59:14-04:00 | failure, fix |
 | `failures/b-training-sota-earlystopping-4edd127cc9` | medium | B_training_sota: EarlyStopping disabled — metric_for_best_model eval_spurgeon_loss not found in logs (B v6 after tokenized eval) | • Occurrence 1 — 2026-08-25T09:03:00-04:00<br>• Occurrence 2 — 2026-08-25T10:20:39-04:00 | cpt, early-stopping, failure, fix, kaggle, transformers |
 | `failures/cpt-b-early-stop-561e9ec07f` | medium | CPT B early-stop patience=2 with eval_steps=25 and 2-doc eval_spurgeon_loss halted corpus v3 at step 375 of 4128 (~8.2M of 90M tokens) | • Occurrence 1 — 2026-08-27T21:36:49-04:00 | cpt, early-stop, failure, fix, runpod |
