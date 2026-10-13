@@ -1,8 +1,8 @@
 {
   "export_version": "open_theology_sft_v1",
   "slice": "open_theology",
-  "created_at": "2026-10-12T16:13:48.799390+00:00",
-  "source_commit": "c1b0929677fd4a838436b26db4c031f002f72b8c",
+  "created_at": "2026-10-13T14:21:05.609697+00:00",
+  "source_commit": "34c59607f7880529495fcd2337dd8d37c3e7aaf3",
   "generator_version": "qa_open_theology_v1",
   "format": {
     "row": {
@@ -16,23 +16,23 @@
   "files": {
     "train": {
       "path": "sft/open_theology_train.jsonl",
-      "rows": 565,
-      "sha256": "7b4c53b16491706014034281fb9eddd6a41b5a746ff7ec3f42728e61072fd8e7"
+      "rows": 558,
+      "sha256": "7056274fae08a5c164a4b22ae06a81395f2f748239192304920ddd076e318875"
     },
     "eval": {
       "path": "sft/open_theology_eval.jsonl",
       "rows": 40,
-      "sha256": "d8ab7084e733f2ac320851e0a260343b7ff26bd9521bc578a9479af225b82412"
+      "sha256": "64b8a7f5425fb5673030cc7db790ae7b7e20333937ab7c7892dc69b79b274e60"
     }
   },
   "sources": {
     "accepted.jsonl": {
-      "rows": 569,
-      "sha256": "899f7f4b08966937f40502c2388c0892eb05eaf8c5b8bde04e2c41b9f2d58667"
+      "rows": 562,
+      "sha256": "fdc9aa89d30f53098736ad3c79db9aec457abc50aa4c06d6e7951887a748ef0f"
     },
     "eval_accepted.jsonl": {
       "rows": 40,
-      "sha256": "1c819c9e0974d49e5e20f68f026827ad2c699e58e54d5a6ed9bea4e94bdb186e"
+      "sha256": "b18f23672b45b24870b6d472156b8802992fa0751abb74b85b970181fd022dfe"
     }
   },
   "eval_partial": false,
@@ -51,9 +51,9 @@
   },
   "meta_wording_counts": {
     "train": {
-      "question": 133,
-      "answer": 72,
-      "any": 150
+      "question": 3,
+      "answer": 9,
+      "any": 11
     },
     "eval": {
       "question": 1,
@@ -63,9 +63,9 @@
   },
   "by_bucket": {
     "train": {
-      "confession": 90,
-      "puritan": 285,
-      "spurgeon": 190
+      "confession": 89,
+      "puritan": 280,
+      "spurgeon": 189
     },
     "eval": {
       "confession": 8,
@@ -75,8 +75,8 @@
   },
   "by_teacher": {
     "train": {
-      "gemini/gemini-2.5-flash": 17,
-      "groq/openai/gpt-oss-120b": 548
+      "gemini/gemini-2.5-flash": 12,
+      "groq/openai/gpt-oss-120b": 546
     },
     "eval": {
       "groq/openai/gpt-oss-120b": 40

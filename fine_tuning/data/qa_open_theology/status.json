@@ -18,14 +18,14 @@
     "train_jobs": 600,
     "eval_jobs": 40,
     "catalog": 340,
-    "accepted": 569,
-    "rejected": 31,
+    "accepted": 562,
+    "rejected": 38,
     "remaining": 0,
-    "meta_wording_warnings": 15
+    "meta_wording_warnings": 26
   },
   "halted": false,
   "halt_reason": "",
-  "last_error": "teacher error: teacher failed after 4 tries: 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kswe8f3vfzgrff9dt4dq1tha` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198591, Re",
+  "last_error": "teacher error: teacher failed after 4 tries: 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kswe8f3vfzgrff9dt4dq1tha` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199539, Re",
   "next_job_id": "",
   "holdout_dir": "continued_pretrain/data/mix_v7/holdouts",
   "spurgeon_holdout_sermons_skipped": 50,
@@ -35,5 +35,5 @@
     "confession_files": 11034,
     "catechism": 52
   },
-  "updated_at": "2026-10-12T10:13:54.953079+00:00"
+  "updated_at": "2026-10-13T14:20:25.932476+00:00"
 }
