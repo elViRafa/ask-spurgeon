@@ -95,22 +95,6 @@ function Invoke-DestroyOnFail {
     throw $Reason
 }
 
-function Copy-ToVastWeighted {
-    param([string]$Local, [string]$Remote)
-    $session = Get-VastSession
-    $port = Get-VastSshPort $session
-    $sshTarget = Get-VastSshRemote $session
-    $scpArgs = @(
-        "-i", $SshKey,
-        "-P", "$port",
-        "-o", "StrictHostKeyChecking=accept-new",
-        $Local,
-        "${sshTarget}:$Remote"
-    )
-    & scp @scpArgs
-    if ($LASTEXITCODE -ne 0) { throw "scp failed: $Local -> $Remote" }
-}
-
 function Invoke-WeightedSsh([string]$Remote) {
     $session = Get-VastSession
     $sshArgs = (Get-VastSshArgs $session) + @((Get-VastSshRemote $session), $Remote)
@@ -125,6 +109,107 @@ function Invoke-WeightedSsh([string]$Remote) {
     }
     if ($Script:LastRemoteExit -ne 0) {
         throw "remote ssh failed exit=$($Script:LastRemoteExit)"
+    }
+}
+
+function Copy-ToVastWeighted {
+    param(
+        [string]$Local,
+        [string]$Remote,
+        [switch]$GzipLarge
+    )
+    if (-not (Test-Path -LiteralPath $Local)) {
+        throw "local file missing for scp: $Local"
+    }
+    $session = Get-VastSession
+    $port = Get-VastSshPort $session
+    $sshTarget = Get-VastSshRemote $session
+    $sizeBytes = [double](Get-Item -LiteralPath $Local).Length
+    $sizeMb = $sizeBytes / 1MB
+    $useGzip = $GzipLarge -or ($Local -match 'qa_mix_train\.jsonl$' -and $sizeBytes -ge 5MB)
+    $uploadLocal = $Local
+    $uploadRemote = $Remote
+    $gzTemp = $null
+    if ($useGzip) {
+        $gzTemp = Join-Path $env:TEMP ("vast_weighted_" + [guid]::NewGuid().ToString("n") + ".gz")
+        Write-Host ("gzip {0:N1} MB -> {1}" -f $sizeMb, $gzTemp)
+        $inStream = [System.IO.File]::OpenRead($Local)
+        try {
+            $outStream = [System.IO.File]::Create($gzTemp)
+            try {
+                $gzip = New-Object System.IO.Compression.GZipStream(
+                    $outStream,
+                    [System.IO.Compression.CompressionLevel]::Optimal
+                )
+                try { $inStream.CopyTo($gzip) }
+                finally { $gzip.Dispose() }
+            }
+            finally { $outStream.Dispose() }
+        }
+        finally { $inStream.Dispose() }
+        $uploadLocal = $gzTemp
+        $uploadRemote = "$Remote.gz"
+        $sizeBytes = [double](Get-Item -LiteralPath $gzTemp).Length
+        $sizeMb = $sizeBytes / 1MB
+        Write-Host ("gzipped size {0:N1} MB" -f $sizeMb)
+    }
+
+    $scpBase = @(
+        "-i", $SshKey,
+        "-P", "$port",
+        "-C",
+        "-o", "StrictHostKeyChecking=accept-new",
+        "-o", "LogLevel=ERROR",
+        "-o", "ServerAliveInterval=30",
+        "-o", "ServerAliveCountMax=10",
+        "-o", "ConnectTimeout=20"
+    )
+    $maxAttempts = 3
+    $minKbPerSec = 200.0
+    $maxSecondsForLarge = 300.0
+    $ok = $false
+    $lastExit = -1
+    for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
+        Write-Host ("scp attempt {0}/{1}: {2} -> {3} ({4:N1} MB)" -f $attempt, $maxAttempts, $uploadLocal, $uploadRemote, $sizeMb)
+        $sw = [System.Diagnostics.Stopwatch]::StartNew()
+        $prev = $ErrorActionPreference
+        $ErrorActionPreference = "Continue"
+        try {
+            & scp @($scpBase + @($uploadLocal, "${sshTarget}:$uploadRemote"))
+            $lastExit = [int]$LASTEXITCODE
+        }
+        finally {
+            $ErrorActionPreference = $prev
+        }
+        $sw.Stop()
+        $elapsed = [math]::Max(0.001, $sw.Elapsed.TotalSeconds)
+        $kbPerSec = ($sizeBytes / 1024.0) / $elapsed
+        Write-Host ("scp done exit={0} elapsed={1:N1}s speed={2:N0} KB/s" -f $lastExit, $elapsed, $kbPerSec)
+        if ($lastExit -ne 0) {
+            Write-Warning "scp failed exit=$lastExit (attempt $attempt)"
+            Start-Sleep -Seconds (2 * $attempt)
+            continue
+        }
+        if ($sizeBytes -ge 5MB) {
+            if ($kbPerSec -lt $minKbPerSec) {
+                if ($gzTemp -and (Test-Path -LiteralPath $gzTemp)) { Remove-Item -LiteralPath $gzTemp -Force -ErrorAction SilentlyContinue }
+                throw ("scp too slow: {0:N0} KB/s < {1} KB/s for {2}" -f $kbPerSec, $minKbPerSec, $Local)
+            }
+            if ($elapsed -gt $maxSecondsForLarge -and $sizeBytes -ge 30MB) {
+                if ($gzTemp -and (Test-Path -LiteralPath $gzTemp)) { Remove-Item -LiteralPath $gzTemp -Force -ErrorAction SilentlyContinue }
+                throw ("scp exceeded {0:N0}s for large file {1} ({2:N1} MB)" -f $maxSecondsForLarge, $Local, $sizeMb)
+            }
+        }
+        $ok = $true
+        break
+    }
+    if (-not $ok) {
+        if ($gzTemp -and (Test-Path -LiteralPath $gzTemp)) { Remove-Item -LiteralPath $gzTemp -Force -ErrorAction SilentlyContinue }
+        throw "scp failed after $maxAttempts attempts: $Local -> $Remote (last exit=$lastExit)"
+    }
+    if ($useGzip) {
+        Invoke-WeightedSsh "gunzip -f '$uploadRemote' && test -f '$Remote'"
+        if ($gzTemp -and (Test-Path -LiteralPath $gzTemp)) { Remove-Item -LiteralPath $gzTemp -Force -ErrorAction SilentlyContinue }
     }
 }
 

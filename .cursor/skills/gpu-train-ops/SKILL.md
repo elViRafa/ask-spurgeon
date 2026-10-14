@@ -81,6 +81,9 @@ Do not relaunch with Unsloth on Vast.
    - `SFT_BACKEND: peft`, `SFT_EXPORT=0`
    - `SFT_OUTPUT_DIR` under `sft_s8_weighted`
    - **not** `Resuming from .../spurgeon_qa_lora_v2`
+   - `over 4608` near 0, `S3 masking OK`, drop fully-masked near 0
+   - Watch `sft_launch.log` during setup — do not idle-destroy mid-setup
+   - OOM: keep seq 4608; propose `SFT_LORA_RANK=16` and wait for go
 5. Fetch `sft_s8_weighted` into `fine_tuning/kaggle/vast_sft_s8_weighted/`.
 6. After fetch: destroy the instance.
 

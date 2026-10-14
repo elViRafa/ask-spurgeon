@@ -39,12 +39,21 @@ while ([datetime]::UtcNow -lt $deadline) {
             "-i", $SshKey,
             "-p", "$($session.ssh_port)",
             "-o", "StrictHostKeyChecking=accept-new",
+            "-o", "LogLevel=ERROR",
             "-o", "ConnectTimeout=8",
             "-o", "BatchMode=yes"
         )
         $target = Get-VastSshRemote $session
-        & ssh @($sshArgs + @($target, "mkdir -p /workspace && echo SSH_OK"))
-        if ($LASTEXITCODE -eq 0) {
+        $prevEap = $ErrorActionPreference
+        $ErrorActionPreference = "Continue"
+        try {
+            & ssh @($sshArgs + @($target, "mkdir -p /workspace && echo SSH_OK"))
+            $sshExit = [int]$LASTEXITCODE
+        }
+        finally {
+            $ErrorActionPreference = $prevEap
+        }
+        if ($sshExit -eq 0) {
             $ht = Convert-SessionToHashtable $session
             $ht.status = "ssh_ready"
             Save-VastSession $ht

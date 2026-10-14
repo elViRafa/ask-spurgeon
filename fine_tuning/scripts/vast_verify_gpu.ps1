@@ -7,8 +7,16 @@ if (-not $session -or -not $session.ssh_host) {
 }
 
 $sshArgs = (Get-VastSshArgs $session) + @((Get-VastSshRemote $session), "nvidia-smi")
-& ssh @sshArgs
-if ($LASTEXITCODE -ne 0) {
+$prev = $ErrorActionPreference
+$ErrorActionPreference = "Continue"
+try {
+    & ssh @sshArgs
+    $exitCode = [int]$LASTEXITCODE
+}
+finally {
+    $ErrorActionPreference = $prev
+}
+if ($exitCode -ne 0) {
     Write-Host "nvidia-smi failed - GPU drivers missing. Destroy this instance (do not idle-bill)."
     exit 2
 }

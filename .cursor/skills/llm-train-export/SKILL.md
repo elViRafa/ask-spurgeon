@@ -31,12 +31,12 @@ SFT export gate script: `fine_tuning/scripts/sft_export_if_gates.ps1`
 Ollama smoke: `fine_tuning/scripts/smoke_test_ollama.py`
 CPT smoke: `continued_pretrain/scripts/smoke_test_ollama_cpt.py`
 
-## Current board (2026-09-26)
+## Current board (2026-10-14)
 
-- CPT next: v6 replay from nested `ddbbee3a`, session `vast_cpt_s7_replay`.
-  Hub CPT stays Phase A `06354dfc`. No rent until go.
-- GATE-0 SFT + Q4 GGUF + `spurgeon-qa-v2` Ollama already shipped once.
-  New EXPORT still requires F §5 via `sft_export_if_gates.ps1`.
+- Next GPU job: weighted SFT on S8 merged CPT — `fine_tuning/NEXT_SFT_S8_WEIGHTED.md`
+  (seq 4608, peft). Dry `vast_sft_s8_weighted_orchestrate.ps1`. No rent until go.
+- Hub LoRA v2 `06354dfc` and `spurgeon-qa-v2` stay; `SFT_EXPORT=0` until F §5.
+- CPT history: `pretraining/cpt-next-session-handoff` (no new CPT resume for this job).
 - Assistant is a **knowledge Q&A speaker**, never Spurgeon-as-character.
 
 ## What you may do without go

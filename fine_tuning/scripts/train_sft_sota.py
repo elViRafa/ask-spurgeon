@@ -18,6 +18,7 @@ import argparse
 import inspect
 import json
 import os
+import shutil
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -389,6 +390,20 @@ def _preflight() -> None:
     print("Preflight OK")
 
 
+def _force_dataprep() -> bool:
+    return os.environ.get("SFT_FORCE_DATAPREP", "").strip().lower() in ("1", "true", "yes")
+
+
+def _dataprep_tokenizer_source() -> str:
+    """Prefer merged CPT tokenizer when present so dataprep matches train."""
+    use_merge = os.environ.get("USE_CPT_MERGE", "0").strip().lower() in ("1", "true", "yes")
+    if use_merge:
+        gate0 = (os.environ.get("SFT_GATE0_MERGED") or "").strip()
+        if gate0 and (Path(gate0) / "tokenizer_config.json").is_file():
+            return gate0
+    return STOCK_MODEL
+
+
 def _dataprep(max_seq_length: int = 4096) -> tuple[Path, Path]:
     import numpy as np
     from datasets import Dataset
@@ -396,21 +411,30 @@ def _dataprep(max_seq_length: int = 4096) -> tuple[Path, Path]:
     work = _work_root()
     kwork = _kaggle_working()
     out_train, out_val = _dataprep_cache_dirs(kwork)
-    if out_train.is_dir() and out_val.is_dir():
+    if _force_dataprep():
+        for path in (out_train, out_val):
+            if path.is_dir():
+                print("SFT_FORCE_DATAPREP=1 — removing cache:", path)
+                shutil.rmtree(path)
+    elif out_train.is_dir() and out_val.is_dir():
         print("Tokenized datasets exist — skip D prep:", out_train, out_val)
         return out_train, out_val
 
     root = _qa_mix_root(work)
     rag_system = _canonical_system()
+    tok_source = _dataprep_tokenizer_source()
+    print("DATAPREP_TOKENIZER", tok_source)
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     try:
         from sft_stop_token_utils import load_qwen35_tokenizer
 
-        tokenizer = load_qwen35_tokenizer(STOCK_MODEL)
+        tokenizer = load_qwen35_tokenizer(tok_source)
     except ImportError:
         from transformers import AutoTokenizer
 
-        tokenizer = AutoTokenizer.from_pretrained(STOCK_MODEL, trust_remote_code=True)
+        tokenizer = AutoTokenizer.from_pretrained(
+            tok_source, trust_remote_code=True, fix_mistral_regex=True
+        )
     tokenizer, _, _ = apply_sft_special_token_contract(tokenizer)
 
     def rows_to_dataset(message_rows: list[dict]) -> Dataset:
@@ -527,7 +551,11 @@ def _latest_checkpoint(ckpt_root: Path) -> str | None:
 
 
 def _mask_assistant_labels(tokenizer, input_ids: list[int], response_part: str) -> list[int]:
-    """Mask everything before the first assistant response (completion-only)."""
+    """Mask everything before the first assistant response (completion-only).
+
+    If the assistant marker is missing (e.g. TRL truncated it away), mask every
+    label as -100 so we never train on the user/prompt turn.
+    """
     resp = tokenizer.encode(response_part, add_special_tokens=False)
     if hasattr(resp, "tolist"):
         resp = resp.tolist()
@@ -536,14 +564,75 @@ def _mask_assistant_labels(tokenizer, input_ids: list[int], response_part: str) 
     labels = [-100] * len(input_ids)
     n = len(resp)
     if n == 0:
-        return list(input_ids)
+        return labels
     for i in range(0, len(input_ids) - n + 1):
         if input_ids[i : i + n] == resp:
             start = i + n
             labels[start:] = input_ids[start:]
             return labels
-    # Fallback: train all tokens so we do not silently empty-supervise.
-    return list(input_ids)
+    # Marker absent (truncation cut the answer): do not supervise any token.
+    return labels
+
+
+def _row_ids_labels(row) -> tuple[list[int], list[int]]:
+    ids, labs = row["input_ids"], row["labels"]
+    if hasattr(ids, "tolist"):
+        ids = ids.tolist()
+    if hasattr(labs, "tolist"):
+        labs = labs.tolist()
+    return list(ids), list(labs)
+
+
+def _drop_fully_masked_rows(dataset):
+    """Remove rows where every label is -100 (no supervised tokens)."""
+    before = len(dataset)
+
+    def _keep(example):
+        labs = example["labels"]
+        if hasattr(labs, "tolist"):
+            labs = labs.tolist()
+        return any(label != -100 for label in labs)
+
+    kept = dataset.filter(_keep)
+    dropped = before - len(kept)
+    print(f"Dropped fully masked rows: {dropped} (kept {len(kept)}/{before})")
+    return kept, dropped
+
+
+def _assert_s3_row(tokenizer, im_end_id: int, ids: list[int], labs: list[int], *, row_index: int) -> dict:
+    kept = [t for t, label in zip(ids, labs) if label != -100]
+    decoded = tokenizer.decode(kept) if kept else ""
+    assert kept, f"S3 FAIL row {row_index}: no supervised labels"
+    assert im_end_id in kept, f"S3 FAIL row {row_index}: <|im_end|> not in supervised labels"
+    assert "<|im_start|>user" not in decoded, f"S3 FAIL row {row_index}: user turn leaked into labels"
+    return {
+        "row_index": row_index,
+        "im_end_in_supervised": True,
+        "supervised_fraction": round(len(kept) / max(1, len(ids)), 4),
+        "supervised_decode_tail": decoded[-120:],
+    }
+
+
+def _audit_s3_dataset(tokenizer, im_end_id: int, dataset, *, backend: str) -> dict:
+    """Run S3 mask checks on every row; raise AssertionError on the first failure."""
+    n = len(dataset)
+    first: dict | None = None
+    for i in range(n):
+        ids, labs = _row_ids_labels(dataset[i])
+        row_audit = _assert_s3_row(tokenizer, im_end_id, ids, labs, row_index=i)
+        if first is None:
+            first = row_audit
+    assert first is not None, "S3 FAIL: empty dataset after masking"
+    return {
+        "phase": "s3_train_mask",
+        "backend": backend,
+        "im_end_id": im_end_id,
+        "rows_checked": n,
+        "im_end_in_supervised": first["im_end_in_supervised"],
+        "supervised_fraction": first["supervised_fraction"],
+        "supervised_decode_tail": first["supervised_decode_tail"],
+        "pass": True,
+    }
 
 
 def _train() -> None:
@@ -715,10 +804,14 @@ def _train_peft() -> None:
             out_labels.append(_mask_assistant_labels(processing, ids, response_part))
         return {"labels": out_labels}
 
+    dropped_train = 0
+    dropped_eval = 0
     if "input_ids" in trainer.train_dataset.column_names:
         trainer.train_dataset = trainer.train_dataset.map(_map_mask, batched=True)
+        trainer.train_dataset, dropped_train = _drop_fully_masked_rows(trainer.train_dataset)
         if trainer.eval_dataset is not None and "input_ids" in trainer.eval_dataset.column_names:
             trainer.eval_dataset = trainer.eval_dataset.map(_map_mask, batched=True)
+            trainer.eval_dataset, dropped_eval = _drop_fully_masked_rows(trainer.eval_dataset)
 
     collator_tok = processing
     trainer.data_collator = DataCollatorForSeq2Seq(
@@ -726,25 +819,19 @@ def _train_peft() -> None:
     )
     print("data_collator", type(trainer.data_collator).__name__)
 
-    row = trainer.train_dataset[0]
-    ids, labs = row["input_ids"], row["labels"]
-    if hasattr(ids, "tolist"):
-        ids, labs = ids.tolist(), labs.tolist()
-    kept = [t for t, label in zip(ids, labs) if label != -100]
-    decoded = tokenizer.decode(kept)
-    assert im_end_id in kept, "S3 FAIL: <|im_end|> not in supervised labels"
-    assert "<|im_start|>user" not in decoded, "S3 FAIL: user turn leaked into labels"
-    s3_audit = {
-        "phase": "s3_train_mask",
-        "backend": "peft",
-        "im_end_id": im_end_id,
-        "im_end_in_supervised": im_end_id in kept,
-        "supervised_fraction": round(len(kept) / max(1, len(ids)), 4),
-        "supervised_decode_tail": decoded[-120:],
-        "pass": True,
-    }
+    s3_audit = _audit_s3_dataset(tokenizer, im_end_id, trainer.train_dataset, backend="peft")
+    s3_audit["dropped_fully_masked_train"] = dropped_train
+    s3_audit["dropped_fully_masked_eval"] = dropped_eval
+    if trainer.eval_dataset is not None and "labels" in trainer.eval_dataset.column_names:
+        _audit_s3_dataset(tokenizer, im_end_id, trainer.eval_dataset, backend="peft_eval")
+        s3_audit["eval_rows_checked"] = len(trainer.eval_dataset)
     (kwork / "stop_token_s3_audit.json").write_text(json.dumps(s3_audit, indent=2), encoding="utf-8")
-    print("S3 masking OK, supervised fraction:", f"{len(kept) / max(1, len(ids)):.1%}")
+    print(
+        "S3 masking OK, rows:",
+        s3_audit["rows_checked"],
+        "supervised fraction (row 0):",
+        f"{s3_audit['supervised_fraction']:.1%}",
+    )
     print("Wrote", kwork / "stop_token_s3_audit.json")
 
     if torch.cuda.is_available():
@@ -958,24 +1045,26 @@ def _train_unsloth() -> None:
         type(trainer.data_collator).__name__ if trainer.data_collator else None,
     )
 
-    row = trainer.train_dataset[0]
-    ids, labs = row["input_ids"], row["labels"]
-    if hasattr(ids, "tolist"):
-        ids, labs = ids.tolist(), labs.tolist()
-    kept = [t for t, label in zip(ids, labs) if label != -100]
-    decoded = tokenizer.decode(kept)
-    assert im_end_id in kept, "S3 FAIL: <|im_end|> not in supervised labels"
-    assert "<|im_start|>user" not in decoded, "S3 FAIL: user turn leaked into labels"
-    s3_audit = {
-        "phase": "s3_train_mask",
-        "im_end_id": im_end_id,
-        "im_end_in_supervised": im_end_id in kept,
-        "supervised_fraction": round(len(kept) / max(1, len(ids)), 4),
-        "supervised_decode_tail": decoded[-120:],
-        "pass": True,
-    }
+    dropped_train = 0
+    dropped_eval = 0
+    if "labels" in trainer.train_dataset.column_names:
+        trainer.train_dataset, dropped_train = _drop_fully_masked_rows(trainer.train_dataset)
+    if (
+        trainer.eval_dataset is not None
+        and "labels" in getattr(trainer.eval_dataset, "column_names", [])
+    ):
+        trainer.eval_dataset, dropped_eval = _drop_fully_masked_rows(trainer.eval_dataset)
+
+    s3_audit = _audit_s3_dataset(tokenizer, im_end_id, trainer.train_dataset, backend="unsloth")
+    s3_audit["dropped_fully_masked_train"] = dropped_train
+    s3_audit["dropped_fully_masked_eval"] = dropped_eval
     (kwork / "stop_token_s3_audit.json").write_text(json.dumps(s3_audit, indent=2), encoding="utf-8")
-    print("S3 masking OK, supervised fraction:", f"{len(kept) / max(1, len(ids)):.1%}")
+    print(
+        "S3 masking OK, rows:",
+        s3_audit["rows_checked"],
+        "supervised fraction (row 0):",
+        f"{s3_audit['supervised_fraction']:.1%}",
+    )
     print("Wrote", kwork / "stop_token_s3_audit.json")
 
     stats = trainer.train()

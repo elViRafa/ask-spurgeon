@@ -40,7 +40,7 @@ quote (top up if credit is under ~`$5`).
 | Base | private Hub `rafaelvieirar1r/qwen3.5-4b-theology-cpt-s8-mhi-resume-merged-16bit` |
 | Pod path | `/workspace/qwen35-4b-theology-cpt-s8-mhi-resume-merged-16bit` |
 | Backend | `SFT_BACKEND=peft` (Unsloth SIGSEGVs on Vast) |
-| Seq / batch / accum | 2048 / 1 / 16 |
+| Seq / batch / accum | 4608 / 1 / 16 |
 | Open theology | `SFT_OPEN_THEOLOGY=1`, `SFT_OPEN_THEOLOGY_REPEAT=1` |
 | Output | `/workspace/sft_s8_weighted/adapter` |
 | Export | `SFT_EXPORT=0` until F §5 |
@@ -72,6 +72,9 @@ Forge must see all of these before walking away:
 - `SFT_EXPORT=0` (from launch env / remote script)
 - `SFT_OUTPUT_DIR: /workspace/sft_s8_weighted/adapter` (or under `sft_s8_weighted`)
 - **not** `Resuming from .../spurgeon_qa_lora_v2`
+- dataprep: `over 4608` near 0; `S3 masking OK`; drop fully-masked count near 0
+- during setup: watch `/workspace/sft_launch.log` — do not idle-destroy mid-`sft_remote_setup`
+- OOM at 4608: keep seq; propose `SFT_LORA_RANK=16` and wait for go (do not drop seq below ~4330)
 
 ## After fetch
 
@@ -89,11 +92,19 @@ Forge must see all of these before walking away:
 Skill: /gpu-train-ops
 Job: weighted SFT, not CPT.
 Runbook: fine_tuning/NEXT_SFT_S8_WEIGHTED.md
+Orchestrator: fine_tuning/scripts/vast_sft_s8_weighted_orchestrate.ps1
+Seq 4608 / peft / SFT_EXPORT=0. Hub LoRA v2 06354dfc stays.
 Dry only:
   cd fine_tuning\scripts
   .\vast_sft_s8_weighted_orchestrate.ps1
 Do not rent. Report credit and the cheapest full RTX 4090 $/hr.
-Wait for my go. -Go only after I say go and credit covers the quote.
+Wait for my go. -Go -StartMonitor only after I say go and credit covers the quote.
+Credit under ~$5 needs a top-up or my explicit -AllowLowCredit.
+Walk-away: SFT_OPEN_THEOLOGY=1, RAG/THEOLOGY_PROMPT_OK, peft, EXPORT=0,
+base under qwen35-4b-theology-cpt-s8-mhi-resume-merged-16bit, output under
+sft_s8_weighted/adapter, over 4608 ~0, S3 masking OK, drop ~0.
+Watch sft_launch.log during setup — do not idle-destroy mid-setup.
+OOM: keep seq; propose SFT_LORA_RANK=16 and wait for go.
 Do not call vast_orchestrate.ps1, vast_sft_s8_orchestrate.ps1, or any CPT launcher.
 No Hub upload. Fetch before destroy.
 ```

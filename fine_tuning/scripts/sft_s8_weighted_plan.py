@@ -27,7 +27,7 @@ ENV = {
     "SFT_EXPORT": "0",
     "SFT_GPU_PROFILE": "4090",
     "SFT_BACKEND": "peft",
-    "SFT_MAX_SEQ_LENGTH": "2048",
+    "SFT_MAX_SEQ_LENGTH": "4608",
     "SFT_PER_DEVICE_BATCH": "1",
     "SFT_GRAD_ACCUM": "16",
     "SFT_EVAL_STRATEGY": "no",

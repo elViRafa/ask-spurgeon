@@ -35,6 +35,7 @@ def test_decision_is_weighted_sft_on_s8_merge() -> None:
     assert plan.ENV["SFT_BASE_REPO"] == plan.S8_MERGED_REPO
     assert plan.ENV["SFT_EXPORT"] == "0"
     assert plan.ENV["SFT_BACKEND"] == "peft"
+    assert plan.ENV["SFT_MAX_SEQ_LENGTH"] == "4608"
     assert plan.ENV["SFT_OPEN_THEOLOGY"] == "1"
     assert plan.ENV["SFT_OPEN_THEOLOGY_REPEAT"] == "1"
     assert plan.ENV["SFT_OUTPUT_DIR"] == plan.WEIGHTED_OUTPUT
@@ -57,8 +58,10 @@ def test_remote_launcher_forces_weighted_s8() -> None:
     assert force_at > source_at
     assert "SFT_OPEN_THEOLOGY=1" in text
     assert "SFT_OPEN_THEOLOGY_REPEAT=1" in text
+    assert "SFT_FORCE_DATAPREP=1" in text
     assert "SFT_OUTPUT_DIR=/workspace/sft_s8_weighted/adapter" in text
     assert "SFT_BACKEND=peft" in text
+    assert "SFT_MAX_SEQ_LENGTH=4608" in text
     assert "SFT_EXPORT=0" in text
     assert "sft_remote_merge.sh" not in text
     assert "upload_" not in text
@@ -78,6 +81,8 @@ def test_orchestrator_dry_path_does_not_rent() -> None:
     assert "vast_orchestrate.ps1" in text  # named only as do-not
     assert "Do NOT call vast_orchestrate.ps1" in text
     assert "sft_remote_train_s8_weighted.sh" in text
+    assert "LogLevel=ERROR" in text
+    assert "gunzip" in text
     assert "No vastai, scp, or ssh calls were made." in text
     # Dry exit before vast_common / show user
     dry_end = text.index("DRY COMPLETE")

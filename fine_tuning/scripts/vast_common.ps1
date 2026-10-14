@@ -105,10 +105,18 @@ function Invoke-Vastai {
     $all = @("--api-key", $key)
     if ($RawJson) { $all += "--raw" }
     $all += $CliArgs
-    $out = & $exe @all 2>&1
+    $prevEap = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    try {
+        $out = & $exe @all 2>&1
+        $exitCode = [int]$LASTEXITCODE
+    }
+    finally {
+        $ErrorActionPreference = $prevEap
+    }
     $text = ($out | ForEach-Object { "$_" }) -join "`n"
-    if ($LASTEXITCODE -ne 0) {
-        throw "vastai $($CliArgs -join ' ') failed (exit $LASTEXITCODE): $text"
+    if ($exitCode -ne 0) {
+        throw "vastai $($CliArgs -join ' ') failed (exit $exitCode): $text"
     }
     return $text
 }
@@ -148,6 +156,7 @@ function Get-VastSshArgs {
         "-i", $SshKey,
         "-p", "$port",
         "-o", "StrictHostKeyChecking=accept-new",
+        "-o", "LogLevel=ERROR",
         "-o", "ServerAliveInterval=30",
         "-o", "ServerAliveCountMax=120",
         "-o", "ConnectTimeout=20"

@@ -32,17 +32,32 @@ def load_qwen35_tokenizer(model: str, token: str | None = None):
     """Load Qwen3.5 tokenizer; Unsloth configs may set tokenizer_class=TokenizersBackend."""
     from transformers import AutoTokenizer, PreTrainedTokenizerFast
 
-    kwargs = dict(trust_remote_code=True)
+    kwargs = dict(trust_remote_code=True, fix_mistral_regex=True)
     if token:
         kwargs["token"] = token
     try:
         return AutoTokenizer.from_pretrained(model, **kwargs)
+    except TypeError:
+        # Older transformers without fix_mistral_regex.
+        kwargs.pop("fix_mistral_regex", None)
+        try:
+            return AutoTokenizer.from_pretrained(model, **kwargs)
+        except ValueError as exc:
+            msg = str(exc)
+            if "TokenizersBackend" not in msg and "does not exist or is not currently imported" not in msg:
+                raise
+            print("WARN: AutoTokenizer failed — using PreTrainedTokenizerFast")
+            return PreTrainedTokenizerFast.from_pretrained(model, **kwargs)
     except ValueError as exc:
         msg = str(exc)
         if "TokenizersBackend" not in msg and "does not exist or is not currently imported" not in msg:
             raise
         print("WARN: AutoTokenizer failed — using PreTrainedTokenizerFast")
-        return PreTrainedTokenizerFast.from_pretrained(model, **kwargs)
+        try:
+            return PreTrainedTokenizerFast.from_pretrained(model, **kwargs)
+        except TypeError:
+            kwargs.pop("fix_mistral_regex", None)
+            return PreTrainedTokenizerFast.from_pretrained(model, **kwargs)
 
 
 def text_tokenizer(tok):

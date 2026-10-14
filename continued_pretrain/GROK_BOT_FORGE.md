@@ -26,16 +26,23 @@ Repo: github.com/elViRafa/ask-spurgeon. Skill: /gpu-train-ops.
 You do not train on your own computer. GPUs are Vast instances or Runpod pods.
 Cursor Cloud Agents may fix scripts in that repo only — never rent GPU.
 
-Current CPT (2026-09-26): v6 replay from nested s5best ddbbee3a, session
-vast_cpt_s7_replay. Hub stays Phase A 06354dfc. No rent until Rafael says go.
+Current job (2026-10-14): weighted SFT on S8 merged CPT
+(RAG mix + open-theology). Runbook: fine_tuning/NEXT_SFT_S8_WEIGHTED.md
+Orchestrator: fine_tuning/scripts/vast_sft_s8_weighted_orchestrate.ps1
+Seq 4608 / batch 1 / accum 16 / peft. Hub LoRA v2 06354dfc stays.
+SFT_EXPORT=0 until F gates. No rent until Rafael says go.
 
 Always allowed: read consoles/logs, status reports, crash/idle/credit alerts.
-Needs go: create/start GPU, change LR/mix/resume/Hub, destroy before fetch.
+Needs go: create/start GPU, change LR/mix/resume/Hub, destroy before fetch,
+-AllowLowCredit when credit is under $5.
 Auto-destroy only after fetch succeeded, or setup never started, or idle >20 min
-with no train. Vast has no network volume — fetch before destroy.
+with no train. Do not idle-destroy during long sft_remote_setup — watch
+sft_launch.log. Vast has no network volume — fetch before destroy.
 
 Never log API keys or HF tokens. Never a second GPU while one session exists.
 Never overwrite Hub, a_output_v3/v4/v5, or Phase B fetch. Never HF-resume sota.
+Never call vast_orchestrate.ps1, vast_sft_s8_orchestrate.ps1, or CPT launchers
+for this weighted SFT job.
 ```
 
 3. Sign the Bot into **cloud.vast.ai** and **console.runpod.io** on the shared
@@ -49,14 +56,16 @@ You are Forge. Save this job in your profile if it is not already there.
 
 Read /gpu-train-ops in the ask-spurgeon repo
 (https://github.com/elViRafa/ask-spurgeon) and
-continued_pretrain/GROK_BOT_FORGE.md plus NEXT_CPT_S7.md.
+continued_pretrain/GROK_BOT_FORGE.md plus fine_tuning/NEXT_SFT_S8_WEIGHTED.md.
 
 First task — audit only, no spend:
 1. Open Vast and Runpod consoles.
 2. List every instance/pod: id, GPU, state, $/hr, hours up, whether train is live.
 3. If anything is RUNNING with no train log progress for >20 min, say so and
-   wait for my go before destroy.
+   wait for my go before destroy. During sft_remote_setup, watch sft_launch.log
+   — do not treat setup as idle.
 4. Do not create, start, or rent anything.
+5. Report Vast credit and the cheapest full RTX 4090 $/hr.
 
 Then save two skills:
 - /watch-train — poll the live host, apply walk-away gates, report in the
@@ -65,7 +74,10 @@ Then save two skills:
 
 Do not create a scheduled routine yet. I will say "run is live" when I want
 you to watch every 30 minutes (America/Sao_Paulo). When I say go, dry-run
-vast_cpt_s7_orchestrate.ps1 first, then -Go -StartMonitor only after I confirm.
+vast_sft_s8_weighted_orchestrate.ps1 first (no -Go), then
+-Go -StartMonitor only after I confirm. Credit under ~$5 needs a top-up or
+my explicit -AllowLowCredit. Do not call vast_orchestrate.ps1,
+vast_sft_s8_orchestrate.ps1, or any CPT launcher.
 ```
 
 ## 3. After the first good watch
@@ -73,7 +85,7 @@ vast_cpt_s7_orchestrate.ps1 first, then -Go -StartMonitor only after I confirm.
 Ask Forge:
 
 ```text
-The v6 replay is live on Vast id <ID>. Mark the run live. Create a routine:
+The weighted SFT is live on Vast id <ID>. Mark the run live. Create a routine:
 every 30 minutes America/Sao_Paulo run /watch-train. Post the status block
 here. If the console is down, report failure — do not invent old numbers.
 Pause the routine when the instance is destroyed. Still no Hub overwrite.
@@ -84,12 +96,25 @@ Pause the routine when the instance is destroyed. Still no Hub overwrite.
 | You say | Forge does |
 |---------|------------|
 | `status` | `/train-status` — no rent |
-| `go` | Dry report, then rent + launch only that job |
+| `go` | Dry `vast_sft_s8_weighted_orchestrate.ps1`, then rent + launch only that job |
 | `run is live` | Start the 30 min watch routine |
 | `pause watch` | Stop the routine; do not destroy |
 | `fetch and kill` | Fetch then destroy (after you confirm if checkpoints exist) |
 
-## 5. What this Bot will not do
+## 5. Walk-away gates (weighted SFT S8)
+
+In `/workspace/sft_train.log` (and dataprep lines) before walking away:
+
+- `SFT_OPEN_THEOLOGY=1`, `RAG_PROMPT_OK`, `THEOLOGY_PROMPT_OK`
+- `SFT_BACKEND: peft`, `SFT_EXPORT=0`
+- Base under `.../qwen35-4b-theology-cpt-s8-mhi-resume-merged-16bit`
+- Output under `sft_s8_weighted/adapter` — **not** resuming `spurgeon_qa_lora_v2`
+- `over 4608` near 0, `S3 masking OK`, drop count near 0
+
+If OOM at seq 4608: keep seq; propose `SFT_LORA_RANK=16` and wait for go.
+Do not drop seq below ~4330.
+
+## 6. What this Bot will not do
 
 It cannot SSH from this Cursor chat. It cannot see your local uncommitted
 tree unless a Cloud Agent clones GitHub. Push runbook/script fixes before

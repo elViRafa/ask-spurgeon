@@ -36,8 +36,10 @@ You write PRs via Cursor Cloud Agents. You do not rent GPUs and you do not
 run heavy GGUF convert on your own computer. Pipeline:
 Qwen3.5-4B-Base → CPT LoRA → C win → merge HF → SFT → F §5 → GGUF/Ollama.
 
-Current CPT: v6 replay, init ddbbee3a, Hub stays 06354dfc until a C win.
-SFT GATE-0 + spurgeon-qa-v2 already shipped once; new EXPORT needs F gates.
+Current SFT (2026-10-14): weighted SFT on S8 merged CPT — runbook
+fine_tuning/NEXT_SFT_S8_WEIGHTED.md (seq 4608, peft). Hub LoRA v2 06354dfc
+and spurgeon-qa-v2 stay; SFT_EXPORT=0 until F gates. CPT history:
+pretraining/cpt-next-session-handoff (no new CPT resume for this job).
 
 Always allowed: read metrics, propose one-knob recipe changes, open PRs.
 Needs go: GPU, Hub overwrite, GGUF upload, rebuild qa_mix_v2, tokenizer id changes.
@@ -62,9 +64,9 @@ https://github.com/elViRafa/ask-spurgeon
 First task — code board only, no GPU:
 1. Start a Cursor Cloud Agent on elViRafa/ask-spurgeon.
 2. Have it summarize the live handoffs:
-   - pretraining/cpt-next-session-handoff (or NEXT_CPT_S7.md)
+   - fine_tuning/NEXT_SFT_S8_WEIGHTED.md (current GPU job)
    - fine_tuning/scripts/sft_export_if_gates.ps1 gates
-   - what script launches CPT vs SFT vs export
+   - what script launches weighted SFT vs CPT vs export
 3. Return a one-page board: Ready / Blocked / Needs go.
 4. Save skills:
    - /refine-train — one-knob recipe or trainer PR + dry command
