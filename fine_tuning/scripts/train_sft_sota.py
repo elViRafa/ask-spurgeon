@@ -116,6 +116,140 @@ def _canonical_system() -> str:
     return SPURGEON_SFT_SYSTEM_PROMPT
 
 
+def _theology_system() -> str:
+    repo = _repo_root()
+    if str(repo) not in sys.path:
+        sys.path.insert(0, str(repo))
+    from config import THEOLOGY_CHAT_SYSTEM_PROMPT
+
+    return THEOLOGY_CHAT_SYSTEM_PROMPT
+
+
+def _open_theology_enabled() -> bool:
+    raw = (os.environ.get("SFT_OPEN_THEOLOGY") or "").strip().lower()
+    return raw in ("1", "true", "yes", "on")
+
+
+def _open_theology_repeat() -> int:
+    raw = (os.environ.get("SFT_OPEN_THEOLOGY_REPEAT") or "1").strip()
+    try:
+        n = int(raw)
+    except ValueError as exc:
+        raise SystemExit(f"SFT_OPEN_THEOLOGY_REPEAT must be int, got {raw!r}") from exc
+    if n < 1:
+        raise SystemExit("SFT_OPEN_THEOLOGY_REPEAT must be >= 1")
+    return n
+
+
+def _open_theology_sft_dir(work: Path | None = None) -> Path:
+    work = work or _work_root()
+    candidates = [
+        work / "qa_open_theology" / "sft",
+        _repo_root() / "fine_tuning" / "data" / "qa_open_theology" / "sft",
+    ]
+    for path in candidates:
+        if (path / "open_theology_train.jsonl").is_file():
+            return path
+    raise FileNotFoundError(
+        "open_theology_train.jsonl not found under /workspace/qa_open_theology/sft "
+        "or fine_tuning/data/qa_open_theology/sft"
+    )
+
+
+def _sft_out_dir(kwork: Path) -> Path:
+    raw = (os.environ.get("SFT_OUTPUT_DIR") or "").strip()
+    if raw:
+        return Path(raw)
+    return kwork / "spurgeon_qa_lora_v2"
+
+
+def _dataprep_cache_dirs(kwork: Path) -> tuple[Path, Path]:
+    if _open_theology_enabled():
+        return kwork / "qa_dataset_train_weighted", kwork / "qa_dataset_val_weighted"
+    return kwork / "qa_dataset_train", kwork / "qa_dataset_val"
+
+
+def _count_jsonl(path: Path) -> int:
+    n = 0
+    with path.open(encoding="utf-8") as handle:
+        for line in handle:
+            if line.strip():
+                n += 1
+    return n
+
+
+def _load_jsonl(path: Path) -> list[dict]:
+    rows = []
+    with path.open(encoding="utf-8") as handle:
+        for line in handle:
+            if line.strip():
+                rows.append(json.loads(line))
+    return rows
+
+
+def normalize_rag_messages(messages: list[dict], rag_system: str) -> list[dict]:
+    """Force the RAG system prompt onto a chat turn (legacy GATE-0 contract)."""
+    if not messages:
+        raise ValueError("empty messages")
+    if messages[0].get("role") == "system":
+        return [{"role": "system", "content": rag_system}] + list(messages[1:])
+    return [{"role": "system", "content": rag_system}] + list(messages)
+
+
+def validate_theology_row(ex: dict, theology_system: str) -> list[dict]:
+    """Return messages when the open-theology row is valid; raise ValueError otherwise."""
+    if ex.get("slice") != "open_theology":
+        raise ValueError(f"expected slice=open_theology, got {ex.get('slice')!r}")
+    msgs = ex.get("messages")
+    if not isinstance(msgs, list) or len(msgs) < 3:
+        raise ValueError("theology row needs system/user/assistant messages")
+    if msgs[0].get("role") != "system" or msgs[0].get("content") != theology_system:
+        raise ValueError("theology system prompt mismatch")
+    return list(msgs)
+
+
+def build_weighted_message_rows(
+    rag_rows: list[dict],
+    theology_rows: list[dict],
+    rag_system: str,
+    theology_system: str,
+    theology_repeat: int = 1,
+    seed: int = 3407,
+) -> list[dict]:
+    """Interleave RAG + open-theology rows without merging JSONL files.
+
+    RAG rows are rewritten onto ``rag_system``. Theology rows keep
+    ``theology_system`` and must already carry ``slice=open_theology``.
+    """
+    if theology_repeat < 1:
+        raise ValueError("theology_repeat must be >= 1")
+    out: list[dict] = []
+    for ex in rag_rows:
+        msgs = normalize_rag_messages(ex["messages"], rag_system)
+        out.append(
+            {
+                "id": ex.get("id") or ex.get("job_id") or "",
+                "slice": ex.get("slice") or "rag",
+                "messages": msgs,
+            }
+        )
+    for _ in range(theology_repeat):
+        for ex in theology_rows:
+            msgs = validate_theology_row(ex, theology_system)
+            out.append(
+                {
+                    "id": ex.get("id") or ex.get("job_id") or "",
+                    "slice": "open_theology",
+                    "messages": msgs,
+                }
+            )
+    import random
+
+    rng = random.Random(seed)
+    rng.shuffle(out)
+    return out
+
+
 def text_tokenizer(tok):
     inner = tok
     for _ in range(4):
@@ -196,15 +330,19 @@ def _qa_mix_root(work: Path) -> Path:
 
 def _preflight() -> None:
     work = _work_root()
+    kwork = _kaggle_working()
     use_merge = os.environ.get("USE_CPT_MERGE", "0").strip().lower() in ("1", "true", "yes")
     gate0 = os.environ.get("SFT_GATE0_MERGED", RUNPOD_GATE0 if work == Path("/workspace") else KAGGLE_GATE0)
     base = gate0 if use_merge else STOCK_MODEL
+    out_dir = _sft_out_dir(kwork)
 
     hf_home = (os.environ.get("HF_HOME") or "").strip() or str(work / "hf_home")
     os.makedirs(hf_home, exist_ok=True)
     print("preflight WORK_ROOT", work)
     print("preflight USE_CPT_MERGE", use_merge)
     print("preflight BASE_MODEL", base)
+    print("SFT_OUTPUT_DIR", out_dir)
+    print("SFT_OPEN_THEOLOGY", int(_open_theology_enabled()))
 
     if use_merge and not Path(base).joinpath("config.json").is_file():
         raise SystemExit(f"preflight FAIL: GATE-0 merged HF missing at {base}")
@@ -213,6 +351,35 @@ def _preflight() -> None:
     for name in ("qa_mix_train.jsonl", "qa_mix_val.jsonl"):
         if not (root / name).is_file():
             raise SystemExit(f"preflight FAIL: missing {root / name}")
+
+    rag_rows = _count_jsonl(root / "qa_mix_train.jsonl")
+    theology_rows = 0
+    mix_rows = rag_rows
+    rag_prompt = _canonical_system()
+    print("RAG_PROMPT_OK", 1 if rag_prompt else 0)
+    print("RAG_ROWS", rag_rows)
+
+    if _open_theology_enabled():
+        theo_dir = _open_theology_sft_dir(work)
+        train_path = theo_dir / "open_theology_train.jsonl"
+        if not train_path.is_file():
+            raise SystemExit(f"preflight FAIL: missing {train_path}")
+        theology_system = _theology_system()
+        # Validate every theology row before renting GPU time on a bad export.
+        for ex in _load_jsonl(train_path):
+            validate_theology_row(ex, theology_system)
+        theology_rows = _count_jsonl(train_path)
+        repeat = _open_theology_repeat()
+        mix_rows = rag_rows + theology_rows * repeat
+        print("THEOLOGY_PROMPT_OK", 1)
+        print("OPEN_THEOLOGY_ROWS", theology_rows)
+        print("SFT_OPEN_THEOLOGY_REPEAT", repeat)
+        print("MIX_ROWS", mix_rows)
+        print("OPEN_THEOLOGY_DIR", theo_dir)
+    else:
+        print("THEOLOGY_PROMPT_OK", 0)
+        print("OPEN_THEOLOGY_ROWS", 0)
+        print("MIX_ROWS", mix_rows)
 
     import torch
 
@@ -228,14 +395,13 @@ def _dataprep(max_seq_length: int = 4096) -> tuple[Path, Path]:
 
     work = _work_root()
     kwork = _kaggle_working()
-    out_train = kwork / "qa_dataset_train"
-    out_val = kwork / "qa_dataset_val"
+    out_train, out_val = _dataprep_cache_dirs(kwork)
     if out_train.is_dir() and out_val.is_dir():
         print("Tokenized datasets exist — skip D prep:", out_train, out_val)
         return out_train, out_val
 
     root = _qa_mix_root(work)
-    canonical = _canonical_system()
+    rag_system = _canonical_system()
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     try:
         from sft_stop_token_utils import load_qwen35_tokenizer
@@ -247,32 +413,74 @@ def _dataprep(max_seq_length: int = 4096) -> tuple[Path, Path]:
         tokenizer = AutoTokenizer.from_pretrained(STOCK_MODEL, trust_remote_code=True)
     tokenizer, _, _ = apply_sft_special_token_contract(tokenizer)
 
-    def load_jsonl(path: Path):
-        rows = []
-        with path.open(encoding="utf-8") as handle:
-            for line in handle:
-                if line.strip():
-                    rows.append(json.loads(line))
-        return rows
-
-    def build_ds(jsonl_path: Path):
+    def rows_to_dataset(message_rows: list[dict]) -> Dataset:
         texts = []
-        for ex in load_jsonl(jsonl_path):
+        for ex in message_rows:
             msgs = ex["messages"]
-            if msgs[0]["content"] != canonical:
-                msgs = [{"role": "system", "content": canonical}] + msgs[1:]
             texts.append(
                 {
                     "text": tokenizer.apply_chat_template(
                         msgs, tokenize=False, add_generation_prompt=False
                     ),
                     "messages": msgs,
+                    "id": ex.get("id") or "",
+                    "slice": ex.get("slice") or "",
                 }
             )
         return Dataset.from_list(texts)
 
-    train_ds = build_ds(root / "qa_mix_train.jsonl")
-    val_ds = build_ds(root / "qa_mix_val.jsonl")
+    if _open_theology_enabled():
+        theology_system = _theology_system()
+        theo_dir = _open_theology_sft_dir(work)
+        seed = int(os.environ.get("SFT_SEED", "3407"))
+        repeat = _open_theology_repeat()
+        mixed = build_weighted_message_rows(
+            rag_rows=_load_jsonl(root / "qa_mix_train.jsonl"),
+            theology_rows=_load_jsonl(theo_dir / "open_theology_train.jsonl"),
+            rag_system=rag_system,
+            theology_system=theology_system,
+            theology_repeat=repeat,
+            seed=seed,
+        )
+        # Val stays the frozen RAG val only — open_theology_eval is never trained here.
+        val_rows = [
+            {
+                "id": ex.get("id") or "",
+                "slice": ex.get("slice") or "rag",
+                "messages": normalize_rag_messages(ex["messages"], rag_system),
+            }
+            for ex in _load_jsonl(root / "qa_mix_val.jsonl")
+        ]
+        train_ds = rows_to_dataset(mixed)
+        val_ds = rows_to_dataset(val_rows)
+        n_theo = sum(1 for r in mixed if r.get("slice") == "open_theology")
+        print("SFT_OPEN_THEOLOGY", 1)
+        print("RAG_PROMPT_OK", 1)
+        print("THEOLOGY_PROMPT_OK", 1)
+        print("RAG_ROWS", len(mixed) - n_theo)
+        print("OPEN_THEOLOGY_ROWS", n_theo)
+        print("MIX_ROWS", len(mixed))
+    else:
+        rag_train = [
+            {
+                "id": ex.get("id") or "",
+                "slice": ex.get("slice") or "rag",
+                "messages": normalize_rag_messages(ex["messages"], rag_system),
+            }
+            for ex in _load_jsonl(root / "qa_mix_train.jsonl")
+        ]
+        rag_val = [
+            {
+                "id": ex.get("id") or "",
+                "slice": ex.get("slice") or "rag",
+                "messages": normalize_rag_messages(ex["messages"], rag_system),
+            }
+            for ex in _load_jsonl(root / "qa_mix_val.jsonl")
+        ]
+        train_ds = rows_to_dataset(rag_train)
+        val_ds = rows_to_dataset(rag_val)
+        print("SFT_OPEN_THEOLOGY", 0)
+
     print("train/val:", len(train_ds), len(val_ds))
 
     lens = [len(tokenizer(x["text"])["input_ids"]) for x in train_ds]
@@ -370,13 +578,16 @@ def _train_peft() -> None:
     seed = int(os.environ.get("SFT_SEED", "3407"))
 
     data_train, data_val = _dataprep(max_seq_length)
-    out_dir = kwork / "spurgeon_qa_lora_v2"
+    out_dir = _sft_out_dir(kwork)
     run_config = kwork / "sft_run_config.json"
     hf_home = (os.environ.get("HF_HOME") or "").strip() or str(work / "hf_home")
     os.makedirs(hf_home, exist_ok=True)
+    os.makedirs(out_dir, exist_ok=True)
 
     print("BASE_MODEL:", base_model)
     print("USE_CPT_MERGE:", use_merge)
+    print("SFT_OUTPUT_DIR:", out_dir)
+    print("SFT_OPEN_THEOLOGY:", int(_open_theology_enabled()))
     print("PEFT path: bf16 LoRA (no Unsloth)")
 
     tokenizer = AutoTokenizer.from_pretrained(base_model, trust_remote_code=True)
@@ -600,15 +811,18 @@ def _train_unsloth() -> None:
     seed = int(os.environ.get("SFT_SEED", "3407"))
 
     data_train, data_val = _dataprep(max_seq_length)
-    out_dir = kwork / "spurgeon_qa_lora_v2"
+    out_dir = _sft_out_dir(kwork)
     run_config = kwork / "sft_run_config.json"
 
     hf_home = (os.environ.get("HF_HOME") or "").strip() or str(work / "hf_home")
     os.makedirs(hf_home, exist_ok=True)
+    os.makedirs(out_dir, exist_ok=True)
     os.makedirs(kwork / "unsloth_offload", exist_ok=True)
 
     print("BASE_MODEL:", base_model)
     print("USE_CPT_MERGE:", use_merge)
+    print("SFT_OUTPUT_DIR:", out_dir)
+    print("SFT_OPEN_THEOLOGY:", int(_open_theology_enabled()))
 
     model, tokenizer = FastLanguageModel.from_pretrained(
         model_name=base_model,

@@ -14,19 +14,24 @@ machine. GPUs live on Vast (primary) or Runpod (secondary). This laptop / Cloud
 Agent VM is only for scripts, logs, and fetch.
 
 Repo: `https://github.com/elViRafa/ask-spurgeon.git`
-Current CPT handoff: `pretraining/cpt-next-session-handoff`
-Current recipe: `continued_pretrain/NEXT_CPT_S7.md`
-Vast S7 runbook: `continued_pretrain/VAST_RUNBOOK_CPT_S7.md`
+Current SFT handoff: `fine_tuning/NEXT_SFT_S8_WEIGHTED.md`
+Current recipe: weighted SFT on S8 merged CPT (RAG mix + open-theology)
+Orchestrator: `fine_tuning/scripts/vast_sft_s8_weighted_orchestrate.ps1`
+CPT history: `pretraining/cpt-next-session-handoff` (no new CPT resume for this job)
 
-## Standing facts (2026-09-26)
+## Standing facts (2026-10-13)
 
-- Next CPT: holdout-sibling **v6 replay**. Mix `kaggle/a_output_v6`. Init nested
-  s5best `ddbbee3a`. New Adam. Halt on Spurgeon + Puritan + confession (no mix-val).
-- Session dir: `vast_cpt_s7_replay`. Do not overwrite Phase B fetch.
-- Hub stays Phase A s5best `06354dfc` at
-  `rafaelvieirar1r/qwen3.5-4b-theology-cpt-lora-v2`. Do not promote `ddbbee3a`.
-- Replay GPU is **blocked until the operator says go**.
-- Runpod is secondary (balance / volume gates have blocked S7 before).
+- Next GPU job: **weighted SFT**, not CPT. Base is private Hub
+  `rafaelvieirar1r/qwen3.5-4b-theology-cpt-s8-mhi-resume-merged-16bit`.
+- Datasets: frozen `qa_mix_train.jsonl` + `qa_open_theology/sft/open_theology_train.jsonl`
+  (repeat 1). Do not merge into the RAG mix. Do not run `build_qa_mix_v2.py`.
+- Output: `/workspace/sft_s8_weighted/adapter`. Session
+  `fine_tuning/kaggle/vast_sft_s8_weighted_session.json`. Fetch
+  `fine_tuning/kaggle/vast_sft_s8_weighted/`.
+- Hub LoRA v2 `06354dfc` and `spurgeon-qa-v2` stay. `SFT_EXPORT=0` until F gates.
+- Backend **peft** on Vast (Unsloth SIGSEGVs). Rent **blocked until the operator says go**.
+- Do **not** call `vast_orchestrate.ps1`, `vast_sft_s8_orchestrate.ps1`, or CPT
+  launchers for this job.
 
 ## Approval boundary
 
@@ -56,29 +61,31 @@ Vast has no network volume — **fetch before destroy**.
 
 | Job | Host | Orchestrator |
 |-----|------|----------------|
-| CPT S7 / replay | Vast first | `continued_pretrain/scripts/vast_cpt_s7_orchestrate.ps1` |
-| CPT on Runpod | Only if Vast is down and operator names Runpod | `s7_remote_continue_b.sh` (not the Vast launcher) |
-| SFT GATE-0 | Runbook in `fine_tuning/` | do not mix CPT and SFT on one volume/path |
+| Weighted SFT S8 | Vast first | `fine_tuning/scripts/vast_sft_s8_weighted_orchestrate.ps1` |
+| CPT (historical) | Vast | only if operator names a CPT runbook |
+| SFT GATE-0 (historical) | Vast | `vast_orchestrate.ps1` — do not use for this job |
 
-Vast CPT works **only** in Miniforge env `unsloth_cpt_s7` with torch **2.8** +
-Unsloth **2026.8.22**. System pip and official Unsloth Docker SIGSEGV.
+Vast weighted SFT uses torch **2.11** + **PEFT** via `sft_remote_setup.sh`.
+Do not relaunch with Unsloth on Vast.
 
 ## Launch loop (after go)
 
-1. Dry first: `.\vast_cpt_s7_orchestrate.ps1` (no `-Go`). Report credit + 4090 offers.
-2. Abort dry if credit < $5 unless operator passed `-AllowLowCredit`.
-3. Go: `.\vast_cpt_s7_orchestrate.ps1 -Go -StartMonitor`
-4. Walk-away gates in `/workspace/cpt_train.log`:
-   - `cpt_run_mode=continue` + S7 profile
-   - `PREV_RUN_CHECKPOINT empty` / new Adam
-   - init adapter SHA matches the handoff (`ddbbee3a` for replay)
-   - `PIN_OK` torch 2.8 + unsloth 2026.8.22
-   - conda python under `/workspace/miniforge3/envs/unsloth_cpt_s7/`
-   - **not** `Resuming from .../checkpoint-2050` or `checkpoints_sota`
-5. Monitor: `vast_cpt_s7_monitor_until_done.py` + `vast_cpt_s7_fetch.ps1`
+1. Dry first: `.\vast_sft_s8_weighted_orchestrate.ps1` (no `-Go`). No vastai on dry.
+2. On go: abort if credit < $5 unless `-AllowLowCredit`; abort if quote
+   (`$/hr × 10h`) exceeds credit.
+3. Go: `.\vast_sft_s8_weighted_orchestrate.ps1 -Go -StartMonitor`
+4. Walk-away gates in `/workspace/sft_train.log`:
+   - `SFT_OPEN_THEOLOGY=1`
+   - `RAG_PROMPT_OK` + `THEOLOGY_PROMPT_OK`
+   - S8 merged base path (not `theology_cpt_v2_merged_hf`)
+   - `SFT_BACKEND: peft`, `SFT_EXPORT=0`
+   - `SFT_OUTPUT_DIR` under `sft_s8_weighted`
+   - **not** `Resuming from .../spurgeon_qa_lora_v2`
+5. Fetch `sft_s8_weighted` into `fine_tuning/kaggle/vast_sft_s8_weighted/`.
 6. After fetch: destroy the instance.
 
-Do **not** call `vast_cpt_orchestrate.ps1` (S6) or `vast_cpt_fetch.ps1` (S6 paths).
+Do **not** call `vast_orchestrate.ps1`, `vast_sft_s8_orchestrate.ps1`, or CPT
+orchestrators for this job.
 
 ## Hard do-nots
 

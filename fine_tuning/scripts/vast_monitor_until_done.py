@@ -18,7 +18,12 @@ from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO = SCRIPT_DIR.parents[1]
-SESSION = REPO / "fine_tuning" / "kaggle" / "vast_sft_session.json"
+_SESSION_ENV = (os.environ.get("VAST_SESSION_FILE") or "").strip()
+SESSION = (
+    Path(_SESSION_ENV)
+    if _SESSION_ENV
+    else REPO / "fine_tuning" / "kaggle" / "vast_sft_session.json"
+)
 SSH_KEY = Path.home() / ".ssh" / "runpod_cpt"
 
 # Default 15 minutes — override with VAST_MONITOR_INTERVAL_SEC
@@ -235,7 +240,8 @@ if pgrep -f 'python3 -u /workspace/train_sft_sota.py' >/dev/null 2>&1; then
   echo RELAUNCH_SKIP_ALREADY_RUNNING
   exit 0
 fi
-if [[ ! -f /workspace/theology_cpt_v2_merged_hf/config.json ]]; then
+if [[ ! -f /workspace/theology_cpt_v2_merged_hf/config.json \
+   && ! -f /workspace/qwen35-4b-theology-cpt-s8-mhi-resume-merged-16bit/config.json ]]; then
   echo RELAUNCH_FAIL_NO_MERGE
   exit 2
 fi
