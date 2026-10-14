@@ -12,7 +12,9 @@ param(
     [switch]$KeepInstance,
     [int]$DiskGb = 100,
     [int]$TimeoutMinutes = 45,
-    [int]$GpuWaitMinutes = 15
+    [int]$GpuWaitMinutes = 15,
+    # Max wait for train process to appear after launch (setup + model load).
+    [int]$LoadingTimeoutMinutes = 10
 )
 
 $ErrorActionPreference = "Stop"
@@ -182,6 +184,9 @@ function Invoke-DestroyOnFail {
 }
 
 function Invoke-WeightedSsh([string]$Remote) {
+    # Windows PowerShell here-strings keep CRLF; bash on the GPU treats \r as part of
+    # the command (e.g. $'set -euo pipefail\r'). Strip every CR before ssh.
+    $Remote = $Remote -replace "`r", ""
     $session = Get-VastSession
     $sshArgs = (Get-VastSshArgs $session) + @((Get-VastSshRemote $session), $Remote)
     $prev = $ErrorActionPreference
@@ -443,7 +448,9 @@ function Test-WeightedTrainRunning {
 
 if ($StartMonitor) {
     Write-Host "Watching train until exit (max_wall_h=$MaxWallHours). Does not use GATE-0 vast_monitor paths."
+    Write-Host ("loading_timeout_min={0} (fail if train never appears)" -f $LoadingTimeoutMinutes)
     $deadline = [datetime]::UtcNow.AddHours($MaxWallHours)
+    $loadingDeadline = [datetime]::UtcNow.AddMinutes([Math]::Max(1, $LoadingTimeoutMinutes))
     $sawRunning = $false
     $idlePolls = 0
     while ([datetime]::UtcNow -lt $deadline) {
@@ -459,13 +466,13 @@ if ($StartMonitor) {
                 break
             }
             $idlePolls++
-            Write-Host ("[{0:u}] waiting for train start (poll {1})" -f [datetime]::UtcNow, $idlePolls)
-            if ($idlePolls -ge 8) {
-                Write-Warning "Train never started after ~40m -- fetch logs and destroy"
+            Write-Host ("[{0:u}] waiting for train start / model loading (poll {1})" -f [datetime]::UtcNow, $idlePolls)
+            if ([datetime]::UtcNow -ge $loadingDeadline) {
+                Write-Warning ("Train never started within loading timeout (~{0}m) -- fetch logs and destroy" -f $LoadingTimeoutMinutes)
                 break
             }
         }
-        Start-Sleep -Seconds 300
+        Start-Sleep -Seconds 60
     }
 }
 else {

@@ -92,6 +92,44 @@ def test_orchestrator_dry_path_does_not_rent() -> None:
     assert "Invoke-VastaiJson" not in text[:dry_end]
 
 
+def _orchestrator_invoke_weighted_ssh_body(text: str) -> str:
+    start = text.index("function Invoke-WeightedSsh")
+    nxt = text.find("\nfunction ", start + 1)
+    assert nxt > start
+    return text[start:nxt]
+
+
+def test_orchestrator_strips_cr_from_remote_ssh_scripts() -> None:
+    """Windows CRLF here-strings must not reach bash; Invoke-WeightedSsh strips \\r."""
+    text = ORCH.read_text(encoding="utf-8")
+    body = _orchestrator_invoke_weighted_ssh_body(text)
+    assert '-replace "`r"' in body
+    # Contract: every remote payload is sanitized the same way PowerShell does.
+    dirty = "set -euo pipefail\r\necho ok\r"
+    clean = dirty.replace("\r", "")
+    assert "\r" not in clean
+    assert clean == "set -euo pipefail\necho ok"
+    # Embedded remote scripts in the orchestrator must themselves be LF-only in git.
+    raw = ORCH.read_bytes()
+    assert b"\r" not in raw, "orchestrator .ps1 must be LF-only so remote here-strings stay clean"
+    for name in (
+        "sft_remote_setup.sh",
+        "sft_remote_train_s8_weighted.sh",
+    ):
+        sh = (SCRIPTS / name).read_bytes()
+        assert b"\r" not in sh, f"{name} must not contain CR (bash over SSH)"
+
+
+def test_orchestrator_loading_timeout_about_ten_minutes() -> None:
+    text = ORCH.read_text(encoding="utf-8")
+    assert "LoadingTimeoutMinutes = 10" in text
+    assert "loading_timeout_min=" in text
+    assert "loading timeout" in text.lower()
+    # Old ~40m idle-poll gate must not remain.
+    assert "idlePolls -ge 8" not in text
+    assert "~40m" not in text
+
+
 def test_runbook_walk_away_gates() -> None:
     text = RUNBOOK.read_text(encoding="utf-8")
     assert "SFT_OPEN_THEOLOGY=1" in text
