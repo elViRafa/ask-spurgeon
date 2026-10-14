@@ -74,6 +74,8 @@ Do not relaunch with Unsloth on Vast.
 2. On go: abort if credit < $5 unless `-AllowLowCredit`; abort if quote
    (`$/hr × 10h`) exceeds credit.
 3. Go: `.\vast_sft_s8_weighted_orchestrate.ps1 -Go -StartMonitor`
+   (push `PINNED_SHA` first; GPU sparse-checkout — no bulk jsonl SCP;
+   dirty sync paths need `-AllowDirtySync`)
 4. Walk-away gates in `/workspace/sft_train.log`:
    - `SFT_OPEN_THEOLOGY=1`
    - `RAG_PROMPT_OK` + `THEOLOGY_PROMPT_OK`
@@ -98,7 +100,9 @@ orchestrators for this job.
 - Point `CPT_INIT_ADAPTER` at a checkpoint dir.
 - Rebuild or overwrite `a_output_v3` / `v4` / `v5`.
 - Overwrite Hub until a C wins Puritan+confession −15% and Spurgeon stays under ~13.3.
-- Git-clone this repo onto the pod.
+- Full git-clone of this repo onto a CPT pod (wrong `theology_cpt_lora*` trees).
+  Weighted SFT uses pinned sparse-checkout of `fine_tuning/data` +
+  `fine_tuning/scripts` at HEAD SHA (see `vast_sft_s8_weighted_orchestrate.ps1`).
 - Log `RUNPOD_API_KEY`, `VAST_API_KEY`, `HF_TOKEN`, or `.env` values.
 - Create a second GPU while one CPT/SFT session exists.
 - Run training on a Cursor Cloud Agent VM or the Grok Bot computer.

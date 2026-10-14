@@ -31,6 +31,9 @@ Current job (2026-10-14): weighted SFT on S8 merged CPT
 Orchestrator: fine_tuning/scripts/vast_sft_s8_weighted_orchestrate.ps1
 Seq 4608 / batch 1 / accum 16 / peft. Hub LoRA v2 06354dfc stays.
 SFT_EXPORT=0 until F gates. No rent until Rafael says go.
+Sync on -Go: pinned sparse-checkout of fine_tuning/data + fine_tuning/scripts
+at HEAD SHA on the GPU (no bulk jsonl SCP). SCP only dirty overrides with
+-AllowDirtySync. CPT still must not full-clone the repo.
 
 Always allowed: read consoles/logs, status reports, crash/idle/credit alerts.
 Needs go: create/start GPU, change LR/mix/resume/Hub, destroy before fetch,
@@ -117,5 +120,7 @@ Do not drop seq below ~4330.
 ## 6. What this Bot will not do
 
 It cannot SSH from this Cursor chat. It cannot see your local uncommitted
-tree unless a Cloud Agent clones GitHub. Push runbook/script fixes before
-asking it to launch. Keep keys in Vast/Runpod console sessions, not in chat.
+tree unless a Cloud Agent clones GitHub. Push the `PINNED_SHA` (and any
+runbook/script fixes) before asking it to `-Go` — the GPU sparse-checkouts
+that commit. Dirty sync overrides need `-AllowDirtySync`. Keep keys in
+Vast/Runpod console sessions, not in chat.

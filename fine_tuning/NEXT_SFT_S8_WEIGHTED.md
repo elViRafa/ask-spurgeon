@@ -29,9 +29,20 @@ cd fine_tuning\scripts
 .\vast_sft_s8_weighted_orchestrate.ps1
 ```
 
-Expect `READY` and `DRY COMPLETE`. That command does not call vastai, scp, or
+Expect `READY` and `DRY COMPLETE`, plus a sync banner: `PINNED_SHA=...`,
+`SPARSE_CONE=fine_tuning/data fine_tuning/scripts`, and `DIRTY_OVERRIDES=(none)`
+(or a list of dirty sync paths). That command does not call vastai, scp, or
 ssh. `-Go` is for Forge after the operator says go and Vast credit covers the
 quote (top up if credit is under ~`$5`).
+
+## Sync on -Go (no bulk jsonl SCP)
+
+The GPU pulls tracked data/scripts from public GitHub at the laptop’s
+`PINNED_SHA` (shallow cone sparse-checkout of `fine_tuning/data` +
+`fine_tuning/scripts`, then materialize into `/workspace/...`). SCP is only
+for dirty sync-path overrides, and only with `-AllowDirtySync`. Push the pin
+before `-Go` so `git fetch origin <SHA>` succeeds on the pod. Do **not** SCP
+`qa_mix_train.jsonl` when the tree is clean.
 
 ## Train contract (when Forge is told go)
 
@@ -97,6 +108,8 @@ Seq 4608 / peft / SFT_EXPORT=0. Hub LoRA v2 06354dfc stays.
 Dry only:
   cd fine_tuning\scripts
   .\vast_sft_s8_weighted_orchestrate.ps1
+Expect PINNED_SHA + SPARSE_CONE + DIRTY_OVERRIDES=(none). Sync on -Go is
+sparse-checkout on GPU; SCP only dirty overrides (-AllowDirtySync).
 Do not rent. Report credit and the cheapest full RTX 4090 $/hr.
 Wait for my go. -Go -StartMonitor only after I say go and credit covers the quote.
 Credit under ~$5 needs a top-up or my explicit -AllowLowCredit.
