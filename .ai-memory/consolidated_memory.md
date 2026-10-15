@@ -59,10 +59,10 @@ summary: "Map of available project memory sections."
 priority: high
 tags: [index, memory]
 schema_version: 1.3
-last_updated: "2026-10-15T12:32:03+00:00"
+last_updated: "2026-10-15T13:45:05-03:00"
 consolidation_hash: acd058fab27bf79aa31f9bd2e3dc7172
 contradictions: ["`fine-tuning/hf-spurgeon-qa-v2-gguf` and `fine-tuning/plans/ollama-merge-gguf` cover similar content but state different numbers (2.71 vs 07) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-next-session-handoff` cover similar content but state different numbers (1 vs 1.701 / 2.449 / 2250) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-s8-mhi-resume-c-prepared` cover similar content but state different numbers (1 / 2.8 / 2026.8 vs -) - review for conflict [heuristic]", "`pretraining/cpt-b-eval-strategy` and `pretraining/cpt-eval-unify-v"]
-consolidation_warnings: ["Skipped bugs/gemma4-chat-template-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped bugs/ollama-tokenizer-corruption-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped decisions/gemma4-local-ollama.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic/2026-07-12.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic/2026-07-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic/2026-07-14.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic/2026-08-23.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic/2026-08-28.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic/2026-09-15.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning/clerk-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning/foundry-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning/qa-open-theology-sft-handoff-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning/runpod-sft-gate0-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining/cpt-b-eval-strategy-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining/cpt-corpus-v3-expansion-plan.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining/cpt-corpus-v3-s1-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining/cpt-corpus-v3-s5-b-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining/cpt-s6-c-eval-next-session.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining/cpt-s6-phase0-prepared.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining/cpt-v2-implementation-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining/cpt-v2-next-steps-after-v13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining/cpt-v2-plan-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining/cpt-v2-runpod-mcp-volume-gap.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining/cpt-v3-s6-handoff.md during index regeneration: Missing YAML frontmatter delimiter"]
+consolidation_warnings: ["Skipped bugs\\gemma4-chat-template-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped bugs\\ollama-tokenizer-corruption-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped decisions\\gemma4-local-ollama.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-12.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-14.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-08-23.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-08-28.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-09-15.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\clerk-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\CURSOR_TODO_SFT_S8_WEIGHTED_2026-10-14.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\foundry-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\qa-open-theology-sft-handoff-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\runpod-sft-gate0-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\sft-s3-mask-multiturn-brief-2026-10-15.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-b-eval-strategy-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-expansion-plan.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-s1-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-s5-b-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-s6-c-eval-next-session.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-s6-phase0-prepared.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-implementation-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-next-steps-after-v13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-plan-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-runpod-mcp-volume-gap.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v3-s6-handoff.md during index regeneration: Missing YAML frontmatter delimiter"]
 summary_hash: c81ed9efe309125e42b693ba950f4f04
 contradiction_count: 50
 ---
@@ -78,8 +78,8 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `debt` | low | App debt (hybrid search, rate limits) plus 2026-08-29 memory-fabric LLM/host hygiene notes. | • Known Technical Debt & Limits<br>• Roadmap & Pending Features |
 | `decisions` | medium | Generated map of memory-store/decisions/ (1 entries). | • **Gemma 4 Fine-Tuning Transition** (`decisions/gemma4-fin... |
 | `episodic` | medium | Generated map of memory-store/episodic/ (34 entries). | • **2026-09-28** (`episodic/2026-09-28`, medium) — Reframed...<br>• **2026-10-02** (`episodic/2026-10-02`, medium) —<br>• **2026-10-05** (`episodic/2026-10-05`, medium) — |
-| `failures` | medium | Generated map of memory-store/failures/ (35 entries). | • **Vast official Unsloth image smoke blocked; LD_LIBRARY_P...<br>• **AssertionError: S3 FAIL: user turn leaked into labels i...<br>• **asyncua write_value BadTypeMismatch when writing int to... |
-| `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (47 entries). | • **Fine-tuning next session handoff** (`fine-tuning/next-s...<br>• **Open theology QA slice tooling ready for Clerk** (`fine...<br>• **Next session: plan open theological QA slice** (`fine-t... |
+| `failures` | medium | Generated map of memory-store/failures/ (35 entries). | • **Vast official Unsloth image smoke blocked; LD_LIBRARY_P...<br>• **AssertionError: S3 FAIL row 5: user turn leaked into la...<br>• **asyncua write_value BadTypeMismatch when writing int to... |
+| `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (49 entries). | • **Fine-tuning next session handoff** (`fine-tuning/next-s...<br>• **Open theology QA slice tooling ready for Clerk** (`fine...<br>• **Next session: plan open theological QA slice** (`fine-t... |
 | `framework-rules` | medium | Defines coding standards, required libraries (Streamlit, LlamaIndex), environment setup (.env), and database rules for the codebase. | • 1. Runtime Environment<br>• 2. Core Libraries & Packages<br>• 3. Vector Database Rules<br>• 4. Agent Memory Guidelines |
 | `grok` | medium | Generated map of memory-store/grok/ (6 entries). | • **Grok Bot Clerk for open-theology QA generation** (`grok...<br>• **Grok Bot Forge for Vast/Runpod training** (`grok/forge-...<br>• **Grok Bot Foundry for train/export code** (`grok/foundry... |
 | `pretraining` | medium | Generated map of memory-store/pretraining/ (101 entries). | • **CPT B_training_sota known issues (P1 closed — log spam)...<br>• **Composite CPT early stop merges split HF eval events** ...<br>• **Confessions + Institutes corpus (WCF, 1689, Calvin)** (... |
@@ -3956,6 +3956,67 @@ Gates met → **dry-run SFT is low-regret**; rewrite is optimization not blockin
 2. Operator explicit go
 3. `KAGGLE_RUNBOOK_SFT_V2.md` §2–3 (`USE_CPT_MERGE=False` for dry-run)
 
+<!-- memory-fabric:store/fine-tuning/sft-weighted-monitor-harden-2026-10-15 -->
+---
+store_path: fine-tuning/sft-weighted-monitor-harden-2026-10-15
+title: "Weighted SFT Vast monitor false-destroy harden"
+summary: "Monitor used boolean `pgrep` of `train_sft_sota.py` with a **10 min** loading timeout"
+priority: high
+tags: [sft, weighted, vast, monitor, forge]
+schema_version: 1.3
+last_updated: "2026-10-15T13:36:07-03:00"
+evidence: ["commit:9bfdd35", fine_tuning/scripts/vast_sft_s8_weighted_orchestrate.ps1, fine_tuning/scripts/sft_remote_train_s8_weighted.sh, fine_tuning/tests/test_vast_sft_s8_weighted_monitor.py]
+---
+
+# Weighted SFT Vast monitor harden (2026-10-15)
+
+## Root cause
+
+Monitor used boolean `pgrep` of `train_sft_sota.py` with a **10 min** loading timeout. `sft_remote_setup` alone can burn ~10m on apt locks, then torch/HF download. SSH flaps looked like "not running". One failed poll after `sawRunning` destroyed the GPU. Oct 15 launch fetched with no adapter (`vast_sft_s8_weighted_launch_1015.log.err`).
+
+## Fix on main (`9bfdd35`)
+
+- Remote: `sft_train.pid` / `sft_train.exit`, tee setup to `sft_setup.log`, bracketed pgrep, **wait** on python so supervisor stays ALIVE.
+- State: ALIVE / DEAD / UNKNOWN; SSH error = UNKNOWN never gone; only ALIVE sets `$sawRunning`.
+- Debounce: 3 consecutive DEAD + 3m post-launch grace; after ~10m UNKNOWN query `vastai show instance` before destroy.
+- Loading default **20 min**, extends while `sft_setup.log` advances, only until pidfile exists.
+- `Save-WeightedEvidence` before both destroy paths (dmesg/free/nvidia-smi/log tails; vastai logs fallback).
+- Tests: `fine_tuning/tests/test_vast_sft_s8_weighted_monitor.py`.
+
+## Next
+
+Forge dry then operator **go** (credit). Do not rent from Cursor. No Hub until F gates.
+
+<!-- memory-fabric:store/fine-tuning/sft-weighted-sparse-sync -->
+---
+store_path: fine-tuning/sft-weighted-sparse-sync
+title: "Weighted SFT GPU sync via pinned sparse-checkout"
+summary: "Stop bulk SCP of `qa_mix_train.jsonl` (~36 MB) laptop-to-Vast"
+priority: high
+tags: [sft, vast, sparse-checkout, sync, upload]
+schema_version: 1.3
+last_updated: "2026-10-14T12:37:18-03:00"
+evidence: [fine_tuning/scripts/vast_sft_s8_weighted_orchestrate.ps1, fine_tuning/NEXT_SFT_S8_WEIGHTED.md, .cursor/skills/gpu-train-ops/SKILL.md]
+---
+
+# Weighted SFT sync: pinned sparse-checkout (2026-10-14)
+
+Stop bulk SCP of `qa_mix_train.jsonl` (~36 MB) laptop-to-Vast.
+
+## Contract
+
+- Pin: local `git rev-parse HEAD` printed as `PINNED_SHA` on dry and -Go.
+- On -Go: GPU shallow cone sparse-checkout of `fine_tuning/data` + `fine_tuning/scripts` from public `https://github.com/elViRafa/ask-spurgeon.git`, then materialize into `/workspace/spurgeon-qa-mix-v1/`, `/workspace/qa_open_theology/sft/`, and train scripts under `/workspace/`.
+- `config.py` via `git show HEAD:config.py` (not in cone).
+- SCP only dirty sync-map overrides, and only with `-AllowDirtySync`. Clean tree: no jsonl SCP.
+- CPT still must not full-clone (wrong `theology_cpt_lora*` trees).
+
+## Ops notes
+
+- Push `PINNED_SHA` before -Go so `git fetch origin <SHA>` works on the pod.
+- Dry prints `SPARSE_CONE`, sync path map, `DIRTY_OVERRIDES`.
+- Avoid Unicode em-dashes inside PowerShell double-quoted strings (PS 5.1 ANSI decode can treat UTF-8 em-dash as a smart quote and swallow function braces).
+
 <!-- memory-fabric:store/bugs/unsloth-embedding-offload-readonly -->
 ---
 store_path: bugs/unsloth-embedding-offload-readonly
@@ -4443,13 +4504,13 @@ Ask Spurgeon is a RAG system for search and conversation over Charles Haddon Spu
 <!-- memory-fabric:store/failures/assertionerror-s-n-fail-b0de52ddcb -->
 ---
 store_path: failures/assertionerror-s-n-fail-b0de52ddcb
-title: "AssertionError: S3 FAIL: user turn leaked into labels in train_sft_sota.py _trai"
+title: "AssertionError: S3 FAIL row 5: user turn leaked into labels in train_sft_sota.py"
 summary: "AssertionError: S3 FAIL: user turn leaked into labels in train_sft_sota.py _train_peft after weighted SFT S8 dataprep"
 priority: medium
-tags: [failure, fix, mask, s3, sft, truncation, weighted]
+tags: [failure, fix, mask, multiturn, s3, sft, weighted]
 schema_version: 1.3
-last_updated: "2026-10-14T10:00:16-03:00"
-occurrences: 1
+last_updated: "2026-10-15T12:10:30-03:00"
+occurrences: 2
 error_signature: "assertionerror: s<n> fail: user turn leaked into labels in train_sft_sota.py _train_peft after weighted sft s<n> dataprep. sft_max_seq_length=<n>; trl truncates before mask; rag rows lose <|im_start|>assistant; _mask_assistant_labels fell back to training all tokens."
 failure_key: assertionerror
 ---
@@ -4461,6 +4522,12 @@ AssertionError: S3 FAIL: user turn leaked into labels in train_sft_sota.py _trai
 
 **Fix:**
 Set SFT_MAX_SEQ_LENGTH=4608 in sft_remote_train_s8_weighted.sh and sft_s8_weighted_plan.py (longest row 4330). Hardened _mask_assistant_labels to all -100 when marker missing; drop fully masked rows; S3 audit every row. Keep batch 1 / accum 16; OOM next knob LORA_RANK=16.
+
+## Occurrence 2 — 2026-10-15T12:10:30-03:00
+
+AssertionError: S3 FAIL row 5: user turn leaked into labels in train_sft_sota.py _audit_s3_dataset after weighted SFT S8 dataprep. _mask_assistant_labels supervised from the FIRST <|im_start|>assistant marker; 100 multiturn RAG rows (system/user/assistant/user/assistant) put the second user CONTEXT turn inside labels.
+
+Change _mask_assistant_labels to supervise from the LAST assistant marker only. Keep fail-closed (all -100 if marker missing), full S3 audit, seq 4608, and all 100 multiturn rows. Added fine_tuning/tests/test_sft_s3_mask_all_rows.py (3822 rows seed 3407 + synthetic multiturn). Also *.ps1 eol=lf in .gitattributes and vast_destroy weighted session fallback.
 
 <!-- memory-fabric:store/failures/asyncua-write-value-badtypemismatch-188c68c9d2 -->
 ---
@@ -5279,11 +5346,11 @@ summary: "Generated map of memory-store/failures/ (35 entries)."
 priority: medium
 tags: [failures]
 schema_version: 1.3
-last_updated: "2026-10-15T12:31:48+00:00"
+last_updated: "2026-10-15T12:10:30-03:00"
 generated: true
 generated_from: memory-store/failures
-store_fingerprint: 56cf1f7321cf8e5542c6e30dfa30d935
-body_hash: 7bba7a940e9936975c831dc22012e185
+store_fingerprint: 9e678ddac6209c225b1219c71be330c5
+body_hash: 2718b9081d263fce7c2d189f5006d42a
 ---
 
 # Failures Map
@@ -5291,7 +5358,7 @@ body_hash: 7bba7a940e9936975c831dc22012e185
 Generated by Memory Fabric from `memory-store/failures/` — do not edit by hand. Write facts with `write_memory_store_tool`; Dreaming rebuilds this map.
 
 - **Vast official Unsloth image smoke blocked; LD_LIBRARY_PATH still SIGSEGV** (`failures/vast-unsloth-official-image-smoke`, high) — - Still **SIGSEGV exit 139** at first `trainer.train()` step
-- **AssertionError: S3 FAIL: user turn leaked into labels in train_sft_sota.py _trai** (`failures/assertionerror-s-n-fail-b0de52ddcb`, medium) — AssertionError: S3 FAIL: user turn leaked into labels in train_sft_sota.py _train_peft after weighted SFT S8 dataprep
+- **AssertionError: S3 FAIL row 5: user turn leaked into labels in train_sft_sota.py** (`failures/assertionerror-s-n-fail-b0de52ddcb`, medium) — AssertionError: S3 FAIL: user turn leaked into labels in train_sft_sota.py _train_peft after weighted SFT S8 dataprep
 - **asyncua write_value BadTypeMismatch when writing int to UInt16 or Double node wi** (`failures/asyncua-write-value-badtypemismatch-188c68c9d2`, medium) — asyncua write_value BadTypeMismatch when writing int to UInt16 or Double node wi
 - **B_training_sota: EarlyStopping disabled — metric_for_best_model eval_spurgeon_lo** (`failures/b-training-sota-earlystopping-4edd127cc9`, medium) — B_training_sota: EarlyStopping disabled — metric_for_best_model eval_spurgeon_loss not found in logs (B v6 after tokenized eval)
 - **bash on Vast GPU fails remote multi-line SSH scripts with $'\r' / CRLF from Wind** (`failures/bash-on-vast-gpu-3988e6eb63`, medium) — bash on Vast GPU fails remote multi-line SSH scripts with $'\r' / CRLF from Windows PowerShell here-strings in Invoke-WeightedSsh (weighted SFT S8)
@@ -5303,15 +5370,15 @@ Generated by Memory Fabric from `memory-store/failures/` — do not edit by hand
 <!-- memory-fabric:local/fine-tuning -->
 ---
 section: fine-tuning
-summary: "Generated map of memory-store/fine-tuning/ (47 entries)."
+summary: "Generated map of memory-store/fine-tuning/ (49 entries)."
 priority: medium
 tags: [fine-tuning]
 schema_version: 1.3
-last_updated: "2026-10-15T12:31:48+00:00"
+last_updated: "2026-10-15T13:36:07-03:00"
 generated: true
 generated_from: memory-store/fine-tuning
-store_fingerprint: 87131a2c34385a8222b2594d4d7f2105
-body_hash: 1136cde8c3faaba42dc0ff32318d3dbe
+store_fingerprint: dea3f4d93c60feafdc112692fc3cdbce
+body_hash: e499459d2f325dddcd09374649d837c7
 ---
 
 # Fine Tuning Map
@@ -5330,7 +5397,7 @@ Generated by Memory Fabric from `memory-store/fine-tuning/` — do not edit by h
 - **QA verify + F5 slice gap report** (`fine-tuning/qa-prompt-strategy-verify`, high) — After overlay-safe catechism variants + multiturn merge:
 - **One prompt; diversify task slices** (`fine-tuning/qa-prompt-type-decision`, high) — **Locked after live verify.** Improves SFT via example-type diversity, not multiple prompts
 - **QA Sources Rewrite Progress** (`fine-tuning/qa-sources-rewrite-progress`, high) — Cross-session log of QA answer rewrite pipeline for SFT teacherish/quote fidelity
-- …and 35 more entries — see `memory-store/index.md`.
+- …and 37 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:store/failures/full-semantic-judge-run-2188a7bf04 -->
 ---
@@ -9034,7 +9101,7 @@ summary: "Cleared the Forge GitHub blocker for weighted SFT by committing and pu
 priority: low
 tags: [episodic, session-journal]
 schema_version: 1.3
-last_updated: "2026-10-14T11:36:36-03:00"
+last_updated: "2026-10-14T14:00:05-03:00"
 ---
 
 ## sft-weighted-push
@@ -9101,15 +9168,44 @@ Persisted weighted SFT S8 memories after harden push 5b12b79: updated residual r
 - `.ai-memory/memory-store/fine-tuning/cursor-todo-sft-s8-weighted-2026-10-14.md`
 - `.ai-memory/memory-store/episodic/2026-10-14.md`
 
+## vast-upload-path-investigation
+
+Investigated Vast/Runpod GPU training upload paths. Weighted SFT uses inline Copy-ToVastWeighted (scp + gzip qa_mix_train, retries, speed abort) for 10 files including flat jsonl — not GATE-0 zip or git clone. CPT uses payload.tar (~4.6 GB) via Send-ToWorkspace; a_output packs are gitignored. No rsync/sparse-checkout. Hard do-not git-clone rationale: other theology_cpt_lora dirs on volume.
+
+- SFT datasets (qa_mix_*, open_theology sft) are git-tracked; CPT a_output_v* packs are gitignored and scp'd as tar
+- No sparse-checkout or git-clone upload path exists in orchestrators
+
+## search-scp-sparse-checkout-quotes
+
+Searched repo, agent transcripts, GPU_RUN_REPORT, and memory-fabric for Grok suggestions about slow SCP of large jsonl, stopping scp, cloning ask-spurgeon at pinned SHA, and sparse-checkout. Closest Grok/Forge artifact is CURSOR_TODO_SFT_S8_WEIGHTED recommending gzip + 200 KB/s abort (not clone). PINNED_SHA/ASK_SPURGEON_SHA and sparse-checkout-as-upload-path were not found; skills forbid git-clone onto pods.
+
+- No evidence of a Grok suggestion to stop scp and sparse-checkout clone elViRafa/ask-spurgeon at pinned SHA
+- Primary scp-harden suggestion is CURSOR_TODO §2 (gzip qa_mix_train ~37MB, abort <200 KB/s)
+- Referenced detail note sft-setup-stall-scp-2026-10-14.md is missing from the repo
+
+## gpu-sparse-sync
+
+Implemented pinned sparse-checkout sync for weighted SFT on Vast: GPU pulls tracked data/scripts from GitHub at HEAD SHA; SCP kept only for dirty overrides with -AllowDirtySync. Updated runbook, gpu-train-ops skill, and Forge profile. Dry READY with PINNED_SHA banner; dirty path aborts -Go without -AllowDirtySync. No GPU rent.
+
+- Public repo sparse-checkout replaces bulk jsonl SCP for weighted SFT
+- CPT full-clone ban retained; SFT pin+sparse allowed
+- ASCII-only strings in orchestrator PS1 to avoid PS 5.1 smart-quote parse bugs
+
+## push-sparse-sync-forge
+
+Committed and pushed weighted SFT sparse-checkout sync to main (1672b84). Dry READY with DIRTY_OVERRIDES=(none). Forge can dry then -Go after credit top-up and operator go. No GPU rented.
+
+- Pushed only orchestrator + NEXT + gpu-train-ops + GROK_BOT_FORGE; left QA data and bak files uncommitted
+
 <!-- memory-fabric:store/episodic/2026-10-15 -->
 ---
 store_path: episodic/2026-10-15
 title: "Episodic Journal — 2026-10-15"
 summary: "Implemented and pushed weighted SFT remote CRLF harden on ask-spurgeon main from a Cloud Agent New Project session (empty Origin temp repo)"
 priority: low
-tags: [episodic, session-journal, sft, crlf]
+tags: [episodic, session-journal]
 schema_version: 1.3
-last_updated: "2026-10-15T12:32:00+00:00"
+last_updated: "2026-10-15T13:36:17-03:00"
 ---
 
 ## sft-remote-crlf-push
@@ -9127,6 +9223,26 @@ Implemented and pushed weighted SFT remote CRLF harden on ask-spurgeon main from
 - `.ai-memory/memory-store/failures/bash-on-vast-gpu-3988e6eb63.md`
 
 **Evidence:** commits `604fca5`, `7dfaca8`
+
+## sft-s3-last-assistant-mask
+
+Fixed PEFT S3 label masking to supervise from the last assistant marker so multiturn RAG rows no longer leak the second user turn into labels. Verified prior seq-4608 and 10m loading-timeout corrections remain unchanged. Added CPU audit over all 3822 weighted rows (seed 3407), pinned *.ps1 to LF, and taught vast_destroy to fall back to the weighted session file. Pytest 17 passed; committed and pushed to main without staging qa_open_theology or renting a GPU.
+
+- Supervise from last <|im_start|>assistant only; do not drop multiturn rows or loosen S3 audit
+- Do not increase LoadingTimeoutMinutes (crash was mask, not load wait)
+
+- `fine_tuning/tests/test_sft_s3_mask_all_rows.py`
+- `.gitattributes`
+
+## weighted-sft-monitor-harden
+
+Hardened the weighted SFT Vast monitor so Forge no longer false-destroys GPUs mid-setup or on SSH flaps. Remote train now writes sft_train.pid/exit, tees sft_setup.log, and waits on python. Orchestrator uses ALIVE/DEAD/UNKNOWN with 20m extendable loading wait, 3x DEAD debounce, UNKNOWN→vastai show, and Save-WeightedEvidence before both destroy paths. Pytest 16 passed; committed and pushed 9bfdd35 to main without renting a GPU or staging qa_open_theology.
+
+- Grok recommendation accepted as correct for Oct 15 premature fetch
+- LoadingTimeoutMinutes 10→20 with setup-log extension until pidfile
+- SSH errors are UNKNOWN never gone; only ALIVE sets sawRunning
+
+- `fine_tuning/tests/test_vast_sft_s8_weighted_monitor.py`
 
 <!-- memory-fabric:store/episodic/commits/2026-10-14/604fca57e1 -->
 ---

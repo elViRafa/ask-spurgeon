@@ -35,6 +35,7 @@ $WeightedSyncMap = @(
     @{ Rel = "fine_tuning/scripts/sft_stop_token_utils.py"; Remote = "/workspace/sft_stop_token_utils.py" }
     @{ Rel = "fine_tuning/scripts/sft_remote_setup.sh"; Remote = "/workspace/sft_remote_setup.sh" }
     @{ Rel = "fine_tuning/scripts/sft_remote_train_s8_weighted.sh"; Remote = "/workspace/sft_remote_train_s8_weighted.sh" }
+    @{ Rel = "fine_tuning/scripts/sft_gate0_sep6_constraints.txt"; Remote = "/workspace/sft_gate0_sep6_constraints.txt" }
     @{ Rel = "config.py"; Remote = "/workspace/config.py" }
     @{ Rel = "fine_tuning/data/qa_mix_train.jsonl"; Remote = "/workspace/spurgeon-qa-mix-v1/qa_mix_train.jsonl" }
     @{ Rel = "fine_tuning/data/qa_mix_val.jsonl"; Remote = "/workspace/spurgeon-qa-mix-v1/qa_mix_val.jsonl" }
@@ -178,18 +179,26 @@ if (-not $OfferId) { $OfferId = [string]$bestId }
 
 function Save-WeightedEvidence {
     param([string]$Reason = "")
-    # Best-effort diagnostics before destroy. Never throws; never blocks destroy.
+    # Diagnostics before destroy. Asserts files exist; scp-falls back for logs.
+    # Never throws (destroy must proceed); writes status.txt with ok/fail.
+    $stamp = Get-Date -Format "yyyyMMdd_HHmmss"
+    $evDir = Join-Path $ResultsDir "evidence_$stamp"
+    $statusLines = New-Object System.Collections.Generic.List[string]
+    $statusLines.Add("reason=$Reason")
+    $statusLines.Add("utc=$((Get-Date).ToUniversalTime().ToString('o'))")
+    $statusLines.Add("ev_dir=$evDir")
     try {
-        $stamp = Get-Date -Format "yyyyMMdd_HHmmss"
-        $evDir = Join-Path $ResultsDir "evidence_$stamp"
+        New-Item -ItemType Directory -Force -Path $ResultsDir | Out-Null
         New-Item -ItemType Directory -Force -Path $evDir | Out-Null
         @(
             "reason=$Reason"
             "utc=$((Get-Date).ToUniversalTime().ToString('o'))"
         ) | Set-Content -LiteralPath (Join-Path $evDir "meta.txt") -Encoding utf8
+
         $session = $null
         try { $session = Get-VastSession } catch { $session = $null }
         $sshOk = $false
+        $scpOk = $false
         if ($session -and $session.ssh_host) {
             $cap = @'
 set +e
@@ -205,6 +214,10 @@ echo "===SFT_LAUNCH_TAIL==="
 tail -n 200 /workspace/sft_launch.log 2>/dev/null || true
 echo "===SFT_SETUP_TAIL==="
 tail -n 200 /workspace/sft_setup.log 2>/dev/null || true
+echo "===SFT_SMOKE_TAIL==="
+tail -n 200 /workspace/sft_smoke.log 2>/dev/null || true
+echo "===PIP_FREEZE_HEAD==="
+head -n 80 /workspace/sft_pip_freeze.txt 2>/dev/null || true
 echo "===PID_EXIT==="
 cat /workspace/sft_train.pid 2>/dev/null || true
 cat /workspace/sft_train.exit 2>/dev/null || true
@@ -224,15 +237,61 @@ echo "===EV_DONE==="
                         $ErrorActionPreference = $prev
                     }
                     if ($sx -eq 0 -or ($out -match "EV_DONE")) {
-                        $out | Set-Content -LiteralPath (Join-Path $evDir "capture.txt") -Encoding utf8
-                        $sshOk = $true
-                        break
+                        $capPath = Join-Path $evDir "capture.txt"
+                        $out | Set-Content -LiteralPath $capPath -Encoding utf8
+                        if ((Test-Path -LiteralPath $capPath) -and ((Get-Item -LiteralPath $capPath).Length -gt 0)) {
+                            $sshOk = $true
+                            break
+                        }
                     }
                 }
                 catch {
                     Write-Warning ("evidence ssh attempt {0} failed: {1}" -f $attempt, $_.Exception.Message)
                 }
                 Start-Sleep -Seconds (2 * $attempt)
+            }
+
+            # SCP fallback: copy remote logs into evidence even when capture SSH failed
+            # or returned an empty buffer (the prior empty-folder bug).
+            try {
+                $sshTarget = Get-VastSshRemote $session
+                $port = Get-VastSshPort $session
+                $scpBase = @(
+                    "-i", $SshKey,
+                    "-P", "$port",
+                    "-o", "StrictHostKeyChecking=accept-new",
+                    "-o", "LogLevel=ERROR"
+                )
+                $remoteLogs = @(
+                    "/workspace/sft_train.log",
+                    "/workspace/sft_launch.log",
+                    "/workspace/sft_setup.log",
+                    "/workspace/sft_smoke.log",
+                    "/workspace/sft_pip_freeze.txt",
+                    "/workspace/sft_train.pid",
+                    "/workspace/sft_train.exit",
+                    "/workspace/sft_smoke_fail/status.txt"
+                )
+                foreach ($remotePath in $remoteLogs) {
+                    $leaf = Split-Path $remotePath -Leaf
+                    $dest = Join-Path $evDir ("scp_" + $leaf)
+                    $prev = $ErrorActionPreference
+                    $ErrorActionPreference = "Continue"
+                    try {
+                        & scp @($scpBase + @("${sshTarget}:$remotePath", $dest)) 2>$null
+                        $sx = [int]$LASTEXITCODE
+                    }
+                    finally {
+                        $ErrorActionPreference = $prev
+                    }
+                    if ($sx -eq 0 -and (Test-Path -LiteralPath $dest) -and ((Get-Item -LiteralPath $dest).Length -gt 0)) {
+                        $scpOk = $true
+                    }
+                }
+            }
+            catch {
+                Write-Warning ("evidence scp fallback failed: {0}" -f $_.Exception.Message)
+                $statusLines.Add("scp_error=$($_.Exception.Message)")
             }
         }
         if (-not $sshOk) {
@@ -248,12 +307,72 @@ echo "===EV_DONE==="
             }
             catch {
                 Write-Warning ("vastai logs fallback failed: {0}" -f $_.Exception.Message)
+                $statusLines.Add("vastai_logs_error=$($_.Exception.Message)")
             }
         }
-        Write-Host "evidence saved: $evDir"
+
+        $listingPath = Join-Path $evDir "listing.txt"
+        $listing = @()
+        if (Test-Path -LiteralPath $evDir) {
+            Get-ChildItem -LiteralPath $evDir -File | ForEach-Object {
+                $listing += ("{0}`t{1}" -f $_.Name, $_.Length)
+            }
+        }
+        if ($listing.Count -eq 0) {
+            $listing = @("(empty)")
+        }
+        $listing | Set-Content -LiteralPath $listingPath -Encoding utf8
+
+        $requiredOk = $false
+        $metaOk = (Test-Path -LiteralPath (Join-Path $evDir "meta.txt"))
+        $listOk = (Test-Path -LiteralPath $listingPath) -and ((Get-Item -LiteralPath $listingPath).Length -gt 0)
+        $payloadOk = $false
+        foreach ($name in @("capture.txt", "vastai_logs.txt", "scp_sft_train.log", "scp_sft_setup.log", "scp_sft_smoke.log", "scp_sft_launch.log")) {
+            $p = Join-Path $evDir $name
+            if ((Test-Path -LiteralPath $p) -and ((Get-Item -LiteralPath $p).Length -gt 0)) {
+                $payloadOk = $true
+                break
+            }
+        }
+        $requiredOk = $metaOk -and $listOk -and $payloadOk
+        $statusLines.Add("ssh_capture_ok=$sshOk")
+        $statusLines.Add("scp_fallback_ok=$scpOk")
+        $statusLines.Add("meta_ok=$metaOk")
+        $statusLines.Add("listing_ok=$listOk")
+        $statusLines.Add("payload_ok=$payloadOk")
+        $statusLines.Add("evidence_ok=$requiredOk")
+        $statusLines.Add("files:")
+        $statusLines.AddRange($listing)
+        $statusPath = Join-Path $evDir "status.txt"
+        $statusLines | Set-Content -LiteralPath $statusPath -Encoding utf8
+
+        if (-not $requiredOk) {
+            Write-Warning ("evidence INCOMPLETE (empty or missing payload): {0} -- see status.txt" -f $evDir)
+            Write-Host "evidence saved (incomplete): $evDir"
+        }
+        else {
+            Write-Host "evidence saved: $evDir"
+        }
+        # Assert after write -- surface empty-folder regressions in the log.
+        if (-not (Test-Path -LiteralPath $statusPath)) {
+            Write-Warning "ASSERT FAIL: status.txt missing after Save-WeightedEvidence"
+        }
+        if (-not (Test-Path -LiteralPath $listingPath)) {
+            Write-Warning "ASSERT FAIL: listing.txt missing after Save-WeightedEvidence"
+        }
+        if (-not $payloadOk) {
+            Write-Warning "ASSERT FAIL: no non-empty evidence payload file in $evDir"
+        }
     }
     catch {
         Write-Warning ("Save-WeightedEvidence failed (non-fatal): {0}" -f $_.Exception.Message)
+        try {
+            New-Item -ItemType Directory -Force -Path $evDir | Out-Null
+            $statusLines.Add("exception=$($_.Exception.Message)")
+            $statusLines.Add("evidence_ok=False")
+            $statusLines | Set-Content -LiteralPath (Join-Path $evDir "status.txt") -Encoding utf8
+        }
+        catch { }
     }
 }
 
@@ -425,11 +544,13 @@ cp "`$SRC/fine_tuning/scripts/train_sft_sota.py" /workspace/train_sft_sota.py
 cp "`$SRC/fine_tuning/scripts/sft_stop_token_utils.py" /workspace/sft_stop_token_utils.py
 cp "`$SRC/fine_tuning/scripts/sft_remote_setup.sh" /workspace/sft_remote_setup.sh
 cp "`$SRC/fine_tuning/scripts/sft_remote_train_s8_weighted.sh" /workspace/sft_remote_train_s8_weighted.sh
+cp "`$SRC/fine_tuning/scripts/sft_gate0_sep6_constraints.txt" /workspace/sft_gate0_sep6_constraints.txt
 git -C "`$SRC" show HEAD:config.py > /workspace/config.py
 chmod +x /workspace/sft_remote_setup.sh /workspace/sft_remote_train_s8_weighted.sh
 test -s /workspace/spurgeon-qa-mix-v1/qa_mix_train.jsonl
 test -s /workspace/config.py
 test -s /workspace/train_sft_sota.py
+test -s /workspace/sft_gate0_sep6_constraints.txt
 echo "SPARSE_SYNC_OK sha=`$SHA"
 "@
     Write-Host "Syncing weighted SFT via pinned sparse-checkout (no bulk jsonl SCP) ..."
@@ -736,6 +857,8 @@ if ($session -and $session.ssh_host) {
         "/workspace/sft_train.log",
         "/workspace/sft_launch.log",
         "/workspace/sft_setup.log",
+        "/workspace/sft_smoke.log",
+        "/workspace/sft_pip_freeze.txt",
         "/workspace/sft_train.pid",
         "/workspace/sft_train.exit",
         "/workspace/sft_run_config.json"

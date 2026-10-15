@@ -41,6 +41,8 @@ ENV = {
     "TORCHDYNAMO_DISABLE": "1",
     "TORCH_COMPILE_DISABLE": "1",
     "PYTORCH_CUDA_ALLOC_CONF": "expandable_segments:True",
+    "SFT_EXPANDABLE_SEGMENTS": "1",
+    "PYTHONFAULTHANDLER": "1",
 }
 
 

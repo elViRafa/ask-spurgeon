@@ -27,7 +27,6 @@ from train_sft_sota import (  # noqa: E402
 RESPONSE_PART = "<|im_start|>assistant\n"
 MAX_SEQ = 4608
 SEED = 3407
-EXPECTED_MIX_ROWS = 3822
 
 
 def _tokenizer():
@@ -74,6 +73,7 @@ def test_weighted_mix_all_rows_pass_s3_audit() -> None:
 
     rag_rows = _load_jsonl(train_jsonl)
     theo_rows = _load_jsonl(theo_jsonl)
+    expected_mix_rows = len(rag_rows) + len(theo_rows)
     mixed = build_weighted_message_rows(
         rag_rows=rag_rows,
         theology_rows=theo_rows,
@@ -82,16 +82,16 @@ def test_weighted_mix_all_rows_pass_s3_audit() -> None:
         theology_repeat=1,
         seed=SEED,
     )
-    assert len(mixed) == EXPECTED_MIX_ROWS
+    assert len(mixed) == expected_mix_rows
     multiturn = sum(1 for r in mixed if _assistant_turn_count(r["messages"]) >= 2)
     assert multiturn > 0, "expected multiturn RAG rows in the weighted mix"
 
     tokenizer, im_end_id = _tokenizer()
     ds = _mask_rows(tokenizer, mixed)
-    assert len(ds) == EXPECTED_MIX_ROWS
+    assert len(ds) == expected_mix_rows
     audit = _audit_s3_dataset(tokenizer, im_end_id, ds, backend="peft_cpu_test")
     assert audit["pass"] is True
-    assert audit["rows_checked"] == EXPECTED_MIX_ROWS
+    assert audit["rows_checked"] == expected_mix_rows
 
 
 def test_synthetic_multiturn_passes_s3() -> None:

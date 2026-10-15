@@ -30,8 +30,28 @@ os.environ.setdefault("UNSLOTH_DISABLE_FAST_GENERATION", "1")
 os.environ.setdefault("TORCHDYNAMO_DISABLE", "1")
 os.environ.setdefault("TORCH_COMPILE_DISABLE", "1")
 os.environ.setdefault("CUDA_VISIBLE_DEVICES", os.environ.get("CUDA_VISIBLE_DEVICES", "0"))
-if "PYTORCH_CUDA_ALLOC_CONF" not in os.environ:
-    os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+
+
+def _apply_expandable_segments_env() -> None:
+    """Toggleable PYTORCH_CUDA_ALLOC_CONF expandable_segments.
+
+    Default on. Set SFT_EXPANDABLE_SEGMENTS=0 (or PYTORCH_CUDA_ALLOC_CONF to
+    empty/off/false/0) to disable — used by weighted smoke retries.
+    """
+    flag = (os.environ.get("SFT_EXPANDABLE_SEGMENTS") or "").strip().lower()
+    raw = os.environ.get("PYTORCH_CUDA_ALLOC_CONF")
+    if flag in ("0", "false", "off", "no") or (
+        raw is not None and raw.strip().lower() in ("", "0", "false", "off", "none")
+    ):
+        os.environ.pop("PYTORCH_CUDA_ALLOC_CONF", None)
+        print("PYTORCH_CUDA_ALLOC_CONF: unset (expandable_segments off)")
+        return
+    if raw is None or not str(raw).strip():
+        os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+    print("PYTORCH_CUDA_ALLOC_CONF:", os.environ.get("PYTORCH_CUDA_ALLOC_CONF"))
+
+
+_apply_expandable_segments_env()
 
 STOCK_MODEL = "unsloth/Qwen3.5-4B-Base"
 KAGGLE_GATE0 = "/kaggle/input/datasets/rafaelvieira1/theology-cpt-v2/theology_cpt_v2_merged_hf"
@@ -530,6 +550,31 @@ def _sft_backend() -> str:
     return "unsloth"
 
 
+def _smoke_enabled() -> bool:
+    raw = (os.environ.get("SFT_SMOKE") or "").strip().lower()
+    return raw in ("1", "true", "yes")
+
+
+def _max_train_steps() -> int | None:
+    raw = (os.environ.get("SFT_MAX_STEPS") or "").strip()
+    if not raw:
+        return None
+    return max(1, int(raw))
+
+
+def _select_longest_text_rows(dataset, n: int):
+    """Keep the n longest text rows (stress first forward at full seq)."""
+    n = max(1, min(int(n), len(dataset)))
+    texts = dataset["text"]
+    order = sorted(range(len(texts)), key=lambda i: len(texts[i] or ""), reverse=True)
+    keep = sorted(order[:n])
+    print(
+        f"SMOKE_LONGEST_ROWS kept={n} of {len(dataset)} "
+        f"(max_chars={max(len(texts[i] or '') for i in keep)})"
+    )
+    return dataset.select(keep)
+
+
 def _eval_strategy() -> str:
     """Eval strategy from env. Default ``no`` — mid-train eval OOMs on 24GB @ seq 2048."""
     raw = (os.environ.get("SFT_EVAL_STRATEGY") or "no").strip().lower()
@@ -669,10 +714,21 @@ def _train_peft() -> None:
     num_epochs = int(os.environ.get("SFT_NUM_EPOCHS", "2"))
     learning_rate = float(os.environ.get("SFT_LEARNING_RATE", "1e-4"))
     seed = int(os.environ.get("SFT_SEED", "3407"))
+    smoke = _smoke_enabled()
+    max_steps = _max_train_steps()
+    if smoke:
+        # Cheap 2-step forward stress on longest rows before full train.
+        max_steps = max_steps or 2
+        per_device_batch = int(os.environ.get("SFT_SMOKE_BATCH", "1"))
+        grad_accum = int(os.environ.get("SFT_SMOKE_GRAD_ACCUM", "1"))
+        num_epochs = 1
+        print("SFT_SMOKE=1 max_steps", max_steps, "batch", per_device_batch, "accum", grad_accum)
 
     data_train, data_val = _dataprep(max_seq_length)
     out_dir = _sft_out_dir(kwork)
-    run_config = kwork / "sft_run_config.json"
+    if smoke:
+        out_dir = Path(str(out_dir) + "_smoke")
+    run_config = kwork / ("sft_smoke_run_config.json" if smoke else "sft_run_config.json")
     hf_home = (os.environ.get("HF_HOME") or "").strip() or str(work / "hf_home")
     os.makedirs(hf_home, exist_ok=True)
     os.makedirs(out_dir, exist_ok=True)
@@ -720,10 +776,13 @@ def _train_peft() -> None:
     drop_cols_v = [c for c in val_ds.column_names if c != "text"]
     if drop_cols_v:
         val_ds = val_ds.remove_columns(drop_cols_v)
+    if smoke and "text" in train_ds.column_names:
+        need = max(4, per_device_batch * grad_accum * (max_steps or 2) * 2)
+        train_ds = _select_longest_text_rows(train_ds, need)
     print("Loaded", len(train_ds), len(val_ds), "cols", train_ds.column_names)
 
     steps_per_epoch = max(1, len(train_ds) // (per_device_batch * grad_accum))
-    eval_strategy = _eval_strategy()
+    eval_strategy = "no" if smoke else _eval_strategy()
     eval_steps = int(os.environ.get("SFT_EVAL_STEPS") or max(200, steps_per_epoch // 2))
     save_steps = int(os.environ.get("SFT_SAVE_STEPS") or max(40, steps_per_epoch // 5))
     if eval_strategy == "steps" and save_steps % eval_steps != 0:
@@ -739,6 +798,8 @@ def _train_peft() -> None:
         save_steps,
         "eval_batch",
         per_device_eval_batch,
+        "max_steps",
+        max_steps,
     )
 
     bf16 = torch.cuda.is_bf16_supported()
@@ -754,13 +815,13 @@ def _train_peft() -> None:
         weight_decay=0.01,
         fp16=not bf16,
         bf16=bf16,
-        logging_steps=10,
+        logging_steps=1 if smoke else 10,
         eval_strategy=eval_strategy,
         eval_steps=eval_steps if eval_strategy == "steps" else None,
-        save_strategy="steps",
+        save_strategy="no" if smoke else "steps",
         save_steps=save_steps,
-        load_best_model_at_end=eval_strategy != "no",
-        metric_for_best_model="eval_loss" if eval_strategy != "no" else None,
+        load_best_model_at_end=False if smoke else eval_strategy != "no",
+        metric_for_best_model="eval_loss" if (not smoke and eval_strategy != "no") else None,
         seed=seed,
         report_to="none",
         output_dir=str(out_dir / "checkpoints"),
@@ -772,6 +833,8 @@ def _train_peft() -> None:
         gradient_checkpointing=True,
         prediction_loss_only=True,
     )
+    if max_steps is not None:
+        sft_cfg_kwargs["max_steps"] = int(max_steps)
     # Drop None values — SFTConfig may reject explicit None for some fields.
     sft_cfg_kwargs = {k: v for k, v in sft_cfg_kwargs.items() if v is not None}
     sft_cfg_kwargs = _filter_kwargs(SFTConfig.__init__, sft_cfg_kwargs)
@@ -840,8 +903,10 @@ def _train_peft() -> None:
 
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
-    resume_env = (os.environ.get("SFT_RESUME_FROM_CHECKPOINT") or "").strip()
-    resume_ckpt = resume_env or _latest_checkpoint(out_dir / "checkpoints")
+    resume_ckpt = None
+    if not smoke:
+        resume_env = (os.environ.get("SFT_RESUME_FROM_CHECKPOINT") or "").strip()
+        resume_ckpt = resume_env or _latest_checkpoint(out_dir / "checkpoints")
     if resume_ckpt:
         print("Resuming from checkpoint:", resume_ckpt)
     else:
@@ -850,17 +915,20 @@ def _train_peft() -> None:
     print(stats)
 
     out_dir.mkdir(parents=True, exist_ok=True)
-    model.save_pretrained(str(out_dir / "lora"))
-    tokenizer.save_pretrained(str(out_dir / "lora"))
+    if not smoke:
+        model.save_pretrained(str(out_dir / "lora"))
+        tokenizer.save_pretrained(str(out_dir / "lora"))
 
     cfg = {
         "created_at": datetime.now(timezone.utc).isoformat(),
         "backend": "peft",
+        "smoke": bool(smoke),
         "base_model": base_model,
         "use_cpt_merge": use_merge,
         "max_seq_length": max_seq_length,
         "lora_rank": lora_rank,
         "epochs": num_epochs,
+        "max_steps": max_steps,
         "train_rows": len(train_ds),
         "val_rows": len(val_ds),
         "peak_vram_gb": round(torch.cuda.max_memory_reserved() / 1e9, 2)
@@ -868,13 +936,18 @@ def _train_peft() -> None:
         else None,
     }
     try:
-        cfg["pip_freeze"] = subprocess.check_output(["pip", "freeze"], text=True)[:8000]
+        cfg["pip_freeze"] = subprocess.check_output(
+            [sys.executable, "-m", "pip", "freeze"], text=True
+        )[:8000]
     except Exception:
         pass
     run_config.write_text(json.dumps(cfg, indent=2), encoding="utf-8")
-    print("Saved adapter to", out_dir / "lora")
-    print("Run config:", run_config)
-    print("SOTA SFT v2 complete")
+    if smoke:
+        print("SFT_SMOKE_PASS steps", max_steps)
+    else:
+        print("Saved adapter to", out_dir / "lora")
+        print("Run config:", run_config)
+        print("SOTA SFT v2 complete")
 
 
 def _train_unsloth() -> None:
@@ -1107,7 +1180,16 @@ def main() -> None:
     parser.add_argument("--preflight", action="store_true")
     parser.add_argument("--install", action="store_true")
     parser.add_argument("--dataprep-only", action="store_true")
+    parser.add_argument(
+        "--smoke",
+        action="store_true",
+        help="2-step forward smoke on longest rows (sets SFT_SMOKE=1)",
+    )
     args = parser.parse_args()
+
+    if args.smoke:
+        os.environ["SFT_SMOKE"] = "1"
+        os.environ.setdefault("SFT_MAX_STEPS", "2")
 
     if args.preflight:
         _preflight()

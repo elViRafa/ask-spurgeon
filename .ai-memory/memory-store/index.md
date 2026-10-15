@@ -5,7 +5,7 @@ summary: "Index of all semantic memory store files."
 priority: high
 tags: [index, memory-store]
 schema_version: 1.3
-last_updated: "2026-10-15T12:32:03+00:00"
+last_updated: "2026-10-15T13:45:05-03:00"
 ---
 
 # Memory Store Index
@@ -52,10 +52,10 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `episodic/2026-10-07` | low | Continued open PR 10, which rebuilds /workspace/theology_cpt_merged_a70 from merge parent a70fded8 plus merge_cpt_lora.py before Isolation C eval so the m_hi resume adapter 22698039 can load | • s8-c-merge-parent-dry<br>• grok-bot-runs-isolation-c<br>• s8-isolation-c-report<br>• plateau-exit-cause<br>• plateau-escape-playbook<br>• s8-hf-export-prep<br>• s8-merge-hf-orchestrator<br>• grok-bot-merge-handoff<br>• s8-merged-hf-hub-upload<br>• s8-ollama-load<br>• cpt-ollama-think-fix | episodic, session-journal |
 | `episodic/2026-10-09` | low | Decided the next model step is supervised fine-tuning on the S8 merged CPT weights | • sft-on-s8-decision<br>• qa-mix-size-advice<br>• open-theology-qa-advice<br>• open-theology-qa-handoff<br>• open-theology-qa-slice<br>• commit-push-sft-qa | episodic, session-journal |
 | `episodic/2026-10-13` | low | Committed and pushed open-theology QA queue growth on main | • qa-queue-commit-push<br>• sft-s8-weighted-forge | episodic, session-journal |
-| `episodic/2026-10-14` | low | Cleared the Forge GitHub blocker for weighted SFT by committing and pushing the recipe to main (c085120) | • sft-weighted-push<br>• sft-s8-crash-fix<br>• sft-residual-risk-audit<br>• save-sft-memories<br>• sft-s8-todo-build<br>• sft-s8-memory-commit | episodic, session-journal |
-| `episodic/2026-10-15` | low | Implemented and pushed weighted SFT remote CRLF harden on ask-spurgeon main from a Cloud Agent New Project session (empty Origin temp repo) | • sft-remote-crlf-push | episodic, session-journal, sft, crlf |
+| `episodic/2026-10-14` | low | Cleared the Forge GitHub blocker for weighted SFT by committing and pushing the recipe to main (c085120) | • sft-weighted-push<br>• sft-s8-crash-fix<br>• sft-residual-risk-audit<br>• save-sft-memories<br>• sft-s8-todo-build<br>• sft-s8-memory-commit<br>• vast-upload-path-investigation<br>• search-scp-sparse-checkout-quotes<br>• gpu-sparse-sync<br>• push-sparse-sync-forge | episodic, session-journal |
+| `episodic/2026-10-15` | low | Implemented and pushed weighted SFT remote CRLF harden on ask-spurgeon main from a Cloud Agent New Project session (empty Origin temp repo) | • sft-remote-crlf-push<br>• sft-s3-last-assistant-mask<br>• weighted-sft-monitor-harden | episodic, session-journal |
 | `episodic/commits/2026-10-14/` | low | 1 passively captured commit(s). | • fix(sft): strip CR from weighted SSH remotes; 10m loading timeout | episodic, passive-capture, needs-review |
-| `failures/assertionerror-s-n-fail-b0de52ddcb` | medium | AssertionError: S3 FAIL: user turn leaked into labels in train_sft_sota.py _train_peft after weighted SFT S8 dataprep | • Occurrence 1 — 2026-10-14T10:00:16-03:00 | failure, fix, mask, s3, sft, truncation, weighted |
+| `failures/assertionerror-s-n-fail-b0de52ddcb` | medium | AssertionError: S3 FAIL: user turn leaked into labels in train_sft_sota.py _train_peft after weighted SFT S8 dataprep | • Occurrence 1 — 2026-10-14T10:00:16-03:00<br>• Occurrence 2 — 2026-10-15T12:10:30-03:00 | failure, fix, mask, multiturn, s3, sft, weighted |
 | `failures/asyncua-write-value-badtypemismatch-188c68c9d2` | medium | asyncua write_value BadTypeMismatch when writing int to UInt16 or Double node wi | • Occurrence 1 — 2026-08-12T08:59:14-04:00 | failure, fix |
 | `failures/b-training-sota-earlystopping-4edd127cc9` | medium | B_training_sota: EarlyStopping disabled — metric_for_best_model eval_spurgeon_loss not found in logs (B v6 after tokenized eval) | • Occurrence 1 — 2026-08-25T09:03:00-04:00<br>• Occurrence 2 — 2026-08-25T10:20:39-04:00 | cpt, early-stopping, failure, fix, kaggle, transformers |
 | `failures/bash-on-vast-gpu-3988e6eb63` | medium | bash on Vast GPU fails remote multi-line SSH scripts with $'\r' / CRLF from Windows PowerShell here-strings in Invoke-WeightedSsh (weighted SFT S8) | • Occurrence 1 — 2026-10-15T12:31:48+00:00 | crlf, failure, fix, powershell, sft, ssh, vast, weighted |
@@ -128,6 +128,8 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `fine-tuning/sft-stop-token-phases` | high | Phased stop-token contract for Qwen3.5 SFT v2: | • Turn stop: `<\|im_end\|>` (248046); native eos `<\|endoftext...<br>• Runbook: `fine_tuning/STOP_TOKEN_PHASES.md`<br>• Script: `fine_tuning/scripts/verify_sft_stop_tokens.py` (... | sft, stop-tokens, qwen35 |
 | `fine-tuning/sft-track-a-batch1-complete` | medium | - Teacher dry-run + Groq apply 50 rows; merge 24; zip + readiness PASS | • Done this arc<br>• Ready for next session<br>• Counts snapshot | sft, bulk-rewrite, batch1 |
 | `fine-tuning/sft-vs-rewrite-decision` | high | - **Pass 1 complete:** all 3244 non-gold train rows attempted once | • QA rewrite stop point<br>• Implications<br>• Recommendation recorded<br>• Before GPU | fine-tuning, sft, qa-rewrite, decision |
+| `fine-tuning/sft-weighted-monitor-harden-2026-10-15` | high | Monitor used boolean `pgrep` of `train_sft_sota.py` with a **10 min** loading timeout | • Root cause<br>• Fix on main (`9bfdd35`)<br>• Next | sft, weighted, vast, monitor, forge |
+| `fine-tuning/sft-weighted-sparse-sync` | high | Stop bulk SCP of `qa_mix_train.jsonl` (~36 MB) laptop-to-Vast | • Contract<br>• Ops notes | sft, vast, sparse-checkout, sync, upload |
 | `fine-tuning/vast-gate0-candidate` | medium | While Vultr GPU is blocked ~30 days, **Vast.ai can run GATE-0** if we rent a reliable SSH GPU and reuse remote scripts (`sft_remote_setup.sh` / merge / train) | • Fit<br>• Risks / ops<br>• Status<br>• Cost ballpark BRL (2026-09-05, FX ~R$5.13/USD) | cost, brl |
 | `fine-tuning/vast-gate0-live` | high | **Started:** 2026-09-05 ~19:42 ET (operator said go) | • Instance<br>• Fixes during run<br>• Status | vast, sft, gate0, live |
 | `fine-tuning/vast-gate0-next-session` | medium | **Status:** COMPLETE (2026-09-06 / 2026-09-07) | • GATE-0 train (prior)<br>• Merge → GGUF → Ollama (completed)<br>• Related DONE memories | huggingface, sft, ollama, vast, complete, done |

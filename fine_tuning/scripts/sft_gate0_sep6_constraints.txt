@@ -1,0 +1,21 @@
+# Known-good GATE-0 pins from fine_tuning/kaggle/vast_sft_gate0/sft_run_config.json
+# (created_at 2026-09-06). Install torch/vision/audio from the cu126 index first.
+# Do NOT install FLA or causal-conv packages.
+torch==2.11.0+cu126
+torchvision==0.26.0+cu126
+torchaudio==2.11.0+cu126
+torchao==0.18.0
+transformers==5.5.0
+peft==0.20.0
+trl==0.24.0
+accelerate==1.14.0
+bitsandbytes==0.50.2
+triton==3.6.0
+unsloth_zoo==2026.9.1
+datasets==4.3.0
+huggingface_hub==1.30.0
+safetensors==0.8.0
+tokenizers==0.22.2
+sentencepiece==0.2.2
+protobuf==7.36.1
+numpy==2.4.6
