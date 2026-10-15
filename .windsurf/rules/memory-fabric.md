@@ -10,7 +10,8 @@
 5. **MANDATORY SESSION END:** Before your final response in a session, you MUST call `write_session_journal_tool` to log what was accomplished. Skip ONLY for trivial Q&A sessions with no code changes, decisions, or debugging.
 
 ### 1. Active Retrieval Workflow
-- **Search:** Use `keyword_search_tool(cwd, query)` to find specific documented topics.
+- **Search:** Use `keyword_search_tool(cwd, query)` to find specific documented topics. A sentence is a normal query: it matches content words and returns one hit per file.
+- **Pack:** Use `context_for_task_tool` when that file should be packed into a token budget.
 - **Deep Dive:** Use `read_memory_store_tool(cwd, store_path)` or `read_section(cwd, section)` for detailed content.
 
 ### 2. Store Writes & Rules

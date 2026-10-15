@@ -7,6 +7,20 @@ param(
 
 $session = Get-VastSession
 if (-not $session -or -not $session.instance_id) {
+    # Weighted SFT writes a separate session file; fall back when gate-0 is empty.
+    $weightedSession = Join-Path $FtRoot "kaggle\vast_sft_s8_weighted_session.json"
+    if (
+        (-not $env:VAST_SESSION_FILE -or -not $env:VAST_SESSION_FILE.Trim()) -and
+        (Test-Path $weightedSession)
+    ) {
+        $Script:StateFile = $weightedSession
+        $session = Get-VastSession
+        if ($session -and $session.instance_id) {
+            Write-Host "Using weighted session: $weightedSession"
+        }
+    }
+}
+if (-not $session -or -not $session.instance_id) {
     Write-Host "No instance_id in session - nothing to destroy"
     exit 0
 }

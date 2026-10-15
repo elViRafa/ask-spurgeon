@@ -551,10 +551,12 @@ def _latest_checkpoint(ckpt_root: Path) -> str | None:
 
 
 def _mask_assistant_labels(tokenizer, input_ids: list[int], response_part: str) -> list[int]:
-    """Mask everything before the first assistant response (completion-only).
+    """Mask everything before the last assistant response (completion-only).
 
-    If the assistant marker is missing (e.g. TRL truncated it away), mask every
-    label as -100 so we never train on the user/prompt turn.
+    Multi-turn rows have more than one assistant marker; supervising from the
+    first would train on the second user turn. If the assistant marker is
+    missing (e.g. TRL truncated it away), mask every label as -100 so we never
+    train on the user/prompt turn.
     """
     resp = tokenizer.encode(response_part, add_special_tokens=False)
     if hasattr(resp, "tolist"):
@@ -565,12 +567,14 @@ def _mask_assistant_labels(tokenizer, input_ids: list[int], response_part: str) 
     n = len(resp)
     if n == 0:
         return labels
+    start = None
     for i in range(0, len(input_ids) - n + 1):
         if input_ids[i : i + n] == resp:
             start = i + n
-            labels[start:] = input_ids[start:]
-            return labels
-    # Marker absent (truncation cut the answer): do not supervise any token.
+    if start is None:
+        # Marker absent (truncation cut the answer): do not supervise any token.
+        return labels
+    labels[start:] = input_ids[start:]
     return labels
 
 
