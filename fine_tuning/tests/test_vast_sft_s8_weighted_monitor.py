@@ -9,13 +9,18 @@ REMOTE = REPO / "fine_tuning" / "scripts" / "sft_remote_train_s8_weighted.sh"
 
 
 def parse_weighted_state(stdout: str, *, ssh_ok: bool = True) -> str:
-    """Mirror of Get-WeightedTrainState parsing: ALIVE / DEAD / UNKNOWN.
+    """Mirror of Get-WeightedTrainState parsing.
 
     SSH failure is always UNKNOWN — never treat as gone.
+    SETUP_FAILED / SMOKE_BEFORE_TRAIN_FAILED break the monitor immediately.
     """
     if not ssh_ok:
         return "UNKNOWN"
     text = stdout or ""
+    if "WEIGHTED_STATE=SMOKE_BEFORE_TRAIN_FAILED" in text:
+        return "SMOKE_BEFORE_TRAIN_FAILED"
+    if "WEIGHTED_STATE=SETUP_FAILED" in text:
+        return "SETUP_FAILED"
     if "WEIGHTED_STATE=ALIVE" in text:
         return "ALIVE"
     if "WEIGHTED_STATE=DEAD" in text:
@@ -72,13 +77,30 @@ SETUP_SIZE=0
 PIDFILE=0
 WEIGHTED_STATE=UNKNOWN
 """
+    setup_failed = """
+SETUP_MTIME=1710000000
+SETUP_SIZE=1200
+PIDFILE=0
+FAIL_MARKER=SETUP_FAILED
+WEIGHTED_STATE=SETUP_FAILED
+"""
+    smoke_failed = """
+SETUP_MTIME=1710000000
+SETUP_SIZE=2200
+PIDFILE=1
+FAIL_MARKER=SMOKE_BEFORE_TRAIN_FAILED
+WEIGHTED_STATE=SMOKE_BEFORE_TRAIN_FAILED
+"""
     ambiguous = "connection timed out"
     assert parse_weighted_state(alive) == "ALIVE"
     assert parse_weighted_state(dead) == "DEAD"
     assert parse_weighted_state(unknown_no_pid) == "UNKNOWN"
+    assert parse_weighted_state(setup_failed) == "SETUP_FAILED"
+    assert parse_weighted_state(smoke_failed) == "SMOKE_BEFORE_TRAIN_FAILED"
     assert parse_weighted_state(ambiguous) == "UNKNOWN"
     assert parse_weighted_state(alive, ssh_ok=False) == "UNKNOWN"
     assert parse_weighted_state(dead, ssh_ok=False) == "UNKNOWN"
+    assert parse_weighted_state(setup_failed, ssh_ok=False) == "UNKNOWN"
 
 
 def test_orchestrator_has_alive_dead_unknown_and_debounce() -> None:
@@ -87,12 +109,20 @@ def test_orchestrator_has_alive_dead_unknown_and_debounce() -> None:
     assert "WEIGHTED_STATE=ALIVE" in text
     assert "WEIGHTED_STATE=DEAD" in text
     assert "WEIGHTED_STATE=UNKNOWN" in text
+    assert "WEIGHTED_STATE=SETUP_FAILED" in text
+    assert "WEIGHTED_STATE=SMOKE_BEFORE_TRAIN_FAILED" in text
     assert "deadNeeded = 3" in text
     assert "unknownDestroyMinutes = 10" in text
     assert "Test-VastInstanceStillPresent" in text
     assert "show\", \"instance\"" in text or 'show", "instance"' in text
     # Boolean pgrep-only helper must be gone.
     assert "function Test-WeightedTrainRunning" not in text
+    # Fail-fast: evidence then break before waiting out loading timeout.
+    assert "SETUP_FAILED" in text
+    assert "SMOKE_BEFORE_TRAIN_FAILED" in text
+    fail_fast = text.split("Break fast on setup/smoke", 1)
+    assert len(fail_fast) == 2
+    assert "Save-WeightedEvidence" in fail_fast[1].split("if ($st.State -eq \"ALIVE\")", 1)[0]
 
 
 def test_remote_train_writes_pid_exit_and_waits() -> None:

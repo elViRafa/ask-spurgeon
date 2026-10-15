@@ -1,13 +1,58 @@
 #!/usr/bin/env bash
 # SFT GATE-0 / weighted: isolated Python env + Sep 6 package pins.
-# Never mix image Python 3.10 site-packages into 3.11 (torchao cpython-310 .so).
+# Never mix image Python site-packages into the train venv (torchao cpython-310 .so).
 # Prefer /workspace/sft_venv; fall back to Miniforge conda (vast-unsloth-conda-smoke-pass).
+# Unsloth / unsloth_zoo install+import only when SFT_BACKEND=unsloth (weighted uses peft).
 set -euo pipefail
+
+SETUPLOG="${SFT_SETUP_LOG:-/workspace/sft_setup.log}"
+mkdir -p "$(dirname "$SETUPLOG")" /workspace
+touch "$SETUPLOG"
+
+on_setup_err() {
+  local line="${1:-?}"
+  local msg="SETUP_FAILED line=${line}"
+  echo "$msg" | tee -a "$SETUPLOG"
+}
+trap 'on_setup_err $LINENO' ERR
+
 export SFT_WORK_ROOT=/workspace
 export HF_HOME=/workspace/hf_home
 export PYTHONUNBUFFERED=1
 export PYTHONFAULTHANDLER=1
+export PYTHONNOUSERSITE=1
 export DEBIAN_FRONTEND=noninteractive
+unset PYTHONPATH || true
+
+SFT_BACKEND="${SFT_BACKEND:-peft}"
+SFT_BACKEND="$(echo "$SFT_BACKEND" | tr '[:upper:]' '[:lower:]')"
+export SFT_BACKEND
+
+# Diagnostics BEFORE first unset of LD_LIBRARY_PATH (operator evidence).
+echo "=== CUDA / LD diagnostics (before unset) ===" | tee -a "$SETUPLOG"
+echo "LD_LIBRARY_PATH=${LD_LIBRARY_PATH:-<unset>}" | tee -a "$SETUPLOG"
+if command -v ldconfig >/dev/null 2>&1; then
+  ldconfig -p 2>/dev/null | grep -i libcuda | tee -a "$SETUPLOG" || echo "ldconfig: no libcuda line" | tee -a "$SETUPLOG"
+else
+  echo "ldconfig: not available" | tee -a "$SETUPLOG"
+fi
+if ! command -v nvidia-smi >/dev/null 2>&1; then
+  echo "SETUP_FAILED line=${LINENO} reason=nvidia-smi_missing" | tee -a "$SETUPLOG"
+  exit 1
+fi
+nvidia-smi -L 2>&1 | tee -a "$SETUPLOG" || {
+  echo "SETUP_FAILED line=${LINENO} reason=nvidia-smi_failed" | tee -a "$SETUPLOG"
+  exit 1
+}
+# Print torch.cuda.is_available() before unset (informational). Fail-fast on missing
+# CUDA is nvidia-smi above; isolated-env assert_pins rechecks after pin install.
+set +e
+python3 -c 'import torch; print("torch.cuda.is_available()", torch.cuda.is_available())' 2>>"$SETUPLOG" | tee -a "$SETUPLOG"
+pre_torch_rc=$?
+set -e
+if [[ "$pre_torch_rc" -ne 0 ]]; then
+  echo "PRE_UNSET_TORCH_IMPORT_SKIP (torch not importable yet; will recheck after pin install)" | tee -a "$SETUPLOG"
+fi
 
 # Vast hosts often inject host CUDA libs that SIGSEGV under torch; drop them.
 unset LD_LIBRARY_PATH || true
@@ -16,9 +61,14 @@ if [[ -f /workspace/.sft_env ]]; then
   # shellcheck disable=SC1091
   source /workspace/.sft_env
 fi
-# Re-assert after .sft_env (inject must not reintroduce LD_LIBRARY_PATH).
+# Re-assert after .sft_env (inject must not reintroduce LD_LIBRARY_PATH / PYTHONPATH).
 unset LD_LIBRARY_PATH || true
+unset PYTHONPATH || true
+export PYTHONNOUSERSITE=1
 export PYTHONFAULTHANDLER=1
+SFT_BACKEND="${SFT_BACKEND:-peft}"
+SFT_BACKEND="$(echo "$SFT_BACKEND" | tr '[:upper:]' '[:lower:]')"
+export SFT_BACKEND
 
 if [[ "${SFT_GPU_PROFILE:-}" == "a16" ]]; then
   export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}"
@@ -124,30 +174,58 @@ numpy==2.4.6
 EOF
 }
 
+force_venv_no_system_site() {
+  local cfg="$1/pyvenv.cfg"
+  if [[ ! -f "$cfg" ]]; then
+    return 0
+  fi
+  if grep -qiE 'include-system-site-packages\s*=\s*true' "$cfg"; then
+    echo "REFUSING contaminated venv (include-system-site-packages=true); recreating"
+    return 1
+  fi
+  # Normalize to false even if missing/odd whitespace.
+  if grep -qiE 'include-system-site-packages' "$cfg"; then
+    sed -i 's/[Ii]nclude-system-site-packages.*/include-system-site-packages = false/' "$cfg"
+  else
+    echo "include-system-site-packages = false" >> "$cfg"
+  fi
+  return 0
+}
+
 pip_install_pinned() {
   local py="$1"
-  echo "Upgrading pip in isolated env"
-  "$py" -m pip install -q --upgrade pip
+  echo "Upgrading pip in isolated env (verbose; no -q)"
+  "$py" -m pip install --upgrade pip
   echo "Installing torch 2.11.0+cu126 into isolated env (cu126 index)"
-  "$py" -m pip install -q --index-url "$TORCH_INDEX" \
+  "$py" -m pip install --index-url "$TORCH_INDEX" \
     "torch==2.11.0+cu126" "torchvision==0.26.0+cu126" "torchaudio==2.11.0+cu126"
   echo "Installing Sep 6 train stack under constraints (no flash-linear-attention / causal-conv1d)"
-  "$py" -m pip install -q -c "$CONSTRAINTS" \
-    torchao==0.18.0 \
-    transformers==5.5.0 \
-    peft==0.20.0 \
-    trl==0.24.0 \
-    accelerate==1.14.0 \
-    bitsandbytes==0.50.2 \
-    triton==3.6.0 \
-    unsloth_zoo==2026.9.1 \
-    datasets==4.3.0 \
-    huggingface_hub==1.30.0 \
-    safetensors==0.8.0 \
-    tokenizers==0.22.2 \
+  local pkgs=(
+    torchao==0.18.0
+    transformers==5.5.0
+    peft==0.20.0
+    trl==0.24.0
+    accelerate==1.14.0
+    bitsandbytes==0.50.2
+    triton==3.6.0
+    datasets==4.3.0
+    huggingface_hub==1.30.0
+    safetensors==0.8.0
+    tokenizers==0.22.2
     sentencepiece==0.2.2
-  echo "Installing unsloth git pin 6816025b"
-  "$py" -m pip install -q -c "$CONSTRAINTS" "unsloth[colab-new] @ ${UNSLOTH_GIT_PIN}"
+  )
+  if [[ "$SFT_BACKEND" == "unsloth" ]]; then
+    pkgs+=(unsloth_zoo==2026.9.1)
+  else
+    echo "SFT_BACKEND=${SFT_BACKEND}: skipping unsloth_zoo install"
+  fi
+  "$py" -m pip install -c "$CONSTRAINTS" "${pkgs[@]}"
+  if [[ "$SFT_BACKEND" == "unsloth" ]]; then
+    echo "Installing unsloth git pin 6816025b"
+    "$py" -m pip install -c "$CONSTRAINTS" "unsloth[colab-new] @ ${UNSLOTH_GIT_PIN}"
+  else
+    echo "SFT_BACKEND=${SFT_BACKEND}: skipping unsloth install"
+  fi
   # Refuse known-bad extras if a transitive dep pulled them.
   "$py" - <<'PY'
 import importlib.util
@@ -161,12 +239,44 @@ print("FORBIDDEN_PACKAGES_ABSENT ok")
 PY
 }
 
+assert_no_image_dist_packages() {
+  local py="$1"
+  "$py" - <<'PY'
+import sys
+bad = []
+for p in sys.path:
+    norm = (p or "").replace("\\", "/")
+    if not norm:
+        continue
+    if "/dist-packages" not in norm and "/site-packages" not in norm:
+        continue
+    # Allow only packages inside our isolated env roots.
+    if "/sft_venv/" in norm or "/envs/sft_train/" in norm or "/miniforge3/envs/" in norm:
+        continue
+    # Image / system leakage (Vast CUDA images ship /usr/local/lib/python3.11/dist-packages).
+    if (
+        norm.startswith("/usr/local/")
+        or norm.startswith("/usr/lib/")
+        or "/python3.10/" in norm
+        or "cpython-310" in norm
+    ):
+        bad.append(norm)
+if bad:
+    raise SystemExit(f"REFUSING image/system site-packages on sys.path: {bad}")
+print("SYS_PATH_ISOLATED_OK", sys.executable)
+print("sys.path:", sys.path)
+PY
+}
+
 assert_pins() {
   local py="$1"
-  echo "=== PIN ASSERT ==="
-  "$py" - <<'PY'
+  echo "=== PIN ASSERT (backend=${SFT_BACKEND}) ==="
+  SFT_BACKEND="$SFT_BACKEND" "$py" - <<'PY'
 import importlib
+import os
 import sys
+
+backend = (os.environ.get("SFT_BACKEND") or "peft").strip().lower()
 
 def ver(mod):
     m = importlib.import_module(mod)
@@ -180,8 +290,10 @@ checks = {
     "accelerate": "1.14.0",
     "bitsandbytes": "0.50.2",
     "triton": "3.6.0",
-    "unsloth_zoo": "2026.9.1",
 }
+if backend == "unsloth":
+    checks["unsloth_zoo"] = "2026.9.1"
+
 failed = []
 for mod, want in checks.items():
     got = ver(mod)
@@ -195,6 +307,8 @@ for mod, want in checks.items():
 
 import torch
 print("  torch.cuda:", torch.cuda.is_available(), torch.cuda.get_device_name(0) if torch.cuda.is_available() else "n/a")
+if not torch.cuda.is_available():
+    raise SystemExit("PIN ASSERT FAIL: torch.cuda.is_available() is False")
 print("  python:", sys.version.split()[0], "exe:", sys.executable)
 assert (3, 11) <= sys.version_info[:2] <= (3, 13), f"Need Python 3.11–3.13, got {sys.version}"
 assert sys.version_info[:2] != (3, 14), "Python 3.14 is not supported"
@@ -203,6 +317,27 @@ exe = sys.executable.replace("\\", "/")
 assert "/sft_venv/" in exe or "/envs/sft_train/" in exe or "/miniforge3/envs/" in exe, (
     f"REFUSING non-isolated python: {sys.executable}"
 )
+
+# Refuse image dist-packages on sys.path (torchao cpython-310 leak class).
+bad_path = []
+for p in sys.path:
+    norm = (p or "").replace("\\", "/")
+    if not norm:
+        continue
+    if "/dist-packages" not in norm and "/site-packages" not in norm:
+        continue
+    if "/sft_venv/" in norm or "/envs/sft_train/" in norm or "/miniforge3/envs/" in norm:
+        continue
+    if (
+        norm.startswith("/usr/local/")
+        or norm.startswith("/usr/lib/")
+        or "/python3.10/" in norm
+    ):
+        bad_path.append(norm)
+if bad_path:
+    raise SystemExit(f"REFUSING image/system site-packages on sys.path: {bad_path}")
+print("  sys.path: no image dist-packages OK")
+
 # torchao must not be a 3.10 extension under 3.11
 try:
     import torchao  # noqa: F401
@@ -211,13 +346,18 @@ try:
     bad_sos = list(root.rglob("*cpython-310*.so"))
     if bad_sos:
         raise SystemExit(f"torchao has cpython-310 .so under this interpreter: {bad_sos[:3]}")
-    print("  torchao: no cpython-310 .so OK")
+    ta_path = str(root).replace("\\", "/")
+    if "/usr/local/" in ta_path or "/usr/lib/" in ta_path:
+        raise SystemExit(f"torchao loaded from image path: {ta_path}")
+    print("  torchao: no cpython-310 .so OK", ta_path)
 except ImportError:
     print("  torchao: not imported (optional)")
 
-# unsloth present (git pin; version string varies)
-import unsloth
-print("  unsloth:", getattr(unsloth, "__version__", "ok"))
+if backend == "unsloth":
+    import unsloth
+    print("  unsloth:", getattr(unsloth, "__version__", "ok"))
+else:
+    print(f"  unsloth: skipped (SFT_BACKEND={backend})")
 
 if failed:
     raise SystemExit(f"PIN ASSERT FAIL: {failed}")
@@ -232,6 +372,8 @@ write_env_hooks() {
   {
     echo "# written by sft_remote_setup.sh — isolated train env"
     echo "unset LD_LIBRARY_PATH || true"
+    echo "unset PYTHONPATH || true"
+    echo "export PYTHONNOUSERSITE=1"
     echo "export PYTHONFAULTHANDLER=1"
     echo "export PATH=\"${bin_dir}:\$PATH\""
     echo "export SFT_PYTHON=\"${py_bin}\""
@@ -258,12 +400,24 @@ ensure_isolated_env() {
   ensure_python311_system
 
   local py=""
+  local recreate=0
   if [[ -x "$VENV_DIR/bin/python" ]]; then
-    echo "Reusing existing venv $VENV_DIR"
-    py="$VENV_DIR/bin/python"
+    if force_venv_no_system_site "$VENV_DIR"; then
+      echo "Reusing existing venv $VENV_DIR"
+      py="$VENV_DIR/bin/python"
+    else
+      recreate=1
+    fi
   else
+    recreate=1
+  fi
+
+  if [[ "$recreate" == "1" ]]; then
     echo "Creating isolated venv at $VENV_DIR (python3.11, no system-site-packages)"
+    rm -rf "$VENV_DIR"
+    # Explicit: never pass --system-site-packages.
     python3.11 -m venv --clear "$VENV_DIR"
+    force_venv_no_system_site "$VENV_DIR" || true
     py="$VENV_DIR/bin/python"
   fi
 
@@ -284,12 +438,17 @@ PY
     fi
     conda activate "$CONDA_ENV"
     unset LD_LIBRARY_PATH || true
+    unset PYTHONPATH || true
+    export PYTHONNOUSERSITE=1
     py="$CONDA_ROOT/envs/$CONDA_ENV/bin/python"
     VENV_DIR="$CONDA_ROOT/envs/$CONDA_ENV"
   fi
 
+  assert_no_image_dist_packages "$py"
+
   local need_install=0
-  "$py" - <<'PY' || need_install=1
+  if [[ "$SFT_BACKEND" == "unsloth" ]]; then
+    "$py" - <<'PY' || need_install=1
 import torch, transformers, peft, trl, accelerate, bitsandbytes, triton, unsloth_zoo
 assert torch.__version__ == "2.11.0+cu126"
 assert transformers.__version__ == "5.5.0"
@@ -298,17 +457,32 @@ assert trl.__version__ == "0.24.0"
 assert accelerate.__version__ == "1.14.0"
 print("pins_already_ok")
 PY
+  else
+    "$py" - <<'PY' || need_install=1
+import torch, transformers, peft, trl, accelerate, bitsandbytes, triton
+assert torch.__version__ == "2.11.0+cu126"
+assert transformers.__version__ == "5.5.0"
+assert peft.__version__ == "0.20.0"
+assert trl.__version__ == "0.24.0"
+assert accelerate.__version__ == "1.14.0"
+print("pins_already_ok")
+PY
+  fi
   if [[ "$need_install" == "1" ]]; then
     pip_install_pinned "$py"
   fi
 
+  echo "LD_LIBRARY_PATH_BEFORE_PIN_UNSET=${LD_LIBRARY_PATH:-<unset>}"
   unset LD_LIBRARY_PATH || true
+  assert_no_image_dist_packages "$py"
   assert_pins "$py"
   "$py" -m pip freeze > /workspace/sft_pip_freeze.txt
   echo "Wrote /workspace/sft_pip_freeze.txt ($(wc -l < /workspace/sft_pip_freeze.txt) lines)"
   write_env_hooks "$py"
 
-  "$py" - <<'PY'
+  if [[ "$SFT_BACKEND" == "unsloth" ]]; then
+    SFT_BACKEND="$SFT_BACKEND" "$py" - <<'PY'
+import os
 import torch
 from torch.nn.functional import ScalingType
 from trl import SFTConfig, SFTTrainer
@@ -321,6 +495,7 @@ if major < 8:
     raise SystemExit(f"SMOKE FAIL: need Ampere+ sm_80, got {torch.cuda.get_device_capability(0)}")
 print(
     "SMOKE_OK",
+    "backend", os.environ.get("SFT_BACKEND"),
     "torch", torch.__version__,
     "cuda", torch.cuda.get_device_name(0),
     "cap", torch.cuda.get_device_capability(0),
@@ -329,6 +504,30 @@ print(
 print("trl", SFTConfig.__name__, SFTTrainer.__name__)
 print("unsloth", getattr(unsloth, "__version__", "ok"))
 PY
+  else
+    SFT_BACKEND="$SFT_BACKEND" "$py" - <<'PY'
+import os
+import torch
+from torch.nn.functional import ScalingType
+from trl import SFTConfig, SFTTrainer
+
+if not torch.cuda.is_available():
+    raise SystemExit("SMOKE FAIL: CUDA not available")
+major, _ = torch.cuda.get_device_capability(0)
+if major < 8:
+    raise SystemExit(f"SMOKE FAIL: need Ampere+ sm_80, got {torch.cuda.get_device_capability(0)}")
+print(
+    "SMOKE_OK",
+    "backend", os.environ.get("SFT_BACKEND"),
+    "torch", torch.__version__,
+    "cuda", torch.cuda.get_device_name(0),
+    "cap", torch.cuda.get_device_capability(0),
+    "ScalingType", ScalingType,
+)
+print("trl", SFTConfig.__name__, SFTTrainer.__name__)
+print("unsloth skipped (SFT_BACKEND=%s)" % os.environ.get("SFT_BACKEND"))
+PY
+  fi
 }
 
 ensure_unzip
@@ -349,4 +548,4 @@ fi
 
 ensure_isolated_env
 unset LD_LIBRARY_PATH || true
-echo "SETUP_OK"
+echo "SETUP_OK" | tee -a "$SETUPLOG"

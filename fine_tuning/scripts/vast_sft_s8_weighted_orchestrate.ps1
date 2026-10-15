@@ -29,12 +29,30 @@ $MaxWallHours = 10
 $GitHubRepoUrl = "https://github.com/elViRafa/ask-spurgeon.git"
 $SparseConePaths = @("fine_tuning/data", "fine_tuning/scripts")
 
+# -Go without a local monitor left run3 billing ~30m after setup exit 1.
+if ($Go -and -not $StartMonitor) {
+    Write-Warning "WARNING: -Go without -StartMonitor - forcing StartMonitor (dead-launcher billing risk)."
+    Write-Host "GO_IMPLIES_START_MONITOR=1"
+    $StartMonitor = $true
+}
+
+New-Item -ItemType Directory -Force -Path $ResultsDir | Out-Null
+$TranscriptPath = Join-Path $ResultsDir ("orchestrate_" + (Get-Date -Format "yyyyMMdd_HHmmss") + ".log")
+try {
+    Start-Transcript -Path $TranscriptPath -Append | Out-Null
+    Write-Host "TRANSCRIPT=$TranscriptPath"
+}
+catch {
+    Write-Warning ("Start-Transcript failed (continuing): {0}" -f $_.Exception.Message)
+}
+
 # Repo-relative path -> remote /workspace path (train contract).
 $WeightedSyncMap = @(
     @{ Rel = "fine_tuning/scripts/train_sft_sota.py"; Remote = "/workspace/train_sft_sota.py" }
     @{ Rel = "fine_tuning/scripts/sft_stop_token_utils.py"; Remote = "/workspace/sft_stop_token_utils.py" }
     @{ Rel = "fine_tuning/scripts/sft_remote_setup.sh"; Remote = "/workspace/sft_remote_setup.sh" }
     @{ Rel = "fine_tuning/scripts/sft_remote_train_s8_weighted.sh"; Remote = "/workspace/sft_remote_train_s8_weighted.sh" }
+    @{ Rel = "fine_tuning/scripts/sft_setup_fail_watchdog.sh"; Remote = "/workspace/sft_setup_fail_watchdog.sh" }
     @{ Rel = "fine_tuning/scripts/sft_gate0_sep6_constraints.txt"; Remote = "/workspace/sft_gate0_sep6_constraints.txt" }
     @{ Rel = "config.py"; Remote = "/workspace/config.py" }
     @{ Rel = "fine_tuning/data/qa_mix_train.jsonl"; Remote = "/workspace/spurgeon-qa-mix-v1/qa_mix_train.jsonl" }
@@ -129,6 +147,7 @@ if (-not $Go) {
     else {
         Write-Host "READY"
     }
+    try { Stop-Transcript | Out-Null } catch { }
     exit 0
 }
 
@@ -216,6 +235,11 @@ echo "===SFT_SETUP_TAIL==="
 tail -n 200 /workspace/sft_setup.log 2>/dev/null || true
 echo "===SFT_SMOKE_TAIL==="
 tail -n 200 /workspace/sft_smoke.log 2>/dev/null || true
+echo "===SFT_WATCHDOG_TAIL==="
+tail -n 120 /workspace/sft_watchdog.log 2>/dev/null || true
+echo "===FAIL_EVIDENCE==="
+ls -la /workspace/sft_fail_evidence 2>/dev/null || true
+tail -n 80 /workspace/sft_fail_evidence/capture.txt 2>/dev/null || true
 echo "===PIP_FREEZE_HEAD==="
 head -n 80 /workspace/sft_pip_freeze.txt 2>/dev/null || true
 echo "===PID_EXIT==="
@@ -267,10 +291,13 @@ echo "===EV_DONE==="
                     "/workspace/sft_launch.log",
                     "/workspace/sft_setup.log",
                     "/workspace/sft_smoke.log",
+                    "/workspace/sft_watchdog.log",
                     "/workspace/sft_pip_freeze.txt",
                     "/workspace/sft_train.pid",
                     "/workspace/sft_train.exit",
-                    "/workspace/sft_smoke_fail/status.txt"
+                    "/workspace/sft_smoke_fail/status.txt",
+                    "/workspace/sft_fail_evidence/capture.txt",
+                    "/workspace/sft_fail_evidence/status.txt"
                 )
                 foreach ($remotePath in $remoteLogs) {
                     $leaf = Split-Path $remotePath -Leaf
@@ -381,6 +408,7 @@ function Invoke-DestroyOnFail {
     Write-Host "FAIL: $Reason - destroying instance to stop billing"
     Save-WeightedEvidence -Reason $Reason
     try { & "$PSScriptRoot\vast_destroy.ps1" -Force } catch { Write-Warning $_.Exception.Message }
+    try { Stop-Transcript | Out-Null } catch { }
     throw $Reason
 }
 
@@ -544,13 +572,15 @@ cp "`$SRC/fine_tuning/scripts/train_sft_sota.py" /workspace/train_sft_sota.py
 cp "`$SRC/fine_tuning/scripts/sft_stop_token_utils.py" /workspace/sft_stop_token_utils.py
 cp "`$SRC/fine_tuning/scripts/sft_remote_setup.sh" /workspace/sft_remote_setup.sh
 cp "`$SRC/fine_tuning/scripts/sft_remote_train_s8_weighted.sh" /workspace/sft_remote_train_s8_weighted.sh
+cp "`$SRC/fine_tuning/scripts/sft_setup_fail_watchdog.sh" /workspace/sft_setup_fail_watchdog.sh
 cp "`$SRC/fine_tuning/scripts/sft_gate0_sep6_constraints.txt" /workspace/sft_gate0_sep6_constraints.txt
 git -C "`$SRC" show HEAD:config.py > /workspace/config.py
-chmod +x /workspace/sft_remote_setup.sh /workspace/sft_remote_train_s8_weighted.sh
+chmod +x /workspace/sft_remote_setup.sh /workspace/sft_remote_train_s8_weighted.sh /workspace/sft_setup_fail_watchdog.sh
 test -s /workspace/spurgeon-qa-mix-v1/qa_mix_train.jsonl
 test -s /workspace/config.py
 test -s /workspace/train_sft_sota.py
 test -s /workspace/sft_gate0_sep6_constraints.txt
+test -s /workspace/sft_setup_fail_watchdog.sh
 echo "SPARSE_SYNC_OK sha=`$SHA"
 "@
     Write-Host "Syncing weighted SFT via pinned sparse-checkout (no bulk jsonl SCP) ..."
@@ -565,81 +595,104 @@ echo "SPARSE_SYNC_OK sha=`$SHA"
             Copy-ToVastWeighted $d.Local $d.Remote
         }
     }
-    Invoke-WeightedSsh "chmod +x /workspace/sft_remote_setup.sh /workspace/sft_remote_train_s8_weighted.sh && test -f /workspace/spurgeon-qa-mix-v1/qa_mix_train.jsonl && test -f /workspace/qa_open_theology/sft/open_theology_train.jsonl"
+    Invoke-WeightedSsh "chmod +x /workspace/sft_remote_setup.sh /workspace/sft_remote_train_s8_weighted.sh /workspace/sft_setup_fail_watchdog.sh && test -f /workspace/spurgeon-qa-mix-v1/qa_mix_train.jsonl && test -f /workspace/qa_open_theology/sft/open_theology_train.jsonl"
     Write-Host "Sync complete (sparse + overrides)."
 }
 
 Write-Host ""
 Write-Host "GO: renting Vast GPU for weighted SFT"
-$provArgs = @{
-    DiskGb = $DiskGb
-    Label  = $Label
-    Force  = $true
-    OfferId = $OfferId
-}
-& "$PSScriptRoot\vast_provision.ps1" @provArgs
-if ($LASTEXITCODE -ne 0) { throw "provision failed" }
-
-& "$PSScriptRoot\vast_wait_ssh.ps1" -TimeoutMinutes $TimeoutMinutes
-if ($LASTEXITCODE -ne 0) { Invoke-DestroyOnFail "SSH wait failed" }
-
-$gpuDeadline = [datetime]::UtcNow.AddMinutes($GpuWaitMinutes)
-$gpuOk = $false
-while ([datetime]::UtcNow -lt $gpuDeadline) {
-    & "$PSScriptRoot\vast_verify_gpu.ps1"
-    if ($LASTEXITCODE -eq 0) { $gpuOk = $true; break }
-    Write-Host "Waiting for nvidia-smi ..."
-    Start-Sleep -Seconds 20
-}
-if (-not $gpuOk) { Invoke-DestroyOnFail "nvidia-smi never became ready" }
-
-& "$PSScriptRoot\vast_inject_hf_token.ps1"
-if ($LASTEXITCODE -ne 0) { Invoke-DestroyOnFail "HF token inject failed" }
-
 try {
-    Sync-WeightedFromGit -PinnedSha $PinnedSha -DirtyOverrides $DirtyOverrides
-}
-catch {
-    Invoke-DestroyOnFail ("weighted sparse sync failed: " + $_.Exception.Message)
-}
+    $provArgs = @{
+        DiskGb = $DiskGb
+        Label  = $Label
+        Force  = $true
+        OfferId = $OfferId
+    }
+    & "$PSScriptRoot\vast_provision.ps1" @provArgs
+    if ($LASTEXITCODE -ne 0) { throw "provision failed" }
 
-$launch = @'
+    & "$PSScriptRoot\vast_wait_ssh.ps1" -TimeoutMinutes $TimeoutMinutes
+    if ($LASTEXITCODE -ne 0) { throw "SSH wait failed" }
+
+    $gpuDeadline = [datetime]::UtcNow.AddMinutes($GpuWaitMinutes)
+    $gpuOk = $false
+    while ([datetime]::UtcNow -lt $gpuDeadline) {
+        & "$PSScriptRoot\vast_verify_gpu.ps1"
+        if ($LASTEXITCODE -eq 0) { $gpuOk = $true; break }
+        Write-Host "Waiting for nvidia-smi ..."
+        Start-Sleep -Seconds 20
+    }
+    if (-not $gpuOk) { throw "nvidia-smi never became ready" }
+
+    & "$PSScriptRoot\vast_inject_hf_token.ps1"
+    if ($LASTEXITCODE -ne 0) { throw "HF token inject failed" }
+
+    Sync-WeightedFromGit -PinnedSha $PinnedSha -DirtyOverrides $DirtyOverrides
+
+    # Inject watchdog creds (never echoed) + start detached self-destroy on setup fail.
+    $sessionForWatch = Get-VastSession
+    $watchInstanceId = [string]$sessionForWatch.instance_id
+    $watchKey = Get-VastApiKey
+    $watchKeyB64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($watchKey))
+    $watchIdB64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($watchInstanceId))
+    $launch = @"
 set -euo pipefail
 source /workspace/.sft_env 2>/dev/null || true
-chmod +x /workspace/sft_remote_setup.sh /workspace/sft_remote_train_s8_weighted.sh
-rm -f /workspace/sft_train.exit
+chmod +x /workspace/sft_remote_setup.sh /workspace/sft_remote_train_s8_weighted.sh /workspace/sft_setup_fail_watchdog.sh
+rm -f /workspace/sft_train.exit /workspace/sft_watchdog_destroyed.marker
+python3 - <<'PY'
+import base64, pathlib
+key = base64.b64decode('$watchKeyB64').decode('utf-8')
+iid = base64.b64decode('$watchIdB64').decode('utf-8')
+path = pathlib.Path('/workspace/.sft_watchdog_env')
+path.write_text(
+    'export VAST_API_KEY=' + repr(key) + '\n'
+    'export VAST_INSTANCE_ID=' + repr(iid) + '\n',
+    encoding='utf-8',
+)
+path.chmod(0o600)
+print('WATCHDOG_ENV_OK')
+PY
 if pgrep -f "[b]ash /workspace/sft_remote_train_s8_weighted.sh" >/dev/null 2>&1; then
   echo "sft_remote_train_s8_weighted.sh already running"
   pgrep -af "[b]ash /workspace/sft_remote_train_s8_weighted.sh" || true
-  if [ -f /workspace/sft_train.pid ]; then echo "EXISTING_PID $(cat /workspace/sft_train.pid)"; fi
+  if [ -f /workspace/sft_train.pid ]; then echo "EXISTING_PID `$(cat /workspace/sft_train.pid)"; fi
   exit 0
 fi
 : > /workspace/sft_setup.log
+nohup bash /workspace/sft_setup_fail_watchdog.sh >> /workspace/sft_watchdog.log 2>&1 &
+echo "WATCHDOG_PID `$!"
 nohup bash /workspace/sft_remote_train_s8_weighted.sh > /workspace/sft_launch.log 2>&1 &
-echo "LAUNCH_PID $!"
+echo "LAUNCH_PID `$!"
 sleep 5
-if [ -f /workspace/sft_train.pid ]; then echo "SFT_TRAIN_PID $(cat /workspace/sft_train.pid)"; fi
+if [ -f /workspace/sft_train.pid ]; then echo "SFT_TRAIN_PID `$(cat /workspace/sft_train.pid)"; fi
 tail -n 40 /workspace/sft_launch.log || true
 tail -n 20 /workspace/sft_setup.log || true
-'@
-Invoke-WeightedSsh $launch
-Write-Host "Detached weighted launch started."
+"@
+    Invoke-WeightedSsh $launch
+    Write-Host "Detached weighted launch + setup-fail watchdog started."
 
-Write-Host "Walk-away gates to confirm in /workspace/sft_train.log:"
-Write-Host "  SFT_OPEN_THEOLOGY=1"
-Write-Host "  RAG_PROMPT_OK / THEOLOGY_PROMPT_OK"
-Write-Host "  BASE_MODEL .../qwen35-4b-theology-cpt-s8-mhi-resume-merged-16bit"
-Write-Host "  SFT_BACKEND: peft   SFT_EXPORT=0"
-Write-Host "  SFT_OUTPUT_DIR: /workspace/sft_s8_weighted/adapter"
-Write-Host "  not Resuming from .../spurgeon_qa_lora_v2"
+    Write-Host "Walk-away gates to confirm in /workspace/sft_train.log:"
+    Write-Host "  SFT_OPEN_THEOLOGY=1"
+    Write-Host "  RAG_PROMPT_OK / THEOLOGY_PROMPT_OK"
+    Write-Host "  BASE_MODEL .../qwen35-4b-theology-cpt-s8-mhi-resume-merged-16bit"
+    Write-Host "  SFT_BACKEND: peft   SFT_EXPORT=0"
+    Write-Host "  SFT_OUTPUT_DIR: /workspace/sft_s8_weighted/adapter"
+    Write-Host "  not Resuming from .../spurgeon_qa_lora_v2"
+}
+catch {
+    Invoke-DestroyOnFail ("weighted launch failed: " + $_.Exception.Message)
+}
 
 function Get-WeightedTrainState {
-    # Returns ALIVE / DEAD / UNKNOWN. SSH errors are UNKNOWN, never "gone".
+    # Returns ALIVE / DEAD / UNKNOWN / SETUP_FAILED / SMOKE_BEFORE_TRAIN_FAILED.
+    # SSH errors are UNKNOWN, never "gone". Fail markers break the monitor immediately.
     $result = [pscustomobject]@{
         State       = "UNKNOWN"
         PidfileSeen = $false
         SetupMtime  = $null
         SetupSize   = $null
+        FailMarker  = $null
         Raw         = ""
     }
     $session = Get-VastSession
@@ -651,6 +704,8 @@ set +e
 PIDFILE=/workspace/sft_train.pid
 EXITFILE=/workspace/sft_train.exit
 SETUPLOG=/workspace/sft_setup.log
+LAUNCHLOG=/workspace/sft_launch.log
+SMOKELOG=/workspace/sft_smoke.log
 if [ -f "$SETUPLOG" ]; then
   echo "SETUP_MTIME=$(stat -c %Y "$SETUPLOG" 2>/dev/null || echo 0)"
   echo "SETUP_SIZE=$(wc -c < "$SETUPLOG" | tr -d ' \n')"
@@ -658,6 +713,20 @@ else
   echo "SETUP_MTIME=0"
   echo "SETUP_SIZE=0"
 fi
+for f in "$SETUPLOG" "$LAUNCHLOG" "$SMOKELOG"; do
+  if [ -f "$f" ] && grep -q "SMOKE_BEFORE_TRAIN_FAILED" "$f" 2>/dev/null; then
+    echo "FAIL_MARKER=SMOKE_BEFORE_TRAIN_FAILED"
+    echo "WEIGHTED_STATE=SMOKE_BEFORE_TRAIN_FAILED"
+    exit 0
+  fi
+done
+for f in "$SETUPLOG" "$LAUNCHLOG"; do
+  if [ -f "$f" ] && grep -q "SETUP_FAILED" "$f" 2>/dev/null; then
+    echo "FAIL_MARKER=SETUP_FAILED"
+    echo "WEIGHTED_STATE=SETUP_FAILED"
+    exit 0
+  fi
+done
 if [ -f "$PIDFILE" ]; then
   echo "PIDFILE=1"
   pid=$(tr -d ' \n\r' < "$PIDFILE")
@@ -714,7 +783,14 @@ echo "WEIGHTED_STATE=DEAD"
     if ($out -match "PIDFILE=1") { $result.PidfileSeen = $true }
     if ($out -match "SETUP_MTIME=(\d+)") { $result.SetupMtime = $Matches[1] }
     if ($out -match "SETUP_SIZE=(\d+)") { $result.SetupSize = $Matches[1] }
-    if ($out -match "WEIGHTED_STATE=ALIVE") {
+    if ($out -match "FAIL_MARKER=(\S+)") { $result.FailMarker = $Matches[1] }
+    if ($out -match "WEIGHTED_STATE=SETUP_FAILED") {
+        $result.State = "SETUP_FAILED"
+    }
+    elseif ($out -match "WEIGHTED_STATE=SMOKE_BEFORE_TRAIN_FAILED") {
+        $result.State = "SMOKE_BEFORE_TRAIN_FAILED"
+    }
+    elseif ($out -match "WEIGHTED_STATE=ALIVE") {
         $result.State = "ALIVE"
         $result.PidfileSeen = $true
     }
@@ -772,6 +848,13 @@ if ($StartMonitor) {
         $st = Get-WeightedTrainState
         if ($st.PidfileSeen) { $pidfileSeen = $true }
         $pastGrace = (([datetime]::UtcNow - $monitorStart).TotalMinutes -ge $graceMinutes)
+
+        # Break fast on setup/smoke failure markers (evidence before destroy).
+        if ($st.State -eq "SETUP_FAILED" -or $st.State -eq "SMOKE_BEFORE_TRAIN_FAILED") {
+            Write-Warning ("[{0:u}] WEIGHTED_STATE={1} -- evidence then destroy" -f [datetime]::UtcNow, $st.State)
+            Save-WeightedEvidence -Reason $st.State
+            break
+        }
 
         if ($st.State -eq "ALIVE") {
             $sawRunning = $true
@@ -836,9 +919,11 @@ if ($StartMonitor) {
     }
 }
 else {
-    Write-Host "Launched without -StartMonitor. Fetch/destroy when train finishes:"
+    Write-Warning "CRITICAL: Launched without -StartMonitor. Remote watchdog covers early SETUP_FAILED only."
+    Write-Host "Fetch/destroy when train finishes:"
     Write-Host "  .\vast_sft_s8_weighted_orchestrate.ps1 -Go -StartMonitor"
     Write-Host "  (or re-run fetch by hand from the session SSH)"
+    try { Stop-Transcript | Out-Null } catch { }
     exit 0
 }
 
@@ -858,6 +943,8 @@ if ($session -and $session.ssh_host) {
         "/workspace/sft_launch.log",
         "/workspace/sft_setup.log",
         "/workspace/sft_smoke.log",
+        "/workspace/sft_watchdog.log",
+        "/workspace/sft_fail_evidence",
         "/workspace/sft_pip_freeze.txt",
         "/workspace/sft_train.pid",
         "/workspace/sft_train.exit",
@@ -893,4 +980,5 @@ if (-not $adapterOk) {
 
 Write-Host "WEIGHTED SFT COMPLETE -- artifacts in $ResultsDir"
 Write-Host "No Hub upload. Score RAG with sft_export_if_gates.ps1 later."
+try { Stop-Transcript | Out-Null } catch { }
 exit 0
