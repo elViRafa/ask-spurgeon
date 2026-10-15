@@ -5,7 +5,7 @@ summary: "Index of all semantic memory store files."
 priority: high
 tags: [index, memory-store]
 schema_version: 1.3
-last_updated: "2026-10-14T11:37:11-03:00"
+last_updated: "2026-10-15T12:32:03+00:00"
 ---
 
 # Memory Store Index
@@ -53,9 +53,12 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `episodic/2026-10-09` | low | Decided the next model step is supervised fine-tuning on the S8 merged CPT weights | • sft-on-s8-decision<br>• qa-mix-size-advice<br>• open-theology-qa-advice<br>• open-theology-qa-handoff<br>• open-theology-qa-slice<br>• commit-push-sft-qa | episodic, session-journal |
 | `episodic/2026-10-13` | low | Committed and pushed open-theology QA queue growth on main | • qa-queue-commit-push<br>• sft-s8-weighted-forge | episodic, session-journal |
 | `episodic/2026-10-14` | low | Cleared the Forge GitHub blocker for weighted SFT by committing and pushing the recipe to main (c085120) | • sft-weighted-push<br>• sft-s8-crash-fix<br>• sft-residual-risk-audit<br>• save-sft-memories<br>• sft-s8-todo-build<br>• sft-s8-memory-commit | episodic, session-journal |
+| `episodic/2026-10-15` | low | Implemented and pushed weighted SFT remote CRLF harden on ask-spurgeon main from a Cloud Agent New Project session (empty Origin temp repo) | • sft-remote-crlf-push | episodic, session-journal, sft, crlf |
+| `episodic/commits/2026-10-14/` | low | 1 passively captured commit(s). | • fix(sft): strip CR from weighted SSH remotes; 10m loading timeout | episodic, passive-capture, needs-review |
 | `failures/assertionerror-s-n-fail-b0de52ddcb` | medium | AssertionError: S3 FAIL: user turn leaked into labels in train_sft_sota.py _train_peft after weighted SFT S8 dataprep | • Occurrence 1 — 2026-10-14T10:00:16-03:00 | failure, fix, mask, s3, sft, truncation, weighted |
 | `failures/asyncua-write-value-badtypemismatch-188c68c9d2` | medium | asyncua write_value BadTypeMismatch when writing int to UInt16 or Double node wi | • Occurrence 1 — 2026-08-12T08:59:14-04:00 | failure, fix |
 | `failures/b-training-sota-earlystopping-4edd127cc9` | medium | B_training_sota: EarlyStopping disabled — metric_for_best_model eval_spurgeon_loss not found in logs (B v6 after tokenized eval) | • Occurrence 1 — 2026-08-25T09:03:00-04:00<br>• Occurrence 2 — 2026-08-25T10:20:39-04:00 | cpt, early-stopping, failure, fix, kaggle, transformers |
+| `failures/bash-on-vast-gpu-3988e6eb63` | medium | bash on Vast GPU fails remote multi-line SSH scripts with $'\r' / CRLF from Windows PowerShell here-strings in Invoke-WeightedSsh (weighted SFT S8) | • Occurrence 1 — 2026-10-15T12:31:48+00:00 | crlf, failure, fix, powershell, sft, ssh, vast, weighted |
 | `failures/cpt-b-early-stop-561e9ec07f` | medium | CPT B early-stop patience=2 with eval_steps=25 and 2-doc eval_spurgeon_loss halted corpus v3 at step 375 of 4128 (~8.2M of 90M tokens) | • Occurrence 1 — 2026-08-27T21:36:49-04:00 | cpt, early-stop, failure, fix, runpod |
 | `failures/cuda-oom-during-mid-ffcb775074` | medium | CUDA OOM during mid-train eval at step ~20 with PEFT bf16 seq 2048 on RTX 4090 24GB | • Occurrence 1 — 2026-09-06T02:25:26-04:00<br>• Occurrence 2 — 2026-09-06T02:28:22-04:00 | eval, failure, fix, gate0, oom, peft, sft, vast |
 | `failures/cuda-oom-on-kaggle-e64e9b60ce` | medium | CUDA OOM on Kaggle T4 during CPT B v5 after manual pack (float32 Qwen3.5, batch 2, TRAIN_EMBEDDINGS=True) | • Occurrence 1 — 2026-08-25T02:32:47-04:00 | failure, fix |
@@ -118,6 +121,7 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `fine-tuning/sft-phase-b-dry-terminated` | high | - Pod `47zu29u0yth5a3` (name `sft-phase-b-dry`) deleted via Runpod MCP `delete-pod` (HTTP 204) | • Pod `47zu29u0yth5a3` (name `sft-phase-b-dry`) deleted via...<br>• `list-pods` afterwards: **0 pods**.<br>• Network volume `7hb931c5oe` was **not** mounted on this p... | sft, runpod, billing |
 | `fine-tuning/sft-prep-after-cpt` | high | **Status:** Prep planning (no SFT train started) | • Pipeline position<br>• Current readiness (2026-08-28)<br>• Recommended prep phases<br>• Base-model choice for shippable SFT<br>• Known SFT risks (from PLAN_FABLE5_TO_IMPROVE_FN)<br>• Next operator decision<br>• Phase A done (2026-08-28)<br>• Phase B started — stock-base dry-run prep<br>• Phase B dry-run pod terminated + QA mix v2 (2026-08-28) | sft, phase-b, dry-run |
 | `fine-tuning/sft-qa-mix-v2` | high | **Status:** Built locally, no GPU | • Counts<br>• Serve contract encoded in examples<br>• Builder / package<br>• Remaining F5 gaps | sft, qa-mix, f3, f5 |
+| `fine-tuning/sft-remote-crlf-brief-2026-10-14` | medium | Landed on main `604fca5` (fix) + `7dfaca8` (this brief) | • Done<br>• Why<br>• Evidence | sft, weighted, ssh, crlf, vast, done |
 | `fine-tuning/sft-s8-weighted-crash-fix-2026-10-14` | high | Vast instance after operator go: training crashed before step 1 with `AssertionError: S3 FAIL: user turn leaked into labels` | • What failed<br>• What landed in code<br>• Verify<br>• Still before next go<br>• Follow-up harden (main `5b12b79`) | sft, weighted, crash, mask, ssh, vast |
 | `fine-tuning/sft-s8-weighted-forge-ready` | high | - Base: private Hub `rafaelvieirar1r/qwen3.5-4b-theology-cpt-s8-mhi-resume-merged-16bit` | • Contract (current)<br>• Landed on main (`5b12b79`)<br>• Forge path<br>• Still before next go | sft, weighted, forge, seq-length |
 | `fine-tuning/sft-s8-weighted-residual-risks` | medium | Fixed on main `5b12b79`: 2048→4608 S3 truncation leak; mask fail-closed + Unsloth drop; SSH/scp/verify_gpu EAP Continue; `SFT_FORCE_DATAPREP=1`; Forge/Foundry guides aligned to weighted SFT | • Before next -Go (can burn money)<br>• Wrong launcher / legacy<br>• Quality (not train crashes)<br>• Walk-away on next successful rent | sft, risk, oom, vast, weighted, forge |

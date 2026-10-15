@@ -59,10 +59,10 @@ summary: "Map of available project memory sections."
 priority: high
 tags: [index, memory]
 schema_version: 1.3
-last_updated: "2026-10-14T11:37:11-03:00"
+last_updated: "2026-10-15T12:32:03+00:00"
 consolidation_hash: acd058fab27bf79aa31f9bd2e3dc7172
-contradictions: ["`fine-tuning/hf-spurgeon-qa-v2-gguf` and `fine-tuning/plans/ollama-merge-gguf` cover similar content but state different numbers (2.71 vs 07) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-next-session-handoff` cover similar content but state different numbers (1 vs 1.701 / 2.449 / 2250) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-s8-mhi-resume-c-merge-parent` cover similar content but state different numbers (1 / 1.6349 / 132 vs 22698039 / 54545345) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-s8-mhi-resume-c-prepared` cover similar content but state different numbers (1 / 2.8 / 2026.8 vs -) - review for conflict [heuristic]", "`pretraining/cpt-b-eval-strategy` and `pretraining/cpt-eval-unify-vs-buckets` cover similar content but state different numbers (0 / 1650 / 17 vs 0.2 / 1.2 / 18) - review for conflict [heuristic]"]
-consolidation_warnings: ["Skipped bugs\\gemma4-chat-template-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped bugs\\ollama-tokenizer-corruption-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped decisions\\gemma4-local-ollama.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-12.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-14.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-08-23.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-08-28.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-09-15.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\clerk-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\CURSOR_TODO_SFT_S8_WEIGHTED_2026-10-14.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\foundry-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\qa-open-theology-sft-handoff-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\runpod-sft-gate0-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-b-eval-strategy-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-expansion-plan.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-s1-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-s5-b-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-s6-c-eval-next-session.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-s6-phase0-prepared.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-implementation-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-next-steps-after-v13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-plan-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-runpod-mcp-volume-gap.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v3-s6-handoff.md during index regeneration: Missing YAML frontmatter delimiter"]
+contradictions: ["`fine-tuning/hf-spurgeon-qa-v2-gguf` and `fine-tuning/plans/ollama-merge-gguf` cover similar content but state different numbers (2.71 vs 07) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-next-session-handoff` cover similar content but state different numbers (1 vs 1.701 / 2.449 / 2250) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-s8-mhi-resume-c-prepared` cover similar content but state different numbers (1 / 2.8 / 2026.8 vs -) - review for conflict [heuristic]", "`pretraining/cpt-b-eval-strategy` and `pretraining/cpt-eval-unify-v"]
+consolidation_warnings: ["Skipped bugs/gemma4-chat-template-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped bugs/ollama-tokenizer-corruption-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped decisions/gemma4-local-ollama.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic/2026-07-12.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic/2026-07-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic/2026-07-14.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic/2026-08-23.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic/2026-08-28.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic/2026-09-15.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning/clerk-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning/foundry-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning/qa-open-theology-sft-handoff-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning/runpod-sft-gate0-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining/cpt-b-eval-strategy-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining/cpt-corpus-v3-expansion-plan.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining/cpt-corpus-v3-s1-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining/cpt-corpus-v3-s5-b-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining/cpt-s6-c-eval-next-session.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining/cpt-s6-phase0-prepared.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining/cpt-v2-implementation-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining/cpt-v2-next-steps-after-v13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining/cpt-v2-plan-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining/cpt-v2-runpod-mcp-volume-gap.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining/cpt-v3-s6-handoff.md during index regeneration: Missing YAML frontmatter delimiter"]
 summary_hash: c81ed9efe309125e42b693ba950f4f04
 contradiction_count: 50
 ---
@@ -77,9 +77,9 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `bugs` | medium | Generated map of memory-store/bugs/ (5 entries). | • **Qwen3.5 processor text-as-image in C_eval** (`bugs/qwen...<br>• **Bug Fix: Unsloth Embedding Offload on Read-Only Filesys...<br>• **Bug Fix: Training embed_tokens and lm_head when resizin... |
 | `debt` | low | App debt (hybrid search, rate limits) plus 2026-08-29 memory-fabric LLM/host hygiene notes. | • Known Technical Debt & Limits<br>• Roadmap & Pending Features |
 | `decisions` | medium | Generated map of memory-store/decisions/ (1 entries). | • **Gemma 4 Fine-Tuning Transition** (`decisions/gemma4-fin... |
-| `episodic` | medium | Generated map of memory-store/episodic/ (32 entries). | • **2026-09-28** (`episodic/2026-09-28`, medium) — Reframed...<br>• **2026-10-02** (`episodic/2026-10-02`, medium) —<br>• **2026-10-05** (`episodic/2026-10-05`, medium) — |
-| `failures` | medium | Generated map of memory-store/failures/ (34 entries). | • **Vast official Unsloth image smoke blocked; LD_LIBRARY_P...<br>• **AssertionError: S3 FAIL: user turn leaked into labels i...<br>• **asyncua write_value BadTypeMismatch when writing int to... |
-| `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (46 entries). | • **Fine-tuning next session handoff** (`fine-tuning/next-s...<br>• **Open theology QA slice tooling ready for Clerk** (`fine...<br>• **Next session: plan open theological QA slice** (`fine-t... |
+| `episodic` | medium | Generated map of memory-store/episodic/ (34 entries). | • **2026-09-28** (`episodic/2026-09-28`, medium) — Reframed...<br>• **2026-10-02** (`episodic/2026-10-02`, medium) —<br>• **2026-10-05** (`episodic/2026-10-05`, medium) — |
+| `failures` | medium | Generated map of memory-store/failures/ (35 entries). | • **Vast official Unsloth image smoke blocked; LD_LIBRARY_P...<br>• **AssertionError: S3 FAIL: user turn leaked into labels i...<br>• **asyncua write_value BadTypeMismatch when writing int to... |
+| `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (47 entries). | • **Fine-tuning next session handoff** (`fine-tuning/next-s...<br>• **Open theology QA slice tooling ready for Clerk** (`fine...<br>• **Next session: plan open theological QA slice** (`fine-t... |
 | `framework-rules` | medium | Defines coding standards, required libraries (Streamlit, LlamaIndex), environment setup (.env), and database rules for the codebase. | • 1. Runtime Environment<br>• 2. Core Libraries & Packages<br>• 3. Vector Database Rules<br>• 4. Agent Memory Guidelines |
 | `grok` | medium | Generated map of memory-store/grok/ (6 entries). | • **Grok Bot Clerk for open-theology QA generation** (`grok...<br>• **Grok Bot Forge for Vast/Runpod training** (`grok/forge-...<br>• **Grok Bot Foundry for train/export code** (`grok/foundry... |
 | `pretraining` | medium | Generated map of memory-store/pretraining/ (101 entries). | • **CPT B_training_sota known issues (P1 closed — log spam)...<br>• **Composite CPT early stop merges split HF eval events** ...<br>• **Confessions + Institutes corpus (WCF, 1689, Calvin)** (... |
@@ -4511,6 +4511,27 @@ Not fixed yet. Next: print actual eval metric keys from Trainer; align METRIC_FO
 
 Not a missing metric. HuggingFace logs each eval dataset as a separate dict, so EarlyStoppingCallback warns on mix/puritan/confession/general. trainer_state had eval_spurgeon_loss at 25/50/75; best_global_step=25; SHA256(theology_cpt_lora)==checkpoint-25==C scored adapter. Fix: QuietEarlyStoppingCallback (skip warn when key absent); do not re-C B v6 ckpt-25.
 
+<!-- memory-fabric:store/failures/bash-on-vast-gpu-3988e6eb63 -->
+---
+store_path: failures/bash-on-vast-gpu-3988e6eb63
+title: "bash on Vast GPU fails remote multi-line SSH scripts with $'\\r' / CRLF from Wind"
+summary: "bash on Vast GPU fails remote multi-line SSH scripts with $'\\r' / CRLF from Windows PowerShell here-strings in Invoke-WeightedSsh (weighted SFT S8)"
+priority: medium
+tags: [crlf, failure, fix, powershell, sft, ssh, vast, weighted]
+schema_version: 1.3
+last_updated: "2026-10-15T12:31:48+00:00"
+occurrences: 1
+error_signature: "bash on vast gpu fails remote multi-line ssh scripts with $<val> / crlf from windows powershell here-strings in invoke-weightedssh (weighted sft s<n>)"
+---
+
+## Occurrence 1 — 2026-10-15T12:31:48+00:00
+
+**Error:**
+bash on Vast GPU fails remote multi-line SSH scripts with $'\r' / CRLF from Windows PowerShell here-strings in Invoke-WeightedSsh (weighted SFT S8)
+
+**Fix:**
+In vast_sft_s8_weighted_orchestrate.ps1 Invoke-WeightedSsh: $Remote = $Remote -replace "`r", "" before ssh. Add tests asserting strip + LF-only orchestrator/remote .sh. LoadingTimeoutMinutes=10 for train-start wait. Pushed 604fca5.
+
 <!-- memory-fabric:local/bugs -->
 ---
 section: bugs
@@ -5201,15 +5222,15 @@ Execution configurations and dependency management rules for continued pretraini
 <!-- memory-fabric:local/episodic -->
 ---
 section: episodic
-summary: "Generated map of memory-store/episodic/ (32 entries)."
+summary: "Generated map of memory-store/episodic/ (34 entries)."
 priority: medium
 tags: [episodic]
 schema_version: 1.3
-last_updated: "2026-10-14T08:56:00-03:00"
+last_updated: "2026-10-15T12:32:00+00:00"
 generated: true
 generated_from: memory-store/episodic
-store_fingerprint: 56b0b5373b0034e68012636d58ede8fe
-body_hash: 19a64da0a833a7fec9308c532cfd4e53
+store_fingerprint: 1a58428c6d90cc0f18ab5dd469268b38
+body_hash: cd9c5bc994a8a95735d2e64f3662cdaa
 ---
 
 # Episodic Map
@@ -5230,7 +5251,7 @@ Generated by Memory Fabric from `memory-store/episodic/` — do not edit by hand
 - **Episodic Journal — 2026-08-31** (`episodic/2026-08-31`, low) — Verified live QA mix against serve contract and F5 targets
 - **Episodic Journal — 2026-09-01** (`episodic/2026-09-01`, low) — Verified QA teacher rewrite resume point (line 1786 per handoff, confirmed live)
 - **Episodic Journal — 2026-09-02** (`episodic/2026-09-02`, low) — Saved QA rewrite stop point to memory: pass 1 complete (3244/3244 attempted), 1466 ok / 1778 drops remaining for --retry-drops, 1465 bulk merged, quote 49.1%, teacherish 1485
-- …and 18 more entries — see `memory-store/index.md`.
+- …and 20 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:store/pretraining/eval-and-export -->
 ---
@@ -5254,15 +5275,15 @@ Following the successful execution of Notebook B (Epoch 1 & 2) up to step 432:
 <!-- memory-fabric:local/failures -->
 ---
 section: failures
-summary: "Generated map of memory-store/failures/ (34 entries)."
+summary: "Generated map of memory-store/failures/ (35 entries)."
 priority: medium
 tags: [failures]
 schema_version: 1.3
-last_updated: "2026-10-14T11:27:12-03:00"
+last_updated: "2026-10-15T12:31:48+00:00"
 generated: true
 generated_from: memory-store/failures
-store_fingerprint: 547c8193e82b2ff8b108a805727e1e02
-body_hash: 7ecc502a13d120fe404d72b0b5b57171
+store_fingerprint: 56cf1f7321cf8e5542c6e30dfa30d935
+body_hash: 7bba7a940e9936975c831dc22012e185
 ---
 
 # Failures Map
@@ -5273,24 +5294,24 @@ Generated by Memory Fabric from `memory-store/failures/` — do not edit by hand
 - **AssertionError: S3 FAIL: user turn leaked into labels in train_sft_sota.py _trai** (`failures/assertionerror-s-n-fail-b0de52ddcb`, medium) — AssertionError: S3 FAIL: user turn leaked into labels in train_sft_sota.py _train_peft after weighted SFT S8 dataprep
 - **asyncua write_value BadTypeMismatch when writing int to UInt16 or Double node wi** (`failures/asyncua-write-value-badtypemismatch-188c68c9d2`, medium) — asyncua write_value BadTypeMismatch when writing int to UInt16 or Double node wi
 - **B_training_sota: EarlyStopping disabled — metric_for_best_model eval_spurgeon_lo** (`failures/b-training-sota-earlystopping-4edd127cc9`, medium) — B_training_sota: EarlyStopping disabled — metric_for_best_model eval_spurgeon_loss not found in logs (B v6 after tokenized eval)
+- **bash on Vast GPU fails remote multi-line SSH scripts with $'\r' / CRLF from Wind** (`failures/bash-on-vast-gpu-3988e6eb63`, medium) — bash on Vast GPU fails remote multi-line SSH scripts with $'\r' / CRLF from Windows PowerShell here-strings in Invoke-WeightedSsh (weighted SFT S8)
 - **CPT B early-stop patience=2 with eval_steps=25 and 2-doc eval_spurgeon_loss halt** (`failures/cpt-b-early-stop-561e9ec07f`, medium) — CPT B early-stop patience=2 with eval_steps=25 and 2-doc eval_spurgeon_loss halted corpus v3 at step 375 of 4128 (~8.2M of 90M tokens)
 - **torch.OutOfMemoryError: CUDA out of memory during SFTTrainer.evaluate at step 20** (`failures/cuda-oom-during-mid-ffcb775074`, medium) — CUDA OOM during mid-train eval at step ~20 with PEFT bf16 seq 2048 on RTX 4090 24GB
 - **CUDA OOM on Kaggle T4 during CPT B v5 after manual pack (float32 Qwen3.5, batch ** (`failures/cuda-oom-on-kaggle-e64e9b60ce`, medium) — CUDA OOM on Kaggle T4 during CPT B v5 after manual pack (float32 Qwen3.5, batch 2, TRAIN_EMBEDDINGS=True)
-- **CUDA out of memory during first eval of Qwen3.5 embed LoRA CPT: tried to allocat** (`failures/cuda-out-of-memory-849d59401d`, medium) — CUDA out of memory during first eval of Qwen3.5 embed LoRA CPT: tried to allocate 6.81 GiB on T4 while evaluating mix+4 holdout buckets at EVAL_DOCS_PER_BUCKET=8 (logits for 248k vocab)
-- …and 26 more entries — see `memory-store/index.md`.
+- …and 27 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:local/fine-tuning -->
 ---
 section: fine-tuning
-summary: "Generated map of memory-store/fine-tuning/ (46 entries)."
+summary: "Generated map of memory-store/fine-tuning/ (47 entries)."
 priority: medium
 tags: [fine-tuning]
 schema_version: 1.3
-last_updated: "2026-10-14T11:37:05-03:00"
+last_updated: "2026-10-15T12:31:48+00:00"
 generated: true
 generated_from: memory-store/fine-tuning
-store_fingerprint: 211b2c5d1fa28142d2c23d9e77744842
-body_hash: 979a03f5e613828a6f36e1e06999078e
+store_fingerprint: 87131a2c34385a8222b2594d4d7f2105
+body_hash: 1136cde8c3faaba42dc0ff32318d3dbe
 ---
 
 # Fine Tuning Map
@@ -5309,7 +5330,7 @@ Generated by Memory Fabric from `memory-store/fine-tuning/` — do not edit by h
 - **QA verify + F5 slice gap report** (`fine-tuning/qa-prompt-strategy-verify`, high) — After overlay-safe catechism variants + multiturn merge:
 - **One prompt; diversify task slices** (`fine-tuning/qa-prompt-type-decision`, high) — **Locked after live verify.** Improves SFT via example-type diversity, not multiple prompts
 - **QA Sources Rewrite Progress** (`fine-tuning/qa-sources-rewrite-progress`, high) — Cross-session log of QA answer rewrite pipeline for SFT teacherish/quote fidelity
-- …and 34 more entries — see `memory-store/index.md`.
+- …and 35 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:store/failures/full-semantic-judge-run-2188a7bf04 -->
 ---
@@ -6032,6 +6053,38 @@ SFT capacity watcher kept idle RunPod GPU pod billing after orchestrate failed o
 
 **Fix:**
 Deleted pod ph9wzckj6nttpa (sft-gate0, GPU util 0). Killed sft_watch_capacity and sft_monitor_until_done processes. Root cause: watch_status orchestrate_failed_retry keeps pod for SFT_IDLE_DELETE_MIN (20) retries instead of force-delete after inject/orchestrate failure.
+
+<!-- memory-fabric:store/fine-tuning/sft-remote-crlf-brief-2026-10-14 -->
+---
+store_path: fine-tuning/sft-remote-crlf-brief-2026-10-14
+title: "Weighted SFT: strip CR from SSH remotes + 10m loading timeout (DONE)"
+summary: "Landed on main `604fca5` (fix) + `7dfaca8` (this brief)"
+priority: medium
+tags: [sft, weighted, ssh, crlf, vast, done]
+schema_version: 1.3
+last_updated: "2026-10-15T12:31:48+00:00"
+evidence: [fine_tuning/scripts/vast_sft_s8_weighted_orchestrate.ps1, fine_tuning/scripts/test_sft_s8_weighted_plan.py]
+---
+
+# Brief — remote SSH CRLF + loading timeout (2026-10-14) DONE
+
+Landed on main `604fca5` (fix) + `7dfaca8` (this brief). Do not re-open unless a new GPU bash `$'\r'` failure appears.
+
+## Done
+
+1. `Invoke-WeightedSsh` strips every `\r` before ssh (`$Remote = $Remote -replace "`r", ""`).
+2. Tests: `test_orchestrator_strips_cr_from_remote_ssh_scripts`, `test_orchestrator_loading_timeout_about_ten_minutes`.
+3. `LoadingTimeoutMinutes = 10` — abandon wait if train never appears (~10m, not ~40m idle polls).
+4. Did not stage `fine_tuning/data/qa_open_theology/`.
+5. Pushed to `github.com/elViRafa/ask-spurgeon` main via deploy key (Cloud Agent Runtime Secrets did not inject mid-session).
+
+## Why
+
+Windows PowerShell here-strings keep CRLF; bash on the GPU treats `\r` as part of the token. Same class as CPT Isolation C CRLF (`0988137`).
+
+## Evidence
+
+- commits: `604fca5`, `7dfaca8`
 
 <!-- memory-fabric:store/fine-tuning/sft-s8-weighted-residual-risks -->
 ---
@@ -9047,6 +9100,60 @@ Persisted weighted SFT S8 memories after harden push 5b12b79: updated residual r
 - `.ai-memory/memory-store/fine-tuning/sft-s8-weighted-crash-fix-2026-10-14.md`
 - `.ai-memory/memory-store/fine-tuning/cursor-todo-sft-s8-weighted-2026-10-14.md`
 - `.ai-memory/memory-store/episodic/2026-10-14.md`
+
+<!-- memory-fabric:store/episodic/2026-10-15 -->
+---
+store_path: episodic/2026-10-15
+title: "Episodic Journal — 2026-10-15"
+summary: "Implemented and pushed weighted SFT remote CRLF harden on ask-spurgeon main from a Cloud Agent New Project session (empty Origin temp repo)"
+priority: low
+tags: [episodic, session-journal, sft, crlf]
+schema_version: 1.3
+last_updated: "2026-10-15T12:32:00+00:00"
+---
+
+## sft-remote-crlf-push
+
+Implemented and pushed weighted SFT remote CRLF harden on ask-spurgeon main from a Cloud Agent New Project session (empty Origin temp repo). Used ask-spurgeon clone + deploy key because Runtime Secrets (GITHUB_TOKEN) did not inject into the unlinked environment VM.
+
+**Key decisions:**
+- Strip `\r` inside `Invoke-WeightedSsh` (not only gitattributes) so Windows here-strings stay safe
+- Loading wait ~10m (`LoadingTimeoutMinutes=10`) replaces ~40m idle-poll gate
+- Do not stage `fine_tuning/data/qa_open_theology/`
+- Memory recorded via `ai-memory store` / `failure` / `dream` (MCP was broken at session start)
+
+**Files changed:**
+- `.ai-memory/memory-store/fine-tuning/sft-remote-crlf-brief-2026-10-14.md`
+- `.ai-memory/memory-store/failures/bash-on-vast-gpu-3988e6eb63.md`
+
+**Evidence:** commits `604fca5`, `7dfaca8`
+
+<!-- memory-fabric:store/episodic/commits/2026-10-14/604fca57e1 -->
+---
+store_path: episodic/commits/2026-10-14/604fca57e1
+title: "Commit 604fca57e1 — fix(sft): strip CR from weighted SSH remotes; 10m loading timeout"
+summary: "- when: 2026-10-14T20:51:21+00:00"
+priority: low
+tags: [episodic, passive-capture, needs-review]
+schema_version: 1.3
+source: passive-capture
+review_status: pending
+last_updated: "2026-10-15T12:32:00+00:00"
+---
+
+### commit `604fca57e1` — fix(sft): strip CR from weighted SSH remotes; 10m loading timeout
+
+- when: 2026-10-14T20:51:21+00:00
+- author: Cursor Agent
+- source: passive-capture
+
+**Files:**
+
+```
+fine_tuning/scripts/test_sft_s8_weighted_plan.py   | 38 ++++++++++++++++++++++
+ .../scripts/vast_sft_s8_weighted_orchestrate.ps1   | 17 +++++++---
+ 2 files changed, 50 insertions(+), 5 deletions(-)
+```
 
 <!-- memory-fabric:store/fine-tuning/cpt-merged-hf-local-complete -->
 ---
