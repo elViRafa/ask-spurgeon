@@ -117,6 +117,9 @@ def test_orchestrator_has_alive_dead_unknown_and_debounce() -> None:
     assert "show\", \"instance\"" in text or 'show", "instance"' in text
     # Boolean pgrep-only helper must be gone.
     assert "function Test-WeightedTrainRunning" not in text
+    # SETUP_FAILED gated until pins OK / reason= / line past pin install.
+    assert "SETUP_PINS_OK" in text
+    assert "actionable_setup_failed" in text
     # Fail-fast: evidence then break before waiting out loading timeout.
     assert "SETUP_FAILED" in text
     assert "SMOKE_BEFORE_TRAIN_FAILED" in text

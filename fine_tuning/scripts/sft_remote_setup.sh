@@ -46,13 +46,18 @@ nvidia-smi -L 2>&1 | tee -a "$SETUPLOG" || {
 }
 # Print torch.cuda.is_available() before unset (informational). Fail-fast on missing
 # CUDA is nvidia-smi above; isolated-env assert_pins rechecks after pin install.
+# Expected to fail before torch is installed — disable ERR trap (set +e alone does not).
+# PRE_TORCH_PROBE_BEGIN
+trap - ERR
 set +e
-python3 -c 'import torch; print("torch.cuda.is_available()", torch.cuda.is_available())' 2>>"$SETUPLOG" | tee -a "$SETUPLOG"
+python3 -c 'import torch; print("torch.cuda.is_available()", torch.cuda.is_available())' >>"$SETUPLOG" 2>&1
 pre_torch_rc=$?
 set -e
+trap 'on_setup_err $LINENO' ERR
 if [[ "$pre_torch_rc" -ne 0 ]]; then
   echo "PRE_UNSET_TORCH_IMPORT_SKIP (torch not importable yet; will recheck after pin install)" | tee -a "$SETUPLOG"
 fi
+# PRE_TORCH_PROBE_END
 
 # Vast hosts often inject host CUDA libs that SIGSEGV under torch; drop them.
 unset LD_LIBRARY_PATH || true
@@ -447,6 +452,9 @@ PY
   assert_no_image_dist_packages "$py"
 
   local need_install=0
+  # Fresh venvs fail these imports — `||` is enough for set -e, but clear ERR trap
+  # so a future edit that drops `||` cannot emit a false SETUP_FAILED.
+  trap - ERR
   if [[ "$SFT_BACKEND" == "unsloth" ]]; then
     "$py" - <<'PY' || need_install=1
 import torch, transformers, peft, trl, accelerate, bitsandbytes, triton, unsloth_zoo
@@ -468,6 +476,7 @@ assert accelerate.__version__ == "1.14.0"
 print("pins_already_ok")
 PY
   fi
+  trap 'on_setup_err $LINENO' ERR
   if [[ "$need_install" == "1" ]]; then
     pip_install_pinned "$py"
   fi
@@ -476,6 +485,7 @@ PY
   unset LD_LIBRARY_PATH || true
   assert_no_image_dist_packages "$py"
   assert_pins "$py"
+  echo "SETUP_PINS_OK" | tee -a "$SETUPLOG"
   "$py" -m pip freeze > /workspace/sft_pip_freeze.txt
   echo "Wrote /workspace/sft_pip_freeze.txt ($(wc -l < /workspace/sft_pip_freeze.txt) lines)"
   write_env_hooks "$py"

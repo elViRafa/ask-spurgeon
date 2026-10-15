@@ -26,11 +26,41 @@ if [[ -f "$WATCH_ENV" ]]; then
   source "$WATCH_ENV"
 fi
 
+# SETUP_FAILED is actionable when pins already succeeded, when the marker carries an
+# explicit reason= (early nvidia-smi etc.), or when the trap line is past pin install.
+# Bare early SETUP_FAILED (pre-torch probe false positive) must not destroy.
+actionable_setup_failed_in() {
+  local f="$1"
+  [[ -f "$f" ]] || return 1
+  grep -q 'SETUP_FAILED' "$f" 2>/dev/null || return 1
+  if grep -q 'SETUP_PINS_OK' "$f" 2>/dev/null; then
+    return 0
+  fi
+  if grep -qE 'SETUP_FAILED line=[0-9]+ reason=' "$f" 2>/dev/null; then
+    return 0
+  fi
+  # Trap line past pin-install region (assert_pins / SETUP_PINS_OK zone starts ~470+).
+  local line
+  while IFS= read -r line; do
+    if [[ "$line" =~ SETUP_FAILED\ line=([0-9]+) ]]; then
+      if [[ "${BASH_REMATCH[1]}" -ge 470 ]]; then
+        return 0
+      fi
+    fi
+  done < <(grep -E 'SETUP_FAILED line=[0-9]+' "$f" 2>/dev/null || true)
+  return 1
+}
+
 has_fail_marker() {
   local f
   for f in "$SETUPLOG" "$LAUNCHLOG" "$SMOKELOG"; do
     [[ -f "$f" ]] || continue
-    if grep -qE 'SETUP_FAILED|SMOKE_BEFORE_TRAIN_FAILED' "$f" 2>/dev/null; then
+    if grep -q 'SMOKE_BEFORE_TRAIN_FAILED' "$f" 2>/dev/null; then
+      return 0
+    fi
+  done
+  for f in "$SETUPLOG" "$LAUNCHLOG"; do
+    if actionable_setup_failed_in "$f"; then
       return 0
     fi
   done

@@ -95,6 +95,17 @@ def test_setup_err_trap_writes_setup_failed_marker() -> None:
     assert "SETUP_FAILED line=" in text
     assert "trap" in text
     assert "on_setup_err" in text or "SETUP_FAILED line=${" in text
+    assert "SETUP_PINS_OK" in text
+    assert "PRE_TORCH_PROBE_BEGIN" in text
+    assert "trap - ERR" in text
+    assert "PRE_UNSET_TORCH_IMPORT_SKIP" in text
+
+
+def test_watchdog_gates_setup_failed_on_pins_ok() -> None:
+    text = WATCHDOG.read_text(encoding="utf-8")
+    assert "SETUP_PINS_OK" in text
+    assert "actionable_setup_failed" in text
+    assert "reason=" in text
 
 
 def test_setup_pip_not_quiet() -> None:
@@ -192,6 +203,9 @@ def test_evidence_asserts_files_status_listing_scp_fallback() -> None:
     assert "ASSERT FAIL" in body
     assert "evidence_ok=" in body
     assert "payload_ok" in body
+    assert "evidence saved (incomplete)" not in body
+    assert 'Write-Host "evidence saved: $evDir"' in body
+    assert "nothing real copied" in body or "INCOMPLETE" in body
     # Evidence before destroy on both paths.
     destroy_fail = text.split("function Invoke-DestroyOnFail", 1)[1]
     destroy_fail_body = destroy_fail.split("function ", 1)[0]

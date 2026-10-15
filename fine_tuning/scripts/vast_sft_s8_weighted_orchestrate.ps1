@@ -200,6 +200,7 @@ function Save-WeightedEvidence {
     param([string]$Reason = "")
     # Diagnostics before destroy. Asserts files exist; scp-falls back for logs.
     # Never throws (destroy must proceed); writes status.txt with ok/fail.
+    # Only prints "evidence saved" when a real non-empty payload was copied.
     $stamp = Get-Date -Format "yyyyMMdd_HHmmss"
     $evDir = Join-Path $ResultsDir "evidence_$stamp"
     $statusLines = New-Object System.Collections.Generic.List[string]
@@ -218,6 +219,7 @@ function Save-WeightedEvidence {
         try { $session = Get-VastSession } catch { $session = $null }
         $sshOk = $false
         $scpOk = $false
+        $copiedBytes = 0
         if ($session -and $session.ssh_host) {
             $cap = @'
 set +e
@@ -260,11 +262,12 @@ echo "===EV_DONE==="
                     finally {
                         $ErrorActionPreference = $prev
                     }
-                    if ($sx -eq 0 -or ($out -match "EV_DONE")) {
+                    if (($sx -eq 0 -or ($out -match "EV_DONE")) -and ($out -match "EV_DONE") -and ($out.Length -gt 80)) {
                         $capPath = Join-Path $evDir "capture.txt"
                         $out | Set-Content -LiteralPath $capPath -Encoding utf8
-                        if ((Test-Path -LiteralPath $capPath) -and ((Get-Item -LiteralPath $capPath).Length -gt 0)) {
+                        if ((Test-Path -LiteralPath $capPath) -and ((Get-Item -LiteralPath $capPath).Length -gt 80)) {
                             $sshOk = $true
+                            $copiedBytes += (Get-Item -LiteralPath $capPath).Length
                             break
                         }
                     }
@@ -275,8 +278,7 @@ echo "===EV_DONE==="
                 Start-Sleep -Seconds (2 * $attempt)
             }
 
-            # SCP fallback: copy remote logs into evidence even when capture SSH failed
-            # or returned an empty buffer (the prior empty-folder bug).
+            # SCP: always copy remote logs / fail_evidence (real files), not meta-only dirs.
             try {
                 $sshTarget = Get-VastSshRemote $session
                 $port = Get-VastSshPort $session
@@ -297,7 +299,8 @@ echo "===EV_DONE==="
                     "/workspace/sft_train.exit",
                     "/workspace/sft_smoke_fail/status.txt",
                     "/workspace/sft_fail_evidence/capture.txt",
-                    "/workspace/sft_fail_evidence/status.txt"
+                    "/workspace/sft_fail_evidence/status.txt",
+                    "/workspace/sft_fail_evidence/sft_setup.log"
                 )
                 foreach ($remotePath in $remoteLogs) {
                     $leaf = Split-Path $remotePath -Leaf
@@ -313,6 +316,11 @@ echo "===EV_DONE==="
                     }
                     if ($sx -eq 0 -and (Test-Path -LiteralPath $dest) -and ((Get-Item -LiteralPath $dest).Length -gt 0)) {
                         $scpOk = $true
+                        $copiedBytes += (Get-Item -LiteralPath $dest).Length
+                    }
+                    elseif (Test-Path -LiteralPath $dest) {
+                        # Drop zero-byte failed scp placeholders.
+                        Remove-Item -LiteralPath $dest -Force -ErrorAction SilentlyContinue
                     }
                 }
             }
@@ -321,15 +329,23 @@ echo "===EV_DONE==="
                 $statusLines.Add("scp_error=$($_.Exception.Message)")
             }
         }
-        if (-not $sshOk) {
+        if (-not $sshOk -and -not $scpOk) {
             try {
                 $id = if ($session -and $session.instance_id) { [string]$session.instance_id } else { "" }
                 if ($id) {
                     $logs = Invoke-Vastai -CliArgs @("logs", $id)
-                    $logs | Set-Content -LiteralPath (Join-Path $evDir "vastai_logs.txt") -Encoding utf8
+                    $logsText = if ($null -eq $logs) { "" } else { [string]$logs }
+                    # Only keep vastai logs when they look like real container output.
+                    if ($logsText.Length -gt 120 -and $logsText -notmatch "(?i)No such container") {
+                        $logsText | Set-Content -LiteralPath (Join-Path $evDir "vastai_logs.txt") -Encoding utf8
+                        $copiedBytes += (Get-Item -LiteralPath (Join-Path $evDir "vastai_logs.txt")).Length
+                    }
+                    else {
+                        $statusLines.Add("vastai_logs_skipped=too_short_or_missing_container")
+                    }
                 }
                 else {
-                    "no instance_id for vastai logs fallback" | Set-Content -LiteralPath (Join-Path $evDir "vastai_logs.txt") -Encoding utf8
+                    $statusLines.Add("vastai_logs_skipped=no_instance_id")
                 }
             }
             catch {
@@ -339,46 +355,58 @@ echo "===EV_DONE==="
         }
 
         $listingPath = Join-Path $evDir "listing.txt"
-        $listing = @()
+        $listing = New-Object System.Collections.Generic.List[string]
         if (Test-Path -LiteralPath $evDir) {
             Get-ChildItem -LiteralPath $evDir -File | ForEach-Object {
-                $listing += ("{0}`t{1}" -f $_.Name, $_.Length)
+                [void]$listing.Add(("{0}`t{1}" -f $_.Name, $_.Length))
             }
         }
         if ($listing.Count -eq 0) {
-            $listing = @("(empty)")
+            [void]$listing.Add("(empty)")
         }
         $listing | Set-Content -LiteralPath $listingPath -Encoding utf8
 
-        $requiredOk = $false
         $metaOk = (Test-Path -LiteralPath (Join-Path $evDir "meta.txt"))
         $listOk = (Test-Path -LiteralPath $listingPath) -and ((Get-Item -LiteralPath $listingPath).Length -gt 0)
+        # Real payload = capture with EV_DONE, or any non-empty scp_* log — not meta/listing alone,
+        # and not a tiny/error-only vastai_logs.txt.
         $payloadOk = $false
-        foreach ($name in @("capture.txt", "vastai_logs.txt", "scp_sft_train.log", "scp_sft_setup.log", "scp_sft_smoke.log", "scp_sft_launch.log")) {
-            $p = Join-Path $evDir $name
-            if ((Test-Path -LiteralPath $p) -and ((Get-Item -LiteralPath $p).Length -gt 0)) {
-                $payloadOk = $true
-                break
+        $capCheck = Join-Path $evDir "capture.txt"
+        if ((Test-Path -LiteralPath $capCheck) -and ((Get-Item -LiteralPath $capCheck).Length -gt 80)) {
+            $capText = Get-Content -LiteralPath $capCheck -Raw -ErrorAction SilentlyContinue
+            if ($capText -match "EV_DONE") { $payloadOk = $true }
+        }
+        if (-not $payloadOk) {
+            foreach ($f in (Get-ChildItem -LiteralPath $evDir -File -Filter "scp_*" -ErrorAction SilentlyContinue)) {
+                if ($f.Length -gt 0) { $payloadOk = $true; break }
+            }
+        }
+        $vastaiPath = Join-Path $evDir "vastai_logs.txt"
+        if (-not $payloadOk -and (Test-Path -LiteralPath $vastaiPath)) {
+            $vl = Get-Item -LiteralPath $vastaiPath
+            if ($vl.Length -gt 120) {
+                $vlText = Get-Content -LiteralPath $vastaiPath -Raw -ErrorAction SilentlyContinue
+                if ($vlText -and $vlText -notmatch "(?i)No such container") { $payloadOk = $true }
             }
         }
         $requiredOk = $metaOk -and $listOk -and $payloadOk
         $statusLines.Add("ssh_capture_ok=$sshOk")
         $statusLines.Add("scp_fallback_ok=$scpOk")
+        $statusLines.Add("copied_bytes=$copiedBytes")
         $statusLines.Add("meta_ok=$metaOk")
         $statusLines.Add("listing_ok=$listOk")
         $statusLines.Add("payload_ok=$payloadOk")
         $statusLines.Add("evidence_ok=$requiredOk")
         $statusLines.Add("files:")
-        $statusLines.AddRange($listing)
+        foreach ($line in $listing) { [void]$statusLines.Add([string]$line) }
         $statusPath = Join-Path $evDir "status.txt"
         $statusLines | Set-Content -LiteralPath $statusPath -Encoding utf8
 
-        if (-not $requiredOk) {
-            Write-Warning ("evidence INCOMPLETE (empty or missing payload): {0} -- see status.txt" -f $evDir)
-            Write-Host "evidence saved (incomplete): $evDir"
+        if ($requiredOk) {
+            Write-Host "evidence saved: $evDir"
         }
         else {
-            Write-Host "evidence saved: $evDir"
+            Write-Warning ("evidence INCOMPLETE (nothing real copied): {0} -- see status.txt" -f $evDir)
         }
         # Assert after write -- surface empty-folder regressions in the log.
         if (-not (Test-Path -LiteralPath $statusPath)) {
@@ -720,8 +748,28 @@ for f in "$SETUPLOG" "$LAUNCHLOG" "$SMOKELOG"; do
     exit 0
   fi
 done
+# SETUP_FAILED is actionable only after SETUP_PINS_OK, with reason=, or line>=470
+# (past pin install). Ignore bare early probe false positives (e.g. line=50).
+actionable_setup_failed() {
+  local f="$1"
+  [ -f "$f" ] || return 1
+  grep -q "SETUP_FAILED" "$f" 2>/dev/null || return 1
+  if grep -q "SETUP_PINS_OK" "$f" 2>/dev/null; then return 0; fi
+  if grep -qE "SETUP_FAILED line=[0-9]+ reason=" "$f" 2>/dev/null; then return 0; fi
+  local line
+  while IFS= read -r line; do
+    case "$line" in
+      *SETUP_FAILED\ line=*)
+        n="${line#*SETUP_FAILED line=}"
+        n="${n%%[!0-9]*}"
+        if [ -n "$n" ] && [ "$n" -ge 470 ] 2>/dev/null; then return 0; fi
+        ;;
+    esac
+  done < "$f"
+  return 1
+}
 for f in "$SETUPLOG" "$LAUNCHLOG"; do
-  if [ -f "$f" ] && grep -q "SETUP_FAILED" "$f" 2>/dev/null; then
+  if actionable_setup_failed "$f"; then
     echo "FAIL_MARKER=SETUP_FAILED"
     echo "WEIGHTED_STATE=SETUP_FAILED"
     exit 0
