@@ -120,14 +120,15 @@ def test_orchestrator_strips_cr_from_remote_ssh_scripts() -> None:
         assert b"\r" not in sh, f"{name} must not contain CR (bash over SSH)"
 
 
-def test_orchestrator_loading_timeout_about_ten_minutes() -> None:
+def test_orchestrator_loading_timeout_about_twenty_minutes() -> None:
     text = ORCH.read_text(encoding="utf-8")
-    assert "LoadingTimeoutMinutes = 10" in text
+    assert "LoadingTimeoutMinutes = 20" in text
     assert "loading_timeout_min=" in text
     assert "loading timeout" in text.lower()
-    # Old ~40m idle-poll gate must not remain.
+    # Old ~40m idle-poll gate and the too-short 10m default must not remain.
     assert "idlePolls -ge 8" not in text
     assert "~40m" not in text
+    assert "LoadingTimeoutMinutes = 10" not in text
 
 
 def test_runbook_walk_away_gates() -> None:

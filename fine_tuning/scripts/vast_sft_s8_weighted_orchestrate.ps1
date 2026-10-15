@@ -13,8 +13,8 @@ param(
     [int]$DiskGb = 100,
     [int]$TimeoutMinutes = 45,
     [int]$GpuWaitMinutes = 15,
-    # Max wait for train process to appear after launch (setup + model load).
-    [int]$LoadingTimeoutMinutes = 10
+    # Max wait for sft_train.pid after launch (setup + model load). Extends while sft_setup.log advances.
+    [int]$LoadingTimeoutMinutes = 20
 )
 
 $ErrorActionPreference = "Stop"
@@ -176,9 +176,91 @@ if ($quote -gt $credit -and -not $AllowLowCredit) {
 }
 if (-not $OfferId) { $OfferId = [string]$bestId }
 
+function Save-WeightedEvidence {
+    param([string]$Reason = "")
+    # Best-effort diagnostics before destroy. Never throws; never blocks destroy.
+    try {
+        $stamp = Get-Date -Format "yyyyMMdd_HHmmss"
+        $evDir = Join-Path $ResultsDir "evidence_$stamp"
+        New-Item -ItemType Directory -Force -Path $evDir | Out-Null
+        @(
+            "reason=$Reason"
+            "utc=$((Get-Date).ToUniversalTime().ToString('o'))"
+        ) | Set-Content -LiteralPath (Join-Path $evDir "meta.txt") -Encoding utf8
+        $session = $null
+        try { $session = Get-VastSession } catch { $session = $null }
+        $sshOk = $false
+        if ($session -and $session.ssh_host) {
+            $cap = @'
+set +e
+echo "===DMESG==="
+dmesg 2>/dev/null | tail -n 200
+echo "===FREE==="
+free -h 2>&1
+echo "===NVIDIA==="
+nvidia-smi 2>&1
+echo "===SFT_TRAIN_TAIL==="
+tail -n 200 /workspace/sft_train.log 2>/dev/null || true
+echo "===SFT_LAUNCH_TAIL==="
+tail -n 200 /workspace/sft_launch.log 2>/dev/null || true
+echo "===SFT_SETUP_TAIL==="
+tail -n 200 /workspace/sft_setup.log 2>/dev/null || true
+echo "===PID_EXIT==="
+cat /workspace/sft_train.pid 2>/dev/null || true
+cat /workspace/sft_train.exit 2>/dev/null || true
+echo "===EV_DONE==="
+'@
+            $cap = $cap -replace "`r", ""
+            for ($attempt = 1; $attempt -le 3; $attempt++) {
+                try {
+                    $sshArgs = (Get-VastSshArgs $session) + @((Get-VastSshRemote $session), $cap)
+                    $prev = $ErrorActionPreference
+                    $ErrorActionPreference = "Continue"
+                    try {
+                        $out = & ssh @sshArgs 2>&1 | Out-String
+                        $sx = [int]$LASTEXITCODE
+                    }
+                    finally {
+                        $ErrorActionPreference = $prev
+                    }
+                    if ($sx -eq 0 -or ($out -match "EV_DONE")) {
+                        $out | Set-Content -LiteralPath (Join-Path $evDir "capture.txt") -Encoding utf8
+                        $sshOk = $true
+                        break
+                    }
+                }
+                catch {
+                    Write-Warning ("evidence ssh attempt {0} failed: {1}" -f $attempt, $_.Exception.Message)
+                }
+                Start-Sleep -Seconds (2 * $attempt)
+            }
+        }
+        if (-not $sshOk) {
+            try {
+                $id = if ($session -and $session.instance_id) { [string]$session.instance_id } else { "" }
+                if ($id) {
+                    $logs = Invoke-Vastai -CliArgs @("logs", $id)
+                    $logs | Set-Content -LiteralPath (Join-Path $evDir "vastai_logs.txt") -Encoding utf8
+                }
+                else {
+                    "no instance_id for vastai logs fallback" | Set-Content -LiteralPath (Join-Path $evDir "vastai_logs.txt") -Encoding utf8
+                }
+            }
+            catch {
+                Write-Warning ("vastai logs fallback failed: {0}" -f $_.Exception.Message)
+            }
+        }
+        Write-Host "evidence saved: $evDir"
+    }
+    catch {
+        Write-Warning ("Save-WeightedEvidence failed (non-fatal): {0}" -f $_.Exception.Message)
+    }
+}
+
 function Invoke-DestroyOnFail {
     param([string]$Reason)
     Write-Host "FAIL: $Reason - destroying instance to stop billing"
+    Save-WeightedEvidence -Reason $Reason
     try { & "$PSScriptRoot\vast_destroy.ps1" -Force } catch { Write-Warning $_.Exception.Message }
     throw $Reason
 }
@@ -404,15 +486,20 @@ $launch = @'
 set -euo pipefail
 source /workspace/.sft_env 2>/dev/null || true
 chmod +x /workspace/sft_remote_setup.sh /workspace/sft_remote_train_s8_weighted.sh
+rm -f /workspace/sft_train.exit
 if pgrep -f "[b]ash /workspace/sft_remote_train_s8_weighted.sh" >/dev/null 2>&1; then
   echo "sft_remote_train_s8_weighted.sh already running"
   pgrep -af "[b]ash /workspace/sft_remote_train_s8_weighted.sh" || true
+  if [ -f /workspace/sft_train.pid ]; then echo "EXISTING_PID $(cat /workspace/sft_train.pid)"; fi
   exit 0
 fi
+: > /workspace/sft_setup.log
 nohup bash /workspace/sft_remote_train_s8_weighted.sh > /workspace/sft_launch.log 2>&1 &
 echo "LAUNCH_PID $!"
 sleep 5
+if [ -f /workspace/sft_train.pid ]; then echo "SFT_TRAIN_PID $(cat /workspace/sft_train.pid)"; fi
 tail -n 40 /workspace/sft_launch.log || true
+tail -n 20 /workspace/sft_setup.log || true
 '@
 Invoke-WeightedSsh $launch
 Write-Host "Detached weighted launch started."
@@ -425,53 +512,205 @@ Write-Host "  SFT_BACKEND: peft   SFT_EXPORT=0"
 Write-Host "  SFT_OUTPUT_DIR: /workspace/sft_s8_weighted/adapter"
 Write-Host "  not Resuming from .../spurgeon_qa_lora_v2"
 
-function Test-WeightedTrainRunning {
+function Get-WeightedTrainState {
+    # Returns ALIVE / DEAD / UNKNOWN. SSH errors are UNKNOWN, never "gone".
+    $result = [pscustomobject]@{
+        State       = "UNKNOWN"
+        PidfileSeen = $false
+        SetupMtime  = $null
+        SetupSize   = $null
+        Raw         = ""
+    }
     $session = Get-VastSession
-    if (-not $session -or -not $session.ssh_host) { return $false }
-    $sshArgs = (Get-VastSshArgs $session) + @(
-        (Get-VastSshRemote $session),
-        "pgrep -af 'python3 -u /workspace/train_sft_sota.py' || true"
-    )
+    if (-not $session -or -not $session.ssh_host) {
+        return $result
+    }
+    $remote = @'
+set +e
+PIDFILE=/workspace/sft_train.pid
+EXITFILE=/workspace/sft_train.exit
+SETUPLOG=/workspace/sft_setup.log
+if [ -f "$SETUPLOG" ]; then
+  echo "SETUP_MTIME=$(stat -c %Y "$SETUPLOG" 2>/dev/null || echo 0)"
+  echo "SETUP_SIZE=$(wc -c < "$SETUPLOG" | tr -d ' \n')"
+else
+  echo "SETUP_MTIME=0"
+  echo "SETUP_SIZE=0"
+fi
+if [ -f "$PIDFILE" ]; then
+  echo "PIDFILE=1"
+  pid=$(tr -d ' \n\r' < "$PIDFILE")
+  if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
+    echo "WEIGHTED_STATE=ALIVE"
+    exit 0
+  fi
+else
+  echo "PIDFILE=0"
+fi
+if [ -f "$EXITFILE" ]; then
+  echo "WEIGHTED_STATE=DEAD"
+  exit 0
+fi
+if pgrep -f "[b]ash /workspace/sft_remote_train_s8_weighted.sh" >/dev/null 2>&1 \
+   || pgrep -f "[t]rain_sft_sota.py" >/dev/null 2>&1; then
+  echo "WEIGHTED_STATE=ALIVE"
+  exit 0
+fi
+if [ ! -f "$PIDFILE" ]; then
+  echo "WEIGHTED_STATE=UNKNOWN"
+  exit 0
+fi
+if [ -f "$SETUPLOG" ]; then
+  now=$(date +%s)
+  mtime=$(stat -c %Y "$SETUPLOG" 2>/dev/null || echo 0)
+  age=$((now - mtime))
+  if [ "$age" -lt 180 ]; then
+    echo "WEIGHTED_STATE=UNKNOWN"
+    exit 0
+  fi
+fi
+echo "WEIGHTED_STATE=DEAD"
+'@
+    $remote = $remote -replace "`r", ""
     $prev = $ErrorActionPreference
     $ErrorActionPreference = "Continue"
     try {
+        $sshArgs = (Get-VastSshArgs $session) + @((Get-VastSshRemote $session), $remote)
         $out = & ssh @sshArgs 2>&1 | Out-String
+        $sx = [int]$LASTEXITCODE
+    }
+    catch {
+        $result.Raw = $_.Exception.Message
+        return $result
     }
     finally {
         $ErrorActionPreference = $prev
     }
-    foreach ($line in ($out -split "`n")) {
-        if ($line -match "train_sft_sota\.py" -and $line -notmatch "pgrep") { return $true }
+    $result.Raw = $out
+    if ($sx -ne 0 -and $out -notmatch "WEIGHTED_STATE=") {
+        return $result
     }
-    return $false
+    if ($out -match "PIDFILE=1") { $result.PidfileSeen = $true }
+    if ($out -match "SETUP_MTIME=(\d+)") { $result.SetupMtime = $Matches[1] }
+    if ($out -match "SETUP_SIZE=(\d+)") { $result.SetupSize = $Matches[1] }
+    if ($out -match "WEIGHTED_STATE=ALIVE") {
+        $result.State = "ALIVE"
+        $result.PidfileSeen = $true
+    }
+    elseif ($out -match "WEIGHTED_STATE=DEAD") {
+        $result.State = "DEAD"
+    }
+    else {
+        $result.State = "UNKNOWN"
+    }
+    return $result
+}
+
+function Test-VastInstanceStillPresent {
+    # After sustained UNKNOWN, ask Vast whether the instance still exists.
+    # Returns $true if present, $false if gone / query says missing, $null if query failed ambiguously.
+    try {
+        $session = Get-VastSession
+        if (-not $session -or -not $session.instance_id) { return $false }
+        $id = [string]$session.instance_id
+        $prev = $ErrorActionPreference
+        $ErrorActionPreference = "Continue"
+        try {
+            $text = Invoke-Vastai -CliArgs @("show", "instance", $id)
+        }
+        finally {
+            $ErrorActionPreference = $prev
+        }
+        if (-not $text) { return $false }
+        if ($text -match "(?i)not found|no such|does not exist|unknown instance") { return $false }
+        if ($text -match [regex]::Escape($id)) { return $true }
+        return $true
+    }
+    catch {
+        Write-Warning ("vastai show instance failed: {0}" -f $_.Exception.Message)
+        return $null
+    }
 }
 
 if ($StartMonitor) {
     Write-Host "Watching train until exit (max_wall_h=$MaxWallHours). Does not use GATE-0 vast_monitor paths."
-    Write-Host ("loading_timeout_min={0} (fail if train never appears)" -f $LoadingTimeoutMinutes)
-    $deadline = [datetime]::UtcNow.AddHours($MaxWallHours)
-    $loadingDeadline = [datetime]::UtcNow.AddMinutes([Math]::Max(1, $LoadingTimeoutMinutes))
+    Write-Host ("loading_timeout_min={0} (extends while sft_setup.log advances; only until pidfile)" -f $LoadingTimeoutMinutes)
+    $monitorStart = [datetime]::UtcNow
+    $deadline = $monitorStart.AddHours($MaxWallHours)
+    $loadingDeadline = $monitorStart.AddMinutes([Math]::Max(1, $LoadingTimeoutMinutes))
+    $graceMinutes = 3
+    $deadNeeded = 3
+    $unknownDestroyMinutes = 10
     $sawRunning = $false
+    $pidfileSeen = $false
+    $deadStreak = 0
+    $unknownSince = $null
+    $lastSetupMtime = $null
     $idlePolls = 0
     while ([datetime]::UtcNow -lt $deadline) {
-        $running = Test-WeightedTrainRunning
-        if ($running) {
+        $st = Get-WeightedTrainState
+        if ($st.PidfileSeen) { $pidfileSeen = $true }
+        $pastGrace = (([datetime]::UtcNow - $monitorStart).TotalMinutes -ge $graceMinutes)
+
+        if ($st.State -eq "ALIVE") {
             $sawRunning = $true
-            $idlePolls = 0
-            Write-Host ("[{0:u}] training still running" -f [datetime]::UtcNow)
+            $deadStreak = 0
+            $unknownSince = $null
+            Write-Host ("[{0:u}] WEIGHTED_STATE=ALIVE" -f [datetime]::UtcNow)
+        }
+        elseif ($st.State -eq "DEAD") {
+            $unknownSince = $null
+            if ($pastGrace -and ($sawRunning -or $pidfileSeen)) {
+                $deadStreak++
+                Write-Host ("[{0:u}] WEIGHTED_STATE=DEAD streak={1}/{2}" -f [datetime]::UtcNow, $deadStreak, $deadNeeded)
+                if ($deadStreak -ge $deadNeeded) {
+                    Write-Host "Train DEAD for $deadNeeded consecutive polls after grace -- fetch then destroy"
+                    break
+                }
+            }
+            else {
+                $deadStreak = 0
+                Write-Host ("[{0:u}] WEIGHTED_STATE=DEAD (grace/loading; not counting)" -f [datetime]::UtcNow)
+            }
         }
         else {
-            if ($sawRunning) {
-                Write-Host "Train process gone after running -- fetch then destroy"
-                break
+            # UNKNOWN: never treat as gone; after ~10 min query vastai show instance
+            if ($null -eq $unknownSince) { $unknownSince = [datetime]::UtcNow }
+            $unkMin = ([datetime]::UtcNow - $unknownSince).TotalMinutes
+            Write-Host ("[{0:u}] WEIGHTED_STATE=UNKNOWN ({1:N1}m)" -f [datetime]::UtcNow, $unkMin)
+            if ($unkMin -ge $unknownDestroyMinutes) {
+                Write-Warning "UNKNOWN for ~${unknownDestroyMinutes}m -- querying vastai show instance"
+                $present = Test-VastInstanceStillPresent
+                if ($present -eq $false) {
+                    Write-Warning "Instance gone according to vastai -- fetch then destroy"
+                    break
+                }
+                if ($present -eq $true) {
+                    Write-Host "Instance still present; continuing polls (SSH flaps are not destroy)"
+                    $unknownSince = [datetime]::UtcNow
+                }
+                else {
+                    Write-Host "vastai query ambiguous; continuing polls"
+                    $unknownSince = [datetime]::UtcNow
+                }
             }
+        }
+
+        # Loading timeout applies only until the pidfile exists.
+        if (-not $pidfileSeen) {
             $idlePolls++
-            Write-Host ("[{0:u}] waiting for train start / model loading (poll {1})" -f [datetime]::UtcNow, $idlePolls)
+            if ($st.SetupMtime -and $st.SetupMtime -ne "0" -and $st.SetupMtime -ne $lastSetupMtime) {
+                $loadingDeadline = [datetime]::UtcNow.AddMinutes([Math]::Max(1, $LoadingTimeoutMinutes))
+                $lastSetupMtime = $st.SetupMtime
+                Write-Host ("setup log advanced (mtime={0}); loading deadline extended +{1}m" -f $st.SetupMtime, $LoadingTimeoutMinutes)
+            }
+            Write-Host ("[{0:u}] waiting for pidfile / setup (poll {1})" -f [datetime]::UtcNow, $idlePolls)
             if ([datetime]::UtcNow -ge $loadingDeadline) {
-                Write-Warning ("Train never started within loading timeout (~{0}m) -- fetch logs and destroy" -f $LoadingTimeoutMinutes)
+                Write-Warning ("Train never created pidfile within loading timeout (~{0}m) -- fetch logs and destroy" -f $LoadingTimeoutMinutes)
                 break
             }
         }
+
         Start-Sleep -Seconds 60
     }
 }
@@ -496,6 +735,9 @@ if ($session -and $session.ssh_host) {
         "/workspace/sft_s8_weighted",
         "/workspace/sft_train.log",
         "/workspace/sft_launch.log",
+        "/workspace/sft_setup.log",
+        "/workspace/sft_train.pid",
+        "/workspace/sft_train.exit",
         "/workspace/sft_run_config.json"
     )
     foreach ($remotePath in $remotePaths) {
@@ -518,6 +760,7 @@ Write-Host ("fetch_adapter_ok={0}" -f $adapterOk)
 
 if (-not $KeepInstance) {
     Write-Host "Destroying instance after fetch ..."
+    Save-WeightedEvidence -Reason "post-fetch-destroy"
     & "$PSScriptRoot\vast_destroy.ps1" -Force
 }
 
