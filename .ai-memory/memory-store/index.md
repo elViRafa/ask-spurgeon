@@ -5,7 +5,7 @@ summary: "Index of all semantic memory store files."
 priority: high
 tags: [index, memory-store]
 schema_version: 1.3
-last_updated: "2026-10-15T13:45:05-03:00"
+last_updated: "2026-10-15T14:22:23-03:00"
 ---
 
 # Memory Store Index
@@ -90,6 +90,7 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `failures/vast-sft-s-n-b1917abecc` | medium | vast_sft_s8_weighted_orchestrate.ps1 died after provision: vast_common.ps1 ErrorActionPreference=Stop turns ssh first-connect Permanently added warning into terminating error in vast_wait_ssh.ps1 befo | • Occurrence 1 — 2026-10-14T10:00:17-03:00 | failure, fix, powershell, ssh, vast |
 | `failures/vast-unsloth-cpt-sigsegv-smoke` | medium | **Verdict:** **FAIL** — same class of crash as SFT Unsloth on Vast | • Setup<br>• Observation<br>• Implication | vast, unsloth, cpt, superseded |
 | `failures/vast-unsloth-official-image-smoke` | high | - Still **SIGSEGV exit 139** at first `trainer.train()` step | • Attempted<br>• Result of LD_LIBRARY_PATH mitigation<br>• Conclusion | vast, unsloth, smoke, docker, sigsegv |
+| `failures/weighted-sft-exit-n-a8a9957108` | medium | Weighted SFT exit 139 SIGSEGV at step 0 first forward on two Vast hosts; torchao loading cpython-310 .so under Python 3.11 via --break-system-packages mixing image site-packages | • Occurrence 1 — 2026-10-15T14:21:09-03:00 | failure, fix, pins, sft, sigsegv, smoke, vast, venv, weighted |
 | `fine-tuning/cpt-merged-hf-local-complete` | low | Complete CPT merge HF is now local (scp from Vast instance `50011937`) | • Status (2026-09-06) | cpt, sft, vast, merged-hf |
 | `fine-tuning/cursor-todo-sft-s8-weighted-2026-10-14` | medium | Completed on main `5b12b79` | • After (operator / Bots) | sft, weighted, todo, forge |
 | `fine-tuning/data-generation-gemma4` | medium | Gemma 4 Local Dataset Generation Analysis | • Evaluation Results<br>• Implementation | fine-tuning, gemma4, dataset, ollama |
@@ -128,6 +129,7 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `fine-tuning/sft-stop-token-phases` | high | Phased stop-token contract for Qwen3.5 SFT v2: | • Turn stop: `<\|im_end\|>` (248046); native eos `<\|endoftext...<br>• Runbook: `fine_tuning/STOP_TOKEN_PHASES.md`<br>• Script: `fine_tuning/scripts/verify_sft_stop_tokens.py` (... | sft, stop-tokens, qwen35 |
 | `fine-tuning/sft-track-a-batch1-complete` | medium | - Teacher dry-run + Groq apply 50 rows; merge 24; zip + readiness PASS | • Done this arc<br>• Ready for next session<br>• Counts snapshot | sft, bulk-rewrite, batch1 |
 | `fine-tuning/sft-vs-rewrite-decision` | high | - **Pass 1 complete:** all 3244 non-gold train rows attempted once | • QA rewrite stop point<br>• Implications<br>• Recommendation recorded<br>• Before GPU | fine-tuning, sft, qa-rewrite, decision |
+| `fine-tuning/sft-weighted-env-safeguards-2026-10-15` | high | Exit 139 SIGSEGV at step 0 (first forward) on two Vast hosts with different drivers | • Problem<br>• Fix (main)<br>• Ops | sft, weighted, vast, venv, smoke, evidence, pins |
 | `fine-tuning/sft-weighted-monitor-harden-2026-10-15` | high | Monitor used boolean `pgrep` of `train_sft_sota.py` with a **10 min** loading timeout | • Root cause<br>• Fix on main (`9bfdd35`)<br>• Next | sft, weighted, vast, monitor, forge |
 | `fine-tuning/sft-weighted-sparse-sync` | high | Stop bulk SCP of `qa_mix_train.jsonl` (~36 MB) laptop-to-Vast | • Contract<br>• Ops notes | sft, vast, sparse-checkout, sync, upload |
 | `fine-tuning/vast-gate0-candidate` | medium | While Vultr GPU is blocked ~30 days, **Vast.ai can run GATE-0** if we rent a reliable SSH GPU and reuse remote scripts (`sft_remote_setup.sh` / merge / train) | • Fit<br>• Risks / ops<br>• Status<br>• Cost ballpark BRL (2026-09-05, FX ~R$5.13/USD) | cost, brl |

@@ -59,7 +59,7 @@ summary: "Map of available project memory sections."
 priority: high
 tags: [index, memory]
 schema_version: 1.3
-last_updated: "2026-10-15T13:45:05-03:00"
+last_updated: "2026-10-15T14:22:23-03:00"
 consolidation_hash: acd058fab27bf79aa31f9bd2e3dc7172
 contradictions: ["`fine-tuning/hf-spurgeon-qa-v2-gguf` and `fine-tuning/plans/ollama-merge-gguf` cover similar content but state different numbers (2.71 vs 07) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-next-session-handoff` cover similar content but state different numbers (1 vs 1.701 / 2.449 / 2250) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-s8-mhi-resume-c-prepared` cover similar content but state different numbers (1 / 2.8 / 2026.8 vs -) - review for conflict [heuristic]", "`pretraining/cpt-b-eval-strategy` and `pretraining/cpt-eval-unify-v"]
 consolidation_warnings: ["Skipped bugs\\gemma4-chat-template-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped bugs\\ollama-tokenizer-corruption-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped decisions\\gemma4-local-ollama.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-12.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-14.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-08-23.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-08-28.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-09-15.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\clerk-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\CURSOR_TODO_SFT_S8_WEIGHTED_2026-10-14.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\foundry-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\qa-open-theology-sft-handoff-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\runpod-sft-gate0-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\sft-s3-mask-multiturn-brief-2026-10-15.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-b-eval-strategy-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-expansion-plan.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-s1-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-s5-b-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-s6-c-eval-next-session.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-s6-phase0-prepared.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-implementation-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-next-steps-after-v13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-plan-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-runpod-mcp-volume-gap.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v3-s6-handoff.md during index regeneration: Missing YAML frontmatter delimiter"]
@@ -78,8 +78,8 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `debt` | low | App debt (hybrid search, rate limits) plus 2026-08-29 memory-fabric LLM/host hygiene notes. | • Known Technical Debt & Limits<br>• Roadmap & Pending Features |
 | `decisions` | medium | Generated map of memory-store/decisions/ (1 entries). | • **Gemma 4 Fine-Tuning Transition** (`decisions/gemma4-fin... |
 | `episodic` | medium | Generated map of memory-store/episodic/ (34 entries). | • **2026-09-28** (`episodic/2026-09-28`, medium) — Reframed...<br>• **2026-10-02** (`episodic/2026-10-02`, medium) —<br>• **2026-10-05** (`episodic/2026-10-05`, medium) — |
-| `failures` | medium | Generated map of memory-store/failures/ (35 entries). | • **Vast official Unsloth image smoke blocked; LD_LIBRARY_P...<br>• **AssertionError: S3 FAIL row 5: user turn leaked into la...<br>• **asyncua write_value BadTypeMismatch when writing int to... |
-| `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (49 entries). | • **Fine-tuning next session handoff** (`fine-tuning/next-s...<br>• **Open theology QA slice tooling ready for Clerk** (`fine...<br>• **Next session: plan open theological QA slice** (`fine-t... |
+| `failures` | medium | Generated map of memory-store/failures/ (36 entries). | • **Vast official Unsloth image smoke blocked; LD_LIBRARY_P...<br>• **AssertionError: S3 FAIL row 5: user turn leaked into la...<br>• **asyncua write_value BadTypeMismatch when writing int to... |
+| `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (50 entries). | • **Fine-tuning next session handoff** (`fine-tuning/next-s...<br>• **Open theology QA slice tooling ready for Clerk** (`fine...<br>• **Next session: plan open theological QA slice** (`fine-t... |
 | `framework-rules` | medium | Defines coding standards, required libraries (Streamlit, LlamaIndex), environment setup (.env), and database rules for the codebase. | • 1. Runtime Environment<br>• 2. Core Libraries & Packages<br>• 3. Vector Database Rules<br>• 4. Agent Memory Guidelines |
 | `grok` | medium | Generated map of memory-store/grok/ (6 entries). | • **Grok Bot Clerk for open-theology QA generation** (`grok...<br>• **Grok Bot Forge for Vast/Runpod training** (`grok/forge-...<br>• **Grok Bot Foundry for train/export code** (`grok/foundry... |
 | `pretraining` | medium | Generated map of memory-store/pretraining/ (101 entries). | • **CPT B_training_sota known issues (P1 closed — log spam)...<br>• **Composite CPT early stop merges split HF eval events** ...<br>• **Confessions + Institutes corpus (WCF, 1689, Calvin)** (... |
@@ -3956,6 +3956,32 @@ Gates met → **dry-run SFT is low-regret**; rewrite is optimization not blockin
 2. Operator explicit go
 3. `KAGGLE_RUNBOOK_SFT_V2.md` §2–3 (`USE_CPT_MERGE=False` for dry-run)
 
+<!-- memory-fabric:store/fine-tuning/sft-weighted-env-safeguards-2026-10-15 -->
+---
+store_path: fine-tuning/sft-weighted-env-safeguards-2026-10-15
+title: "Weighted SFT isolated env + smoke safeguards (SIGSEGV 139)"
+summary: "Exit 139 SIGSEGV at step 0 (first forward) on two Vast hosts with different drivers"
+priority: high
+tags: [sft, weighted, vast, venv, smoke, evidence, pins]
+schema_version: 1.3
+last_updated: "2026-10-15T14:21:48-03:00"
+---
+
+# Weighted SFT env safeguards (2026-10-15)
+
+## Problem
+Exit 139 SIGSEGV at step 0 (first forward) on two Vast hosts with different drivers. Setup used `--break-system-packages` under Python 3.11 while image packages left torchao `cpython-310` `.so` files loadable.
+
+## Fix (main)
+1. `sft_remote_setup.sh`: isolated `/workspace/sft_venv` (no system-site-packages) or Miniforge `sft_train` fallback; `unset LD_LIBRARY_PATH`; Sep 6 pins via `sft_gate0_sep6_constraints.txt`; assert pins; write `/workspace/sft_pip_freeze.txt`; refuse FLA/causal-conv1d.
+2. `sft_remote_train_s8_weighted.sh`: `PYTHONFAULTHANDLER=1` + `python -X faulthandler`; 2-step smoke on longest rows before full train (`CUDA_LAUNCH_BLOCKING=1` smoke-only); retry expandable_segments off then seq 2048; fail cheaply with evidence hooks.
+3. `train_sft_sota.py`: `--smoke` / `SFT_SMOKE`, `SFT_EXPANDABLE_SEGMENTS` toggle, longest-row select.
+4. `Save-WeightedEvidence`: assert payload, `status.txt` + `listing.txt`, scp log fallback.
+5. Dynamic mix row count in `test_sft_s3_mask_all_rows.py`.
+
+## Ops
+Do not rent from Cursor. Forge dry then operator go after push. Dirty sync needs `-AllowDirtySync` until committed SHA is on origin.
+
 <!-- memory-fabric:store/fine-tuning/sft-weighted-monitor-harden-2026-10-15 -->
 ---
 store_path: fine-tuning/sft-weighted-monitor-harden-2026-10-15
@@ -5342,15 +5368,15 @@ Following the successful execution of Notebook B (Epoch 1 & 2) up to step 432:
 <!-- memory-fabric:local/failures -->
 ---
 section: failures
-summary: "Generated map of memory-store/failures/ (35 entries)."
+summary: "Generated map of memory-store/failures/ (36 entries)."
 priority: medium
 tags: [failures]
 schema_version: 1.3
-last_updated: "2026-10-15T12:10:30-03:00"
+last_updated: "2026-10-15T14:21:09-03:00"
 generated: true
 generated_from: memory-store/failures
-store_fingerprint: 9e678ddac6209c225b1219c71be330c5
-body_hash: 2718b9081d263fce7c2d189f5006d42a
+store_fingerprint: 2643575455f3e4ed0eb9431d1accb758
+body_hash: c2d5c89cb7777961cf7629fb8c8bf014
 ---
 
 # Failures Map
@@ -5365,20 +5391,20 @@ Generated by Memory Fabric from `memory-store/failures/` — do not edit by hand
 - **CPT B early-stop patience=2 with eval_steps=25 and 2-doc eval_spurgeon_loss halt** (`failures/cpt-b-early-stop-561e9ec07f`, medium) — CPT B early-stop patience=2 with eval_steps=25 and 2-doc eval_spurgeon_loss halted corpus v3 at step 375 of 4128 (~8.2M of 90M tokens)
 - **torch.OutOfMemoryError: CUDA out of memory during SFTTrainer.evaluate at step 20** (`failures/cuda-oom-during-mid-ffcb775074`, medium) — CUDA OOM during mid-train eval at step ~20 with PEFT bf16 seq 2048 on RTX 4090 24GB
 - **CUDA OOM on Kaggle T4 during CPT B v5 after manual pack (float32 Qwen3.5, batch ** (`failures/cuda-oom-on-kaggle-e64e9b60ce`, medium) — CUDA OOM on Kaggle T4 during CPT B v5 after manual pack (float32 Qwen3.5, batch 2, TRAIN_EMBEDDINGS=True)
-- …and 27 more entries — see `memory-store/index.md`.
+- …and 28 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:local/fine-tuning -->
 ---
 section: fine-tuning
-summary: "Generated map of memory-store/fine-tuning/ (49 entries)."
+summary: "Generated map of memory-store/fine-tuning/ (50 entries)."
 priority: medium
 tags: [fine-tuning]
 schema_version: 1.3
-last_updated: "2026-10-15T13:36:07-03:00"
+last_updated: "2026-10-15T14:21:48-03:00"
 generated: true
 generated_from: memory-store/fine-tuning
-store_fingerprint: dea3f4d93c60feafdc112692fc3cdbce
-body_hash: e499459d2f325dddcd09374649d837c7
+store_fingerprint: 0bd536ea4aec2e85189e7e2c66aadfa4
+body_hash: 1fd600f42f1bbc6432105084de3e4ce3
 ---
 
 # Fine Tuning Map
@@ -5397,7 +5423,7 @@ Generated by Memory Fabric from `memory-store/fine-tuning/` — do not edit by h
 - **QA verify + F5 slice gap report** (`fine-tuning/qa-prompt-strategy-verify`, high) — After overlay-safe catechism variants + multiturn merge:
 - **One prompt; diversify task slices** (`fine-tuning/qa-prompt-type-decision`, high) — **Locked after live verify.** Improves SFT via example-type diversity, not multiple prompts
 - **QA Sources Rewrite Progress** (`fine-tuning/qa-sources-rewrite-progress`, high) — Cross-session log of QA answer rewrite pipeline for SFT teacherish/quote fidelity
-- …and 37 more entries — see `memory-store/index.md`.
+- …and 38 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:store/failures/full-semantic-judge-run-2188a7bf04 -->
 ---
@@ -6782,6 +6808,27 @@ last_updated: "2026-09-16T10:32:23-03:00"
 - System pip / official Unsloth Docker: still fail (SIGSEGV / SSH)
 - **Miniforge + torch cu126 pip-in-env:** smoke PASS — see `fine-tuning/vast-unsloth-conda-smoke-pass`
 - Next: wire full S6 continue-B to that recipe, or unblock Runpod
+
+<!-- memory-fabric:store/failures/weighted-sft-exit-n-a8a9957108 -->
+---
+store_path: failures/weighted-sft-exit-n-a8a9957108
+title: "Weighted SFT exit 139 SIGSEGV at step 0 first forward on two Vast hosts; torchao"
+summary: "Weighted SFT exit 139 SIGSEGV at step 0 first forward on two Vast hosts; torchao loading cpython-310 .so under Python 3.11 via --break-system-packages mixing image site-packages"
+priority: medium
+tags: [failure, fix, pins, sft, sigsegv, smoke, vast, venv, weighted]
+schema_version: 1.3
+last_updated: "2026-10-15T14:21:09-03:00"
+occurrences: 1
+error_signature: "weighted sft exit <n> sigsegv at step <n> first forward on two vast hosts; torchao loading cpython-<n> .so under python <n>.<n> via --break-system-packages mixing image site-packages"
+---
+
+## Occurrence 1 — 2026-10-15T14:21:09-03:00
+
+**Error:**
+Weighted SFT exit 139 SIGSEGV at step 0 first forward on two Vast hosts; torchao loading cpython-310 .so under Python 3.11 via --break-system-packages mixing image site-packages
+
+**Fix:**
+Isolated /workspace/sft_venv (or Miniforge conda fallback), unset LD_LIBRARY_PATH, pin Sep 6 GATE-0 stack via sft_gate0_sep6_constraints.txt, assert pins + write sft_pip_freeze.txt, PYTHONFAULTHANDLER/-X faulthandler, 2-step smoke on longest rows before full train with expandable_segments then seq 2048 retries, harden Save-WeightedEvidence with status.txt/listing/scp fallback
 
 <!-- memory-fabric:store/episodic/2026-07-11 -->
 ---
