@@ -18,15 +18,15 @@
     "train_jobs": 900,
     "eval_jobs": 40,
     "catalog": 340,
-    "accepted": 573,
-    "rejected": 38,
-    "remaining": 289,
-    "meta_wording_warnings": 28
+    "accepted": 838,
+    "rejected": 62,
+    "remaining": 0,
+    "meta_wording_warnings": 44
   },
-  "halted": true,
-  "halt_reason": "teacher rate limit/quota (429); job left pending, rerun after quota resets",
-  "last_error": "teacher error: teacher failed after 4 tries: 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kswe8f3vfzgrff9dt4dq1tha` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199643, Re",
-  "next_job_id": "train-confession-122",
+  "halted": false,
+  "halt_reason": "",
+  "last_error": "teacher error: teacher failed after 4 tries: 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_01kswe8f3vfzgrff9dt4dq1tha` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 198894, Re",
+  "next_job_id": "",
   "holdout_dir": "continued_pretrain/data/mix_v7/holdouts",
   "spurgeon_holdout_sermons_skipped": 50,
   "candidate_pool": {
@@ -35,5 +35,5 @@
     "confession_files": 11034,
     "catechism": 52
   },
-  "updated_at": "2026-10-13T16:16:00.436243+00:00"
+  "updated_at": "2026-10-15T15:49:16.672100+00:00"
 }
