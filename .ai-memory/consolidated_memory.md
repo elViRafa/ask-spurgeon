@@ -59,7 +59,7 @@ summary: "Map of available project memory sections."
 priority: high
 tags: [index, memory]
 schema_version: 1.3
-last_updated: "2026-10-15T14:22:23-03:00"
+last_updated: "2026-10-15T14:29:39-03:00"
 consolidation_hash: acd058fab27bf79aa31f9bd2e3dc7172
 contradictions: ["`fine-tuning/hf-spurgeon-qa-v2-gguf` and `fine-tuning/plans/ollama-merge-gguf` cover similar content but state different numbers (2.71 vs 07) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-next-session-handoff` cover similar content but state different numbers (1 vs 1.701 / 2.449 / 2250) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-s8-mhi-resume-c-prepared` cover similar content but state different numbers (1 / 2.8 / 2026.8 vs -) - review for conflict [heuristic]", "`pretraining/cpt-b-eval-strategy` and `pretraining/cpt-eval-unify-v"]
 consolidation_warnings: ["Skipped bugs\\gemma4-chat-template-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped bugs\\ollama-tokenizer-corruption-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped decisions\\gemma4-local-ollama.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-12.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-14.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-08-23.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-08-28.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-09-15.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\clerk-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\CURSOR_TODO_SFT_S8_WEIGHTED_2026-10-14.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\foundry-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\qa-open-theology-sft-handoff-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\runpod-sft-gate0-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\sft-s3-mask-multiturn-brief-2026-10-15.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-b-eval-strategy-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-expansion-plan.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-s1-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-s5-b-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-s6-c-eval-next-session.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-s6-phase0-prepared.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-implementation-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-next-steps-after-v13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-plan-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-runpod-mcp-volume-gap.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v3-s6-handoff.md during index regeneration: Missing YAML frontmatter delimiter"]
@@ -9252,7 +9252,7 @@ summary: "Implemented and pushed weighted SFT remote CRLF harden on ask-spurgeon
 priority: low
 tags: [episodic, session-journal]
 schema_version: 1.3
-last_updated: "2026-10-15T13:36:17-03:00"
+last_updated: "2026-10-15T14:29:11-03:00"
 ---
 
 ## sft-remote-crlf-push
@@ -9290,6 +9290,24 @@ Hardened the weighted SFT Vast monitor so Forge no longer false-destroys GPUs mi
 - SSH errors are UNKNOWN never gone; only ALIVE sets sawRunning
 
 - `fine_tuning/tests/test_vast_sft_s8_weighted_monitor.py`
+
+## sft-weighted-env-safeguards
+
+Fixed weighted SFT Vast SIGSEGV 139 at step 0 by isolating Python (venv/conda), pinning Sep 6 GATE-0 packages, adding faulthandler + 2-step longest-row smoke before full train (expandable_segments then seq 2048 retries), and hardening Save-WeightedEvidence with status/listing/scp asserts. Pushed 4211878 to main; did not rent GPU; did not stage qa_open_theology data.
+
+- Isolated /workspace/sft_venv preferred over system pip --break-system-packages; Miniforge conda is fallback
+- CUDA_LAUNCH_BLOCKING only during smoke; expandable_segments toggleable via SFT_EXPANDABLE_SEGMENTS
+- Smoke fail exits 139 so monitor evidence+destroy keeps failed rental under ~$0.25
+
+- `fine_tuning/scripts/sft_gate0_sep6_constraints.txt`
+- `fine_tuning/tests/test_sft_weighted_env_safeguards.py`
+
+Operator asked to save memories and push. Session already landed weighted SFT env isolation + smoke safeguards on main as 4211878; this follow-up journals remaining episodic/index fabric updates and commits them.
+
+- No GPU rent
+- Do not stage fine_tuning/data/qa_open_theology/
+
+- `.ai-memory/memory-store/episodic/2026-10-15.md`
 
 <!-- memory-fabric:store/episodic/commits/2026-10-14/604fca57e1 -->
 ---

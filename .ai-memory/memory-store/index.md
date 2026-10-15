@@ -5,7 +5,7 @@ summary: "Index of all semantic memory store files."
 priority: high
 tags: [index, memory-store]
 schema_version: 1.3
-last_updated: "2026-10-15T14:22:23-03:00"
+last_updated: "2026-10-15T14:29:39-03:00"
 ---
 
 # Memory Store Index
@@ -53,7 +53,7 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `episodic/2026-10-09` | low | Decided the next model step is supervised fine-tuning on the S8 merged CPT weights | • sft-on-s8-decision<br>• qa-mix-size-advice<br>• open-theology-qa-advice<br>• open-theology-qa-handoff<br>• open-theology-qa-slice<br>• commit-push-sft-qa | episodic, session-journal |
 | `episodic/2026-10-13` | low | Committed and pushed open-theology QA queue growth on main | • qa-queue-commit-push<br>• sft-s8-weighted-forge | episodic, session-journal |
 | `episodic/2026-10-14` | low | Cleared the Forge GitHub blocker for weighted SFT by committing and pushing the recipe to main (c085120) | • sft-weighted-push<br>• sft-s8-crash-fix<br>• sft-residual-risk-audit<br>• save-sft-memories<br>• sft-s8-todo-build<br>• sft-s8-memory-commit<br>• vast-upload-path-investigation<br>• search-scp-sparse-checkout-quotes<br>• gpu-sparse-sync<br>• push-sparse-sync-forge | episodic, session-journal |
-| `episodic/2026-10-15` | low | Implemented and pushed weighted SFT remote CRLF harden on ask-spurgeon main from a Cloud Agent New Project session (empty Origin temp repo) | • sft-remote-crlf-push<br>• sft-s3-last-assistant-mask<br>• weighted-sft-monitor-harden | episodic, session-journal |
+| `episodic/2026-10-15` | low | Implemented and pushed weighted SFT remote CRLF harden on ask-spurgeon main from a Cloud Agent New Project session (empty Origin temp repo) | • sft-remote-crlf-push<br>• sft-s3-last-assistant-mask<br>• weighted-sft-monitor-harden<br>• sft-weighted-env-safeguards | episodic, session-journal |
 | `episodic/commits/2026-10-14/` | low | 1 passively captured commit(s). | • fix(sft): strip CR from weighted SSH remotes; 10m loading timeout | episodic, passive-capture, needs-review |
 | `failures/assertionerror-s-n-fail-b0de52ddcb` | medium | AssertionError: S3 FAIL: user turn leaked into labels in train_sft_sota.py _train_peft after weighted SFT S8 dataprep | • Occurrence 1 — 2026-10-14T10:00:16-03:00<br>• Occurrence 2 — 2026-10-15T12:10:30-03:00 | failure, fix, mask, multiturn, s3, sft, weighted |
 | `failures/asyncua-write-value-badtypemismatch-188c68c9d2` | medium | asyncua write_value BadTypeMismatch when writing int to UInt16 or Double node wi | • Occurrence 1 — 2026-08-12T08:59:14-04:00 | failure, fix |
