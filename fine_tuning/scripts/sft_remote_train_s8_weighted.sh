@@ -157,6 +157,15 @@ print("RAG_MIX_OK", mix)
 print("OPEN_THEOLOGY_TRAIN_OK", theo)
 PY
 
+  echo "=== TOKENIZER_CPU_SMOKE $(date -u +%Y-%m-%dT%H:%M:%SZ) ==="
+  # Fail here, before GPU smoke. SETUP_FAILED rc= is the monitor's anchored marker.
+  if ! "$PY" -u /workspace/sft_tokenizer_cpu_smoke.py \
+      --base "${SFT_GATE0_MERGED}" \
+      --dataprep "${SFT_GATE0_MERGED}"; then
+    echo "SETUP_FAILED rc=1"
+    exit 1
+  fi
+
   mkdir -p /workspace/sft_s8_weighted/adapter
 
   cd /workspace
@@ -224,7 +233,9 @@ elif run_smoke 0 2048 "expand_off_seq2048"; then
 fi
 
 if [[ "$SMOKE_OK" != "1" ]]; then
-  echo "SMOKE_BEFORE_TRAIN_FAILED — leaving logs for evidence; aborting before full train" | tee -a "$SETUPLOG"
+  # Whole line so ^SMOKE_BEFORE_TRAIN_FAILED$ matches. Also written to the smoke log.
+  echo "SMOKE_BEFORE_TRAIN_FAILED" | tee -a "$SETUPLOG" "$SMOKELOG"
+  echo "smoke failed; leaving logs for evidence; aborting before full train" | tee -a "$SETUPLOG"
   mkdir -p /workspace/sft_smoke_fail
   {
     echo "smoke_failed=1"
@@ -232,8 +243,8 @@ if [[ "$SMOKE_OK" != "1" ]]; then
     echo "see=/workspace/sft_smoke.log"
   } > /workspace/sft_smoke_fail/status.txt
   tail -n 100 "$SMOKELOG" >> /workspace/sft_smoke_fail/status.txt || true
-  # Non-zero exit triggers orchestrator evidence + destroy (keep bill under $0.25).
-  exit 139
+  # Non-zero exit so the monitor's marker path can evidence and destroy.
+  exit 1
 fi
 
 # Full train uses the smoke-proven expandable/seq settings.

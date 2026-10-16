@@ -58,6 +58,7 @@ $WeightedSyncMap = @(
     @{ Rel = "fine_tuning/scripts/sft_remote_train_s8_weighted.sh"; Remote = "/workspace/sft_remote_train_s8_weighted.sh" }
     @{ Rel = "fine_tuning/scripts/sft_setup_fail_watchdog.sh"; Remote = "/workspace/sft_setup_fail_watchdog.sh" }
     @{ Rel = "fine_tuning/scripts/sft_setup_markers.sh"; Remote = "/workspace/sft_setup_markers.sh" }
+    @{ Rel = "fine_tuning/scripts/sft_tokenizer_cpu_smoke.py"; Remote = "/workspace/sft_tokenizer_cpu_smoke.py" }
     @{ Rel = "fine_tuning/scripts/sft_gate0_sep6_constraints.txt"; Remote = "/workspace/sft_gate0_sep6_constraints.txt" }
     @{ Rel = "config.py"; Remote = "/workspace/config.py" }
     @{ Rel = "fine_tuning/data/qa_mix_train.jsonl"; Remote = "/workspace/spurgeon-qa-mix-v1/qa_mix_train.jsonl" }
@@ -609,6 +610,7 @@ cp "`$SRC/fine_tuning/scripts/sft_remote_setup.sh" /workspace/sft_remote_setup.s
 cp "`$SRC/fine_tuning/scripts/sft_remote_train_s8_weighted.sh" /workspace/sft_remote_train_s8_weighted.sh
 cp "`$SRC/fine_tuning/scripts/sft_setup_fail_watchdog.sh" /workspace/sft_setup_fail_watchdog.sh
 cp "`$SRC/fine_tuning/scripts/sft_setup_markers.sh" /workspace/sft_setup_markers.sh
+cp "`$SRC/fine_tuning/scripts/sft_tokenizer_cpu_smoke.py" /workspace/sft_tokenizer_cpu_smoke.py
 cp "`$SRC/fine_tuning/scripts/sft_gate0_sep6_constraints.txt" /workspace/sft_gate0_sep6_constraints.txt
 git -C "`$SRC" show HEAD:config.py > /workspace/config.py
 chmod +x /workspace/sft_remote_setup.sh /workspace/sft_remote_train_s8_weighted.sh /workspace/sft_setup_fail_watchdog.sh /workspace/sft_setup_markers.sh
@@ -618,6 +620,7 @@ test -s /workspace/train_sft_sota.py
 test -s /workspace/sft_gate0_sep6_constraints.txt
 test -s /workspace/sft_setup_fail_watchdog.sh
 test -s /workspace/sft_setup_markers.sh
+test -s /workspace/sft_tokenizer_cpu_smoke.py
 echo "SPARSE_SYNC_OK sha=`$SHA"
 "@
     Write-Host "Syncing weighted SFT via pinned sparse-checkout (no bulk jsonl SCP) ..."
@@ -905,6 +908,7 @@ function Test-VastInstanceStillPresent {
 }
 
 if ($StartMonitor) {
+    $script:WeightedFailStop = $null
     Write-Host "Watching train until exit (max_wall_h=$MaxWallHours). Does not use GATE-0 vast_monitor paths."
     Write-Host ("loading_timeout_min={0} (extends while sft_setup.log advances; only until pidfile)" -f $LoadingTimeoutMinutes)
     $monitorStart = [datetime]::UtcNow
@@ -928,6 +932,7 @@ if ($StartMonitor) {
         if ($st.State -eq "SETUP_FAILED" -or $st.State -eq "SMOKE_BEFORE_TRAIN_FAILED") {
             $failReason = $st.State
             if ($st.TriggerLine) { $failReason = "$($st.State) trigger_line=$($st.TriggerLine)" }
+            $script:WeightedFailStop = $failReason
             Write-Warning ("[{0:u}] WEIGHTED_STATE={1} -- evidence then destroy" -f [datetime]::UtcNow, $failReason)
             Save-WeightedEvidence -Reason $failReason
             break
@@ -1052,6 +1057,11 @@ if (-not $KeepInstance) {
 }
 
 if (-not $adapterOk) {
+    if ($script:WeightedFailStop) {
+        Write-Warning ("No adapter after {0}. Evidence saved and instance destroyed." -f $script:WeightedFailStop)
+        try { Stop-Transcript | Out-Null } catch { }
+        exit 1
+    }
     throw "Weighted adapter missing after fetch. Check $ResultsDir and sft_train.log before another go."
 }
 

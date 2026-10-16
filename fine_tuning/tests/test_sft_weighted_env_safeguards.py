@@ -26,6 +26,9 @@ def test_constraints_file_has_sep6_pins() -> None:
         "accelerate==1.14.0",
         "bitsandbytes==0.50.2",
         "triton==3.6.0",
+        "tokenizers==0.22.2",
+        "sentencepiece==0.2.2",
+        "protobuf==7.36.1",
         "unsloth_zoo==2026.9.1",
     ):
         assert pin in text, f"missing pin {pin}"
@@ -206,6 +209,9 @@ def test_orchestrator_go_implies_monitor_transcript_try_catch_watchdog() -> None
     assert "SETUP_FAILED" in text
     assert "SMOKE_BEFORE_TRAIN_FAILED" in text
     assert "evidence then destroy" in text.lower() or "WEIGHTED_STATE={1}" in text
+    assert "WeightedFailStop" in text
+    fail_exit = text.split("if ($script:WeightedFailStop)", 1)[1].split("throw \"Weighted adapter missing", 1)[0]
+    assert "exit 1" in fail_exit
 
 
 def test_evidence_asserts_files_status_listing_scp_fallback() -> None:

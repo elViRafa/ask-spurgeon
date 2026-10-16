@@ -414,6 +414,27 @@ def _force_dataprep() -> bool:
     return os.environ.get("SFT_FORCE_DATAPREP", "").strip().lower() in ("1", "true", "yes")
 
 
+def load_dataprep_tokenizer(tok_source: str):
+    """Load the dataprep tokenizer.
+
+    ImportError is swallowed only when sft_stop_token_utils itself is missing.
+    ImportError raised inside load_qwen35_tokenizer (protobuf, and the rest)
+    must surface with its own message. The fallback does not pass
+    fix_mistral_regex (transformers 5.5).
+    """
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    try:
+        from sft_stop_token_utils import load_qwen35_tokenizer
+    except ImportError as exc:
+        if getattr(exc, "name", None) != "sft_stop_token_utils":
+            raise
+        from transformers import AutoTokenizer
+
+        print("WARN: sft_stop_token_utils missing; AutoTokenizer without fix_mistral_regex")
+        return AutoTokenizer.from_pretrained(tok_source, trust_remote_code=True)
+    return load_qwen35_tokenizer(tok_source)
+
+
 def _dataprep_tokenizer_source() -> str:
     """Prefer merged CPT tokenizer when present so dataprep matches train."""
     use_merge = os.environ.get("USE_CPT_MERGE", "0").strip().lower() in ("1", "true", "yes")
@@ -444,17 +465,7 @@ def _dataprep(max_seq_length: int = 4096) -> tuple[Path, Path]:
     rag_system = _canonical_system()
     tok_source = _dataprep_tokenizer_source()
     print("DATAPREP_TOKENIZER", tok_source)
-    sys.path.insert(0, str(Path(__file__).resolve().parent))
-    try:
-        from sft_stop_token_utils import load_qwen35_tokenizer
-
-        tokenizer = load_qwen35_tokenizer(tok_source)
-    except ImportError:
-        from transformers import AutoTokenizer
-
-        tokenizer = AutoTokenizer.from_pretrained(
-            tok_source, trust_remote_code=True, fix_mistral_regex=True
-        )
+    tokenizer = load_dataprep_tokenizer(tok_source)
     tokenizer, _, _ = apply_sft_special_token_contract(tokenizer)
 
     def rows_to_dataset(message_rows: list[dict]) -> Dataset:

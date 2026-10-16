@@ -301,6 +301,7 @@ pip_install_pinned() {
     safetensors==0.8.0
     tokenizers==0.22.2
     sentencepiece==0.2.2
+    protobuf==7.36.1
   )
   if [[ "$SFT_BACKEND" == "unsloth" ]]; then
     pkgs+=(unsloth_zoo==2026.9.1)

@@ -29,35 +29,24 @@ LEAKED_TURN_RE = re.compile(r"<\|im_start\|>\s*(user|system)\b", re.I)
 
 
 def load_qwen35_tokenizer(model: str, token: str | None = None):
-    """Load Qwen3.5 tokenizer; Unsloth configs may set tokenizer_class=TokenizersBackend."""
+    """Load Qwen3.5 tokenizer; Unsloth configs may set tokenizer_class=TokenizersBackend.
+
+    Do not pass fix_mistral_regex. transformers 5.5 applies that patch by calling
+    tokenizer.backend_tokenizer, which tokenizers.Tokenizer does not have (run 8).
+    """
     from transformers import AutoTokenizer, PreTrainedTokenizerFast
 
-    kwargs = dict(trust_remote_code=True, fix_mistral_regex=True)
+    kwargs = dict(trust_remote_code=True)
     if token:
         kwargs["token"] = token
     try:
         return AutoTokenizer.from_pretrained(model, **kwargs)
-    except TypeError:
-        # Older transformers without fix_mistral_regex.
-        kwargs.pop("fix_mistral_regex", None)
-        try:
-            return AutoTokenizer.from_pretrained(model, **kwargs)
-        except ValueError as exc:
-            msg = str(exc)
-            if "TokenizersBackend" not in msg and "does not exist or is not currently imported" not in msg:
-                raise
-            print("WARN: AutoTokenizer failed — using PreTrainedTokenizerFast")
-            return PreTrainedTokenizerFast.from_pretrained(model, **kwargs)
     except ValueError as exc:
         msg = str(exc)
         if "TokenizersBackend" not in msg and "does not exist or is not currently imported" not in msg:
             raise
         print("WARN: AutoTokenizer failed — using PreTrainedTokenizerFast")
-        try:
-            return PreTrainedTokenizerFast.from_pretrained(model, **kwargs)
-        except TypeError:
-            kwargs.pop("fix_mistral_regex", None)
-            return PreTrainedTokenizerFast.from_pretrained(model, **kwargs)
+        return PreTrainedTokenizerFast.from_pretrained(model, **kwargs)
 
 
 def text_tokenizer(tok):

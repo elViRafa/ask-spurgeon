@@ -130,6 +130,7 @@ def test_orchestrator_has_alive_dead_unknown_and_debounce() -> None:
     fail_fast = text.split("Break fast on setup/smoke", 1)
     assert len(fail_fast) == 2
     assert "Save-WeightedEvidence" in fail_fast[1].split("if ($st.State -eq \"ALIVE\")", 1)[0]
+    assert "WeightedFailStop = $failReason" in fail_fast[1].split("if ($st.State -eq \"ALIVE\")", 1)[0]
 
 
 def test_remote_train_writes_pid_exit_and_waits() -> None:
