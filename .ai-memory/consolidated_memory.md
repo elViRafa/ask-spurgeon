@@ -59,7 +59,7 @@ summary: "Map of available project memory sections."
 priority: high
 tags: [index, memory]
 schema_version: 1.3
-last_updated: "2026-10-16T13:00:08-03:00"
+last_updated: "2026-10-16T13:26:13-03:00"
 consolidation_hash: acd058fab27bf79aa31f9bd2e3dc7172
 contradictions: ["`fine-tuning/hf-spurgeon-qa-v2-gguf` and `fine-tuning/plans/ollama-merge-gguf` cover similar content but state different numbers (2.71 vs 07) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-next-session-handoff` cover similar content but state different numbers (1 vs 1.701 / 2.449 / 2250) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-s8-mhi-resume-c-prepared` cover similar content but state different numbers (1 / 2.8 / 2026.8 vs -) - review for conflict [heuristic]", "`pretraining/cpt-b-eval-strategy` and `pretraining/cpt-eval-unify-v"]
 consolidation_warnings: ["Skipped bugs\\gemma4-chat-template-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped bugs\\ollama-tokenizer-corruption-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped decisions\\gemma4-local-ollama.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-12.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-14.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-08-23.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-08-28.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-09-15.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\clerk-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\CURSOR_TODO_SFT_S8_WEIGHTED_2026-10-14.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\foundry-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\qa-open-theology-sft-handoff-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\runpod-sft-gate0-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\sft-s3-mask-multiturn-brief-2026-10-15.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-b-eval-strategy-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-expansion-plan.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-s1-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-s5-b-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-s6-c-eval-next-session.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-s6-phase0-prepared.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-implementation-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-next-steps-after-v13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-plan-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-runpod-mcp-volume-gap.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v3-s6-handoff.md during index regeneration: Missing YAML frontmatter delimiter"]
@@ -78,8 +78,8 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `debt` | low | App debt (hybrid search, rate limits) plus 2026-08-29 memory-fabric LLM/host hygiene notes. | • Known Technical Debt & Limits<br>• Roadmap & Pending Features |
 | `decisions` | medium | Generated map of memory-store/decisions/ (1 entries). | • **Gemma 4 Fine-Tuning Transition** (`decisions/gemma4-fin... |
 | `episodic` | medium | Generated map of memory-store/episodic/ (35 entries). | • **2026-09-28** (`episodic/2026-09-28`, medium) — Reframed...<br>• **2026-10-02** (`episodic/2026-10-02`, medium) —<br>• **2026-10-05** (`episodic/2026-10-05`, medium) — |
-| `failures` | medium | Generated map of memory-store/failures/ (38 entries). | • **Vast official Unsloth image smoke blocked; LD_LIBRARY_P...<br>• **AssertionError: S3 FAIL row 5: user turn leaked into la...<br>• **asyncua write_value BadTypeMismatch when writing int to... |
-| `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (52 entries). | • **Fine-tuning next session handoff** (`fine-tuning/next-s...<br>• **Open theology QA slice tooling ready for Clerk** (`fine...<br>• **Next session: plan open theological QA slice** (`fine-t... |
+| `failures` | medium | Generated map of memory-store/failures/ (39 entries). | • **Vast official Unsloth image smoke blocked; LD_LIBRARY_P...<br>• **AssertionError: S3 FAIL row 5: user turn leaked into la...<br>• **asyncua write_value BadTypeMismatch when writing int to... |
+| `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (53 entries). | • **Fine-tuning next session handoff** (`fine-tuning/next-s...<br>• **Open theology QA slice tooling ready for Clerk** (`fine...<br>• **Next session: plan open theological QA slice** (`fine-t... |
 | `framework-rules` | medium | Defines coding standards, required libraries (Streamlit, LlamaIndex), environment setup (.env), and database rules for the codebase. | • 1. Runtime Environment<br>• 2. Core Libraries & Packages<br>• 3. Vector Database Rules<br>• 4. Agent Memory Guidelines |
 | `grok` | medium | Generated map of memory-store/grok/ (6 entries). | • **Grok Bot Clerk for open-theology QA generation** (`grok...<br>• **Grok Bot Forge for Vast/Runpod training** (`grok/forge-...<br>• **Grok Bot Foundry for train/export code** (`grok/foundry... |
 | `pretraining` | medium | Generated map of memory-store/pretraining/ (101 entries). | • **CPT B_training_sota known issues (P1 closed — log spam)...<br>• **Composite CPT early stop merges split HF eval events** ...<br>• **Confessions + Institutes corpus (WCF, 1689, Calvin)** (... |
@@ -5436,15 +5436,15 @@ Following the successful execution of Notebook B (Epoch 1 & 2) up to step 432:
 <!-- memory-fabric:local/failures -->
 ---
 section: failures
-summary: "Generated map of memory-store/failures/ (38 entries)."
+summary: "Generated map of memory-store/failures/ (39 entries)."
 priority: medium
 tags: [failures]
 schema_version: 1.3
-last_updated: "2026-10-15T18:46:25-03:00"
+last_updated: "2026-10-16T13:25:46-03:00"
 generated: true
 generated_from: memory-store/failures
-store_fingerprint: 5fefd190e898477aaeb81f7b725f64c6
-body_hash: 25844bf957b29aa09a1d4b73b7e7da17
+store_fingerprint: 848dd17fe1991d7e599810314fb29a59
+body_hash: 82e75f450ff0333ebe0c21d4bcd85a8d
 ---
 
 # Failures Map
@@ -5459,20 +5459,20 @@ Generated by Memory Fabric from `memory-store/failures/` — do not edit by hand
 - **CPT B early-stop patience=2 with eval_steps=25 and 2-doc eval_spurgeon_loss halt** (`failures/cpt-b-early-stop-561e9ec07f`, medium) — CPT B early-stop patience=2 with eval_steps=25 and 2-doc eval_spurgeon_loss halted corpus v3 at step 375 of 4128 (~8.2M of 90M tokens)
 - **torch.OutOfMemoryError: CUDA out of memory during SFTTrainer.evaluate at step 20** (`failures/cuda-oom-during-mid-ffcb775074`, medium) — CUDA OOM during mid-train eval at step ~20 with PEFT bf16 seq 2048 on RTX 4090 24GB
 - **CUDA OOM on Kaggle T4 during CPT B v5 after manual pack (float32 Qwen3.5, batch ** (`failures/cuda-oom-on-kaggle-e64e9b60ce`, medium) — CUDA OOM on Kaggle T4 during CPT B v5 after manual pack (float32 Qwen3.5, batch 2, TRAIN_EMBEDDINGS=True)
-- …and 30 more entries — see `memory-store/index.md`.
+- …and 31 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:local/fine-tuning -->
 ---
 section: fine-tuning
-summary: "Generated map of memory-store/fine-tuning/ (52 entries)."
+summary: "Generated map of memory-store/fine-tuning/ (53 entries)."
 priority: medium
 tags: [fine-tuning]
 schema_version: 1.3
-last_updated: "2026-10-16T12:48:24-03:00"
+last_updated: "2026-10-16T13:00:31-03:00"
 generated: true
 generated_from: memory-store/fine-tuning
-store_fingerprint: 06d8ac1410acb525077f7af1a21588ef
-body_hash: e0119787b55cb0bc3958bfc8c7482614
+store_fingerprint: b3ef18d9c2e6bc9c74831edebe4b5f94
+body_hash: be6b1fdbd9ef3e51fce2f8b80283a43a
 ---
 
 # Fine Tuning Map
@@ -5491,7 +5491,7 @@ Generated by Memory Fabric from `memory-store/fine-tuning/` — do not edit by h
 - **QA verify + F5 slice gap report** (`fine-tuning/qa-prompt-strategy-verify`, high) — After overlay-safe catechism variants + multiturn merge:
 - **One prompt; diversify task slices** (`fine-tuning/qa-prompt-type-decision`, high) — **Locked after live verify.** Improves SFT via example-type diversity, not multiple prompts
 - **QA Sources Rewrite Progress** (`fine-tuning/qa-sources-rewrite-progress`, high) — Cross-session log of QA answer rewrite pipeline for SFT teacherish/quote fidelity
-- …and 40 more entries — see `memory-store/index.md`.
+- …and 41 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:store/failures/full-semantic-judge-run-2188a7bf04 -->
 ---
@@ -6402,6 +6402,39 @@ review_status: stale
 ## Counts snapshot
 train 2923; gold 20; bulk merged 24; pending attempts 50 (24 ok / 26 drop ~48%)
 
+<!-- memory-fabric:store/fine-tuning/sft-weighted-marker-protocol-2026-10-16 -->
+---
+store_path: fine-tuning/sft-weighted-marker-protocol-2026-10-16
+title: "Weighted SFT: phase markers + silent log-growth watchdog"
+summary: "Landed on main: `51cebd192cbbc040dcda4b17bb1367fd806860da`"
+priority: medium
+tags: [sft, weighted, vast, setup, watchdog, markers]
+schema_version: 1.3
+last_updated: "2026-10-16T13:25:44-03:00"
+evidence: ["commit:51cebd1", fine_tuning/scripts/sft_setup_markers.sh, fine_tuning/scripts/sft_setup_fail_watchdog.sh, fine_tuning/scripts/sft_remote_setup.sh, fine_tuning/tests/test_sft_setup_markers.py]
+---
+
+# Weighted SFT marker protocol (2026-10-16)
+
+Landed on main: `51cebd192cbbc040dcda4b17bb1367fd806860da`.
+
+## Why
+After `1190682` fixed the false pre-torch `SETUP_FAILED line=50`, destroy gating still used magic `line>=470` and a fixed 25m silent timeout keyed only on `SETUP_OK`. Long pin installs and script line drift were the next money-burn risks.
+
+## Fix
+1. Shared `fine_tuning/scripts/sft_setup_markers.sh`: actionable if `reason=` **or** `SETUP_FAILED` appears *after* last `SETUP_PINS_OK` / `SETUP_PHASE=pins_ok` (not co-occurrence).
+2. `sft_remote_setup.sh` emits `SETUP_PHASE=boot|pins|pins_ok|ok`; `on_setup_err` writes `reason=trap phase=…`.
+3. Watchdog silent: extend while `sft_setup.log` mtime/size advances; stale ≥300s; cap 90m; `MAX_MIN` default 90.
+4. Orchestrator syncs markers; monitor sources `/workspace/sft_setup_markers.sh`.
+5. Fixture tests in `test_sft_setup_markers.py`; runbook marker table in `NEXT_SFT_S8_WEIGHTED.md`.
+
+## Verify
+- pytest: 45 passed (markers + probe + env + monitor + plan)
+- Dry: READY, DIRTY_OVERRIDES=(none), PINNED_SHA=`51cebd1`
+
+## Ops next
+Forge dry then operator **go** with `-Go`. Seq stays 4608. No Hub until F gates.
+
 <!-- memory-fabric:store/pretraining/bugs/sftconfig-pickle -->
 ---
 store_path: pretraining/bugs/sftconfig-pickle
@@ -6945,6 +6978,27 @@ Weighted SFT exit 139 SIGSEGV at step 0 first forward on two Vast hosts; torchao
 
 **Fix:**
 Isolated /workspace/sft_venv (or Miniforge conda fallback), unset LD_LIBRARY_PATH, pin Sep 6 GATE-0 stack via sft_gate0_sep6_constraints.txt, assert pins + write sft_pip_freeze.txt, PYTHONFAULTHANDLER/-X faulthandler, 2-step smoke on longest rows before full train with expandable_segments then seq 2048 retries, harden Save-WeightedEvidence with status.txt/listing/scp fallback
+
+<!-- memory-fabric:store/failures/weighted-sft-watchdog-used-a9d3d406fb -->
+---
+store_path: failures/weighted-sft-watchdog-used-a9d3d406fb
+title: "weighted SFT watchdog used line>=470 SETUP_FAILED gate and fixed 25m silent time"
+summary: "weighted SFT watchdog used line>=470 SETUP_FAILED gate and fixed 25m silent timeout on SETUP_OK; long pip / script drift risked mid-setup destroy after probe fix 1190682"
+priority: medium
+tags: [failure, fix]
+schema_version: 1.3
+last_updated: "2026-10-16T13:25:46-03:00"
+occurrences: 1
+error_signature: "weighted sft watchdog used line>=<n> setup_failed gate and fixed <n>m silent timeout on setup_ok; long pip / script drift risked mid-setup destroy after probe fix <n>"
+---
+
+## Occurrence 1 — 2026-10-16T13:25:46-03:00
+
+**Error:**
+weighted SFT watchdog used line>=470 SETUP_FAILED gate and fixed 25m silent timeout on SETUP_OK; long pip / script drift risked mid-setup destroy after probe fix 1190682
+
+**Fix:**
+Shared sft_setup_markers.sh: actionable on reason= or SETUP_FAILED after last SETUP_PINS_OK/SETUP_PHASE=pins_ok. Phase markers + reason=trap phase= in sft_remote_setup. Watchdog extends silent deadline while sft_setup.log advances (stale 300s, cap 90m). Main 51cebd1.
 
 <!-- memory-fabric:store/episodic/2026-07-11 -->
 ---
@@ -9453,7 +9507,7 @@ summary: "Persisted memories for the weighted SFT false SETUP_FAILED pre-torch p
 priority: low
 tags: [episodic, session-journal]
 schema_version: 1.3
-last_updated: "2026-10-16T12:48:29-03:00"
+last_updated: "2026-10-16T13:25:50-03:00"
 ---
 
 ## save-memories-false-setup-failed
@@ -9464,6 +9518,27 @@ Persisted memories for the weighted SFT false SETUP_FAILED pre-torch probe fix l
 - set +e does not disable ERR trap — use trap - ERR for expected-fail probes
 - actionable SETUP_FAILED only after SETUP_PINS_OK / reason= / line>=470
 - evidence saved only when real payload copied
+
+## sft-marker-protocol
+
+Broke the weighted SFT setup retry chain by replacing line>=470 SETUP_FAILED gating with shared phase markers (sft_setup_markers.sh) and extending the watchdog silent timeout while sft_setup.log advances (cap 90m). Pushed to main as 51cebd1; dry READY with DIRTY_OVERRIDES=(none). Did not rent a GPU.
+
+- Ignore Grok's stale f82229b probe fix (already on 1190682); harden the next money-burn risks instead
+- Actionable SETUP_FAILED = reason= OR fail after last SETUP_PINS_OK (not co-occurrence, not LINENO)
+- Silent destroy only when setup log is stale under a 90m cap
+
+**Files changed:**
+- `fine_tuning/scripts/sft_setup_markers.sh`
+- `fine_tuning/tests/test_sft_setup_markers.py`
+
+## sft-marker-commit-push
+
+Confirmed weighted SFT marker-protocol harden already on main as 51cebd1 (pushed). Refreshed store memories for the marker protocol and failure entry; committing .ai-memory store docs so Forge/Grok see the durable contract. No GPU rented.
+
+- Code SHA 51cebd1 is the pin for next Forge go
+- Memories: fine-tuning/sft-weighted-marker-protocol-2026-10-16 plus failure entry for line>=470 / silent-25m
+
+- `.ai-memory/memory-store/fine-tuning/sft-weighted-marker-protocol-2026-10-16.md`
 
 <!-- memory-fabric:store/episodic/commits/2026-10-14/604fca57e1 -->
 ---

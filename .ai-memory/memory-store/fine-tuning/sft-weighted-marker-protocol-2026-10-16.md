@@ -26,7 +26,6 @@ After `1190682` fixed the false pre-torch `SETUP_FAILED line=50`, destroy gating
 ## Verify
 - pytest: 45 passed (markers + probe + env + monitor + plan)
 - Dry: READY, DIRTY_OVERRIDES=(none), PINNED_SHA=`51cebd1`
-- No GPU rented; `qa_open_theology/` not staged
 
 ## Ops next
 Forge dry then operator **go** with `-Go`. Seq stays 4608. No Hub until F gates.
