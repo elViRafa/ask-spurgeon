@@ -59,7 +59,7 @@ summary: "Map of available project memory sections."
 priority: high
 tags: [index, memory]
 schema_version: 1.3
-last_updated: "2026-10-16T13:26:13-03:00"
+last_updated: "2026-10-16T14:48:12-03:00"
 consolidation_hash: acd058fab27bf79aa31f9bd2e3dc7172
 contradictions: ["`fine-tuning/hf-spurgeon-qa-v2-gguf` and `fine-tuning/plans/ollama-merge-gguf` cover similar content but state different numbers (2.71 vs 07) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-next-session-handoff` cover similar content but state different numbers (1 vs 1.701 / 2.449 / 2250) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-s8-mhi-resume-c-prepared` cover similar content but state different numbers (1 / 2.8 / 2026.8 vs -) - review for conflict [heuristic]", "`pretraining/cpt-b-eval-strategy` and `pretraining/cpt-eval-unify-v"]
 consolidation_warnings: ["Skipped bugs\\gemma4-chat-template-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped bugs\\ollama-tokenizer-corruption-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped decisions\\gemma4-local-ollama.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-12.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-14.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-08-23.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-08-28.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-09-15.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\clerk-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\CURSOR_TODO_SFT_S8_WEIGHTED_2026-10-14.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\foundry-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\qa-open-theology-sft-handoff-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\runpod-sft-gate0-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\sft-s3-mask-multiturn-brief-2026-10-15.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-b-eval-strategy-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-expansion-plan.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-s1-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-s5-b-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-s6-c-eval-next-session.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-s6-phase0-prepared.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-implementation-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-next-steps-after-v13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-plan-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-runpod-mcp-volume-gap.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v3-s6-handoff.md during index regeneration: Missing YAML frontmatter delimiter"]
@@ -78,8 +78,8 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `debt` | low | App debt (hybrid search, rate limits) plus 2026-08-29 memory-fabric LLM/host hygiene notes. | • Known Technical Debt & Limits<br>• Roadmap & Pending Features |
 | `decisions` | medium | Generated map of memory-store/decisions/ (1 entries). | • **Gemma 4 Fine-Tuning Transition** (`decisions/gemma4-fin... |
 | `episodic` | medium | Generated map of memory-store/episodic/ (35 entries). | • **2026-09-28** (`episodic/2026-09-28`, medium) — Reframed...<br>• **2026-10-02** (`episodic/2026-10-02`, medium) —<br>• **2026-10-05** (`episodic/2026-10-05`, medium) — |
-| `failures` | medium | Generated map of memory-store/failures/ (39 entries). | • **Vast official Unsloth image smoke blocked; LD_LIBRARY_P...<br>• **AssertionError: S3 FAIL row 5: user turn leaked into la...<br>• **asyncua write_value BadTypeMismatch when writing int to... |
-| `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (53 entries). | • **Fine-tuning next session handoff** (`fine-tuning/next-s...<br>• **Open theology QA slice tooling ready for Clerk** (`fine...<br>• **Next session: plan open theological QA slice** (`fine-t... |
+| `failures` | medium | Generated map of memory-store/failures/ (40 entries). | • **Vast official Unsloth image smoke blocked; LD_LIBRARY_P...<br>• **AssertionError: S3 FAIL row 5: user turn leaked into la...<br>• **asyncua write_value BadTypeMismatch when writing int to... |
+| `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (55 entries). | • **Fine-tuning next session handoff** (`fine-tuning/next-s...<br>• **Open theology QA slice tooling ready for Clerk** (`fine...<br>• **Next session: plan open theological QA slice** (`fine-t... |
 | `framework-rules` | medium | Defines coding standards, required libraries (Streamlit, LlamaIndex), environment setup (.env), and database rules for the codebase. | • 1. Runtime Environment<br>• 2. Core Libraries & Packages<br>• 3. Vector Database Rules<br>• 4. Agent Memory Guidelines |
 | `grok` | medium | Generated map of memory-store/grok/ (6 entries). | • **Grok Bot Clerk for open-theology QA generation** (`grok...<br>• **Grok Bot Forge for Vast/Runpod training** (`grok/forge-...<br>• **Grok Bot Foundry for train/export code** (`grok/foundry... |
 | `pretraining` | medium | Generated map of memory-store/pretraining/ (101 entries). | • **CPT B_training_sota known issues (P1 closed — log spam)...<br>• **Composite CPT early stop merges split HF eval events** ...<br>• **Confessions + Institutes corpus (WCF, 1689, Calvin)** (... |
@@ -4111,6 +4111,68 @@ Stop bulk SCP of `qa_mix_train.jsonl` (~36 MB) laptop-to-Vast.
 - Dry prints `SPARSE_CONE`, sync path map, `DIRTY_OVERRIDES`.
 - Avoid Unicode em-dashes inside PowerShell double-quoted strings (PS 5.1 ANSI decode can treat UTF-8 em-dash as a smart quote and swallow function braces).
 
+<!-- memory-fabric:store/fine-tuning/sft-weighted-trap-info-2026-10-16 -->
+---
+store_path: fine-tuning/sft-weighted-trap-info-2026-10-16
+title: "Weighted SFT: ERR trap is info, only anchored SETUP_FAILED rc= destroys"
+summary: "Landed on main: `228b9c010e9878b13ba5bc7eea877c3032f8fb51`"
+priority: high
+tags: [sft, weighted, vast, watchdog, setup]
+schema_version: 1.3
+last_updated: "2026-10-16T14:28:21-03:00"
+evidence: ["commit:228b9c010e9878b13ba5bc7eea877c3032f8fb51", fine_tuning/scripts/sft_remote_setup.sh, fine_tuning/scripts/sft_setup_markers.sh, fine_tuning/scripts/sft_setup_fail_watchdog.sh]
+---
+
+# Weighted SFT trap-info watchdog (2026-10-16)
+
+Landed on main: `228b9c010e9878b13ba5bc7eea877c3032f8fb51`.
+
+## Bug
+Runs 5 and 6 were deleted from the instance's own IP at ~4 and ~7 min during setup. The ERR trap wrote `SETUP_FAILED line=N reason=trap` for benign non-zero commands (`|| true`, `set +e`). Markers treated any `reason=` as actionable, so the watchdog destroyed a healthy setup. Same class as the run 4 false alarm.
+
+## Fix
+1. ERR trap writes `SETUP_TRAP_INFO line=N cmd=... rc=...` only.
+2. `SETUP_FAILED rc=N` comes from the EXIT trap when the script exits non-zero (`die` for nvidia-smi and other real aborts).
+3. Watchdog and pc1 monitor match only `^SETUP_FAILED rc=` and `^SMOKE_BEFORE_TRAIN_FAILED`.
+4. Before destroy: `WATCHDOG_DESTROY_BEGIN reason=... trigger_line=<exact line>` plus last 200 log lines in `/workspace/sft_fail_evidence/watchdog_destroy_begin.txt`. scp/rsync when `SFT_EVIDENCE_PUSH_TARGET` is set; otherwise the file stays for the pc1 pull.
+5. Shell default `WATCHDOG_DRY=0`. Orchestrator default `-WatchdogDry 1` for this first post-fix launch. Local monitor is the only destroyer until `-WatchdogDry 0`.
+6. `SETUP_HEARTBEAT` every 30s while pip and apt run.
+
+## Verify
+- pytest: 44 passed (markers, probe, env safeguards, monitor, weighted plan)
+- Live bash: `set +e; false` writes SETUP_TRAP_INFO and no SETUP_FAILED; `exit 1` writes `SETUP_FAILED rc=1`
+- Dry: READY, DIRTY_OVERRIDES=(none), PINNED_SHA=`228b9c0`, WATCHDOG_DRY=1
+- No GPU rented
+
+## Ops next
+Operator go with `-Go`. Do not flip `-WatchdogDry 0` until one clean setup. Seq stays 4608. No Hub until F gates.
+
+<!-- memory-fabric:store/fine-tuning/sft-weighted-vast-credit-block-2026-10-16 -->
+---
+store_path: fine-tuning/sft-weighted-vast-credit-block-2026-10-16
+title: "Weighted SFT ready on 228b9c0; Vast credit $2.82 blocks -Go"
+summary: "Code on main `228b9c010e9878b13ba5bc7eea877c3032f8fb51` is ready to launch"
+priority: high
+tags: [sft, weighted, vast, credit, readiness]
+schema_version: 1.3
+last_updated: "2026-10-16T14:47:11-03:00"
+evidence: ["commit:228b9c010e9878b13ba5bc7eea877c3032f8fb51"]
+---
+
+# Weighted SFT Vast readiness (2026-10-16 14:46 -03)
+
+Code on main `228b9c010e9878b13ba5bc7eea877c3032f8fb51` is ready to launch. A paid `-Go` is blocked by credit.
+
+## Live read (no rent)
+- `vastai show instances`: instance_count=0. Session file still says `ssh_ready` for instance `56270845` at `79.112.108.70:44906`; that machine is gone. Orchestrator provisions with `Force`, so the stale session does not reuse it.
+- Credit: $2.82.
+- Cheapest full RTX 4090: offer `47039615`, New York, $0.526/hr, 10h quote $5.26. Next offers $0.668/hr and $0.681/hr.
+- `-Go` aborts when credit is under $5 or the 10h quote exceeds credit. Top up before go. Do not use `-AllowLowCredit` to start a job the balance cannot finish.
+- First post-fix launch stays `WATCHDOG_DRY=1` (local monitor is the only destroyer). Seq 4608, peft, `SFT_EXPORT=0`.
+
+## Ops next
+Add funds so the balance covers the 10h quote, then operator go. No second GPU while one session is live.
+
 <!-- memory-fabric:store/bugs/unsloth-embedding-offload-readonly -->
 ---
 store_path: bugs/unsloth-embedding-offload-readonly
@@ -5436,15 +5498,15 @@ Following the successful execution of Notebook B (Epoch 1 & 2) up to step 432:
 <!-- memory-fabric:local/failures -->
 ---
 section: failures
-summary: "Generated map of memory-store/failures/ (39 entries)."
+summary: "Generated map of memory-store/failures/ (40 entries)."
 priority: medium
 tags: [failures]
 schema_version: 1.3
-last_updated: "2026-10-16T13:25:46-03:00"
+last_updated: "2026-10-16T14:28:15-03:00"
 generated: true
 generated_from: memory-store/failures
-store_fingerprint: 848dd17fe1991d7e599810314fb29a59
-body_hash: 82e75f450ff0333ebe0c21d4bcd85a8d
+store_fingerprint: 5ff48daa156cc3c22c8de35787709ee3
+body_hash: d4a80cc5fb2e948ab64464ddc1702e4f
 ---
 
 # Failures Map
@@ -5459,20 +5521,20 @@ Generated by Memory Fabric from `memory-store/failures/` — do not edit by hand
 - **CPT B early-stop patience=2 with eval_steps=25 and 2-doc eval_spurgeon_loss halt** (`failures/cpt-b-early-stop-561e9ec07f`, medium) — CPT B early-stop patience=2 with eval_steps=25 and 2-doc eval_spurgeon_loss halted corpus v3 at step 375 of 4128 (~8.2M of 90M tokens)
 - **torch.OutOfMemoryError: CUDA out of memory during SFTTrainer.evaluate at step 20** (`failures/cuda-oom-during-mid-ffcb775074`, medium) — CUDA OOM during mid-train eval at step ~20 with PEFT bf16 seq 2048 on RTX 4090 24GB
 - **CUDA OOM on Kaggle T4 during CPT B v5 after manual pack (float32 Qwen3.5, batch ** (`failures/cuda-oom-on-kaggle-e64e9b60ce`, medium) — CUDA OOM on Kaggle T4 during CPT B v5 after manual pack (float32 Qwen3.5, batch 2, TRAIN_EMBEDDINGS=True)
-- …and 31 more entries — see `memory-store/index.md`.
+- …and 32 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:local/fine-tuning -->
 ---
 section: fine-tuning
-summary: "Generated map of memory-store/fine-tuning/ (53 entries)."
+summary: "Generated map of memory-store/fine-tuning/ (55 entries)."
 priority: medium
 tags: [fine-tuning]
 schema_version: 1.3
-last_updated: "2026-10-16T13:00:31-03:00"
+last_updated: "2026-10-16T14:47:11-03:00"
 generated: true
 generated_from: memory-store/fine-tuning
-store_fingerprint: b3ef18d9c2e6bc9c74831edebe4b5f94
-body_hash: be6b1fdbd9ef3e51fce2f8b80283a43a
+store_fingerprint: 2743bbea043adec7d9ba9dce67ec2e63
+body_hash: df58fb89ffa7224ff8c93e657deb37fb
 ---
 
 # Fine Tuning Map
@@ -5491,7 +5553,7 @@ Generated by Memory Fabric from `memory-store/fine-tuning/` — do not edit by h
 - **QA verify + F5 slice gap report** (`fine-tuning/qa-prompt-strategy-verify`, high) — After overlay-safe catechism variants + multiturn merge:
 - **One prompt; diversify task slices** (`fine-tuning/qa-prompt-type-decision`, high) — **Locked after live verify.** Improves SFT via example-type diversity, not multiple prompts
 - **QA Sources Rewrite Progress** (`fine-tuning/qa-sources-rewrite-progress`, high) — Cross-session log of QA answer rewrite pipeline for SFT teacherish/quote fidelity
-- …and 41 more entries — see `memory-store/index.md`.
+- …and 43 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:store/failures/full-semantic-judge-run-2188a7bf04 -->
 ---
@@ -6978,6 +7040,27 @@ Weighted SFT exit 139 SIGSEGV at step 0 first forward on two Vast hosts; torchao
 
 **Fix:**
 Isolated /workspace/sft_venv (or Miniforge conda fallback), unset LD_LIBRARY_PATH, pin Sep 6 GATE-0 stack via sft_gate0_sep6_constraints.txt, assert pins + write sft_pip_freeze.txt, PYTHONFAULTHANDLER/-X faulthandler, 2-step smoke on longest rows before full train with expandable_segments then seq 2048 retries, harden Save-WeightedEvidence with status.txt/listing/scp fallback
+
+<!-- memory-fabric:store/failures/weighted-sft-vast-runs-cc1e1faa64 -->
+---
+store_path: failures/weighted-sft-vast-runs-cc1e1faa64
+title: "Weighted SFT Vast runs 5 and 6 self-destroyed at about 4 and 7 minutes during se"
+summary: "Weighted SFT Vast runs 5 and 6 self-destroyed at about 4 and 7 minutes during setup"
+priority: medium
+tags: [err-trap, failure, fix, setup, sft, vast, watchdog, weighted]
+schema_version: 1.3
+last_updated: "2026-10-16T14:28:15-03:00"
+occurrences: 1
+error_signature: "weighted sft vast runs <n> and <n> self-destroyed at about <n> and <n> minutes during setup. sft_remote_setup.sh err trap wrote setup_failed line=n reason=trap on any non-zero command, including benign commands under || true or set +e. sft_setup_markers.sh treated any setup_failed reason= as actiona"
+---
+
+## Occurrence 1 — 2026-10-16T14:28:15-03:00
+
+**Error:**
+Weighted SFT Vast runs 5 and 6 self-destroyed at about 4 and 7 minutes during setup. sft_remote_setup.sh ERR trap wrote SETUP_FAILED line=N reason=trap on any non-zero command, including benign commands under || true or set +e. sft_setup_markers.sh treated any SETUP_FAILED reason= as actionable and sft_setup_fail_watchdog.sh destroyed. Vast audit: instance_DELETE came from the instance own IP.
+
+**Fix:**
+ERR trap now writes SETUP_TRAP_INFO only. SETUP_FAILED rc= is emitted only from die() via the EXIT trap when the script exits non-zero. Watchdog and pc1 monitor match anchored ^SETUP_FAILED rc= and ^SMOKE_BEFORE_TRAIN_FAILED only. Before destroy, write WATCHDOG_DESTROY_BEGIN with the trigger line and the last 200 log lines, scp/rsync to SFT_EVIDENCE_PUSH_TARGET if set, else keep the file in the evidence folder. WATCHDOG_DRY defaults off in the shell; orchestrator launches the first post-fix run with WATCHDOG_DRY=1 so the local monitor is the only destroyer. Heartbeat every 30s during pip and apt. Main 228b9c010e9878b13ba5bc7eea877c3032f8fb51.
 
 <!-- memory-fabric:store/failures/weighted-sft-watchdog-used-a9d3d406fb -->
 ---
@@ -9507,7 +9590,7 @@ summary: "Persisted memories for the weighted SFT false SETUP_FAILED pre-torch p
 priority: low
 tags: [episodic, session-journal]
 schema_version: 1.3
-last_updated: "2026-10-16T13:25:50-03:00"
+last_updated: "2026-10-16T14:47:14-03:00"
 ---
 
 ## save-memories-false-setup-failed
@@ -9539,6 +9622,28 @@ Confirmed weighted SFT marker-protocol harden already on main as 51cebd1 (pushed
 - Memories: fine-tuning/sft-weighted-marker-protocol-2026-10-16 plus failure entry for line>=470 / silent-25m
 
 - `.ai-memory/memory-store/fine-tuning/sft-weighted-marker-protocol-2026-10-16.md`
+
+## sft-trap-info-watchdog
+
+Stopped the weighted SFT setup ERR trap from destroying Vast GPUs. Trap noise is now SETUP_TRAP_INFO; only an anchored SETUP_FAILED rc= or SMOKE_BEFORE_TRAIN_FAILED line can destroy. The first post-fix launch uses WATCHDOG_DRY=1 so the local monitor is the only destroyer. Pushed 228b9c010e9878b13ba5bc7eea877c3032f8fb51 to main. Tests 44 passed; dry READY with DIRTY_OVERRIDES=(none). No GPU rented.
+
+- ERR trap logs SETUP_TRAP_INFO and never SETUP_FAILED
+- SETUP_FAILED rc= is emitted only by the EXIT trap on a real non-zero exit
+- Watchdog and pc1 monitor match anchored lines only
+- First post-fix weighted launch keeps WATCHDOG_DRY=1; shell default stays off
+
+
+## sft-vast-readiness-memory
+
+Saved the weighted SFT trap-info fix and the Vast readiness check. Main 228b9c0 is the launch SHA. No instance is billing; session 56270845 is stale. Credit $2.82 is under the $5 floor and under the $5.26 10-hour 4090 quote, so -Go must wait for a top-up.
+
+- First post-fix weighted launch stays WATCHDOG_DRY=1
+- Do not -Go until Vast credit covers the 10h RTX 4090 quote ($5.26 at $0.526/hr vs $2.82 credit)
+
+- `.ai-memory/memory-store/fine-tuning/sft-weighted-trap-info-2026-10-16.md`
+- `.ai-memory/memory-store/fine-tuning/sft-weighted-vast-credit-block-2026-10-16.md`
+- `.ai-memory/memory-store/failures/weighted-sft-vast-runs-cc1e1faa64.md`
+- `.ai-memory/memory-store/episodic/2026-10-16.md`
 
 <!-- memory-fabric:store/episodic/commits/2026-10-14/604fca57e1 -->
 ---

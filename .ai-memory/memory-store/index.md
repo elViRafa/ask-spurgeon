@@ -5,7 +5,7 @@ summary: "Index of all semantic memory store files."
 priority: high
 tags: [index, memory-store]
 schema_version: 1.3
-last_updated: "2026-10-16T13:26:13-03:00"
+last_updated: "2026-10-16T14:48:12-03:00"
 ---
 
 # Memory Store Index
@@ -54,7 +54,7 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `episodic/2026-10-13` | low | Committed and pushed open-theology QA queue growth on main | • qa-queue-commit-push<br>• sft-s8-weighted-forge | episodic, session-journal |
 | `episodic/2026-10-14` | low | Cleared the Forge GitHub blocker for weighted SFT by committing and pushing the recipe to main (c085120) | • sft-weighted-push<br>• sft-s8-crash-fix<br>• sft-residual-risk-audit<br>• save-sft-memories<br>• sft-s8-todo-build<br>• sft-s8-memory-commit<br>• vast-upload-path-investigation<br>• search-scp-sparse-checkout-quotes<br>• gpu-sparse-sync<br>• push-sparse-sync-forge | episodic, session-journal |
 | `episodic/2026-10-15` | low | Implemented and pushed weighted SFT remote CRLF harden on ask-spurgeon main from a Cloud Agent New Project session (empty Origin temp repo) | • sft-remote-crlf-push<br>• sft-s3-last-assistant-mask<br>• weighted-sft-monitor-harden<br>• sft-weighted-env-safeguards<br>• sft-weighted-setup-fail-fix<br>• sft-false-setup-failed-probe | episodic, session-journal |
-| `episodic/2026-10-16` | low | Persisted memories for the weighted SFT false SETUP_FAILED pre-torch probe fix landed on main as 1190682: store entry fine-tuning/sft-weighted-false-setup-failed-probe-2026-10-15 updated with SHA/veri | • save-memories-false-setup-failed<br>• sft-marker-protocol<br>• sft-marker-commit-push | episodic, session-journal |
+| `episodic/2026-10-16` | low | Persisted memories for the weighted SFT false SETUP_FAILED pre-torch probe fix landed on main as 1190682: store entry fine-tuning/sft-weighted-false-setup-failed-probe-2026-10-15 updated with SHA/veri | • save-memories-false-setup-failed<br>• sft-marker-protocol<br>• sft-marker-commit-push<br>• sft-trap-info-watchdog<br>• sft-vast-readiness-memory | episodic, session-journal |
 | `episodic/commits/2026-10-14/` | low | 1 passively captured commit(s). | • fix(sft): strip CR from weighted SSH remotes; 10m loading timeout | episodic, passive-capture, needs-review |
 | `failures/assertionerror-s-n-fail-b0de52ddcb` | medium | AssertionError: S3 FAIL: user turn leaked into labels in train_sft_sota.py _train_peft after weighted SFT S8 dataprep | • Occurrence 1 — 2026-10-14T10:00:16-03:00<br>• Occurrence 2 — 2026-10-15T12:10:30-03:00 | failure, fix, mask, multiturn, s3, sft, weighted |
 | `failures/asyncua-write-value-badtypemismatch-188c68c9d2` | medium | asyncua write_value BadTypeMismatch when writing int to UInt16 or Double node wi | • Occurrence 1 — 2026-08-12T08:59:14-04:00 | failure, fix |
@@ -94,6 +94,7 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `failures/vast-unsloth-cpt-sigsegv-smoke` | medium | **Verdict:** **FAIL** — same class of crash as SFT Unsloth on Vast | • Setup<br>• Observation<br>• Implication | vast, unsloth, cpt, superseded |
 | `failures/vast-unsloth-official-image-smoke` | high | - Still **SIGSEGV exit 139** at first `trainer.train()` step | • Attempted<br>• Result of LD_LIBRARY_PATH mitigation<br>• Conclusion | vast, unsloth, smoke, docker, sigsegv |
 | `failures/weighted-sft-exit-n-a8a9957108` | medium | Weighted SFT exit 139 SIGSEGV at step 0 first forward on two Vast hosts; torchao loading cpython-310 .so under Python 3.11 via --break-system-packages mixing image site-packages | • Occurrence 1 — 2026-10-15T14:21:09-03:00 | failure, fix, pins, sft, sigsegv, smoke, vast, venv, weighted |
+| `failures/weighted-sft-vast-runs-cc1e1faa64` | medium | Weighted SFT Vast runs 5 and 6 self-destroyed at about 4 and 7 minutes during setup | • Occurrence 1 — 2026-10-16T14:28:15-03:00 | err-trap, failure, fix, setup, sft, vast, watchdog, weighted |
 | `failures/weighted-sft-watchdog-used-a9d3d406fb` | medium | weighted SFT watchdog used line>=470 SETUP_FAILED gate and fixed 25m silent timeout on SETUP_OK; long pip / script drift risked mid-setup destroy after probe fix 1190682 | • Occurrence 1 — 2026-10-16T13:25:46-03:00 | failure, fix |
 | `fine-tuning/cpt-merged-hf-local-complete` | low | Complete CPT merge HF is now local (scp from Vast instance `50011937`) | • Status (2026-09-06) | cpt, sft, vast, merged-hf |
 | `fine-tuning/cursor-todo-sft-s8-weighted-2026-10-14` | medium | Completed on main `5b12b79` | • After (operator / Bots) | sft, weighted, todo, forge |
@@ -139,6 +140,8 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `fine-tuning/sft-weighted-monitor-harden-2026-10-15` | high | Monitor used boolean `pgrep` of `train_sft_sota.py` with a **10 min** loading timeout | • Root cause<br>• Fix on main (`9bfdd35`)<br>• Next | sft, weighted, vast, monitor, forge |
 | `fine-tuning/sft-weighted-setup-fail-unsloth-2026-10-15` | high | `assert_pins` bare `import unsloth` under `set -e` → unsloth_zoo ImportError even with packages installed | • Run3 failure<br>• Fix on main (`f82229b`)<br>• Verify<br>• Next | sft, weighted, vast, peft, unsloth, watchdog |
 | `fine-tuning/sft-weighted-sparse-sync` | high | Stop bulk SCP of `qa_mix_train.jsonl` (~36 MB) laptop-to-Vast | • Contract<br>• Ops notes | sft, vast, sparse-checkout, sync, upload |
+| `fine-tuning/sft-weighted-trap-info-2026-10-16` | high | Landed on main: `228b9c010e9878b13ba5bc7eea877c3032f8fb51` | • Bug<br>• Fix<br>• Verify<br>• Ops next | sft, weighted, vast, watchdog, setup |
+| `fine-tuning/sft-weighted-vast-credit-block-2026-10-16` | high | Code on main `228b9c010e9878b13ba5bc7eea877c3032f8fb51` is ready to launch | • Live read (no rent)<br>• Ops next | sft, weighted, vast, credit, readiness |
 | `fine-tuning/vast-gate0-candidate` | medium | While Vultr GPU is blocked ~30 days, **Vast.ai can run GATE-0** if we rent a reliable SSH GPU and reuse remote scripts (`sft_remote_setup.sh` / merge / train) | • Fit<br>• Risks / ops<br>• Status<br>• Cost ballpark BRL (2026-09-05, FX ~R$5.13/USD) | cost, brl |
 | `fine-tuning/vast-gate0-live` | high | **Started:** 2026-09-05 ~19:42 ET (operator said go) | • Instance<br>• Fixes during run<br>• Status | vast, sft, gate0, live |
 | `fine-tuning/vast-gate0-next-session` | medium | **Status:** COMPLETE (2026-09-06 / 2026-09-07) | • GATE-0 train (prior)<br>• Merge → GGUF → Ollama (completed)<br>• Related DONE memories | huggingface, sft, ollama, vast, complete, done |
