@@ -59,7 +59,7 @@ summary: "Map of available project memory sections."
 priority: high
 tags: [index, memory]
 schema_version: 1.3
-last_updated: "2026-10-15T14:29:39-03:00"
+last_updated: "2026-10-16T13:00:08-03:00"
 consolidation_hash: acd058fab27bf79aa31f9bd2e3dc7172
 contradictions: ["`fine-tuning/hf-spurgeon-qa-v2-gguf` and `fine-tuning/plans/ollama-merge-gguf` cover similar content but state different numbers (2.71 vs 07) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-next-session-handoff` cover similar content but state different numbers (1 vs 1.701 / 2.449 / 2250) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-s8-mhi-resume-c-prepared` cover similar content but state different numbers (1 / 2.8 / 2026.8 vs -) - review for conflict [heuristic]", "`pretraining/cpt-b-eval-strategy` and `pretraining/cpt-eval-unify-v"]
 consolidation_warnings: ["Skipped bugs\\gemma4-chat-template-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped bugs\\ollama-tokenizer-corruption-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped decisions\\gemma4-local-ollama.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-12.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-14.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-08-23.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-08-28.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-09-15.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\clerk-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\CURSOR_TODO_SFT_S8_WEIGHTED_2026-10-14.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\foundry-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\qa-open-theology-sft-handoff-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\runpod-sft-gate0-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\sft-s3-mask-multiturn-brief-2026-10-15.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-b-eval-strategy-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-expansion-plan.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-s1-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-s5-b-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-s6-c-eval-next-session.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-s6-phase0-prepared.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-implementation-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-next-steps-after-v13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-plan-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-runpod-mcp-volume-gap.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v3-s6-handoff.md during index regeneration: Missing YAML frontmatter delimiter"]
@@ -77,9 +77,9 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `bugs` | medium | Generated map of memory-store/bugs/ (5 entries). | • **Qwen3.5 processor text-as-image in C_eval** (`bugs/qwen...<br>• **Bug Fix: Unsloth Embedding Offload on Read-Only Filesys...<br>• **Bug Fix: Training embed_tokens and lm_head when resizin... |
 | `debt` | low | App debt (hybrid search, rate limits) plus 2026-08-29 memory-fabric LLM/host hygiene notes. | • Known Technical Debt & Limits<br>• Roadmap & Pending Features |
 | `decisions` | medium | Generated map of memory-store/decisions/ (1 entries). | • **Gemma 4 Fine-Tuning Transition** (`decisions/gemma4-fin... |
-| `episodic` | medium | Generated map of memory-store/episodic/ (34 entries). | • **2026-09-28** (`episodic/2026-09-28`, medium) — Reframed...<br>• **2026-10-02** (`episodic/2026-10-02`, medium) —<br>• **2026-10-05** (`episodic/2026-10-05`, medium) — |
-| `failures` | medium | Generated map of memory-store/failures/ (36 entries). | • **Vast official Unsloth image smoke blocked; LD_LIBRARY_P...<br>• **AssertionError: S3 FAIL row 5: user turn leaked into la...<br>• **asyncua write_value BadTypeMismatch when writing int to... |
-| `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (50 entries). | • **Fine-tuning next session handoff** (`fine-tuning/next-s...<br>• **Open theology QA slice tooling ready for Clerk** (`fine...<br>• **Next session: plan open theological QA slice** (`fine-t... |
+| `episodic` | medium | Generated map of memory-store/episodic/ (35 entries). | • **2026-09-28** (`episodic/2026-09-28`, medium) — Reframed...<br>• **2026-10-02** (`episodic/2026-10-02`, medium) —<br>• **2026-10-05** (`episodic/2026-10-05`, medium) — |
+| `failures` | medium | Generated map of memory-store/failures/ (38 entries). | • **Vast official Unsloth image smoke blocked; LD_LIBRARY_P...<br>• **AssertionError: S3 FAIL row 5: user turn leaked into la...<br>• **asyncua write_value BadTypeMismatch when writing int to... |
+| `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (52 entries). | • **Fine-tuning next session handoff** (`fine-tuning/next-s...<br>• **Open theology QA slice tooling ready for Clerk** (`fine...<br>• **Next session: plan open theological QA slice** (`fine-t... |
 | `framework-rules` | medium | Defines coding standards, required libraries (Streamlit, LlamaIndex), environment setup (.env), and database rules for the codebase. | • 1. Runtime Environment<br>• 2. Core Libraries & Packages<br>• 3. Vector Database Rules<br>• 4. Agent Memory Guidelines |
 | `grok` | medium | Generated map of memory-store/grok/ (6 entries). | • **Grok Bot Clerk for open-theology QA generation** (`grok...<br>• **Grok Bot Forge for Vast/Runpod training** (`grok/forge-...<br>• **Grok Bot Foundry for train/export code** (`grok/foundry... |
 | `pretraining` | medium | Generated map of memory-store/pretraining/ (101 entries). | • **CPT B_training_sota known issues (P1 closed — log spam)...<br>• **Composite CPT early stop merges split HF eval events** ...<br>• **Confessions + Institutes corpus (WCF, 1689, Calvin)** (... |
@@ -205,6 +205,7 @@ tags: [cpt, early-stop, transformers, bug, eval]
 schema_version: 1.3
 last_updated: "2026-09-15T11:34:36-03:00"
 evidence: [continued_pretrain/scripts/cpt_runtime.py, continued_pretrain/scripts/train_cpt_sota.py, continued_pretrain/scripts/test_cpt_runtime.py, continued_pretrain/scripts/_gen_sota_notebooks.py]
+review_status: stale
 ---
 
 # Composite early-stop split-eval fix (Phase 0, 2026-09-15)
@@ -3982,6 +3983,41 @@ Exit 139 SIGSEGV at step 0 (first forward) on two Vast hosts with different driv
 ## Ops
 Do not rent from Cursor. Forge dry then operator go after push. Dirty sync needs `-AllowDirtySync` until committed SHA is on origin.
 
+<!-- memory-fabric:store/fine-tuning/sft-weighted-false-setup-failed-probe-2026-10-15 -->
+---
+store_path: fine-tuning/sft-weighted-false-setup-failed-probe-2026-10-15
+title: "Weighted SFT: false SETUP_FAILED from pre-torch probe"
+summary: "Landed on main: `1190682056d767a9d81e92bfb10777af3a62d93e` (2026-10-15)"
+priority: high
+tags: [sft, weighted, vast, setup, watchdog, evidence]
+schema_version: 1.3
+last_updated: "2026-10-16T12:48:24-03:00"
+evidence: ["commit:1190682", fine_tuning/scripts/sft_remote_setup.sh, fine_tuning/scripts/sft_setup_fail_watchdog.sh, fine_tuning/scripts/vast_sft_s8_weighted_orchestrate.ps1, fine_tuning/tests/test_sft_pre_torch_probe_no_setup_failed.py]
+---
+
+# Weighted SFT false SETUP_FAILED (pre-torch probe)
+
+Landed on main: `1190682056d767a9d81e92bfb10777af3a62d93e` (2026-10-15).
+
+## Bug
+`set +e` does **not** suppress the ERR trap. The informational `python3 -c 'import torch...'` before pin install failed as expected, trap wrote `SETUP_FAILED line=50`, and watchdog + monitor destroyed the instance while pip was still installing torch. `pre_torch_rc=$?` after `| tee` was tee's status, not python's. Evidence folders sometimes claimed "saved" with only meta / tiny vastai_logs (AddRange listing crash).
+
+## Fix
+1. `trap - ERR` around the probe (and pins_already_ok expected-fail imports); restore after.
+2. Append probe output to `$SETUPLOG` without `| tee`; capture `pre_torch_rc=$?`.
+3. Emit `SETUP_PINS_OK` after `assert_pins`.
+4. Watchdog + monitor: actionable SETUP_FAILED only if `SETUP_PINS_OK` present, or `reason=`, or trap line >= 470. Explicit early fails (nvidia-smi) still destroy.
+5. `Save-WeightedEvidence`: real scp/capture payload required; no "evidence saved" when nothing copied; fix AddRange listing crash.
+6. Offline test: fake python3 exits 1 → no SETUP_FAILED line (`test_sft_pre_torch_probe_no_setup_failed.py`).
+
+## Verify
+- pytest: 36 passed (probe + env safeguards + monitor + weighted plan)
+- Dry: READY, DIRTY_OVERRIDES=(none), PINNED_SHA=`1190682`
+- No GPU rented; `qa_open_theology/` not staged
+
+## Ops next
+Forge dry then operator **go** with `-Go` (monitor auto). Seq stays 4608. No Hub until F gates.
+
 <!-- memory-fabric:store/fine-tuning/sft-weighted-monitor-harden-2026-10-15 -->
 ---
 store_path: fine-tuning/sft-weighted-monitor-harden-2026-10-15
@@ -4012,6 +4048,38 @@ Monitor used boolean `pgrep` of `train_sft_sota.py` with a **10 min** loading ti
 ## Next
 
 Forge dry then operator **go** (credit). Do not rent from Cursor. No Hub until F gates.
+
+<!-- memory-fabric:store/fine-tuning/sft-weighted-setup-fail-unsloth-2026-10-15 -->
+---
+store_path: fine-tuning/sft-weighted-setup-fail-unsloth-2026-10-15
+title: "Weighted SFT setup: skip unsloth on peft + fail watchdog"
+summary: "`assert_pins` bare `import unsloth` under `set -e` → unsloth_zoo ImportError even with packages installed"
+priority: high
+tags: [sft, weighted, vast, peft, unsloth, watchdog]
+schema_version: 1.3
+last_updated: "2026-10-15T16:20:33-03:00"
+evidence: ["commit:f82229b", fine_tuning/scripts/sft_remote_setup.sh, fine_tuning/scripts/sft_setup_fail_watchdog.sh, fine_tuning/scripts/vast_sft_s8_weighted_orchestrate.ps1]
+---
+
+# Weighted SFT setup fail fix (2026-10-15)
+
+## Run3 failure
+`assert_pins` bare `import unsloth` under `set -e` → unsloth_zoo ImportError even with packages installed. Setup exit 1; no smoke/train. Launcher without `-StartMonitor` left GPU idle ~30m. Image `/usr/local/lib/python3.11/dist-packages` (torchao cpython-310 .so) leaked into the train env.
+
+## Fix on main (`f82229b`)
+1. Install/import unsloth + unsloth_zoo only when `SFT_BACKEND=unsloth` (weighted uses peft).
+2. Isolated venv: no system-site-packages, `PYTHONNOUSERSITE=1`, assert no image dist-packages on `sys.path`.
+3. Verbose pip (no `-q`); LD/libcuda/torch.cuda diagnostics before first `unset LD_LIBRARY_PATH`; fail fast if nvidia-smi missing.
+4. ERR trap → `SETUP_FAILED line=<n>` in `sft_setup.log`.
+5. Detached `sft_setup_fail_watchdog.sh`: evidence then self-destroy on setup/smoke fail.
+6. Orchestrator: try/catch → `Invoke-DestroyOnFail`; monitor breaks on `SETUP_FAILED` / `SMOKE_BEFORE_TRAIN_FAILED`; `-Go` implies `-StartMonitor`; `Start-Transcript`.
+
+## Verify
+- pytest env safeguards + monitor + weighted plan: 32 passed
+- Dry: READY, DIRTY_OVERRIDES=(none)
+- No GPU rented in this session
+
+## Next
 
 <!-- memory-fabric:store/fine-tuning/sft-weighted-sparse-sync -->
 ---
@@ -5315,15 +5383,15 @@ Execution configurations and dependency management rules for continued pretraini
 <!-- memory-fabric:local/episodic -->
 ---
 section: episodic
-summary: "Generated map of memory-store/episodic/ (34 entries)."
+summary: "Generated map of memory-store/episodic/ (35 entries)."
 priority: medium
 tags: [episodic]
 schema_version: 1.3
-last_updated: "2026-10-15T12:32:00+00:00"
+last_updated: "2026-10-16T12:48:29-03:00"
 generated: true
 generated_from: memory-store/episodic
-store_fingerprint: 1a58428c6d90cc0f18ab5dd469268b38
-body_hash: cd9c5bc994a8a95735d2e64f3662cdaa
+store_fingerprint: 01e36603837ea13acf38037f3db9468c
+body_hash: cf5a555963d7834a497a4a4048ffdc03
 ---
 
 # Episodic Map
@@ -5344,7 +5412,7 @@ Generated by Memory Fabric from `memory-store/episodic/` — do not edit by hand
 - **Episodic Journal — 2026-08-31** (`episodic/2026-08-31`, low) — Verified live QA mix against serve contract and F5 targets
 - **Episodic Journal — 2026-09-01** (`episodic/2026-09-01`, low) — Verified QA teacher rewrite resume point (line 1786 per handoff, confirmed live)
 - **Episodic Journal — 2026-09-02** (`episodic/2026-09-02`, low) — Saved QA rewrite stop point to memory: pass 1 complete (3244/3244 attempted), 1466 ok / 1778 drops remaining for --retry-drops, 1465 bulk merged, quote 49.1%, teacherish 1485
-- …and 20 more entries — see `memory-store/index.md`.
+- …and 21 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:store/pretraining/eval-and-export -->
 ---
@@ -5368,15 +5436,15 @@ Following the successful execution of Notebook B (Epoch 1 & 2) up to step 432:
 <!-- memory-fabric:local/failures -->
 ---
 section: failures
-summary: "Generated map of memory-store/failures/ (36 entries)."
+summary: "Generated map of memory-store/failures/ (38 entries)."
 priority: medium
 tags: [failures]
 schema_version: 1.3
-last_updated: "2026-10-15T14:21:09-03:00"
+last_updated: "2026-10-15T18:46:25-03:00"
 generated: true
 generated_from: memory-store/failures
-store_fingerprint: 2643575455f3e4ed0eb9431d1accb758
-body_hash: c2d5c89cb7777961cf7629fb8c8bf014
+store_fingerprint: 5fefd190e898477aaeb81f7b725f64c6
+body_hash: 25844bf957b29aa09a1d4b73b7e7da17
 ---
 
 # Failures Map
@@ -5391,20 +5459,20 @@ Generated by Memory Fabric from `memory-store/failures/` — do not edit by hand
 - **CPT B early-stop patience=2 with eval_steps=25 and 2-doc eval_spurgeon_loss halt** (`failures/cpt-b-early-stop-561e9ec07f`, medium) — CPT B early-stop patience=2 with eval_steps=25 and 2-doc eval_spurgeon_loss halted corpus v3 at step 375 of 4128 (~8.2M of 90M tokens)
 - **torch.OutOfMemoryError: CUDA out of memory during SFTTrainer.evaluate at step 20** (`failures/cuda-oom-during-mid-ffcb775074`, medium) — CUDA OOM during mid-train eval at step ~20 with PEFT bf16 seq 2048 on RTX 4090 24GB
 - **CUDA OOM on Kaggle T4 during CPT B v5 after manual pack (float32 Qwen3.5, batch ** (`failures/cuda-oom-on-kaggle-e64e9b60ce`, medium) — CUDA OOM on Kaggle T4 during CPT B v5 after manual pack (float32 Qwen3.5, batch 2, TRAIN_EMBEDDINGS=True)
-- …and 28 more entries — see `memory-store/index.md`.
+- …and 30 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:local/fine-tuning -->
 ---
 section: fine-tuning
-summary: "Generated map of memory-store/fine-tuning/ (50 entries)."
+summary: "Generated map of memory-store/fine-tuning/ (52 entries)."
 priority: medium
 tags: [fine-tuning]
 schema_version: 1.3
-last_updated: "2026-10-15T14:21:48-03:00"
+last_updated: "2026-10-16T12:48:24-03:00"
 generated: true
 generated_from: memory-store/fine-tuning
-store_fingerprint: 0bd536ea4aec2e85189e7e2c66aadfa4
-body_hash: 1fd600f42f1bbc6432105084de3e4ce3
+store_fingerprint: 06d8ac1410acb525077f7af1a21588ef
+body_hash: e0119787b55cb0bc3958bfc8c7482614
 ---
 
 # Fine Tuning Map
@@ -5423,7 +5491,7 @@ Generated by Memory Fabric from `memory-store/fine-tuning/` — do not edit by h
 - **QA verify + F5 slice gap report** (`fine-tuning/qa-prompt-strategy-verify`, high) — After overlay-safe catechism variants + multiturn merge:
 - **One prompt; diversify task slices** (`fine-tuning/qa-prompt-type-decision`, high) — **Locked after live verify.** Improves SFT via example-type diversity, not multiple prompts
 - **QA Sources Rewrite Progress** (`fine-tuning/qa-sources-rewrite-progress`, high) — Cross-session log of QA answer rewrite pipeline for SFT teacherish/quote fidelity
-- …and 38 more entries — see `memory-store/index.md`.
+- …and 40 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:store/failures/full-semantic-judge-run-2188a7bf04 -->
 ---
@@ -6178,6 +6246,54 @@ Windows PowerShell here-strings keep CRLF; bash on the GPU treats `\r` as part o
 ## Evidence
 
 - commits: `604fca5`, `7dfaca8`
+
+<!-- memory-fabric:store/failures/sft-remote-setup-sh-65f34726a7 -->
+---
+store_path: failures/sft-remote-setup-sh-65f34726a7
+title: "sft_remote_setup.sh assert_pins bare import unsloth under set -euo pipefail fail"
+summary: "sft_remote_setup.sh assert_pins bare import unsloth under set -euo pipefail failed with unsloth_zoo ImportError Please install Unsloth via pip install unsloth despite pip list showing unsloth 2026.9.2"
+priority: medium
+tags: [failure, fix, peft, setup, sft, unsloth, vast, watchdog, weighted]
+schema_version: 1.3
+last_updated: "2026-10-15T16:20:25-03:00"
+occurrences: 1
+error_signature: "sft_remote_setup.sh assert_pins bare import unsloth under set -euo pipefail failed with unsloth_zoo importerror please install unsloth via pip install unsloth despite pip list showing unsloth <n>.<n>.<n> and unsloth_zoo <n>.<n>.<n>; setup exited <n>; no smoke<path>; local launcher without -startmoni"
+failure_key: importerror
+---
+
+## Occurrence 1 — 2026-10-15T16:20:25-03:00
+
+**Error:**
+sft_remote_setup.sh assert_pins bare import unsloth under set -euo pipefail failed with unsloth_zoo ImportError Please install Unsloth via pip install unsloth despite pip list showing unsloth 2026.9.2 and unsloth_zoo 2026.9.1; setup exited 1; no smoke/train; local launcher without -StartMonitor left Vast instance idle ~30 min billing; torchao cpython-310 .so warnings under py3.11 venv from image dist-packages leak
+
+**Fix:**
+Gate unsloth/unsloth_zoo install+import to SFT_BACKEND=unsloth only (weighted peft path skips). Harden isolated venv (no system-site-packages, PYTHONNOUSERSITE, refuse image dist-packages on sys.path). Drop pip -q. CUDA/LD diagnostics before first unset LD_LIBRARY_PATH. ERR trap writes SETUP_FAILED line=N. Remote sft_setup_fail_watchdog.sh evidence+self-destroy. Orchestrator: -Go implies -StartMonitor, Start-Transcript, launch try/catch Invoke-DestroyOnFail, monitor breaks fast on SETUP_FAILED/SMOKE_BEFORE_TRAIN_FAILED.
+
+<!-- memory-fabric:store/failures/sft-remote-setup-sh-7383d17245 -->
+---
+store_path: failures/sft-remote-setup-sh-7383d17245
+title: "sft_remote_setup.sh pre-torch python3 -c import torch | tee under set -euo pipef"
+summary: "sft_remote_setup.sh pre-torch python3 -c import torch | tee under set -euo pipefail and ERR trap wrote SETUP_FAILED line=50 even with set +e; pre_torch_rc=$? captured tee not python; watchdog/monitor "
+priority: medium
+tags: [err-trap, failure, fix, setup, sft, vast, watchdog, weighted]
+schema_version: 1.3
+last_updated: "2026-10-16T12:48:26-03:00"
+occurrences: 2
+error_signature: "sft_remote_setup.sh pre-torch python<n> -c import torch | tee under set -euo pipefail and err trap wrote setup_failed line=<n> even with set +e; pre_torch_rc=$? captured tee not python; watchdog<path> treated false setup_failed as real and destroyed vast instance mid-setup"
+---
+
+## Occurrence 1 — 2026-10-15T18:46:25-03:00
+
+**Error:**
+sft_remote_setup.sh pre-torch python3 -c import torch | tee under set -euo pipefail and ERR trap wrote SETUP_FAILED line=50 even with set +e; pre_torch_rc=$? captured tee not python; watchdog/monitor treated false SETUP_FAILED as real and destroyed Vast instance mid-setup
+
+**Fix:**
+Disable ERR trap around expected-fail pre-torch probe and pins_already_ok checks; append to SETUPLOG without piping through tee so $? is python's rc; emit SETUP_PINS_OK after assert_pins; watchdog/monitor actionable_setup_failed only after SETUP_PINS_OK or reason= or line>=470; Save-WeightedEvidence requires real payload and does not print evidence saved when nothing copied; offline fake-python3 probe test.
+
+## Occurrence 2 — 2026-10-16T12:48:26-03:00
+
+
+Landed main 1190682: trap - ERR around expected-fail probe and pins_already_ok; append SETUPLOG without tee so $? is python; SETUP_PINS_OK after assert_pins; watchdog/monitor actionable_setup_failed only after SETUP_PINS_OK or reason= or line>=470; Save-WeightedEvidence requires real payload and does not print evidence saved when empty; offline fake-python3 probe test.
 
 <!-- memory-fabric:store/fine-tuning/sft-s8-weighted-residual-risks -->
 ---
@@ -9252,7 +9368,7 @@ summary: "Implemented and pushed weighted SFT remote CRLF harden on ask-spurgeon
 priority: low
 tags: [episodic, session-journal]
 schema_version: 1.3
-last_updated: "2026-10-15T14:29:11-03:00"
+last_updated: "2026-10-15T18:47:42-03:00"
 ---
 
 ## sft-remote-crlf-push
@@ -9308,6 +9424,46 @@ Operator asked to save memories and push. Session already landed weighted SFT en
 - Do not stage fine_tuning/data/qa_open_theology/
 
 - `.ai-memory/memory-store/episodic/2026-10-15.md`
+
+## sft-weighted-setup-fail-fix
+
+Fixed weighted SFT S8 Vast setup crash from bare import unsloth on the peft path. Gated unsloth install/import, hardened venv isolation against image dist-packages, added SETUP_FAILED ERR trap, remote self-destroy watchdog, and orchestrator monitor/transcript/-Go implies -StartMonitor. Tests 32 passed; dry READY with DIRTY_OVERRIDES=(none); pushed f82229b to main. No GPU rented.
+
+- Skip unsloth/unsloth_zoo unless SFT_BACKEND=unsloth (weighted stays peft)
+- Remote watchdog writes evidence then self-destroys on early setup/smoke failure
+- -Go forces -StartMonitor to prevent idle billing when the local launcher dies
+
+- `fine_tuning/scripts/sft_setup_fail_watchdog.sh`
+
+## sft-false-setup-failed-probe
+
+Fixed false SETUP_FAILED from the pre-torch probe in sft_remote_setup.sh (ERR trap fired despite set +e; $? captured tee not python). Gated watchdog/monitor on SETUP_PINS_OK/reason=/line>=470; fixed Save-WeightedEvidence empty-folder false success; added offline fake-python3 probe test. 36 tests passed; dry READY DIRTY_OVERRIDES=(none); pushed 1190682 to main. No GPU rented.
+
+- set +e does not suppress ERR trap — must trap - ERR around expected-fail probes
+- SETUP_FAILED actionable only after SETUP_PINS_OK, with reason=, or line>=470
+- evidence saved message only when real non-empty payload copied
+
+- `fine_tuning/tests/test_sft_pre_torch_probe_no_setup_failed.py`
+
+<!-- memory-fabric:store/episodic/2026-10-16 -->
+---
+store_path: episodic/2026-10-16
+title: "Episodic Journal — 2026-10-16"
+summary: "Persisted memories for the weighted SFT false SETUP_FAILED pre-torch probe fix landed on main as 1190682: store entry fine-tuning/sft-weighted-false-setup-failed-probe-2026-10-15 updated with SHA/veri"
+priority: low
+tags: [episodic, session-journal]
+schema_version: 1.3
+last_updated: "2026-10-16T12:48:29-03:00"
+---
+
+## save-memories-false-setup-failed
+
+Persisted memories for the weighted SFT false SETUP_FAILED pre-torch probe fix landed on main as 1190682: store entry fine-tuning/sft-weighted-false-setup-failed-probe-2026-10-15 updated with SHA/verify/ops; failure memory refreshed; no code changes this turn.
+
+**Key decisions:**
+- set +e does not disable ERR trap — use trap - ERR for expected-fail probes
+- actionable SETUP_FAILED only after SETUP_PINS_OK / reason= / line>=470
+- evidence saved only when real payload copied
 
 <!-- memory-fabric:store/episodic/commits/2026-10-14/604fca57e1 -->
 ---
