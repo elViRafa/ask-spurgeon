@@ -90,26 +90,33 @@ def test_setup_prints_ld_and_cuda_before_first_unset() -> None:
     assert "SETUP_FAILED" in text
 
 
-def test_setup_err_trap_writes_setup_failed_marker() -> None:
+def test_setup_err_trap_is_info_and_exit_emits_setup_failed_rc() -> None:
     text = SETUP.read_text(encoding="utf-8")
-    assert "SETUP_FAILED line=" in text
+    assert "SETUP_TRAP_INFO line=" in text
+    assert 'echo "SETUP_FAILED rc=${rc}"' in text
     assert "trap" in text
-    assert "on_setup_err" in text or "SETUP_FAILED line=${" in text
-    assert "reason=trap phase=" in text
+    assert "on_setup_err" in text
+    assert "on_exit_setup" in text
+    assert "die()" in text or "die ()" in text
+    assert "reason=trap phase=" not in text
     assert "SETUP_PHASE=boot" in text
     assert "SETUP_PINS_OK" in text
     assert "SETUP_PHASE=pins_ok" in text
     assert "PRE_TORCH_PROBE_BEGIN" in text
     assert "trap - ERR" in text
     assert "PRE_UNSET_TORCH_IMPORT_SKIP" in text
+    assert "SETUP_HEARTBEAT" in text
+    assert "sleep 30" in text
 
 
-def test_watchdog_gates_setup_failed_on_pins_ok() -> None:
+def test_watchdog_matches_anchored_setup_failed_rc() -> None:
     text = WATCHDOG.read_text(encoding="utf-8")
-    assert "SETUP_PINS_OK" in text
+    assert "^SETUP_FAILED rc=[0-9]+" in text
+    assert "^SMOKE_BEFORE_TRAIN_FAILED" in text
     assert "actionable_setup_failed_in" in text
     assert "sft_setup_markers.sh" in text
-    assert "reason=" in text
+    assert 'WATCHDOG_DRY="${WATCHDOG_DRY:-0}"' in text
+    assert "would destroy" in text
     assert "-ge 470" not in text
     assert "SILENT_CAP_MIN" in text
 

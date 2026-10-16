@@ -82,13 +82,24 @@ local monitor). Do **not** idle-destroy while the setup log is still advancing.
 | `SETUP_PHASE=pins` | Pin install in progress (long pip is normal) |
 | `SETUP_PINS_OK` / `SETUP_PHASE=pins_ok` | Pins asserted |
 | `SETUP_OK` / `SETUP_PHASE=ok` | Isolated env ready |
-| `SETUP_FAILED line=N reason=…` | Actionable fail (nvidia-smi, trap, …) |
-| `SMOKE_BEFORE_TRAIN_FAILED` | Train-script smoke died (immediate destroy) |
+| `SETUP_TRAP_INFO line=N cmd=… rc=…` | ERR trap noise. Never destroys. |
+| `SETUP_FAILED rc=N` | Real abort (line must start with this). `die` or non-zero EXIT. |
+| `SMOKE_BEFORE_TRAIN_FAILED` | Train-script smoke died (line must start with this) |
+| `SETUP_HEARTBEAT …` | Pip/apt still moving (every 30s) |
 | `FULL_TRAIN` | Full train started; watchdog exits healthy |
 
-**Actionable `SETUP_FAILED`:** has `reason=`, **or** appears *after* the last
-`SETUP_PINS_OK` / `SETUP_PHASE=pins_ok` in the same log. Bare early
-`SETUP_FAILED line=50` (legacy probe false positive) is ignored.
+**Actionable fail:** a log line that **starts with** `SETUP_FAILED rc=` or
+`SMOKE_BEFORE_TRAIN_FAILED`. Text that merely contains those words does not
+destroy. `SETUP_TRAP_INFO` (including `|| true` and `set +e`) does not destroy.
+
+**First launch after this fix:** orchestrator default `-WatchdogDry 1`. The
+remote watchdog writes `WATCHDOG_DRY would destroy` and does not DELETE. The
+pc1 monitor is the only destroyer. Pass `-WatchdogDry 0` after one clean setup.
+
+**Before any remote destroy** (when dry is off): `WATCHDOG_DESTROY_BEGIN
+reason=… trigger_line=<exact log line>` plus the last 200 log lines in
+`/workspace/sft_fail_evidence/watchdog_destroy_begin.txt`, scp/rsync to
+`SFT_EVIDENCE_PUSH_TARGET` when that env var is set on pc1.
 
 **Watchdog silent timeout:** base grace ~25m, **extended while `sft_setup.log`
 mtime/size advances**, cap ~90m; destroys only when the log is stale (~5m) and

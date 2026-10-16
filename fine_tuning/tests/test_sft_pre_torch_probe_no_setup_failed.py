@@ -44,7 +44,8 @@ def test_setup_probe_disables_err_trap_and_captures_python_rc() -> None:
     text = SETUP.read_text(encoding="utf-8")
     probe = _extract_probe_section(text)
     assert "trap - ERR" in probe
-    assert "trap 'on_setup_err $LINENO' ERR" in probe
+    assert "on_setup_err" in probe
+    assert "err_cmd=$BASH_COMMAND" in probe
     assert "pre_torch_rc=$?" in probe
     # Must not pipe the python probe through tee (that captures tee's status).
     py_lines = [ln for ln in probe.splitlines() if "python3 -c" in ln]
@@ -55,15 +56,15 @@ def test_setup_probe_disables_err_trap_and_captures_python_rc() -> None:
     assert "on_setup_err" in text
 
 
-def test_watchdog_and_monitor_gate_setup_failed_until_pins_ok() -> None:
+def test_watchdog_and_monitor_match_anchored_setup_failed_rc() -> None:
     wd = WATCHDOG.read_text(encoding="utf-8")
     orch = ORCH.read_text(encoding="utf-8")
     assert "actionable_setup_failed_in" in wd
     assert "sft_setup_markers.sh" in wd
-    assert "SETUP_PINS_OK" in wd
-    assert "reason=" in wd
+    assert "^SETUP_FAILED rc=[0-9]+" in wd
+    assert "^SMOKE_BEFORE_TRAIN_FAILED" in wd
     assert "-ge 470" not in wd
-    assert "SETUP_PINS_OK" in orch
+    assert "^SETUP_FAILED rc=[0-9]+" in orch
     assert "actionable_setup_failed_in" in orch
     assert "sft_setup_markers.sh" in orch
     assert "-ge 470" not in orch

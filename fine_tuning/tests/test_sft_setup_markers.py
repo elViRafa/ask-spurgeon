@@ -31,8 +31,8 @@ def _bash() -> str:
     raise RuntimeError("Git Bash is required for sft_setup_markers offline tests on Windows")
 
 
-def _run_actionable(log_body: str) -> int:
-    """Return 0 if actionable_setup_failed_in says yes, else 1."""
+def _run_fn(fn: str, log_body: str) -> int:
+    """Return 0 if fn says the log is a destroy trigger, else 1."""
     bash = _bash()
     with tempfile.TemporaryDirectory() as td:
         td_path = Path(td)
@@ -47,7 +47,7 @@ def _run_actionable(log_body: str) -> int:
                     "#!/usr/bin/env bash",
                     "set -euo pipefail",
                     f'source "{markers_unix}"',
-                    f'if actionable_setup_failed_in "{log_unix}"; then exit 0; else exit 1; fi',
+                    f'if {fn} "{log_unix}"; then exit 0; else exit 1; fi',
                     "",
                 ]
             ),
@@ -66,97 +66,103 @@ def _run_actionable(log_body: str) -> int:
         return proc.returncode
 
 
-def test_markers_file_exists_and_has_no_lineno_gate() -> None:
+def _run_actionable(log_body: str) -> int:
+    return _run_fn("actionable_setup_failed_in", log_body)
+
+
+def _run_smoke(log_body: str) -> int:
+    return _run_fn("actionable_smoke_failed_in", log_body)
+
+
+def test_markers_file_matches_anchored_lines_only() -> None:
     text = MARKERS.read_text(encoding="utf-8")
     assert "actionable_setup_failed_in" in text
-    assert "SETUP_PINS_OK" in text
-    assert "SETUP_PHASE=pins_ok" in text
-    assert "reason=" in text
+    assert "actionable_smoke_failed_in" in text
+    assert "^SETUP_FAILED rc=[0-9]+" in text
+    assert "^SMOKE_BEFORE_TRAIN_FAILED" in text
+    assert "SETUP_TRAP_INFO" in text
     assert "470" not in text
     assert "-ge " not in text
     assert "BASH_REMATCH" not in text
 
 
-def test_watchdog_and_orch_source_markers_no_lineno_gate() -> None:
+def test_watchdog_and_orch_source_anchored_markers() -> None:
     wd = WATCHDOG.read_text(encoding="utf-8")
     orch = ORCH.read_text(encoding="utf-8")
     setup = SETUP.read_text(encoding="utf-8")
+    anchor = "^SETUP_FAILED rc=[0-9]+"
+    smoke = "^SMOKE_BEFORE_TRAIN_FAILED"
     assert "sft_setup_markers.sh" in wd
     assert "sft_setup_markers.sh" in orch
+    assert anchor in wd and anchor in orch and anchor in MARKERS.read_text(encoding="utf-8")
+    assert smoke in wd and smoke in orch
     assert "SILENT_CAP_MIN" in wd
     assert "WATCHDOG_SILENT_EXTEND" in wd
     assert "SILENT_STALE_SEC" in wd
+    assert 'WATCHDOG_DRY="${WATCHDOG_DRY:-0}"' in wd
+    assert "would destroy" in wd
+    assert "WATCHDOG_DESTROY_BEGIN reason=" in wd
+    assert "trigger_line=" in wd
+    assert "tail -n 200" in wd
+    assert "rsync" in wd and "scp" in wd
     assert "line>=470" not in wd
     assert "line>=470" not in orch
     assert "-ge 470" not in wd
     assert "-ge 470" not in orch
+    assert 'grep -q "SMOKE_BEFORE_TRAIN_FAILED"' not in orch
+    assert "grep -q 'SMOKE_BEFORE_TRAIN_FAILED'" not in wd
     assert "SETUP_PHASE=boot" in setup
     assert "SETUP_PHASE=pins" in setup
-    assert "SETUP_PHASE=pins_ok" in setup
-    assert "reason=trap phase=" in setup
-    assert "SETUP_PINS_OK" in setup
+    assert "SETUP_TRAP_INFO line=" in setup
+    assert 'echo "SETUP_FAILED rc=${rc}"' in setup
+    assert "reason=trap phase=" not in setup
+    assert "SETUP_HEARTBEAT" in setup
+    assert "sleep 30" in setup
+    assert '[string]$WatchdogDry = "1"' in orch
 
 
-def test_bare_early_setup_failed_not_actionable() -> None:
-    body = "\n".join(
-        [
-            "SETUP_PHASE=boot",
-            "SETUP_FAILED line=50",
-            "PRE_UNSET_TORCH_IMPORT_SKIP (torch not importable yet)",
-            "Creating venv...",
-            "",
-        ]
-    )
-    assert _run_actionable(body) == 1
-
-
-def test_reason_nvidia_actionable_before_pins() -> None:
-    body = "\n".join(
-        [
-            "SETUP_PHASE=boot",
-            "SETUP_FAILED line=40 reason=nvidia-smi_missing",
-            "",
-        ]
-    )
-    assert _run_actionable(body) == 0
-
-
-def test_reason_trap_actionable() -> None:
+def test_setup_trap_info_does_not_trigger_destroy() -> None:
     body = "\n".join(
         [
             "SETUP_PHASE=pins",
+            "SETUP_TRAP_INFO line=19 cmd=false rc=1",
             "SETUP_FAILED line=220 reason=trap phase=pins",
-            "",
-        ]
-    )
-    assert _run_actionable(body) == 0
-
-
-def test_pins_ok_plus_earlier_bare_fail_not_actionable() -> None:
-    """Co-occurrence alone must not destroy — fail must be after last pins_ok."""
-    body = "\n".join(
-        [
-            "SETUP_FAILED line=50",
-            "PRE_UNSET_TORCH_IMPORT_SKIP",
-            "SETUP_PINS_OK",
-            "SETUP_PHASE=pins_ok",
-            "SETUP_OK",
+            "pip still installing torch",
             "",
         ]
     )
     assert _run_actionable(body) == 1
+    assert _run_smoke(body) == 1
 
 
-def test_bare_fail_after_pins_ok_is_actionable() -> None:
+def test_setup_failed_rc_triggers_destroy() -> None:
     body = "\n".join(
         [
-            "SETUP_PINS_OK",
-            "SETUP_PHASE=pins_ok",
-            "SETUP_FAILED line=510",
+            "SETUP_PHASE=boot",
+            "SETUP_ABORT reason=nvidia-smi_missing",
+            "SETUP_FAILED rc=1",
             "",
         ]
     )
     assert _run_actionable(body) == 0
+
+
+def test_smoke_marker_inside_another_line_does_not_trigger_destroy() -> None:
+    body = "\n".join(
+        [
+            "note: the log text mentioned SMOKE_BEFORE_TRAIN_FAILED inside this line",
+            "SETUP_TRAP_INFO line=4 cmd=true rc=0",
+            "",
+        ]
+    )
+    assert _run_smoke(body) == 1
+    assert _run_actionable(body) == 1
+
+
+def test_anchored_smoke_line_triggers_destroy() -> None:
+    body = "SMOKE_BEFORE_TRAIN_FAILED — leaving logs for evidence\n"
+    assert _run_smoke(body) == 0
+    assert _run_actionable(body) == 1
 
 
 def test_watchdog_silent_extends_while_log_advances() -> None:

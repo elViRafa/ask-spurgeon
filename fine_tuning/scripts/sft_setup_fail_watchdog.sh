@@ -15,6 +15,10 @@ WATCH_ENV=/workspace/.sft_watchdog_env
 MARKER=/workspace/sft_watchdog_destroyed.marker
 MARKERS_SH=/workspace/sft_setup_markers.sh
 POLL_SEC="${SFT_WATCHDOG_POLL_SEC:-20}"
+# Off by default. Orchestrator sets WATCHDOG_DRY=1 for the first post-fix run.
+WATCHDOG_DRY="${WATCHDOG_DRY:-0}"
+# Optional scp/rsync destination on pc1 (user@host:/dir). Empty → keep evidence locally.
+EVIDENCE_PUSH_TARGET="${SFT_EVIDENCE_PUSH_TARGET:-}"
 # Hard wall must cover long first-time pin install (silent cap ~90m).
 MAX_MIN="${SFT_WATCHDOG_MAX_MIN:-90}"
 # Base grace before silent fail; extended while setup log advances (see below).
@@ -25,7 +29,7 @@ SILENT_STALE_SEC="${SFT_WATCHDOG_SILENT_STALE_SEC:-300}"
 SILENT_CAP_MIN="${SFT_WATCHDOG_SILENT_CAP_MIN:-90}"
 
 mkdir -p /workspace
-echo "WATCHDOG_START utc=$(date -u +%Y-%m-%dT%H:%M:%SZ) poll=${POLL_SEC}s max=${MAX_MIN}m silent=${SILENT_FAIL_MIN}m cap=${SILENT_CAP_MIN}m stale=${SILENT_STALE_SEC}s" | tee -a "$SETUPLOG"
+echo "WATCHDOG_START utc=$(date -u +%Y-%m-%dT%H:%M:%SZ) poll=${POLL_SEC}s max=${MAX_MIN}m silent=${SILENT_FAIL_MIN}m cap=${SILENT_CAP_MIN}m stale=${SILENT_STALE_SEC}s dry=${WATCHDOG_DRY}" | tee -a "$SETUPLOG"
 
 if [[ -f "$WATCH_ENV" ]]; then
   # shellcheck disable=SC1090
@@ -36,39 +40,50 @@ if [[ -f "$MARKERS_SH" ]]; then
   # shellcheck disable=SC1090
   source "$MARKERS_SH"
 else
-  echo "WATCHDOG_WARN missing $MARKERS_SH — embedding fallback actionable_setup_failed_in" | tee -a "$SETUPLOG"
+  echo "WATCHDOG_WARN missing $MARKERS_SH — embedding fallback anchored matchers" | tee -a "$SETUPLOG"
   # Fallback kept in sync with sft_setup_markers.sh (contract tests assert both).
   actionable_setup_failed_in() {
     local f="$1"
     [[ -f "$f" ]] || return 1
-    grep -q 'SETUP_FAILED' "$f" 2>/dev/null || return 1
-    if grep -qE 'SETUP_FAILED[[:space:]]+line=[0-9]+[[:space:]]+reason=' "$f" 2>/dev/null; then
-      return 0
-    fi
-    local pins_line=0 i=0 line
-    while IFS= read -r line || [[ -n "$line" ]]; do
-      i=$((i + 1))
-      case "$line" in
-        *SETUP_PINS_OK*|*SETUP_PHASE=pins_ok*) pins_line=$i ;;
-      esac
-      if [[ "$pins_line" -gt 0 ]] && [[ "$i" -gt "$pins_line" ]] && [[ "$line" == *SETUP_FAILED* ]]; then
-        return 0
-      fi
-    done < "$f"
-    return 1
+    grep -qE '^SETUP_FAILED rc=[0-9]+([[:space:]]|$)' "$f" 2>/dev/null
+  }
+  actionable_smoke_failed_in() {
+    local f="$1"
+    [[ -f "$f" ]] || return 1
+    grep -qE '^SMOKE_BEFORE_TRAIN_FAILED([[:space:]]|$)' "$f" 2>/dev/null
+  }
+  first_trigger_line_in() {
+    local f="$1"
+    local line=""
+    [[ -f "$f" ]] || return 1
+    line="$(grep -E '^(SETUP_FAILED rc=[0-9]+|SMOKE_BEFORE_TRAIN_FAILED)([[:space:]]|$)' "$f" 2>/dev/null | head -n 1 || true)"
+    [[ -n "$line" ]] || return 1
+    printf '%s\n' "$line"
   }
 fi
 
 has_fail_marker() {
   local f
   for f in "$SETUPLOG" "$LAUNCHLOG" "$SMOKELOG"; do
-    [[ -f "$f" ]] || continue
-    if grep -q 'SMOKE_BEFORE_TRAIN_FAILED' "$f" 2>/dev/null; then
+    if actionable_smoke_failed_in "$f"; then
       return 0
     fi
   done
   for f in "$SETUPLOG" "$LAUNCHLOG"; do
     if actionable_setup_failed_in "$f"; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+collect_trigger_line() {
+  local f line
+  for f in "$SETUPLOG" "$LAUNCHLOG" "$SMOKELOG"; do
+    [[ -f "$f" ]] || continue
+    line="$(first_trigger_line_in "$f" || true)"
+    if [[ -n "$line" ]]; then
+      printf '%s\n' "$line"
       return 0
     fi
   done
@@ -122,13 +137,69 @@ write_evidence() {
   echo "WATCHDOG_EVIDENCE_OK dir=$EVDIR reason=$reason" | tee -a "$SETUPLOG"
 }
 
+write_destroy_record() {
+  local reason="$1"
+  local trigger_line="$2"
+  mkdir -p "$EVDIR"
+  local outfile="$EVDIR/watchdog_destroy_begin.txt"
+  {
+    echo "WATCHDOG_DESTROY_BEGIN reason=${reason} trigger_line=${trigger_line}"
+    echo "utc=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    echo "=== last 200 setup ==="
+    tail -n 200 "$SETUPLOG" 2>/dev/null || true
+    echo "=== last 200 launch ==="
+    tail -n 200 "$LAUNCHLOG" 2>/dev/null || true
+    echo "=== last 200 smoke ==="
+    tail -n 200 "$SMOKELOG" 2>/dev/null || true
+  } > "$outfile"
+  echo "WATCHDOG_DESTROY_BEGIN reason=${reason} trigger_line=${trigger_line}" | tee -a "$SETUPLOG"
+  if [[ -z "$EVIDENCE_PUSH_TARGET" ]]; then
+    echo "WATCHDOG_EVIDENCE_KEPT file=$outfile (no SFT_EVIDENCE_PUSH_TARGET; pc1 monitor pulls this dir)" | tee -a "$SETUPLOG"
+    return 0
+  fi
+  local pushed=0
+  set +e
+  if command -v rsync >/dev/null 2>&1; then
+    rsync -a --timeout=15 "$outfile" "${EVIDENCE_PUSH_TARGET}/" >>"$SETUPLOG" 2>&1
+    if [[ $? -eq 0 ]]; then
+      pushed=1
+    fi
+  fi
+  if [[ "$pushed" -eq 0 ]] && command -v scp >/dev/null 2>&1; then
+    scp -o ConnectTimeout=10 -o StrictHostKeyChecking=accept-new "$outfile" "${EVIDENCE_PUSH_TARGET}/" >>"$SETUPLOG" 2>&1
+    if [[ $? -eq 0 ]]; then
+      pushed=1
+    fi
+  fi
+  set -e
+  if [[ "$pushed" -eq 1 ]]; then
+    echo "WATCHDOG_EVIDENCE_PUSHED target=${EVIDENCE_PUSH_TARGET} file=$outfile" | tee -a "$SETUPLOG"
+  else
+    echo "WATCHDOG_EVIDENCE_PUSH_FAILED kept=$outfile" | tee -a "$SETUPLOG"
+  fi
+}
+
 destroy_self() {
   local reason="$1"
   if [[ -f "$MARKER" ]]; then
     echo "WATCHDOG_ALREADY_DESTROYED" | tee -a "$SETUPLOG"
     return 0
   fi
+  local trigger_line
+  trigger_line="$(collect_trigger_line || true)"
+  if [[ -z "$trigger_line" ]]; then
+    trigger_line="(none)"
+  fi
+  trigger_line="${trigger_line//$'\n'/ }"
+  # Exact matching log line is part of the reason (runs 5/6 had no such line).
+  reason="${reason} trigger_line=${trigger_line}"
+  write_destroy_record "$reason" "$trigger_line"
   write_evidence "$reason"
+  if [[ "$WATCHDOG_DRY" == "1" ]]; then
+    echo "WATCHDOG_DRY would destroy reason=${reason}" | tee -a "$SETUPLOG"
+    echo "would_destroy=1 reason=${reason}" > "$MARKER"
+    return 0
+  fi
   local id="${VAST_INSTANCE_ID:-}"
   local key="${VAST_API_KEY:-}"
   if [[ -z "$id" || -z "$key" ]]; then
@@ -136,7 +207,7 @@ destroy_self() {
     echo "WATCHDOG_NO_CREDS" > "$MARKER"
     return 0
   fi
-  echo "WATCHDOG_DESTROY_BEGIN id=$id reason=$reason" | tee -a "$SETUPLOG"
+  echo "WATCHDOG_DESTROY_API id=$id reason=$reason" | tee -a "$SETUPLOG"
   # Prefer vastai CLI when present; else REST DELETE.
   set +e
   if command -v vastai >/dev/null 2>&1; then

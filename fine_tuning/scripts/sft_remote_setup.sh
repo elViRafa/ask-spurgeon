@@ -9,17 +9,93 @@ SETUPLOG="${SFT_SETUP_LOG:-/workspace/sft_setup.log}"
 mkdir -p "$(dirname "$SETUPLOG")" /workspace
 touch "$SETUPLOG"
 
-# Phase markers for watchdog/monitor (no $LINENO gating). Keep SETUP_PINS_OK / SETUP_OK.
+# Phase markers for watchdog/monitor. Keep SETUP_PINS_OK / SETUP_OK.
 SETUP_PHASE=boot
 export SETUP_PHASE
 echo "SETUP_PHASE=boot" | tee -a "$SETUPLOG"
 
+# Heartbeat child is a new bash (no inherited EXIT trap). $BASHPID distinguishes
+# this shell from command-substitution subshells, which do inherit EXIT.
+SETUP_MAIN_BASHPID=$BASHPID
+HEARTBEAT_PID=""
+
+stop_heartbeat() {
+  local pid="${HEARTBEAT_PID:-}"
+  HEARTBEAT_PID=""
+  if [[ -n "$pid" ]]; then
+    kill "$pid" 2>/dev/null || true
+    wait "$pid" 2>/dev/null || true
+  fi
+}
+
+start_heartbeat() {
+  local label="$1"
+  stop_heartbeat
+  # Immediate line, then every 30s, so a long pip/apt is visible to the watchdog.
+  bash -c '
+    label="$1"
+    log="$2"
+    phase="$3"
+    while true; do
+      echo "SETUP_HEARTBEAT utc=$(date -u +%Y-%m-%dT%H:%M:%SZ) phase=${phase} label=${label}" >>"$log" || true
+      sleep 30
+    done
+  ' _ "$label" "$SETUPLOG" "${SETUP_PHASE:-unknown}" &
+  HEARTBEAT_PID=$!
+}
+
+run_with_heartbeat() {
+  local label="$1"
+  shift
+  start_heartbeat "$label"
+  set +e
+  "$@"
+  local rc=$?
+  set -e
+  stop_heartbeat
+  return "$rc"
+}
+
+apt_get() {
+  run_with_heartbeat "apt" apt-get "$@"
+}
+
+# Real abort only. ERR trap must not emit SETUP_FAILED (set +e does not disable ERR,
+# and benign `|| true` failures were destroying the GPU).
+die() {
+  local rc=1
+  local why="abort"
+  if [[ $# -ge 1 && "$1" =~ ^[0-9]+$ ]]; then
+    rc="$1"
+    shift
+  fi
+  if [[ $# -gt 0 ]]; then
+    why="$*"
+  fi
+  echo "SETUP_ABORT reason=${why}" | tee -a "$SETUPLOG" || true
+  exit "$rc"
+}
+
 on_setup_err() {
   local line="${1:-?}"
-  local msg="SETUP_FAILED line=${line} reason=trap phase=${SETUP_PHASE:-unknown}"
-  echo "$msg" | tee -a "$SETUPLOG"
+  local rc="${2:-?}"
+  local cmd="${3:-?}"
+  cmd="${cmd//$'\n'/ }"
+  echo "SETUP_TRAP_INFO line=${line} cmd=${cmd} rc=${rc}" | tee -a "$SETUPLOG" || true
 }
-trap 'on_setup_err $LINENO' ERR
+
+on_exit_setup() {
+  local rc=$?
+  if [[ "${BASHPID}" -ne "${SETUP_MAIN_BASHPID}" ]]; then
+    return 0
+  fi
+  stop_heartbeat
+  if [[ "$rc" -ne 0 ]]; then
+    echo "SETUP_FAILED rc=${rc}" | tee -a "$SETUPLOG" || true
+  fi
+}
+trap on_exit_setup EXIT
+trap 'err_rc=$?; err_line=$LINENO; err_cmd=$BASH_COMMAND; on_setup_err "$err_line" "$err_rc" "$err_cmd"' ERR
 
 export SFT_WORK_ROOT=/workspace
 export HF_HOME=/workspace/hf_home
@@ -42,13 +118,9 @@ else
   echo "ldconfig: not available" | tee -a "$SETUPLOG"
 fi
 if ! command -v nvidia-smi >/dev/null 2>&1; then
-  echo "SETUP_FAILED line=${LINENO} reason=nvidia-smi_missing" | tee -a "$SETUPLOG"
-  exit 1
+  die 1 "nvidia-smi_missing"
 fi
-nvidia-smi -L 2>&1 | tee -a "$SETUPLOG" || {
-  echo "SETUP_FAILED line=${LINENO} reason=nvidia-smi_failed" | tee -a "$SETUPLOG"
-  exit 1
-}
+nvidia-smi -L 2>&1 | tee -a "$SETUPLOG" || die 1 "nvidia-smi_failed"
 # Print torch.cuda.is_available() before unset (informational). Fail-fast on missing
 # CUDA is nvidia-smi above; isolated-env assert_pins rechecks after pin install.
 # Expected to fail before torch is installed — disable ERR trap (set +e alone does not).
@@ -58,7 +130,7 @@ set +e
 python3 -c 'import torch; print("torch.cuda.is_available()", torch.cuda.is_available())' >>"$SETUPLOG" 2>&1
 pre_torch_rc=$?
 set -e
-trap 'on_setup_err $LINENO' ERR
+trap 'err_rc=$?; err_line=$LINENO; err_cmd=$BASH_COMMAND; on_setup_err "$err_line" "$err_rc" "$err_cmd"' ERR
 if [[ "$pre_torch_rc" -ne 0 ]]; then
   echo "PRE_UNSET_TORCH_IMPORT_SKIP (torch not importable yet; will recheck after pin install)" | tee -a "$SETUPLOG"
 fi
@@ -105,6 +177,9 @@ wait_apt() {
      || fuser /var/lib/apt/lists/lock >/dev/null 2>&1 \
      || fuser /var/lib/dpkg/lock >/dev/null 2>&1; do
     i=$((i + 1))
+    if (( i % 6 == 0 )); then
+      echo "SETUP_HEARTBEAT utc=$(date -u +%Y-%m-%dT%H:%M:%SZ) phase=${SETUP_PHASE:-unknown} label=apt-lock" | tee -a "$SETUPLOG"
+    fi
     if [[ $i -gt 120 ]]; then
       echo "apt lock still held after ~10m"
       return 1
@@ -119,9 +194,9 @@ ensure_unzip() {
   fi
   echo "Installing unzip (missing on CUDA base images)"
   wait_apt
-  apt-get update -qq
+  apt_get update -qq
   wait_apt
-  apt-get install -y -qq unzip
+  apt_get install -y -qq unzip
 }
 
 ensure_python311_system() {
@@ -130,18 +205,18 @@ ensure_python311_system() {
   fi
   echo "Bootstrapping system python3.11 for venv creation"
   wait_apt
-  apt-get update -qq
+  apt_get update -qq
   wait_apt
-  if ! apt-get install -y -qq python3.11 python3.11-venv python3.11-dev; then
+  if ! apt_get install -y -qq python3.11 python3.11-venv python3.11-dev; then
     echo "python3.11 not in default apt — trying deadsnakes"
     wait_apt
-    apt-get install -y -qq software-properties-common curl ca-certificates
+    apt_get install -y -qq software-properties-common curl ca-certificates
     wait_apt
-    add-apt-repository -y ppa:deadsnakes/ppa
+    run_with_heartbeat "apt-ppa" add-apt-repository -y ppa:deadsnakes/ppa
     wait_apt
-    apt-get update -qq
+    apt_get update -qq
     wait_apt
-    apt-get install -y -qq python3.11 python3.11-venv python3.11-dev
+    apt_get install -y -qq python3.11 python3.11-venv python3.11-dev
   fi
 }
 
@@ -208,9 +283,9 @@ pip_install_pinned() {
   export SETUP_PHASE
   echo "SETUP_PHASE=pins" | tee -a "$SETUPLOG"
   echo "Upgrading pip in isolated env (verbose; no -q)"
-  "$py" -m pip install --upgrade pip
+  run_with_heartbeat "pip-upgrade" "$py" -m pip install --upgrade pip
   echo "Installing torch 2.11.0+cu126 into isolated env (cu126 index)"
-  "$py" -m pip install --index-url "$TORCH_INDEX" \
+  run_with_heartbeat "pip-torch" "$py" -m pip install --index-url "$TORCH_INDEX" \
     "torch==2.11.0+cu126" "torchvision==0.26.0+cu126" "torchaudio==2.11.0+cu126"
   echo "Installing Sep 6 train stack under constraints (no flash-linear-attention / causal-conv1d)"
   local pkgs=(
@@ -232,10 +307,10 @@ pip_install_pinned() {
   else
     echo "SFT_BACKEND=${SFT_BACKEND}: skipping unsloth_zoo install"
   fi
-  "$py" -m pip install -c "$CONSTRAINTS" "${pkgs[@]}"
+  run_with_heartbeat "pip-stack" "$py" -m pip install -c "$CONSTRAINTS" "${pkgs[@]}"
   if [[ "$SFT_BACKEND" == "unsloth" ]]; then
     echo "Installing unsloth git pin 6816025b"
-    "$py" -m pip install -c "$CONSTRAINTS" "unsloth[colab-new] @ ${UNSLOTH_GIT_PIN}"
+    run_with_heartbeat "pip-unsloth" "$py" -m pip install -c "$CONSTRAINTS" "unsloth[colab-new] @ ${UNSLOTH_GIT_PIN}"
   else
     echo "SFT_BACKEND=${SFT_BACKEND}: skipping unsloth install"
   fi
@@ -460,8 +535,9 @@ PY
   assert_no_image_dist_packages "$py"
 
   local need_install=0
-  # Fresh venvs fail these imports — `||` is enough for set -e, but clear ERR trap
-  # so a future edit that drops `||` cannot emit a false SETUP_FAILED.
+  # Fresh venvs fail these imports. `||` is enough for set -e; clear ERR so the
+  # expected miss does not even write SETUP_TRAP_INFO. A real abort is SETUP_FAILED rc=
+  # from the EXIT trap only.
   trap - ERR
   if [[ "$SFT_BACKEND" == "unsloth" ]]; then
     "$py" - <<'PY' || need_install=1
@@ -484,7 +560,7 @@ assert accelerate.__version__ == "1.14.0"
 print("pins_already_ok")
 PY
   fi
-  trap 'on_setup_err $LINENO' ERR
+  trap 'err_rc=$?; err_line=$LINENO; err_cmd=$BASH_COMMAND; on_setup_err "$err_line" "$err_rc" "$err_cmd"' ERR
   if [[ "$need_install" == "1" ]]; then
     pip_install_pinned "$py"
   fi

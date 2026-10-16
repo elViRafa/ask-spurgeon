@@ -14,7 +14,11 @@ param(
     [int]$TimeoutMinutes = 45,
     [int]$GpuWaitMinutes = 15,
     # Max wait for sft_train.pid after launch (setup + model load). Extends while sft_setup.log advances.
-    [int]$LoadingTimeoutMinutes = 20
+    [int]$LoadingTimeoutMinutes = 20,
+    # First weighted run after the SETUP_TRAP_INFO fix: remote watchdog logs
+    # "would destroy" and does not DELETE. Local monitor is the only destroyer.
+    # Pass -WatchdogDry 0 after one clean setup to restore remote self-destroy.
+    [string]$WatchdogDry = "1"
 )
 
 $ErrorActionPreference = "Stop"
@@ -119,7 +123,8 @@ $py = Join-Path $RepoRoot ".venv\Scripts\python.exe"
 if (-not (Test-Path $py)) { $py = "python" }
 
 Write-Host "=== Vast SFT S8 weighted (RAG + open-theology) ==="
-Write-Host "go=$Go start_monitor=$StartMonitor allow_dirty_sync=$AllowDirtySync (train only if -Go)"
+Write-Host "go=$Go start_monitor=$StartMonitor allow_dirty_sync=$AllowDirtySync watchdog_dry=$WatchdogDry (train only if -Go)"
+Write-Host "WATCHDOG_DRY=$WatchdogDry (1 = remote watchdog would-destroy only; local monitor is the only destroyer)"
 Write-Host "session=$SessionFile"
 Write-Host "results=$ResultsDir"
 
@@ -301,7 +306,8 @@ echo "===EV_DONE==="
                     "/workspace/sft_smoke_fail/status.txt",
                     "/workspace/sft_fail_evidence/capture.txt",
                     "/workspace/sft_fail_evidence/status.txt",
-                    "/workspace/sft_fail_evidence/sft_setup.log"
+                    "/workspace/sft_fail_evidence/sft_setup.log",
+                    "/workspace/sft_fail_evidence/watchdog_destroy_begin.txt"
                 )
                 foreach ($remotePath in $remoteLogs) {
                     $leaf = Split-Path $remotePath -Leaf
@@ -666,6 +672,10 @@ try {
     $watchKey = Get-VastApiKey
     $watchKeyB64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($watchKey))
     $watchIdB64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($watchInstanceId))
+    $watchDryValue = if ($WatchdogDry -eq "0") { "0" } else { "1" }
+    $watchPushTarget = [string]$env:SFT_EVIDENCE_PUSH_TARGET
+    $watchDryB64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($watchDryValue))
+    $watchPushB64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($watchPushTarget))
     $launch = @"
 set -euo pipefail
 source /workspace/.sft_env 2>/dev/null || true
@@ -675,12 +685,17 @@ python3 - <<'PY'
 import base64, pathlib
 key = base64.b64decode('$watchKeyB64').decode('utf-8')
 iid = base64.b64decode('$watchIdB64').decode('utf-8')
+dry = base64.b64decode('$watchDryB64').decode('utf-8')
+push = base64.b64decode('$watchPushB64').decode('utf-8')
 path = pathlib.Path('/workspace/.sft_watchdog_env')
-path.write_text(
-    'export VAST_API_KEY=' + repr(key) + '\n'
-    'export VAST_INSTANCE_ID=' + repr(iid) + '\n',
-    encoding='utf-8',
-)
+lines = [
+    'export VAST_API_KEY=' + repr(key),
+    'export VAST_INSTANCE_ID=' + repr(iid),
+    'export WATCHDOG_DRY=' + repr(dry),
+]
+if push.strip():
+    lines.append('export SFT_EVIDENCE_PUSH_TARGET=' + repr(push.strip()))
+path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
 path.chmod(0o600)
 print('WATCHDOG_ENV_OK')
 PY
@@ -724,6 +739,7 @@ function Get-WeightedTrainState {
         SetupMtime  = $null
         SetupSize   = $null
         FailMarker  = $null
+        TriggerLine = $null
         Raw         = ""
     }
     $session = Get-VastSession
@@ -744,15 +760,8 @@ else
   echo "SETUP_MTIME=0"
   echo "SETUP_SIZE=0"
 fi
-for f in "$SETUPLOG" "$LAUNCHLOG" "$SMOKELOG"; do
-  if [ -f "$f" ] && grep -q "SMOKE_BEFORE_TRAIN_FAILED" "$f" 2>/dev/null; then
-    echo "FAIL_MARKER=SMOKE_BEFORE_TRAIN_FAILED"
-    echo "WEIGHTED_STATE=SMOKE_BEFORE_TRAIN_FAILED"
-    exit 0
-  fi
-done
-# SETUP_FAILED gating: reason= always, or bare fail only after last SETUP_PINS_OK.
-# Shared logic in /workspace/sft_setup_markers.sh (no line-number threshold).
+# Anchored markers only (^SETUP_FAILED rc= and ^SMOKE_BEFORE_TRAIN_FAILED).
+# Shared logic in /workspace/sft_setup_markers.sh. Do not match mid-line text.
 if [ -f /workspace/sft_setup_markers.sh ]; then
   # shellcheck disable=SC1091
   . /workspace/sft_setup_markers.sh
@@ -760,26 +769,34 @@ else
   actionable_setup_failed_in() {
     local f="$1"
     [ -f "$f" ] || return 1
-    grep -q "SETUP_FAILED" "$f" 2>/dev/null || return 1
-    if grep -qE "SETUP_FAILED[[:space:]]+line=[0-9]+[[:space:]]+reason=" "$f" 2>/dev/null; then
-      return 0
-    fi
-    local pins_line=0 i=0 line
-    while IFS= read -r line || [ -n "$line" ]; do
-      i=$((i + 1))
-      case "$line" in
-        *SETUP_PINS_OK*|*SETUP_PHASE=pins_ok*) pins_line=$i ;;
-      esac
-      if [ "$pins_line" -gt 0 ] && [ "$i" -gt "$pins_line" ] && echo "$line" | grep -q "SETUP_FAILED"; then
-        return 0
-      fi
-    done < "$f"
-    return 1
+    grep -qE '^SETUP_FAILED rc=[0-9]+([[:space:]]|$)' "$f" 2>/dev/null
+  }
+  actionable_smoke_failed_in() {
+    local f="$1"
+    [ -f "$f" ] || return 1
+    grep -qE '^SMOKE_BEFORE_TRAIN_FAILED([[:space:]]|$)' "$f" 2>/dev/null
+  }
+  first_trigger_line_in() {
+    local f="$1"
+    local line=""
+    [ -f "$f" ] || return 1
+    line="$(grep -E '^(SETUP_FAILED rc=[0-9]+|SMOKE_BEFORE_TRAIN_FAILED)([[:space:]]|$)' "$f" 2>/dev/null | head -n 1 || true)"
+    [ -n "$line" ] || return 1
+    printf '%s\n' "$line"
   }
 fi
+for f in "$SETUPLOG" "$LAUNCHLOG" "$SMOKELOG"; do
+  if [ -f "$f" ] && actionable_smoke_failed_in "$f"; then
+    echo "FAIL_MARKER=SMOKE_BEFORE_TRAIN_FAILED"
+    echo "TRIGGER_LINE=$(first_trigger_line_in "$f")"
+    echo "WEIGHTED_STATE=SMOKE_BEFORE_TRAIN_FAILED"
+    exit 0
+  fi
+done
 for f in "$SETUPLOG" "$LAUNCHLOG"; do
   if actionable_setup_failed_in "$f"; then
     echo "FAIL_MARKER=SETUP_FAILED"
+    echo "TRIGGER_LINE=$(first_trigger_line_in "$f")"
     echo "WEIGHTED_STATE=SETUP_FAILED"
     exit 0
   fi
@@ -841,6 +858,7 @@ echo "WEIGHTED_STATE=DEAD"
     if ($out -match "SETUP_MTIME=(\d+)") { $result.SetupMtime = $Matches[1] }
     if ($out -match "SETUP_SIZE=(\d+)") { $result.SetupSize = $Matches[1] }
     if ($out -match "FAIL_MARKER=(\S+)") { $result.FailMarker = $Matches[1] }
+    if ($out -match "TRIGGER_LINE=(.+)") { $result.TriggerLine = $Matches[1].Trim() }
     if ($out -match "WEIGHTED_STATE=SETUP_FAILED") {
         $result.State = "SETUP_FAILED"
     }
@@ -908,8 +926,10 @@ if ($StartMonitor) {
 
         # Break fast on setup/smoke failure markers (evidence before destroy).
         if ($st.State -eq "SETUP_FAILED" -or $st.State -eq "SMOKE_BEFORE_TRAIN_FAILED") {
-            Write-Warning ("[{0:u}] WEIGHTED_STATE={1} -- evidence then destroy" -f [datetime]::UtcNow, $st.State)
-            Save-WeightedEvidence -Reason $st.State
+            $failReason = $st.State
+            if ($st.TriggerLine) { $failReason = "$($st.State) trigger_line=$($st.TriggerLine)" }
+            Write-Warning ("[{0:u}] WEIGHTED_STATE={1} -- evidence then destroy" -f [datetime]::UtcNow, $failReason)
+            Save-WeightedEvidence -Reason $failReason
             break
         }
 
