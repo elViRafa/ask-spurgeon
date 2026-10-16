@@ -53,6 +53,7 @@ $WeightedSyncMap = @(
     @{ Rel = "fine_tuning/scripts/sft_remote_setup.sh"; Remote = "/workspace/sft_remote_setup.sh" }
     @{ Rel = "fine_tuning/scripts/sft_remote_train_s8_weighted.sh"; Remote = "/workspace/sft_remote_train_s8_weighted.sh" }
     @{ Rel = "fine_tuning/scripts/sft_setup_fail_watchdog.sh"; Remote = "/workspace/sft_setup_fail_watchdog.sh" }
+    @{ Rel = "fine_tuning/scripts/sft_setup_markers.sh"; Remote = "/workspace/sft_setup_markers.sh" }
     @{ Rel = "fine_tuning/scripts/sft_gate0_sep6_constraints.txt"; Remote = "/workspace/sft_gate0_sep6_constraints.txt" }
     @{ Rel = "config.py"; Remote = "/workspace/config.py" }
     @{ Rel = "fine_tuning/data/qa_mix_train.jsonl"; Remote = "/workspace/spurgeon-qa-mix-v1/qa_mix_train.jsonl" }
@@ -601,14 +602,16 @@ cp "`$SRC/fine_tuning/scripts/sft_stop_token_utils.py" /workspace/sft_stop_token
 cp "`$SRC/fine_tuning/scripts/sft_remote_setup.sh" /workspace/sft_remote_setup.sh
 cp "`$SRC/fine_tuning/scripts/sft_remote_train_s8_weighted.sh" /workspace/sft_remote_train_s8_weighted.sh
 cp "`$SRC/fine_tuning/scripts/sft_setup_fail_watchdog.sh" /workspace/sft_setup_fail_watchdog.sh
+cp "`$SRC/fine_tuning/scripts/sft_setup_markers.sh" /workspace/sft_setup_markers.sh
 cp "`$SRC/fine_tuning/scripts/sft_gate0_sep6_constraints.txt" /workspace/sft_gate0_sep6_constraints.txt
 git -C "`$SRC" show HEAD:config.py > /workspace/config.py
-chmod +x /workspace/sft_remote_setup.sh /workspace/sft_remote_train_s8_weighted.sh /workspace/sft_setup_fail_watchdog.sh
+chmod +x /workspace/sft_remote_setup.sh /workspace/sft_remote_train_s8_weighted.sh /workspace/sft_setup_fail_watchdog.sh /workspace/sft_setup_markers.sh
 test -s /workspace/spurgeon-qa-mix-v1/qa_mix_train.jsonl
 test -s /workspace/config.py
 test -s /workspace/train_sft_sota.py
 test -s /workspace/sft_gate0_sep6_constraints.txt
 test -s /workspace/sft_setup_fail_watchdog.sh
+test -s /workspace/sft_setup_markers.sh
 echo "SPARSE_SYNC_OK sha=`$SHA"
 "@
     Write-Host "Syncing weighted SFT via pinned sparse-checkout (no bulk jsonl SCP) ..."
@@ -623,7 +626,7 @@ echo "SPARSE_SYNC_OK sha=`$SHA"
             Copy-ToVastWeighted $d.Local $d.Remote
         }
     }
-    Invoke-WeightedSsh "chmod +x /workspace/sft_remote_setup.sh /workspace/sft_remote_train_s8_weighted.sh /workspace/sft_setup_fail_watchdog.sh && test -f /workspace/spurgeon-qa-mix-v1/qa_mix_train.jsonl && test -f /workspace/qa_open_theology/sft/open_theology_train.jsonl"
+    Invoke-WeightedSsh "chmod +x /workspace/sft_remote_setup.sh /workspace/sft_remote_train_s8_weighted.sh /workspace/sft_setup_fail_watchdog.sh /workspace/sft_setup_markers.sh && test -f /workspace/spurgeon-qa-mix-v1/qa_mix_train.jsonl && test -f /workspace/qa_open_theology/sft/open_theology_train.jsonl && test -f /workspace/sft_setup_markers.sh"
     Write-Host "Sync complete (sparse + overrides)."
 }
 
@@ -666,7 +669,7 @@ try {
     $launch = @"
 set -euo pipefail
 source /workspace/.sft_env 2>/dev/null || true
-chmod +x /workspace/sft_remote_setup.sh /workspace/sft_remote_train_s8_weighted.sh /workspace/sft_setup_fail_watchdog.sh
+chmod +x /workspace/sft_remote_setup.sh /workspace/sft_remote_train_s8_weighted.sh /workspace/sft_setup_fail_watchdog.sh /workspace/sft_setup_markers.sh
 rm -f /workspace/sft_train.exit /workspace/sft_watchdog_destroyed.marker
 python3 - <<'PY'
 import base64, pathlib
@@ -748,28 +751,34 @@ for f in "$SETUPLOG" "$LAUNCHLOG" "$SMOKELOG"; do
     exit 0
   fi
 done
-# SETUP_FAILED is actionable only after SETUP_PINS_OK, with reason=, or line>=470
-# (past pin install). Ignore bare early probe false positives (e.g. line=50).
-actionable_setup_failed() {
-  local f="$1"
-  [ -f "$f" ] || return 1
-  grep -q "SETUP_FAILED" "$f" 2>/dev/null || return 1
-  if grep -q "SETUP_PINS_OK" "$f" 2>/dev/null; then return 0; fi
-  if grep -qE "SETUP_FAILED line=[0-9]+ reason=" "$f" 2>/dev/null; then return 0; fi
-  local line
-  while IFS= read -r line; do
-    case "$line" in
-      *SETUP_FAILED\ line=*)
-        n="${line#*SETUP_FAILED line=}"
-        n="${n%%[!0-9]*}"
-        if [ -n "$n" ] && [ "$n" -ge 470 ] 2>/dev/null; then return 0; fi
-        ;;
-    esac
-  done < "$f"
-  return 1
-}
+# SETUP_FAILED gating: reason= always, or bare fail only after last SETUP_PINS_OK.
+# Shared logic in /workspace/sft_setup_markers.sh (no line-number threshold).
+if [ -f /workspace/sft_setup_markers.sh ]; then
+  # shellcheck disable=SC1091
+  . /workspace/sft_setup_markers.sh
+else
+  actionable_setup_failed_in() {
+    local f="$1"
+    [ -f "$f" ] || return 1
+    grep -q "SETUP_FAILED" "$f" 2>/dev/null || return 1
+    if grep -qE "SETUP_FAILED[[:space:]]+line=[0-9]+[[:space:]]+reason=" "$f" 2>/dev/null; then
+      return 0
+    fi
+    local pins_line=0 i=0 line
+    while IFS= read -r line || [ -n "$line" ]; do
+      i=$((i + 1))
+      case "$line" in
+        *SETUP_PINS_OK*|*SETUP_PHASE=pins_ok*) pins_line=$i ;;
+      esac
+      if [ "$pins_line" -gt 0 ] && [ "$i" -gt "$pins_line" ] && echo "$line" | grep -q "SETUP_FAILED"; then
+        return 0
+      fi
+    done < "$f"
+    return 1
+  }
+fi
 for f in "$SETUPLOG" "$LAUNCHLOG"; do
-  if actionable_setup_failed "$f"; then
+  if actionable_setup_failed_in "$f"; then
     echo "FAIL_MARKER=SETUP_FAILED"
     echo "WEIGHTED_STATE=SETUP_FAILED"
     exit 0

@@ -9,9 +9,14 @@ SETUPLOG="${SFT_SETUP_LOG:-/workspace/sft_setup.log}"
 mkdir -p "$(dirname "$SETUPLOG")" /workspace
 touch "$SETUPLOG"
 
+# Phase markers for watchdog/monitor (no $LINENO gating). Keep SETUP_PINS_OK / SETUP_OK.
+SETUP_PHASE=boot
+export SETUP_PHASE
+echo "SETUP_PHASE=boot" | tee -a "$SETUPLOG"
+
 on_setup_err() {
   local line="${1:-?}"
-  local msg="SETUP_FAILED line=${line}"
+  local msg="SETUP_FAILED line=${line} reason=trap phase=${SETUP_PHASE:-unknown}"
   echo "$msg" | tee -a "$SETUPLOG"
 }
 trap 'on_setup_err $LINENO' ERR
@@ -199,6 +204,9 @@ force_venv_no_system_site() {
 
 pip_install_pinned() {
   local py="$1"
+  SETUP_PHASE=pins
+  export SETUP_PHASE
+  echo "SETUP_PHASE=pins" | tee -a "$SETUPLOG"
   echo "Upgrading pip in isolated env (verbose; no -q)"
   "$py" -m pip install --upgrade pip
   echo "Installing torch 2.11.0+cu126 into isolated env (cu126 index)"
@@ -485,7 +493,10 @@ PY
   unset LD_LIBRARY_PATH || true
   assert_no_image_dist_packages "$py"
   assert_pins "$py"
+  SETUP_PHASE=pins_ok
+  export SETUP_PHASE
   echo "SETUP_PINS_OK" | tee -a "$SETUPLOG"
+  echo "SETUP_PHASE=pins_ok" | tee -a "$SETUPLOG"
   "$py" -m pip freeze > /workspace/sft_pip_freeze.txt
   echo "Wrote /workspace/sft_pip_freeze.txt ($(wc -l < /workspace/sft_pip_freeze.txt) lines)"
   write_env_hooks "$py"
@@ -558,4 +569,7 @@ fi
 
 ensure_isolated_env
 unset LD_LIBRARY_PATH || true
+SETUP_PHASE=ok
+export SETUP_PHASE
 echo "SETUP_OK" | tee -a "$SETUPLOG"
+echo "SETUP_PHASE=ok" | tee -a "$SETUPLOG"

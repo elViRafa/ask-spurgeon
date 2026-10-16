@@ -95,7 +95,10 @@ def test_setup_err_trap_writes_setup_failed_marker() -> None:
     assert "SETUP_FAILED line=" in text
     assert "trap" in text
     assert "on_setup_err" in text or "SETUP_FAILED line=${" in text
+    assert "reason=trap phase=" in text
+    assert "SETUP_PHASE=boot" in text
     assert "SETUP_PINS_OK" in text
+    assert "SETUP_PHASE=pins_ok" in text
     assert "PRE_TORCH_PROBE_BEGIN" in text
     assert "trap - ERR" in text
     assert "PRE_UNSET_TORCH_IMPORT_SKIP" in text
@@ -104,8 +107,11 @@ def test_setup_err_trap_writes_setup_failed_marker() -> None:
 def test_watchdog_gates_setup_failed_on_pins_ok() -> None:
     text = WATCHDOG.read_text(encoding="utf-8")
     assert "SETUP_PINS_OK" in text
-    assert "actionable_setup_failed" in text
+    assert "actionable_setup_failed_in" in text
+    assert "sft_setup_markers.sh" in text
     assert "reason=" in text
+    assert "-ge 470" not in text
+    assert "SILENT_CAP_MIN" in text
 
 
 def test_setup_pip_not_quiet() -> None:

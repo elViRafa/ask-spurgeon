@@ -13,43 +13,51 @@ PIDFILE=/workspace/sft_train.pid
 EVDIR=/workspace/sft_fail_evidence
 WATCH_ENV=/workspace/.sft_watchdog_env
 MARKER=/workspace/sft_watchdog_destroyed.marker
+MARKERS_SH=/workspace/sft_setup_markers.sh
 POLL_SEC="${SFT_WATCHDOG_POLL_SEC:-20}"
-MAX_MIN="${SFT_WATCHDOG_MAX_MIN:-45}"
-# Grace before treating silent failure (no SETUP_OK) as billable idle.
+# Hard wall must cover long first-time pin install (silent cap ~90m).
+MAX_MIN="${SFT_WATCHDOG_MAX_MIN:-90}"
+# Base grace before silent fail; extended while setup log advances (see below).
 SILENT_FAIL_MIN="${SFT_WATCHDOG_SILENT_FAIL_MIN:-25}"
+# Log must be this many seconds stale before silent destroy fires.
+SILENT_STALE_SEC="${SFT_WATCHDOG_SILENT_STALE_SEC:-300}"
+# Cap on silent deadline extensions while pip/setup is still writing the log.
+SILENT_CAP_MIN="${SFT_WATCHDOG_SILENT_CAP_MIN:-90}"
 
 mkdir -p /workspace
-echo "WATCHDOG_START utc=$(date -u +%Y-%m-%dT%H:%M:%SZ) poll=${POLL_SEC}s max=${MAX_MIN}m" | tee -a "$SETUPLOG"
+echo "WATCHDOG_START utc=$(date -u +%Y-%m-%dT%H:%M:%SZ) poll=${POLL_SEC}s max=${MAX_MIN}m silent=${SILENT_FAIL_MIN}m cap=${SILENT_CAP_MIN}m stale=${SILENT_STALE_SEC}s" | tee -a "$SETUPLOG"
 
 if [[ -f "$WATCH_ENV" ]]; then
   # shellcheck disable=SC1090
   source "$WATCH_ENV"
 fi
 
-# SETUP_FAILED is actionable when pins already succeeded, when the marker carries an
-# explicit reason= (early nvidia-smi etc.), or when the trap line is past pin install.
-# Bare early SETUP_FAILED (pre-torch probe false positive) must not destroy.
-actionable_setup_failed_in() {
-  local f="$1"
-  [[ -f "$f" ]] || return 1
-  grep -q 'SETUP_FAILED' "$f" 2>/dev/null || return 1
-  if grep -q 'SETUP_PINS_OK' "$f" 2>/dev/null; then
-    return 0
-  fi
-  if grep -qE 'SETUP_FAILED line=[0-9]+ reason=' "$f" 2>/dev/null; then
-    return 0
-  fi
-  # Trap line past pin-install region (assert_pins / SETUP_PINS_OK zone starts ~470+).
-  local line
-  while IFS= read -r line; do
-    if [[ "$line" =~ SETUP_FAILED\ line=([0-9]+) ]]; then
-      if [[ "${BASH_REMATCH[1]}" -ge 470 ]]; then
+if [[ -f "$MARKERS_SH" ]]; then
+  # shellcheck disable=SC1090
+  source "$MARKERS_SH"
+else
+  echo "WATCHDOG_WARN missing $MARKERS_SH — embedding fallback actionable_setup_failed_in" | tee -a "$SETUPLOG"
+  # Fallback kept in sync with sft_setup_markers.sh (contract tests assert both).
+  actionable_setup_failed_in() {
+    local f="$1"
+    [[ -f "$f" ]] || return 1
+    grep -q 'SETUP_FAILED' "$f" 2>/dev/null || return 1
+    if grep -qE 'SETUP_FAILED[[:space:]]+line=[0-9]+[[:space:]]+reason=' "$f" 2>/dev/null; then
+      return 0
+    fi
+    local pins_line=0 i=0 line
+    while IFS= read -r line || [[ -n "$line" ]]; do
+      i=$((i + 1))
+      case "$line" in
+        *SETUP_PINS_OK*|*SETUP_PHASE=pins_ok*) pins_line=$i ;;
+      esac
+      if [[ "$pins_line" -gt 0 ]] && [[ "$i" -gt "$pins_line" ]] && [[ "$line" == *SETUP_FAILED* ]]; then
         return 0
       fi
-    fi
-  done < <(grep -E 'SETUP_FAILED line=[0-9]+' "$f" 2>/dev/null || true)
-  return 1
-}
+    done < "$f"
+    return 1
+  }
+fi
 
 has_fail_marker() {
   local f
@@ -145,9 +153,28 @@ destroy_self() {
   echo "destroyed_rc=$rc reason=$reason utc=$(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$MARKER"
 }
 
+setup_log_mtime() {
+  if [[ -f "$SETUPLOG" ]]; then
+    stat -c %Y "$SETUPLOG" 2>/dev/null || echo 0
+  else
+    echo 0
+  fi
+}
+
+setup_log_size() {
+  if [[ -f "$SETUPLOG" ]]; then
+    wc -c < "$SETUPLOG" | tr -d ' \n' || echo 0
+  else
+    echo 0
+  fi
+}
+
 started_at=$(date +%s)
 silent_deadline=$((started_at + SILENT_FAIL_MIN * 60))
+cap_deadline=$((started_at + SILENT_CAP_MIN * 60))
 hard_deadline=$((started_at + MAX_MIN * 60))
+last_mtime=$(setup_log_mtime)
+last_size=$(setup_log_size)
 
 while true; do
   now=$(date +%s)
@@ -179,10 +206,29 @@ while true; do
     fi
   fi
 
-  # Silent hang: no SETUP_OK after grace and no advancing train.
+  # Extend silent deadline while setup log is still advancing (long pip install).
+  cur_mtime=$(setup_log_mtime)
+  cur_size=$(setup_log_size)
+  if [[ "$cur_mtime" != "$last_mtime" ]] || [[ "$cur_size" != "$last_size" ]]; then
+    last_mtime=$cur_mtime
+    last_size=$cur_size
+    new_deadline=$((now + SILENT_FAIL_MIN * 60))
+    if [[ "$new_deadline" -gt "$silent_deadline" ]]; then
+      silent_deadline=$new_deadline
+      echo "WATCHDOG_SILENT_EXTEND utc=$(date -u +%Y-%m-%dT%H:%M:%SZ) deadline_epoch=$silent_deadline size=$cur_size" | tee -a "$SETUPLOG"
+    fi
+    if [[ "$silent_deadline" -gt "$cap_deadline" ]]; then
+      silent_deadline=$cap_deadline
+    fi
+  fi
+
+  # Silent hang: no SETUP_OK, log stale, past (extended) silent deadline, under cap.
   if [[ "$now" -ge "$silent_deadline" ]]; then
-    if ! grep -q 'SETUP_OK' "$SETUPLOG" 2>/dev/null && ! training_healthy; then
-      destroy_self "silent_setup_timeout_${SILENT_FAIL_MIN}m"
+    log_age=$((now - cur_mtime))
+    if [[ "$log_age" -ge "$SILENT_STALE_SEC" ]] \
+      && ! grep -q 'SETUP_OK' "$SETUPLOG" 2>/dev/null \
+      && ! training_healthy; then
+      destroy_self "silent_setup_timeout_stale_${SILENT_STALE_SEC}s_cap_${SILENT_CAP_MIN}m"
       exit 0
     fi
   fi

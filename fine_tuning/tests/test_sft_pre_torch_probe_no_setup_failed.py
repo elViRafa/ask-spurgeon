@@ -58,11 +58,15 @@ def test_setup_probe_disables_err_trap_and_captures_python_rc() -> None:
 def test_watchdog_and_monitor_gate_setup_failed_until_pins_ok() -> None:
     wd = WATCHDOG.read_text(encoding="utf-8")
     orch = ORCH.read_text(encoding="utf-8")
-    assert "actionable_setup_failed" in wd or "SETUP_PINS_OK" in wd
+    assert "actionable_setup_failed_in" in wd
+    assert "sft_setup_markers.sh" in wd
     assert "SETUP_PINS_OK" in wd
     assert "reason=" in wd
+    assert "-ge 470" not in wd
     assert "SETUP_PINS_OK" in orch
-    assert "actionable_setup_failed" in orch
+    assert "actionable_setup_failed_in" in orch
+    assert "sft_setup_markers.sh" in orch
+    assert "-ge 470" not in orch
     assert "evidence saved (incomplete)" not in orch
     # Success message only when requiredOk.
     assert 'Write-Host "evidence saved: $evDir"' in orch

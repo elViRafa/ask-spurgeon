@@ -71,6 +71,30 @@ cd fine_tuning\scripts
 Do **not** call `vast_orchestrate.ps1`, `vast_sft_s8_orchestrate.ps1`, or any
 CPT launcher for this job.
 
+## Setup markers (`/workspace/sft_setup.log`)
+
+Shared gating lives in `fine_tuning/scripts/sft_setup_markers.sh` (watchdog +
+local monitor). Do **not** idle-destroy while the setup log is still advancing.
+
+| Marker | Meaning |
+|--------|---------|
+| `SETUP_PHASE=boot` | Script start (CUDA diagnostics, pre-torch probe) |
+| `SETUP_PHASE=pins` | Pin install in progress (long pip is normal) |
+| `SETUP_PINS_OK` / `SETUP_PHASE=pins_ok` | Pins asserted |
+| `SETUP_OK` / `SETUP_PHASE=ok` | Isolated env ready |
+| `SETUP_FAILED line=N reason=…` | Actionable fail (nvidia-smi, trap, …) |
+| `SMOKE_BEFORE_TRAIN_FAILED` | Train-script smoke died (immediate destroy) |
+| `FULL_TRAIN` | Full train started; watchdog exits healthy |
+
+**Actionable `SETUP_FAILED`:** has `reason=`, **or** appears *after* the last
+`SETUP_PINS_OK` / `SETUP_PHASE=pins_ok` in the same log. Bare early
+`SETUP_FAILED line=50` (legacy probe false positive) is ignored.
+
+**Watchdog silent timeout:** base grace ~25m, **extended while `sft_setup.log`
+mtime/size advances**, cap ~90m; destroys only when the log is stale (~5m) and
+there is still no `SETUP_OK`. Do not treat a quiet monitor as “stuck” during pin
+install if the setup log is growing.
+
 ## Walk-away gates (`/workspace/sft_train.log`)
 
 Forge must see all of these before walking away:
@@ -84,7 +108,7 @@ Forge must see all of these before walking away:
 - `SFT_OUTPUT_DIR: /workspace/sft_s8_weighted/adapter` (or under `sft_s8_weighted`)
 - **not** `Resuming from .../spurgeon_qa_lora_v2`
 - dataprep: `over 4608` near 0; `S3 masking OK`; drop fully-masked count near 0
-- during setup: watch `/workspace/sft_launch.log` — do not idle-destroy mid-`sft_remote_setup`
+- during setup: watch `/workspace/sft_setup.log` advancing — do not idle-destroy mid-`sft_remote_setup`
 - OOM at 4608: keep seq; propose `SFT_LORA_RANK=16` and wait for go (do not drop seq below ~4330)
 
 ## After fetch
@@ -116,7 +140,8 @@ Credit under ~$5 needs a top-up or my explicit -AllowLowCredit.
 Walk-away: SFT_OPEN_THEOLOGY=1, RAG/THEOLOGY_PROMPT_OK, peft, EXPORT=0,
 base under qwen35-4b-theology-cpt-s8-mhi-resume-merged-16bit, output under
 sft_s8_weighted/adapter, over 4608 ~0, S3 masking OK, drop ~0.
-Watch sft_launch.log during setup — do not idle-destroy mid-setup.
+Watch sft_setup.log advancing during setup — do not idle-destroy mid-setup.
+Silent watchdog extends while the log grows (cap ~90m).
 OOM: keep seq; propose SFT_LORA_RANK=16 and wait for go.
 Do not call vast_orchestrate.ps1, vast_sft_s8_orchestrate.ps1, or any CPT launcher.
 No Hub upload. Fetch before destroy.
