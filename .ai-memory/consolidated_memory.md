@@ -59,7 +59,7 @@ summary: "Map of available project memory sections."
 priority: high
 tags: [index, memory]
 schema_version: 1.3
-last_updated: "2026-10-16T14:48:12-03:00"
+last_updated: "2026-10-16T18:19:57-03:00"
 consolidation_hash: acd058fab27bf79aa31f9bd2e3dc7172
 contradictions: ["`fine-tuning/hf-spurgeon-qa-v2-gguf` and `fine-tuning/plans/ollama-merge-gguf` cover similar content but state different numbers (2.71 vs 07) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-next-session-handoff` cover similar content but state different numbers (1 vs 1.701 / 2.449 / 2250) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-s8-mhi-resume-c-prepared` cover similar content but state different numbers (1 / 2.8 / 2026.8 vs -) - review for conflict [heuristic]", "`pretraining/cpt-b-eval-strategy` and `pretraining/cpt-eval-unify-v"]
 consolidation_warnings: ["Skipped bugs\\gemma4-chat-template-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped bugs\\ollama-tokenizer-corruption-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped decisions\\gemma4-local-ollama.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-12.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-14.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-08-23.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-08-28.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-09-15.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\clerk-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\CURSOR_TODO_SFT_S8_WEIGHTED_2026-10-14.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\foundry-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\qa-open-theology-sft-handoff-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\runpod-sft-gate0-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\sft-s3-mask-multiturn-brief-2026-10-15.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-b-eval-strategy-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-expansion-plan.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-s1-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-s5-b-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-s6-c-eval-next-session.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-s6-phase0-prepared.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-implementation-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-next-steps-after-v13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-plan-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-runpod-mcp-volume-gap.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v3-s6-handoff.md during index regeneration: Missing YAML frontmatter delimiter"]
@@ -78,8 +78,8 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `debt` | low | App debt (hybrid search, rate limits) plus 2026-08-29 memory-fabric LLM/host hygiene notes. | • Known Technical Debt & Limits<br>• Roadmap & Pending Features |
 | `decisions` | medium | Generated map of memory-store/decisions/ (1 entries). | • **Gemma 4 Fine-Tuning Transition** (`decisions/gemma4-fin... |
 | `episodic` | medium | Generated map of memory-store/episodic/ (35 entries). | • **2026-09-28** (`episodic/2026-09-28`, medium) — Reframed...<br>• **2026-10-02** (`episodic/2026-10-02`, medium) —<br>• **2026-10-05** (`episodic/2026-10-05`, medium) — |
-| `failures` | medium | Generated map of memory-store/failures/ (40 entries). | • **Vast official Unsloth image smoke blocked; LD_LIBRARY_P...<br>• **AssertionError: S3 FAIL row 5: user turn leaked into la...<br>• **asyncua write_value BadTypeMismatch when writing int to... |
-| `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (55 entries). | • **Fine-tuning next session handoff** (`fine-tuning/next-s...<br>• **Open theology QA slice tooling ready for Clerk** (`fine...<br>• **Next session: plan open theological QA slice** (`fine-t... |
+| `failures` | medium | Generated map of memory-store/failures/ (42 entries). | • **Vast official Unsloth image smoke blocked; LD_LIBRARY_P...<br>• **AssertionError: S3 FAIL row 5: user turn leaked into la...<br>• **asyncua write_value BadTypeMismatch when writing int to... |
+| `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (57 entries). | • **Fine-tuning next session handoff** (`fine-tuning/next-s...<br>• **Open theology QA slice tooling ready for Clerk** (`fine...<br>• **Next session: plan open theological QA slice** (`fine-t... |
 | `framework-rules` | medium | Defines coding standards, required libraries (Streamlit, LlamaIndex), environment setup (.env), and database rules for the codebase. | • 1. Runtime Environment<br>• 2. Core Libraries & Packages<br>• 3. Vector Database Rules<br>• 4. Agent Memory Guidelines |
 | `grok` | medium | Generated map of memory-store/grok/ (6 entries). | • **Grok Bot Clerk for open-theology QA generation** (`grok...<br>• **Grok Bot Forge for Vast/Runpod training** (`grok/forge-...<br>• **Grok Bot Foundry for train/export code** (`grok/foundry... |
 | `pretraining` | medium | Generated map of memory-store/pretraining/ (101 entries). | • **CPT B_training_sota known issues (P1 closed — log spam)...<br>• **Composite CPT early stop merges split HF eval events** ...<br>• **Confessions + Institutes corpus (WCF, 1689, Calvin)** (... |
@@ -4111,6 +4111,65 @@ Stop bulk SCP of `qa_mix_train.jsonl` (~36 MB) laptop-to-Vast.
 - Dry prints `SPARSE_CONE`, sync path map, `DIRTY_OVERRIDES`.
 - Avoid Unicode em-dashes inside PowerShell double-quoted strings (PS 5.1 ANSI decode can treat UTF-8 em-dash as a smart quote and swallow function braces).
 
+<!-- memory-fabric:store/fine-tuning/sft-weighted-tokenizer-protobuf-2026-10-16 -->
+---
+store_path: fine-tuning/sft-weighted-tokenizer-protobuf-2026-10-16
+title: "Weighted SFT run 8 tokenizer protobuf and mistral-regex"
+summary: "Run 8 (evidence evidence_20261016_162847) passed pins and CUDA, then all 3 GPU smokes died in train_sft_sota dataprep"
+priority: high
+tags: [sft, weighted, vast, protobuf, tokenizer]
+schema_version: 1.3
+last_updated: "2026-10-16T18:10:36-03:00"
+evidence: ["commit:c37601767f552012f94a1d47f71336178369fa5a", fine_tuning/scripts/sft_tokenizer_cpu_smoke.py, fine_tuning/kaggle/vast_sft_s8_weighted/evidence_20261016_162847/capture.txt]
+---
+
+Run 8 (evidence evidence_20261016_162847) passed pins and CUDA, then all 3 GPU smokes died in train_sft_sota dataprep. transformers 5.5 _patch_mistral_regex called tokenizer.backend_tokenizer (AttributeError). The except handler then raised ImportError because protobuf was not installed. The broad except ImportError retried AutoTokenizer with fix_mistral_regex=True and hid the first error.
+
+Sep 6 freeze pins are protobuf==7.36.1 and sentencepiece==0.2.2. sentencepiece was already installed. protobuf was only a constraint, not in the pip package list.
+
+Fix on main c37601767f552012f94a1d47f71336178369fa5a:
+- protobuf==7.36.1 added to the isolated pip install
+- load_qwen35_tokenizer no longer passes fix_mistral_regex
+- load_dataprep_tokenizer swallows ImportError only when the missing module name is sft_stop_token_utils
+- CPU smoke sft_tokenizer_cpu_smoke.py runs after the merged model download and before GPU smoke; failure prints SETUP_FAILED rc=1
+- SMOKE_BEFORE_TRAIN_FAILED is its own log line on setup and smoke logs; monitor sets WeightedFailStop, saves evidence, destroys, and exits 1 instead of throwing adapter-missing
+
+Verify: pytest 50 passed, 1 skipped (no local tokenizer files). Dry READY, DIRTY_OVERRIDES=(none), WATCHDOG_DRY=1. No GPU rented.
+
+<!-- memory-fabric:store/fine-tuning/sft-weighted-torchao-abi3-warn-2026-10-16 -->
+---
+store_path: fine-tuning/sft-weighted-torchao-abi3-warn-2026-10-16
+title: "Weighted SFT run 7: torchao cp310-abi3 false abort"
+summary: "Run 7 (Vast 4090, evidence `fine_tuning/kaggle/vast_sft_s8_weighted/evidence_20261016_151455`) aborted at pin assert, about 5 minutes after watchdog start (17:57 UTC)"
+priority: high
+tags: [sft, weighted, vast, torchao, setup]
+schema_version: 1.3
+last_updated: "2026-10-16T15:52:46-03:00"
+evidence: [fine_tuning/scripts/sft_remote_setup.sh, fine_tuning/kaggle/vast_sft_s8_weighted/evidence_20261016_151455/capture.txt]
+---
+
+# Weighted SFT run 7: torchao cp310-abi3 false abort
+
+## Cause
+Run 7 (Vast 4090, evidence `fine_tuning/kaggle/vast_sft_s8_weighted/evidence_20261016_151455`) aborted at pin assert, about 5 minutes after watchdog start (17:57 UTC). All pins matched, `torch.cuda` was True on the RTX 4090, and sys.path was the isolated venv. `assert_pins` then raised:
+
+`torchao has cpython-310 .so under this interpreter: .../sft_venv/.../torchao/_C_mxfp8.cpython-310-x86_64-linux-gnu.so`
+
+`SETUP_FAILED rc=1`. GPU was idle (9 MiB, 0%). The wheel is `torchao-0.18.0-cp310-abi3` (stable ABI, legal on Python 3.11). The `cpython-310` filename is the limited-API tag, not an image leak. The earlier SIGSEGV class was torchao loaded from `/usr/local` or `/usr/lib`.
+
+Optional kernel lines `Failed to load .../_C_cutlass_90a.abi3.so` and `.../_C_mxfp8...` were printed by torchao and did not stop the pin checks.
+
+## Not a load timeout
+Watchdog was dry (`WATCHDOG_DRY would destroy`; start banner prints dry=0 before sourcing the env file). Local monitor then waited out the 20 minute loading clock and destroyed ~18:14 UTC. Raising `LoadingTimeoutMinutes` would have billed a dead setup longer. Setup had already exited.
+
+## Fix (local, not yet pushed)
+`sft_remote_setup.sh`: WARN when `*cpython-310*.so` sits inside `/sft_venv`, `/envs/sft_train`, or miniforge. Still `SystemExit` if torchao loads from `/usr/local` or `/usr/lib`, or the .so is outside the isolated env. pytest 41 passed (env safeguards, markers, monitor, weighted plan).
+
+## Next
+Push before the next go so sparse-checkout picks up the script. Do not rent from Cursor. Credit was ~$2.46 after this run. Seq stays 4608. No Hub until F gates.
+
+Landed on main: `e6368cf80019950d36947c941c69e2d6ce3e802f` (pushed to origin). Dry 2026-10-16: READY, DIRTY_OVERRIDES=(none), WATCHDOG_DRY=1, mix 4098 rows. No GPU rented. Next go still needs operator go; last credit note was about $2.46 so -AllowLowCredit may be required.
+
 <!-- memory-fabric:store/fine-tuning/sft-weighted-trap-info-2026-10-16 -->
 ---
 store_path: fine-tuning/sft-weighted-trap-info-2026-10-16
@@ -5498,15 +5557,15 @@ Following the successful execution of Notebook B (Epoch 1 & 2) up to step 432:
 <!-- memory-fabric:local/failures -->
 ---
 section: failures
-summary: "Generated map of memory-store/failures/ (40 entries)."
+summary: "Generated map of memory-store/failures/ (42 entries)."
 priority: medium
 tags: [failures]
 schema_version: 1.3
-last_updated: "2026-10-16T14:28:15-03:00"
+last_updated: "2026-10-16T18:10:38-03:00"
 generated: true
 generated_from: memory-store/failures
-store_fingerprint: 5ff48daa156cc3c22c8de35787709ee3
-body_hash: d4a80cc5fb2e948ab64464ddc1702e4f
+store_fingerprint: 451b13c9c890389e4cd5495f74882567
+body_hash: f32748449f675418d76ea69a03f041b8
 ---
 
 # Failures Map
@@ -5521,20 +5580,20 @@ Generated by Memory Fabric from `memory-store/failures/` — do not edit by hand
 - **CPT B early-stop patience=2 with eval_steps=25 and 2-doc eval_spurgeon_loss halt** (`failures/cpt-b-early-stop-561e9ec07f`, medium) — CPT B early-stop patience=2 with eval_steps=25 and 2-doc eval_spurgeon_loss halted corpus v3 at step 375 of 4128 (~8.2M of 90M tokens)
 - **torch.OutOfMemoryError: CUDA out of memory during SFTTrainer.evaluate at step 20** (`failures/cuda-oom-during-mid-ffcb775074`, medium) — CUDA OOM during mid-train eval at step ~20 with PEFT bf16 seq 2048 on RTX 4090 24GB
 - **CUDA OOM on Kaggle T4 during CPT B v5 after manual pack (float32 Qwen3.5, batch ** (`failures/cuda-oom-on-kaggle-e64e9b60ce`, medium) — CUDA OOM on Kaggle T4 during CPT B v5 after manual pack (float32 Qwen3.5, batch 2, TRAIN_EMBEDDINGS=True)
-- …and 32 more entries — see `memory-store/index.md`.
+- …and 34 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:local/fine-tuning -->
 ---
 section: fine-tuning
-summary: "Generated map of memory-store/fine-tuning/ (55 entries)."
+summary: "Generated map of memory-store/fine-tuning/ (57 entries)."
 priority: medium
 tags: [fine-tuning]
 schema_version: 1.3
-last_updated: "2026-10-16T14:47:11-03:00"
+last_updated: "2026-10-16T18:10:37-03:00"
 generated: true
 generated_from: memory-store/fine-tuning
-store_fingerprint: 2743bbea043adec7d9ba9dce67ec2e63
-body_hash: df58fb89ffa7224ff8c93e657deb37fb
+store_fingerprint: f57e438cea31d071719b6b745e025013
+body_hash: 1ff944a497b447ec94bca40ec21465d5
 ---
 
 # Fine Tuning Map
@@ -5553,7 +5612,7 @@ Generated by Memory Fabric from `memory-store/fine-tuning/` — do not edit by h
 - **QA verify + F5 slice gap report** (`fine-tuning/qa-prompt-strategy-verify`, high) — After overlay-safe catechism variants + multiturn merge:
 - **One prompt; diversify task slices** (`fine-tuning/qa-prompt-type-decision`, high) — **Locked after live verify.** Improves SFT via example-type diversity, not multiple prompts
 - **QA Sources Rewrite Progress** (`fine-tuning/qa-sources-rewrite-progress`, high) — Cross-session log of QA answer rewrite pipeline for SFT teacherish/quote fidelity
-- …and 43 more entries — see `memory-store/index.md`.
+- …and 45 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:store/failures/full-semantic-judge-run-2188a7bf04 -->
 ---
@@ -7040,6 +7099,49 @@ Weighted SFT exit 139 SIGSEGV at step 0 first forward on two Vast hosts; torchao
 
 **Fix:**
 Isolated /workspace/sft_venv (or Miniforge conda fallback), unset LD_LIBRARY_PATH, pin Sep 6 GATE-0 stack via sft_gate0_sep6_constraints.txt, assert pins + write sft_pip_freeze.txt, PYTHONFAULTHANDLER/-X faulthandler, 2-step smoke on longest rows before full train with expandable_segments then seq 2048 retries, harden Save-WeightedEvidence with status.txt/listing/scp fallback
+
+<!-- memory-fabric:store/failures/weighted-sft-setup-setup-7f60499b60 -->
+---
+store_path: failures/weighted-sft-setup-setup-7f60499b60
+title: "weighted SFT setup SETUP_FAILED rc=1 because torchao 0.18 cp310-abi3 wheel has c"
+summary: "weighted SFT setup SETUP_FAILED rc=1 because torchao 0.18 cp310-abi3 wheel has cpython-310 .so inside sft_venv; pins and torch.cuda already OK"
+priority: medium
+tags: [failure, fix, setup, sft, torchao, vast]
+schema_version: 1.3
+last_updated: "2026-10-16T15:48:06-03:00"
+occurrences: 1
+error_signature: "weighted sft setup setup_failed rc=<n> because torchao <n>.<n> cp<n>-abi<n> wheel has cpython-<n> .so inside sft_venv; pins and torch.cuda already ok"
+---
+
+## Occurrence 1 — 2026-10-16T15:48:06-03:00
+
+**Error:**
+weighted SFT setup SETUP_FAILED rc=1 because torchao 0.18 cp310-abi3 wheel has cpython-310 .so inside sft_venv; pins and torch.cuda already OK
+
+**Fix:**
+sft_remote_setup.sh warns for cpython-310 .so inside the isolated venv and still exits if torchao loads from /usr/local or /usr/lib
+
+<!-- memory-fabric:store/failures/weighted-sft-smoke-attributeerror-b9d97fec81 -->
+---
+store_path: failures/weighted-sft-smoke-attributeerror-b9d97fec81
+title: "weighted SFT smoke AttributeError tokenizers.Tokenizer has no attribute backend_"
+summary: "weighted SFT smoke AttributeError tokenizers.Tokenizer has no attribute backend_tokenizer then ImportError protobuf library was not found; broad except ImportError retried fix_mistral_regex"
+priority: medium
+tags: [failure, fix, protobuf, sft, tokenizer, vast]
+schema_version: 1.3
+last_updated: "2026-10-16T18:10:38-03:00"
+occurrences: 1
+error_signature: "weighted sft smoke attributeerror tokenizers.tokenizer has no attribute backend_tokenizer then importerror protobuf library was not found; broad except importerror retried fix_mistral_regex"
+failure_key: attributeerror
+---
+
+## Occurrence 1 — 2026-10-16T18:10:38-03:00
+
+**Error:**
+weighted SFT smoke AttributeError tokenizers.Tokenizer has no attribute backend_tokenizer then ImportError protobuf library was not found; broad except ImportError retried fix_mistral_regex
+
+**Fix:**
+Install protobuf==7.36.1 in the venv, stop passing fix_mistral_regex, re-raise ImportError from inside load_qwen35_tokenizer, and run a CPU tokenizer smoke that prints SETUP_FAILED rc=1 before GPU smoke. Main c376017.
 
 <!-- memory-fabric:store/failures/weighted-sft-vast-runs-cc1e1faa64 -->
 ---
@@ -9590,7 +9692,7 @@ summary: "Persisted memories for the weighted SFT false SETUP_FAILED pre-torch p
 priority: low
 tags: [episodic, session-journal]
 schema_version: 1.3
-last_updated: "2026-10-16T14:47:14-03:00"
+last_updated: "2026-10-16T18:19:42-03:00"
 ---
 
 ## save-memories-false-setup-failed
@@ -9644,6 +9746,41 @@ Saved the weighted SFT trap-info fix and the Vast readiness check. Main 228b9c0 
 - `.ai-memory/memory-store/fine-tuning/sft-weighted-vast-credit-block-2026-10-16.md`
 - `.ai-memory/memory-store/failures/weighted-sft-vast-runs-cc1e1faa64.md`
 - `.ai-memory/memory-store/episodic/2026-10-16.md`
+
+## sft-torchao-abi3-warn
+
+Diagnosed weighted SFT run 7 from the 15:14 evidence: setup aborted on torchao's cp310-abi3 filename inside the venv after pins and CUDA were already OK. Downgraded that in-venv check to a warning and kept the image-path hard fail. 41 contract tests passed. Fix is local and not pushed; no GPU was rented.
+
+- Do not raise LoadingTimeoutMinutes; run 7 exited in ~5 minutes on a false torchao ABI check
+- WARN cp310-abi3 .so inside the isolated venv; keep hard fail for image-path torchao
+
+## sft-torchao-push-dry
+
+Committed and pushed the torchao cp310-abi3 warning to main as e6368cf. Dry run of vast_sft_s8_weighted_orchestrate.ps1 printed READY with no dirty overrides and did not rent a GPU.
+
+- Commit and push e6368cf before any go so sparse-checkout fetches the torchao warning
+- Dry only; no rent
+
+## sft-tokenizer-protobuf
+
+Run 8 died in the tokenizer, not on the GPU. Pinned protobuf 7.36.1 into the venv install, stopped the fix_mistral_regex fallback from hiding that ImportError, and added a CPU tokenizer smoke that aborts with SETUP_FAILED before GPU smoke. Pushed c376017. Dry run READY with no dirty overrides. No GPU rented.
+
+- protobuf 7.36.1 from the Sep 6 freeze is an explicit install, not only a constraint
+- Do not pass fix_mistral_regex on transformers 5.5
+- CPU tokenizer smoke fails with SETUP_FAILED rc=1 before the three GPU smokes
+
+- `fine_tuning/scripts/sft_tokenizer_cpu_smoke.py`
+- `fine_tuning/tests/test_sft_tokenizer_cpu_smoke.py`
+
+## sft-memory-commit-push
+
+Recorded weighted SFT run 7 (torchao cp310-abi3 warning, e6368cf) and run 8 (protobuf install plus CPU tokenizer smoke, c376017). Committing those store entries and the regenerated memory maps, then pushing to main.
+
+- Commit memory maps and store entries only; leave data backups and evidence logs untracked
+
+- `.ai-memory/memory-store/fine-tuning/sft-weighted-torchao-abi3-warn-2026-10-16.md`
+- `.ai-memory/memory-store/fine-tuning/sft-weighted-tokenizer-protobuf-2026-10-16.md`
+- `.ai-memory/memory-store/failures/weighted-sft-smoke-attributeerror-b9d97fec81.md`
 
 <!-- memory-fabric:store/episodic/commits/2026-10-14/604fca57e1 -->
 ---
