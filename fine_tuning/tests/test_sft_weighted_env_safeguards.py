@@ -76,6 +76,9 @@ def test_setup_uses_isolated_venv_or_conda_and_unsets_ld_library_path() -> None:
     assert "causal_conv1d" in text
     assert "PYTHONFAULTHANDLER=1" in text
     assert "cpython-310" in text
+    assert "torchao loaded from image path" in text
+    assert "torchao: WARN cp310-abi3" in text
+    assert "torchao has cpython-310 .so under this interpreter" not in text
 
 
 def test_setup_prints_ld_and_cuda_before_first_unset() -> None:

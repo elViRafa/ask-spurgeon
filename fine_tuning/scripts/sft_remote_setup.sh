@@ -426,18 +426,34 @@ if bad_path:
     raise SystemExit(f"REFUSING image/system site-packages on sys.path: {bad_path}")
 print("  sys.path: no image dist-packages OK")
 
-# torchao must not be a 3.10 extension under 3.11
+# torchao 0.18.0 is published as a cp310-abi3 wheel. The limited-API filename
+# contains "cpython-310" and is valid under Python 3.11 inside the isolated
+# venv (run 7, 2026-10-16: pins and torch.cuda were already OK). Hard-fail
+# only for the original SIGSEGV class: torchao loaded from the image.
 try:
     import torchao  # noqa: F401
     import pathlib
     root = pathlib.Path(torchao.__file__).resolve().parent
-    bad_sos = list(root.rglob("*cpython-310*.so"))
-    if bad_sos:
-        raise SystemExit(f"torchao has cpython-310 .so under this interpreter: {bad_sos[:3]}")
     ta_path = str(root).replace("\\", "/")
     if "/usr/local/" in ta_path or "/usr/lib/" in ta_path:
         raise SystemExit(f"torchao loaded from image path: {ta_path}")
-    print("  torchao: no cpython-310 .so OK", ta_path)
+    abi3_sos = list(root.rglob("*cpython-310*.so"))
+    isolated = (
+        "/sft_venv/" in ta_path
+        or "/envs/sft_train/" in ta_path
+        or "/miniforge3/envs/" in ta_path
+    )
+    if abi3_sos and not isolated:
+        raise SystemExit(
+            f"torchao cpython-310 .so outside isolated env: {[str(p) for p in abi3_sos[:3]]}"
+        )
+    if abi3_sos:
+        print(
+            "  torchao: WARN cp310-abi3 .so inside isolated env (expected for 0.18):",
+            [str(p) for p in abi3_sos[:3]],
+        )
+    else:
+        print("  torchao: no cpython-310 .so OK", ta_path)
 except ImportError:
     print("  torchao: not imported (optional)")
 
