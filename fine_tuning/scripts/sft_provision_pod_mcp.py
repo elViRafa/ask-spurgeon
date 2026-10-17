@@ -17,7 +17,7 @@ SESSION = Path(_SESSION_ENV) if _SESSION_ENV else (REPO / "fine_tuning" / "kaggl
 PUBKEY = Path.home() / ".ssh" / "runpod_cpt.pub"
 NETWORK_VOLUME = "7hb931c5oe"
 DATA_CENTER = "US-IL-1"
-POD_NAME = "sft-gate0"
+POD_NAME = (os.environ.get("SFT_POD_NAME") or "sft-gate0").strip() or "sft-gate0"
 HUB_V2_SHA = "319d17a39d193041528914cfb2f83c1decf21e55ffe76dfd2ca565f5e99e1478"
 MAX_WALL_HOURS = int(os.environ.get("SFT_MAX_WALL_HOURS", "8"))
 
@@ -80,6 +80,8 @@ def http_json(url: str, token: str, body: dict | None = None, method: str = "GET
     req = urllib.request.Request(url, data=data, method=method)
     req.add_header("Authorization", "Bearer " + token)
     req.add_header("Content-Type", "application/json")
+    # Cloudflare returns 403 error code 1010 when User-Agent is absent.
+    req.add_header("User-Agent", "ask-spurgeon-sft-provision/1.0")
     try:
         with urllib.request.urlopen(req, timeout=90) as resp:
             raw = resp.read().decode("utf-8")

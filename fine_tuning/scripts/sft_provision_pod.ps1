@@ -85,17 +85,22 @@ function Invoke-RunpodctlProvision {
     return $true
 }
 
-if (Invoke-RunpodctlProvision -Cloud $CloudType) { exit 0 }
-if ($CloudType -eq "COMMUNITY" -and (Invoke-RunpodctlProvision -Cloud "SECURE")) { exit 0 }
-
+# Prefer MCP OAuth REST (works when ~/.runpod/config.toml apikey is empty).
+# Cloudflare blocks REST without a User-Agent — sft_provision_pod_mcp.py sets one.
 $mcpScript = Join-Path $PSScriptRoot "sft_provision_pod_mcp.py"
 if (Test-Path $mcpScript) {
-    python $mcpScript
+    $py = Join-Path $RepoRoot ".venv\Scripts\python.exe"
+    if (-not (Test-Path $py)) { $py = "python" }
+    $env:SFT_POD_NAME = $PodName
+    & $py $mcpScript
     if ($LASTEXITCODE -eq 0) {
         Write-Host "Provisioned via MCP OAuth REST v1"
         exit 0
     }
 }
+
+if (Invoke-RunpodctlProvision -Cloud $CloudType) { exit 0 }
+if ($CloudType -eq "COMMUNITY" -and (Invoke-RunpodctlProvision -Cloud "SECURE")) { exit 0 }
 
 $pub = Get-SshPublicKey
 $body = @{
