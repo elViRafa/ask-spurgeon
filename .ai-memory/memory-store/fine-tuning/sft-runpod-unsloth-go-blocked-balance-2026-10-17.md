@@ -2,10 +2,10 @@
 store_path: fine-tuning/sft-runpod-unsloth-go-blocked-balance-2026-10-17
 title: "RunPod Unsloth go blocked: no volume + low balance"
 summary: "- `7f27f32` RunPod Unsloth weighted path + bf16 LoRA (`load_in_4bit=False`, `load_in_16bit=True`)"
-priority: high
+priority: medium
 tags: [sft, weighted, runpod, unsloth, balance, readiness]
 schema_version: 1.3
-last_updated: "2026-10-17T14:24:04-03:00"
+last_updated: "2026-10-17T15:04:44-03:00"
 ---
 
 # RunPod Unsloth go blocked (2026-10-17)
@@ -33,5 +33,10 @@ No pod created. No billing from this go.
 
 1. Top up RunPod (enough for Secure 4090 ~$0.89/hr smoke, ideally >=$5 to recreate US-IL-1 volume).
 2. Optional: set `~/.runpod/config.toml` apikey for runpodctl.
-3. Re-dry then `.unpod_sft_s8_weighted_orchestrate.ps1 -Go -SmokeOnly -StartMonitor`.
+3. Re-dry then `.
+unpod_sft_s8_weighted_orchestrate.ps1 -Go -SmokeOnly -StartMonitor`.
 4. Full go only if smoke s/step beats ~90s PEFT; else Vast PEFT (also needs Vast credit).
+
+## Update 2026-10-17 afternoon — auth + credit cleared
+
+Operator topped up and set API key in `.env` + `~/.runpod/config.toml`. `runpodctl user` shows **$15** balance. Auth/credit blocker is lifted; see `fine-tuning/runpod-credentials-ready-2026-10-17`. Next paid step is still dry then `-Go -SmokeOnly -StartMonitor` (no lease in the credential-setup session).

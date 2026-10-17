@@ -12,7 +12,7 @@ param(
     [ValidateSet("COMMUNITY", "SECURE")]
     [string]$CloudType = "COMMUNITY",
     [int]$TimeoutMinutes = 45,
-    [int]$LoadingTimeoutMinutes = 20,
+    [int]$LoadingTimeoutMinutes = 45,
     [double]$MaxWallHours = 10,
     [double]$QuoteUsdPerHour = 0.34
 )
@@ -53,6 +53,7 @@ $WeightedSyncMap = @(
     @{ Rel = "fine_tuning/scripts/sft_remote_train_s8_weighted.sh"; Remote = "/workspace/sft_remote_train_s8_weighted.sh" }
     @{ Rel = "fine_tuning/scripts/sft_setup_fail_watchdog.sh"; Remote = "/workspace/sft_setup_fail_watchdog.sh" }
     @{ Rel = "fine_tuning/scripts/sft_setup_markers.sh"; Remote = "/workspace/sft_setup_markers.sh" }
+    @{ Rel = "fine_tuning/scripts/sft_weighted_state_probe.sh"; Remote = "/workspace/sft_weighted_state_probe.sh" }
     @{ Rel = "fine_tuning/scripts/sft_tokenizer_cpu_smoke.py"; Remote = "/workspace/sft_tokenizer_cpu_smoke.py" }
     @{ Rel = "fine_tuning/scripts/sft_gate0_sep6_constraints.txt"; Remote = "/workspace/sft_gate0_sep6_constraints.txt" }
     @{ Rel = "config.py"; Remote = "/workspace/config.py" }
@@ -177,12 +178,15 @@ New-Item -ItemType Directory -Force -Path (Split-Path $SessionFile -Parent) | Ou
 function Get-RunpodSshArgs {
     param($Session)
     $port = Get-SftSshPort $Session
+    # -T: RunPod proxy rejects clients that request a PTY without supporting one.
     return @(
+        "-T",
         "-i", $SshKey,
         "-p", "$port",
         "-o", "StrictHostKeyChecking=accept-new",
         "-o", "LogLevel=ERROR",
-        "-o", "ConnectTimeout=20"
+        "-o", "ConnectTimeout=20",
+        "-o", "RequestTTY=no"
     )
 }
 
@@ -278,6 +282,8 @@ cp "`$SRC/fine_tuning/scripts/sft_remote_setup.sh" /workspace/sft_remote_setup.s
 cp "`$SRC/fine_tuning/scripts/sft_remote_train_s8_weighted.sh" /workspace/sft_remote_train_s8_weighted.sh
 cp "`$SRC/fine_tuning/scripts/sft_setup_fail_watchdog.sh" /workspace/sft_setup_fail_watchdog.sh
 cp "`$SRC/fine_tuning/scripts/sft_setup_markers.sh" /workspace/sft_setup_markers.sh
+# Probe may be dirty-only (not yet on PINNED_SHA); dirty SCP fills it next.
+cp "`$SRC/fine_tuning/scripts/sft_weighted_state_probe.sh" /workspace/sft_weighted_state_probe.sh 2>/dev/null || true
 cp "`$SRC/fine_tuning/scripts/sft_tokenizer_cpu_smoke.py" /workspace/sft_tokenizer_cpu_smoke.py
 cp "`$SRC/fine_tuning/scripts/sft_gate0_sep6_constraints.txt" /workspace/sft_gate0_sep6_constraints.txt
 git -C "`$SRC" show HEAD:config.py > /workspace/config.py
@@ -298,7 +304,15 @@ echo "SPARSE_SYNC_OK sha=`$SHA"
             Copy-ToRunpodWeighted -Local $d.Local -Remote $d.Remote
         }
     }
-    Invoke-WeightedSsh "chmod +x /workspace/sft_remote_setup.sh /workspace/sft_remote_train_s8_weighted.sh /workspace/sft_setup_fail_watchdog.sh /workspace/sft_setup_markers.sh && test -f /workspace/spurgeon-qa-mix-v1/qa_mix_train.jsonl && test -f /workspace/qa_open_theology/sft/open_theology_train.jsonl"
+    Invoke-WeightedSsh @"
+set -euo pipefail
+chmod +x /workspace/sft_remote_setup.sh /workspace/sft_remote_train_s8_weighted.sh /workspace/sft_setup_fail_watchdog.sh /workspace/sft_setup_markers.sh
+if [ -f /workspace/sft_weighted_state_probe.sh ]; then chmod +x /workspace/sft_weighted_state_probe.sh; fi
+test -f /workspace/spurgeon-qa-mix-v1/qa_mix_train.jsonl
+test -f /workspace/qa_open_theology/sft/open_theology_train.jsonl
+test -f /workspace/sft_remote_setup.sh
+test -f /workspace/sft_weighted_state_probe.sh
+"@
     Write-Host "Sync complete (sparse + overrides)."
 }
 
@@ -391,145 +405,9 @@ function Get-WeightedTrainState {
     if (-not $session -or -not $session.ssh_host) {
         return $result
     }
-    $remote = @'
-set +e
-PIDFILE=/workspace/sft_train.pid
-EXITFILE=/workspace/sft_train.exit
-SETUPLOG=/workspace/sft_setup.log
-LAUNCHLOG=/workspace/sft_launch.log
-SMOKELOG=/workspace/sft_smoke.log
-TRAINLOG=/workspace/sft_train.log
-TRAIN_FRESH_SEC=600
-GPU_BUSY_MIB=2048
-now=$(date +%s)
-if [ -f "$SETUPLOG" ]; then
-  echo "SETUP_MTIME=$(stat -c %Y "$SETUPLOG" 2>/dev/null || echo 0)"
-  echo "SETUP_SIZE=$(wc -c < "$SETUPLOG" | tr -d ' \n')"
-else
-  echo "SETUP_MTIME=0"
-  echo "SETUP_SIZE=0"
-fi
-if [ -f "$TRAINLOG" ]; then
-  echo "TRAIN_MTIME=$(stat -c %Y "$TRAINLOG" 2>/dev/null || echo 0)"
-  echo "TRAIN_SIZE=$(wc -c < "$TRAINLOG" | tr -d ' \n')"
-else
-  echo "TRAIN_MTIME=0"
-  echo "TRAIN_SIZE=0"
-fi
-if [ -f /workspace/sft_setup_markers.sh ]; then
-  # shellcheck disable=SC1091
-  . /workspace/sft_setup_markers.sh
-else
-  actionable_setup_failed_in() {
-    local f="$1"
-    [ -f "$f" ] || return 1
-    grep -qE '^SETUP_FAILED rc=[0-9]+([[:space:]]|$)' "$f" 2>/dev/null
-  }
-  actionable_smoke_failed_in() {
-    local f="$1"
-    [ -f "$f" ] || return 1
-    grep -qE '^SMOKE_BEFORE_TRAIN_FAILED([[:space:]]|$)' "$f" 2>/dev/null
-  }
-  first_trigger_line_in() {
-    local f="$1"
-    local line=""
-    [ -f "$f" ] || return 1
-    line="$(grep -E '^(SETUP_FAILED rc=[0-9]+|SMOKE_BEFORE_TRAIN_FAILED)([[:space:]]|$)' "$f" 2>/dev/null | head -n 1 || true)"
-    [ -n "$line" ] || return 1
-    printf '%s\n' "$line"
-  }
-fi
-for f in "$SETUPLOG" "$LAUNCHLOG" "$SMOKELOG"; do
-  if [ -f "$f" ] && actionable_smoke_failed_in "$f"; then
-    echo "FAIL_MARKER=SMOKE_BEFORE_TRAIN_FAILED"
-    echo "TRIGGER_LINE=$(first_trigger_line_in "$f")"
-    echo "WEIGHTED_STATE=SMOKE_BEFORE_TRAIN_FAILED"
-    exit 0
-  fi
-done
-for f in "$SETUPLOG" "$LAUNCHLOG"; do
-  if actionable_setup_failed_in "$f"; then
-    echo "FAIL_MARKER=SETUP_FAILED"
-    echo "TRIGGER_LINE=$(first_trigger_line_in "$f")"
-    echo "WEIGHTED_STATE=SETUP_FAILED"
-    exit 0
-  fi
-done
-# Smoke-only success: supervisor exits 0 after SMOKE_ONLY_DONE.
-if grep -qE '^SMOKE_ONLY_DONE' "$SETUPLOG" 2>/dev/null || grep -qE '^SMOKE_ONLY_DONE' "$SMOKELOG" 2>/dev/null; then
-  if [ -f "$EXITFILE" ]; then
-    echo "WEIGHTED_STATE=SMOKE_ONLY_DONE"
-    exit 0
-  fi
-fi
-if [ -f "$PIDFILE" ]; then
-  echo "PIDFILE=1"
-  pid=$(tr -d ' \n\r' < "$PIDFILE")
-  if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
-    echo "WEIGHTED_STATE=ALIVE"
-    echo "ALIVE_REASON=pidfile"
-    exit 0
-  fi
-else
-  echo "PIDFILE=0"
-fi
-if [ -f "$EXITFILE" ]; then
-  echo "EXIT_RC=$(tr -d ' \n\r' < "$EXITFILE")"
-  echo "WEIGHTED_STATE=DEAD"
-  echo "DEAD_REASON=exitfile"
-  exit 0
-fi
-if pgrep -f "[b]ash /workspace/sft_remote_train_s8_weighted.sh" >/dev/null 2>&1 \
-   || pgrep -f "[t]rain_sft_sota.py" >/dev/null 2>&1; then
-  echo "WEIGHTED_STATE=ALIVE"
-  echo "ALIVE_REASON=pgrep"
-  exit 0
-fi
-if [ -f "$TRAINLOG" ]; then
-  train_mtime=$(stat -c %Y "$TRAINLOG" 2>/dev/null || echo 0)
-  train_age=$((now - train_mtime))
-  if [ "$train_age" -lt "$TRAIN_FRESH_SEC" ]; then
-    echo "WEIGHTED_STATE=ALIVE"
-    echo "ALIVE_REASON=train_log_fresh age=${train_age}"
-    exit 0
-  fi
-fi
-gpu_mib=""
-if command -v nvidia-smi >/dev/null 2>&1; then
-  gpu_mib=$(nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits 2>/dev/null | head -n 1 | tr -d ' ')
-fi
-if [ -n "$gpu_mib" ] && [ "$gpu_mib" -gt "$GPU_BUSY_MIB" ] 2>/dev/null; then
-  if grep -q 'FULL_TRAIN' "$SETUPLOG" 2>/dev/null || [ -f "$TRAINLOG" ]; then
-    echo "WEIGHTED_STATE=ALIVE"
-    echo "ALIVE_REASON=gpu_mem_mib=${gpu_mib}"
-    exit 0
-  fi
-fi
-if [ ! -f "$PIDFILE" ]; then
-  echo "WEIGHTED_STATE=UNKNOWN"
-  exit 0
-fi
-if grep -q 'FULL_TRAIN' "$SETUPLOG" 2>/dev/null; then
-  if [ -f "$TRAINLOG" ]; then
-    echo "WEIGHTED_STATE=DEAD"
-    echo "DEAD_REASON=train_log_stale_after_full_train"
-    exit 0
-  fi
-  echo "WEIGHTED_STATE=UNKNOWN"
-  exit 0
-fi
-if [ -f "$SETUPLOG" ]; then
-  mtime=$(stat -c %Y "$SETUPLOG" 2>/dev/null || echo 0)
-  age=$((now - mtime))
-  if [ "$age" -lt 180 ]; then
-    echo "WEIGHTED_STATE=UNKNOWN"
-    exit 0
-  fi
-fi
-echo "WEIGHTED_STATE=DEAD"
-echo "DEAD_REASON=pid_gone_setup_stale"
-'@
-    $remote = $remote -replace "`r", ""
+    # Compact probe script (synced to GPU) — avoids Windows ssh argv truncation
+    # that previously left the monitor stuck on UNKNOWN through SETUP_FAILED.
+    $remote = "bash /workspace/sft_weighted_state_probe.sh"
     $prev = $ErrorActionPreference
     $ErrorActionPreference = "Continue"
     try {
@@ -633,7 +511,7 @@ set -euo pipefail
 source /workspace/.sft_env 2>/dev/null || true
 export SFT_BACKEND=unsloth
 export SFT_SMOKE_ONLY=$smokeFlag
-chmod +x /workspace/sft_remote_setup.sh /workspace/sft_remote_train_s8_weighted.sh /workspace/sft_setup_fail_watchdog.sh /workspace/sft_setup_markers.sh
+chmod +x /workspace/sft_remote_setup.sh /workspace/sft_remote_train_s8_weighted.sh /workspace/sft_setup_fail_watchdog.sh /workspace/sft_setup_markers.sh /workspace/sft_weighted_state_probe.sh
 rm -f /workspace/sft_train.exit
 if pgrep -f "[b]ash /workspace/sft_remote_train_s8_weighted.sh" >/dev/null 2>&1; then
   echo "sft_remote_train_s8_weighted.sh already running"

@@ -6,6 +6,7 @@ priority: medium
 tags: [vast, unsloth, conda, cpt, smoke, pass]
 schema_version: 1.3
 last_updated: "2026-09-16T10:28:25-03:00"
+review_status: stale
 ---
 
 # Vast Unsloth CPT smoke via Miniforge — PASS

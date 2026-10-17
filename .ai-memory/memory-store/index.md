@@ -5,7 +5,7 @@ summary: "Index of all semantic memory store files."
 priority: high
 tags: [index, memory-store]
 schema_version: 1.3
-last_updated: "2026-10-17T14:22:39-03:00"
+last_updated: "2026-10-17T14:49:55-03:00"
 ---
 
 # Memory Store Index
@@ -55,7 +55,7 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `episodic/2026-10-14` | low | Cleared the Forge GitHub blocker for weighted SFT by committing and pushing the recipe to main (c085120) | • sft-weighted-push<br>• sft-s8-crash-fix<br>• sft-residual-risk-audit<br>• save-sft-memories<br>• sft-s8-todo-build<br>• sft-s8-memory-commit<br>• vast-upload-path-investigation<br>• search-scp-sparse-checkout-quotes<br>• gpu-sparse-sync<br>• push-sparse-sync-forge | episodic, session-journal |
 | `episodic/2026-10-15` | low | Implemented and pushed weighted SFT remote CRLF harden on ask-spurgeon main from a Cloud Agent New Project session (empty Origin temp repo) | • sft-remote-crlf-push<br>• sft-s3-last-assistant-mask<br>• weighted-sft-monitor-harden<br>• sft-weighted-env-safeguards<br>• sft-weighted-setup-fail-fix<br>• sft-false-setup-failed-probe | episodic, session-journal |
 | `episodic/2026-10-16` | low | Persisted memories for the weighted SFT false SETUP_FAILED pre-torch probe fix landed on main as 1190682: store entry fine-tuning/sft-weighted-false-setup-failed-probe-2026-10-15 updated with SHA/veri | • save-memories-false-setup-failed<br>• sft-marker-protocol<br>• sft-marker-commit-push<br>• sft-trap-info-watchdog<br>• sft-vast-readiness-memory<br>• sft-torchao-abi3-warn<br>• sft-torchao-push-dry<br>• sft-tokenizer-protobuf<br>• sft-memory-commit-push | episodic, session-journal |
-| `episodic/2026-10-17` | low | Diagnosed why weighted SFT on Vast cannot be left to finish even though training already works | • sft-repeat-diagnosis<br>• sft-monitor-false-dead-fix<br>• sft-monitor-push-forge-go<br>• runpod-unsloth-handoff<br>• runpod-unsloth-weighted-sft<br>• save-unsloth-offline-memories | episodic, session-journal |
+| `episodic/2026-10-17` | low | Diagnosed why weighted SFT on Vast cannot be left to finish even though training already works | • sft-repeat-diagnosis<br>• sft-monitor-false-dead-fix<br>• sft-monitor-push-forge-go<br>• runpod-unsloth-handoff<br>• runpod-unsloth-weighted-sft<br>• save-unsloth-offline-memories<br>• runpod-unsloth-readiness-go | episodic, session-journal |
 | `episodic/commits/2026-10-14/` | low | 1 passively captured commit(s). | • fix(sft): strip CR from weighted SSH remotes; 10m loading timeout | episodic, passive-capture, needs-review |
 | `failures/assertionerror-s-n-fail-b0de52ddcb` | medium | AssertionError: S3 FAIL: user turn leaked into labels in train_sft_sota.py _train_peft after weighted SFT S8 dataprep | • Occurrence 1 — 2026-10-14T10:00:16-03:00<br>• Occurrence 2 — 2026-10-15T12:10:30-03:00 | failure, fix, mask, multiturn, s3, sft, weighted |
 | `failures/asyncua-write-value-badtypemismatch-188c68c9d2` | medium | asyncua write_value BadTypeMismatch when writing int to UInt16 or Double node wi | • Occurrence 1 — 2026-08-12T08:59:14-04:00 | failure, fix |
@@ -133,6 +133,7 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `fine-tuning/sft-prep-after-cpt` | high | **Status:** Prep planning (no SFT train started) | • Pipeline position<br>• Current readiness (2026-08-28)<br>• Recommended prep phases<br>• Base-model choice for shippable SFT<br>• Known SFT risks (from PLAN_FABLE5_TO_IMPROVE_FN)<br>• Next operator decision<br>• Phase A done (2026-08-28)<br>• Phase B started — stock-base dry-run prep<br>• Phase B dry-run pod terminated + QA mix v2 (2026-08-28) | sft, phase-b, dry-run |
 | `fine-tuning/sft-qa-mix-v2` | high | **Status:** Built locally, no GPU | • Counts<br>• Serve contract encoded in examples<br>• Builder / package<br>• Remaining F5 gaps | sft, qa-mix, f3, f5 |
 | `fine-tuning/sft-remote-crlf-brief-2026-10-14` | medium | Landed on main `604fca5` (fix) + `7dfaca8` (this brief) | • Done<br>• Why<br>• Evidence | sft, weighted, ssh, crlf, vast, done |
+| `fine-tuning/sft-runpod-unsloth-go-blocked-balance-2026-10-17` | high | - `7f27f32` RunPod Unsloth weighted path + bf16 LoRA (`load_in_4bit=False`, `load_in_16bit=True`) | • Landed on main<br>• Paid go attempt<br>• Ops next | sft, weighted, runpod, unsloth, balance, readiness |
 | `fine-tuning/sft-runpod-unsloth-next-session` | medium | **Status (2026-10-17):** code landed; offline dry + contract pytest passed | • Landed<br>• Offline proof (no pod)<br>• Usage after go | sft, weighted, runpod, unsloth, handoff |
 | `fine-tuning/sft-runpod-unsloth-offline-proof-2026-10-17` | medium | Verified the RunPod Unsloth weighted SFT path **without** renting a pod | • Commands<br>• Results<br>• Limits | sft, weighted, runpod, unsloth, offline, pytest, dry |
 | `fine-tuning/sft-s8-weighted-crash-fix-2026-10-14` | high | Vast instance after operator go: training crashed before step 1 with `AssertionError: S3 FAIL: user turn leaked into labels` | • What failed<br>• What landed in code<br>• Verify<br>• Still before next go<br>• Follow-up harden (main `5b12b79`) | sft, weighted, crash, mask, ssh, vast |

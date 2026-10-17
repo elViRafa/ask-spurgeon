@@ -6,6 +6,7 @@ priority: medium
 tags: [disk, c-drive, checkpoints, vast]
 schema_version: 1.3
 last_updated: "2026-09-16T11:23:15-03:00"
+review_status: stale
 ---
 
 # C: disk cleanup (2026-09-16)

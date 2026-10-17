@@ -8,7 +8,14 @@ if (-not $session -or -not $session.ssh_host) {
 
 $port = Get-SftSshPort $session
 $sshTarget = Get-SftSshRemote $session
-$sshArgs = @("-i", $SshKey, "-p", "$port", "-o", "StrictHostKeyChecking=accept-new")
+$sshArgs = @(
+    "-T",
+    "-i", $SshKey,
+    "-p", "$port",
+    "-o", "StrictHostKeyChecking=accept-new",
+    "-o", "LogLevel=ERROR",
+    "-o", "RequestTTY=no"
+)
 
 & ssh @($sshArgs + @($sshTarget, "df -h /workspace"))
 if ($LASTEXITCODE -ne 0) { throw "SSH verify failed" }
@@ -20,13 +27,11 @@ if ($session.PSObject.Properties.Name -contains "ephemeral_workspace") {
 $volId = [string]$session.network_volume_id
 if ($ephemeral -or -not $volId -or $volId -eq "null") {
     if (-not $ephemeral) {
-        throw @"
-ABORT: Pod has no network_volume_id in sft_session.json.
-Delete this pod and re-provision with volume $NetworkVolumeId (US-IL-1) mounted at /workspace,
-or provision with ephemeral_workspace=true when balance cannot create a volume.
-"@
+        throw ("ABORT: Pod has no network_volume_id in session. " +
+            "Delete this pod and re-provision with volume $NetworkVolumeId (US-IL-1) at /workspace, " +
+            "or provision with ephemeral_workspace=true when balance cannot create a volume.")
     }
-    Write-Warning "EPHEMERAL_WORKSPACE=1 — /workspace is container disk; fetch before destroy (no network volume)."
+    Write-Warning "EPHEMERAL_WORKSPACE=1 - /workspace is container disk; fetch before destroy (no network volume)."
     Write-Host "Mount check OK (ephemeral) - safe to sync and train."
     exit 0
 }

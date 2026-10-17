@@ -9,6 +9,7 @@ last_updated: "2026-09-16T11:02:02-03:00"
 occurrences: 1
 error_signature: "powershell <n>.<n> parsererror: string has no terminator when a utf-<n> em-dash sits inside double quotes in a .ps<n> without bom"
 failure_key: "parsererror|utf-8"
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-09-16T11:02:02-03:00

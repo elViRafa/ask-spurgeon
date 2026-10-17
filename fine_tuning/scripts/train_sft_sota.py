@@ -984,10 +984,22 @@ def _train_unsloth() -> None:
     num_epochs = int(os.environ.get("SFT_NUM_EPOCHS", "2"))
     learning_rate = float(os.environ.get("SFT_LEARNING_RATE", "1e-4"))
     seed = int(os.environ.get("SFT_SEED", "3407"))
+    smoke = _smoke_enabled()
+    max_steps = _max_train_steps()
+    if smoke:
+        # Must mirror PEFT smoke: Unsloth previously ignored SFT_MAX_STEPS and
+        # ran the full epoch under --smoke (514 steps @ seq 4608).
+        max_steps = max_steps or 2
+        per_device_batch = int(os.environ.get("SFT_SMOKE_BATCH", "1"))
+        grad_accum = int(os.environ.get("SFT_SMOKE_GRAD_ACCUM", "1"))
+        num_epochs = 1
+        print("SFT_SMOKE=1 max_steps", max_steps, "batch", per_device_batch, "accum", grad_accum)
 
     data_train, data_val = _dataprep(max_seq_length)
     out_dir = _sft_out_dir(kwork)
-    run_config = kwork / "sft_run_config.json"
+    if smoke:
+        out_dir = Path(str(out_dir) + "_smoke")
+    run_config = kwork / ("sft_smoke_run_config.json" if smoke else "sft_run_config.json")
 
     hf_home = (os.environ.get("HF_HOME") or "").strip() or str(work / "hf_home")
     os.makedirs(hf_home, exist_ok=True)
@@ -1035,10 +1047,13 @@ def _train_unsloth() -> None:
     drop_cols_v = [c for c in val_ds.column_names if c != "text"]
     if drop_cols_v:
         val_ds = val_ds.remove_columns(drop_cols_v)
+    if smoke and "text" in train_ds.column_names:
+        need = max(4, per_device_batch * grad_accum * (max_steps or 2) * 2)
+        train_ds = _select_longest_text_rows(train_ds, need)
     print("Loaded", len(train_ds), len(val_ds), "cols", train_ds.column_names)
 
     steps_per_epoch = max(1, len(train_ds) // (per_device_batch * grad_accum))
-    eval_strategy = _eval_strategy()
+    eval_strategy = "no" if smoke else _eval_strategy()
     eval_steps = int(os.environ.get("SFT_EVAL_STEPS") or max(200, steps_per_epoch // 2))
     save_steps = int(os.environ.get("SFT_SAVE_STEPS") or max(40, steps_per_epoch // 5))
     if eval_strategy == "steps" and save_steps % eval_steps != 0:
@@ -1053,6 +1068,10 @@ def _train_unsloth() -> None:
         save_steps,
         "eval_batch",
         per_device_eval_batch,
+        "smoke",
+        int(smoke),
+        "max_steps",
+        max_steps,
     )
 
     bf16 = torch.cuda.is_bf16_supported()
@@ -1070,13 +1089,13 @@ def _train_unsloth() -> None:
         weight_decay=0.01,
         fp16=not bf16,
         bf16=bf16,
-        logging_steps=10,
+        logging_steps=1 if smoke else 10,
         eval_strategy=eval_strategy,
         eval_steps=eval_steps if eval_strategy == "steps" else None,
-        save_strategy="steps",
+        save_strategy="no" if smoke else "steps",
         save_steps=save_steps,
-        load_best_model_at_end=eval_strategy != "no",
-        metric_for_best_model="eval_loss" if eval_strategy != "no" else None,
+        load_best_model_at_end=False if smoke else eval_strategy != "no",
+        metric_for_best_model="eval_loss" if (not smoke and eval_strategy != "no") else None,
         seed=seed,
         report_to="none",
         output_dir=str(out_dir / "checkpoints"),
@@ -1089,6 +1108,8 @@ def _train_unsloth() -> None:
         gradient_checkpointing=True,
         prediction_loss_only=True,
     )
+    if max_steps is not None:
+        sft_cfg_kwargs["max_steps"] = int(max_steps)
     sft_cfg_kwargs = {k: v for k, v in sft_cfg_kwargs.items() if v is not None}
     sft_cfg_kwargs = _filter_kwargs(SFTConfig.__init__, sft_cfg_kwargs)
     if "max_length" not in sft_cfg_kwargs:
@@ -1186,6 +1207,8 @@ def _train_unsloth() -> None:
     run_config.write_text(json.dumps(cfg, indent=2), encoding="utf-8")
     print("Saved adapter to", out_dir / "lora")
     print("Run config:", run_config)
+    if smoke:
+        print("SFT_SMOKE_PASS steps", max_steps)
     print("SOTA SFT v2 complete")
 
 

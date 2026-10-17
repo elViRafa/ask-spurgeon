@@ -7,6 +7,7 @@ tags: [cpt, s6, runpod, blocker, volume]
 schema_version: 1.3
 last_updated: "2026-09-16T07:21:48-03:00"
 evidence: [continued_pretrain/scripts/s6_runpod_common.ps1, continued_pretrain/kaggle/runpod_cpt_v3/s6_continue_b/checkpoints_sota/checkpoints_sota/checkpoint-2050]
+review_status: stale
 ---
 
 # S6 GPU resume blocked — volume gone + balance (2026-09-16)

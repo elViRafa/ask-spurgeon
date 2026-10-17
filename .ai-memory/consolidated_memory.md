@@ -59,7 +59,7 @@ summary: "Map of available project memory sections."
 priority: high
 tags: [index, memory]
 schema_version: 1.3
-last_updated: "2026-10-17T14:22:39-03:00"
+last_updated: "2026-10-17T14:49:55-03:00"
 consolidation_hash: acd058fab27bf79aa31f9bd2e3dc7172
 contradictions: ["`fine-tuning/hf-spurgeon-qa-v2-gguf` and `fine-tuning/plans/ollama-merge-gguf` cover similar content but state different numbers (2.71 vs 07) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-next-session-handoff` cover similar content but state different numbers (1 vs 1.701 / 2.449 / 2250) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-s8-mhi-resume-c-prepared` cover similar content but state different numbers (1 / 2.8 / 2026.8 vs -) - review for conflict [heuristic]", "`pretraining/cpt-b-eval-strategy` and `pretraining/cpt-eval-unify-v"]
 consolidation_warnings: ["Skipped bugs\\gemma4-chat-template-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped bugs\\ollama-tokenizer-corruption-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped decisions\\gemma4-local-ollama.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-12.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-14.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-08-23.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-08-28.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-09-15.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\clerk-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\CURSOR_TODO_SFT_S8_WEIGHTED_2026-10-14.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\foundry-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\qa-open-theology-sft-handoff-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\runpod-sft-gate0-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\sft-s3-mask-multiturn-brief-2026-10-15.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-b-eval-strategy-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-expansion-plan.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-s1-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-s5-b-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-s6-c-eval-next-session.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-s6-phase0-prepared.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-implementation-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-next-steps-after-v13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-plan-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-runpod-mcp-volume-gap.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v3-s6-handoff.md during index regeneration: Missing YAML frontmatter delimiter"]
@@ -79,7 +79,7 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `decisions` | medium | Generated map of memory-store/decisions/ (1 entries). | • **Gemma 4 Fine-Tuning Transition** (`decisions/gemma4-fin... |
 | `episodic` | medium | Generated map of memory-store/episodic/ (36 entries). | • **2026-09-28** (`episodic/2026-09-28`, medium) — Reframed...<br>• **2026-10-02** (`episodic/2026-10-02`, medium) —<br>• **2026-10-05** (`episodic/2026-10-05`, medium) — |
 | `failures` | medium | Generated map of memory-store/failures/ (44 entries). | • **Vast official Unsloth image smoke blocked; LD_LIBRARY_P...<br>• **AssertionError: S3 FAIL row 5: user turn leaked into la...<br>• **asyncua write_value BadTypeMismatch when writing int to... |
-| `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (60 entries). | • **Fine-tuning next session handoff** (`fine-tuning/next-s...<br>• **Open theology QA slice tooling ready for Clerk** (`fine...<br>• **Next session: plan open theological QA slice** (`fine-t... |
+| `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (61 entries). | • **Fine-tuning next session handoff** (`fine-tuning/next-s...<br>• **Open theology QA slice tooling ready for Clerk** (`fine...<br>• **Next session: plan open theological QA slice** (`fine-t... |
 | `framework-rules` | medium | Defines coding standards, required libraries (Streamlit, LlamaIndex), environment setup (.env), and database rules for the codebase. | • 1. Runtime Environment<br>• 2. Core Libraries & Packages<br>• 3. Vector Database Rules<br>• 4. Agent Memory Guidelines |
 | `grok` | medium | Generated map of memory-store/grok/ (6 entries). | • **Grok Bot Clerk for open-theology QA generation** (`grok...<br>• **Grok Bot Foundry for train/export code** (`grok/foundry...<br>• **Grok Integration with Memory Fabric (MCP + Docs + Nativ... |
 | `pretraining` | medium | Generated map of memory-store/pretraining/ (101 entries). | • **CPT B_training_sota known issues (P1 closed — log spam)...<br>• **Composite CPT early stop merges split HF eval events** ...<br>• **Confessions + Institutes corpus (WCF, 1689, Calvin)** (... |
@@ -3769,6 +3769,46 @@ review_status: stale
 - Chunking is char-approx, not LlamaIndex `SentenceSplitter`
 - Citations are trailing `[Sermon N]`, not teacher-written inline quotes
 
+<!-- memory-fabric:store/fine-tuning/sft-runpod-unsloth-go-blocked-balance-2026-10-17 -->
+---
+store_path: fine-tuning/sft-runpod-unsloth-go-blocked-balance-2026-10-17
+title: "RunPod Unsloth go blocked: no volume + low balance"
+summary: "- `7f27f32` RunPod Unsloth weighted path + bf16 LoRA (`load_in_4bit=False`, `load_in_16bit=True`)"
+priority: high
+tags: [sft, weighted, runpod, unsloth, balance, readiness]
+schema_version: 1.3
+last_updated: "2026-10-17T14:24:04-03:00"
+---
+
+# RunPod Unsloth go blocked (2026-10-17)
+
+## Landed on main
+
+- `7f27f32` RunPod Unsloth weighted path + bf16 LoRA (`load_in_4bit=False`, `load_in_16bit=True`)
+- `08a95ff` Cloudflare 1010 fix (User-Agent on MCP REST)
+- `43fd4b6` ephemeral workspace fallback when volume missing
+- `10c6860` clear balance error (no fake RUNPOD_API_KEY throw)
+
+Offline dry: READY, DIRTY_OVERRIDES=(none), pin `10c6860`.
+
+## Paid go attempt
+
+`-Go -SmokeOnly -StartMonitor` reached REST create:
+
+1. Volume `7hb931c5oe` **not found** (list-network-volumes empty).
+2. `create-network-volume` US-IL-1 75GB → **400** needs **>= $5**.
+3. Ephemeral fallback: Community 4090 no stock; Secure/L40S → **account balance too low to rent**.
+
+No pod created. No billing from this go.
+
+## Ops next
+
+1. Top up RunPod (enough for Secure 4090 ~$0.89/hr smoke, ideally >=$5 to recreate US-IL-1 volume).
+2. Optional: set `~/.runpod/config.toml` apikey for runpodctl.
+3. Re-dry then `.
+unpod_sft_s8_weighted_orchestrate.ps1 -Go -SmokeOnly -StartMonitor`.
+4. Full go only if smoke s/step beats ~90s PEFT; else Vast PEFT (also needs Vast credit).
+
 <!-- memory-fabric:store/fine-tuning/sft-s8-weighted-crash-fix-2026-10-14 -->
 ---
 store_path: fine-tuning/sft-s8-weighted-crash-fix-2026-10-14
@@ -5553,15 +5593,15 @@ Generated by Memory Fabric from `memory-store/failures/` — do not edit by hand
 <!-- memory-fabric:local/fine-tuning -->
 ---
 section: fine-tuning
-summary: "Generated map of memory-store/fine-tuning/ (60 entries)."
+summary: "Generated map of memory-store/fine-tuning/ (61 entries)."
 priority: medium
 tags: [fine-tuning]
 schema_version: 1.3
-last_updated: "2026-10-17T14:21:01-03:00"
+last_updated: "2026-10-17T14:24:04-03:00"
 generated: true
 generated_from: memory-store/fine-tuning
-store_fingerprint: 81449211717acbeff3c73f30314d21ec
-body_hash: 09b445e5f6f1357688fce34c8513a846
+store_fingerprint: ddc0064fd230c1621e819a74cc25c999
+body_hash: f3c952d19084f369fe3dc506759f0aa8
 ---
 
 # Fine Tuning Map
@@ -5580,7 +5620,7 @@ Generated by Memory Fabric from `memory-store/fine-tuning/` — do not edit by h
 - **QA verify + F5 slice gap report** (`fine-tuning/qa-prompt-strategy-verify`, high) — After overlay-safe catechism variants + multiturn merge:
 - **One prompt; diversify task slices** (`fine-tuning/qa-prompt-type-decision`, high) — **Locked after live verify.** Improves SFT via example-type diversity, not multiple prompts
 - **QA Sources Rewrite Progress** (`fine-tuning/qa-sources-rewrite-progress`, high) — Cross-session log of QA answer rewrite pipeline for SFT teacherish/quote fidelity
-- …and 48 more entries — see `memory-store/index.md`.
+- …and 49 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:store/grok/forge-training-ops -->
 ---
@@ -9963,7 +10003,7 @@ summary: "Diagnosed why weighted SFT on Vast cannot be left to finish even thoug
 priority: low
 tags: [episodic, session-journal]
 schema_version: 1.3
-last_updated: "2026-10-17T14:14:55-03:00"
+last_updated: "2026-10-17T14:24:06-03:00"
 ---
 
 ## sft-repeat-diagnosis
@@ -10020,6 +10060,17 @@ Persisted RunPod Unsloth weighted SFT memories: updated handoff with offline dry
 
 - Offline proof is contract-only; GPU Unsloth smoke still requires -Go -SmokeOnly
 - Dirty sync on sft_remote_train_s8_weighted.sh blocks clean -Go until commit/push or -AllowDirtySync
+
+## runpod-unsloth-readiness-go
+
+Implemented RunPod Unsloth FT readiness: bf16 LoRA loader, committed/pushed orchestrator path, dry READY with clean pin. Paid smoke go blocked — network volume 7hb931c5oe gone, account under $5 cannot create volume or rent Secure GPU. Fixed Cloudflare 1010 User-Agent, ephemeral fallback, and clearer balance errors on main through 10c6860.
+
+- Use bf16 LoRA not QLoRA for Unsloth Qwen3.5
+- Prefer MCP OAuth provision with User-Agent over empty runpodctl apikey
+- Allow ephemeral /workspace when volume missing until balance allows recreate
+- Do not rent Vast PEFT fallback while RunPod smoke not proven and Vast credit also low
+
+- `fine_tuning/scripts/sft_verify_mount.ps1`
 
 <!-- memory-fabric:store/episodic/commits/2026-10-14/604fca57e1 -->
 ---

@@ -67,14 +67,18 @@ Vast has no network volume — **fetch before destroy**.
 
 | Job | Host | Orchestrator |
 |-----|------|----------------|
-| Weighted SFT S8 (PEFT) | Vast | `fine_tuning/scripts/vast_sft_s8_weighted_orchestrate.ps1` |
-| Weighted SFT S8 (Unsloth) | RunPod | `fine_tuning/scripts/runpod_sft_s8_weighted_orchestrate.ps1` |
+| Weighted SFT S8 (Unsloth) | RunPod (primary speed) | `fine_tuning/scripts/runpod_sft_s8_weighted_orchestrate.ps1` |
+| Weighted SFT S8 (PEFT) | Vast (fallback) | `fine_tuning/scripts/vast_sft_s8_weighted_orchestrate.ps1` |
 | CPT (historical) | Vast | only if operator names a CPT runbook |
 | SFT GATE-0 (historical) | Vast / RunPod GATE-0 | do not use for this weighted job |
 
-Vast weighted SFT uses torch **2.11** + **PEFT** via `sft_remote_setup.sh`.
-Do not relaunch with Unsloth on Vast. RunPod Unsloth uses the same setup script
-with `SFT_BACKEND=unsloth` and dry → `-Go -SmokeOnly` → full `-Go`.
+**Control split:** Cursor owns the first RunPod Unsloth `-Go -SmokeOnly` (debug).
+Forge owns multi-hour full `-Go` only after smoke s/step beats ~90s PEFT.
+2026-10-17 measured ~16–18 s/step on Secure 4090 @ seq 4608.
+
+Auth: prefer `RUNPOD_API_KEY` / `~/.runpod/config.toml` (not MCP OAuth alone).
+Network volume US-IL-1: `37lkz6dt50`. Do not relaunch Unsloth on Vast.
+RunPod: dry → `-Go -SmokeOnly` → full `-Go`. Vast PEFT remains fallback.
 
 ## Launch loop (after go)
 

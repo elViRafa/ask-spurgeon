@@ -8,6 +8,7 @@ schema_version: 1.3
 last_updated: "2026-09-16T07:54:00-03:00"
 occurrences: 2
 error_signature: "unsloth sigsegv (exit <n>) at first sfttrainer.train() step on vast — including full rtx <n> (<n>bit and bf<n>). also fractional gpu nvml spoof as <n>."
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-09-06T00:46:26-04:00

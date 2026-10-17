@@ -7,6 +7,7 @@ tags: [cpt, s6, vast, conda, full-corpus, handoff]
 schema_version: 1.3
 last_updated: "2026-09-16T11:02:02-03:00"
 evidence: [continued_pretrain/VAST_RUNBOOK_CPT.md, continued_pretrain/scripts/vast_cpt_orchestrate.ps1, continued_pretrain/scripts/vast_cpt_remote_continue_b.sh]
+review_status: stale
 ---
 
 # Vast CPT S6 continue-B — prepared, not trained (2026-09-16)

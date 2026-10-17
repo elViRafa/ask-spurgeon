@@ -7,6 +7,7 @@ tags: [cpt, early-stop, transformers, bug, eval]
 schema_version: 1.3
 last_updated: "2026-09-15T11:34:36-03:00"
 evidence: [continued_pretrain/scripts/cpt_runtime.py, continued_pretrain/scripts/train_cpt_sota.py, continued_pretrain/scripts/test_cpt_runtime.py, continued_pretrain/scripts/_gen_sota_notebooks.py]
+review_status: stale
 ---
 
 # Composite early-stop split-eval fix (Phase 0, 2026-09-15)

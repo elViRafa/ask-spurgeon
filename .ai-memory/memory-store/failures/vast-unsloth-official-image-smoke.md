@@ -6,6 +6,7 @@ priority: high
 tags: [vast, unsloth, smoke, docker, sigsegv]
 schema_version: 1.3
 last_updated: "2026-09-16T09:47:06-03:00"
+review_status: stale
 ---
 
 # Vast Unsloth official-image smoke attempt (2026-09-16)

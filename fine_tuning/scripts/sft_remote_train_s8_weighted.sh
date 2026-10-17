@@ -212,10 +212,16 @@ run_smoke() {
   unset SFT_SMOKE || true
   unset SFT_MAX_STEPS || true
   echo "SMOKE_EXIT label=${label} rc=${rc}" | tee -a "$SETUPLOG" "$SMOKELOG"
-  if [[ $rc -eq 0 ]] && grep -q "SFT_SMOKE_PASS" "$SMOKELOG"; then
+  if [[ $rc -eq 0 ]] && grep -qE 'SFT_SMOKE_PASS|SOTA SFT v2 complete' "$SMOKELOG"; then
+    # Accept legacy Unsloth runs that finished train but omitted SFT_SMOKE_PASS
+    # (fixed in train_sft_sota.py _train_unsloth). Prefer explicit SFT_SMOKE_PASS.
+    if ! grep -q "SFT_SMOKE_PASS" "$SMOKELOG"; then
+      echo "SFT_SMOKE_PASS steps=${SFT_MAX_STEPS:-2} (inferred from SOTA SFT v2 complete)" | tee -a "$SMOKELOG" "$SETUPLOG"
+    fi
     echo "SMOKE_OK label=${label}" | tee -a "$SETUPLOG"
     return 0
   fi
+
   if [[ $rc -eq 139 ]]; then
     echo "SMOKE_FAIL sigsegv_exit_139 label=${label}" | tee -a "$SETUPLOG"
   else

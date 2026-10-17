@@ -28,10 +28,12 @@ Cursor Cloud Agents may fix scripts in that repo only — never rent GPU.
 
 Current job (2026-10-17): weighted SFT on S8 merged CPT
 (RAG mix + open-theology).
-Primary (Vast PEFT): fine_tuning/NEXT_SFT_S8_WEIGHTED.md —
-vast_sft_s8_weighted_orchestrate.ps1 (seq 4608 / peft).
-Secondary (RunPod Unsloth): fine_tuning/NEXT_SFT_S8_WEIGHTED_RUNPOD_UNSLOTH.md —
-runpod_sft_s8_weighted_orchestrate.ps1 (dry → -Go -SmokeOnly → full -Go).
+Control split: Cursor owns the first RunPod Unsloth -Go -SmokeOnly (debug loop).
+Forge owns multi-hour full -Go watch only after smoke s/step beats ~90s PEFT.
+Primary speed bet: fine_tuning/NEXT_SFT_S8_WEIGHTED_RUNPOD_UNSLOTH.md —
+runpod_sft_s8_weighted_orchestrate.ps1 (dry → SmokeOnly → full -Go).
+Auth: prefer RUNPOD_API_KEY / ~/.runpod/config.toml (funded account); volume
+US-IL-1 id 37lkz6dt50. Fallback: Vast PEFT NEXT_SFT_S8_WEIGHTED.md.
 Hub LoRA v2 06354dfc stays. SFT_EXPORT=0 until F gates. No rent until Rafael says go.
 Sync on -Go: pinned sparse-checkout of fine_tuning/data + fine_tuning/scripts
 at HEAD SHA on the GPU (no bulk jsonl SCP). SCP only dirty overrides with
@@ -82,10 +84,11 @@ Do not create a scheduled routine yet. I will say "run is live" when I want
 you to watch every 30 minutes (America/Sao_Paulo). When I say go for Vast PEFT,
 dry-run vast_sft_s8_weighted_orchestrate.ps1 first (no -Go), then
 -Go -StartMonitor only after I confirm. Credit under ~$5 needs a top-up or
-my explicit -AllowLowCredit. When I say go for RunPod Unsloth, dry
-runpod_sft_s8_weighted_orchestrate.ps1, then -Go -SmokeOnly -StartMonitor
-before any full -Go. Do not call vast_orchestrate.ps1,
-vast_sft_s8_orchestrate.ps1, sft_orchestrate.ps1, or any CPT launcher.
+my explicit -AllowLowCredit. When I say the Unsloth smoke already won and give go for full train, dry
+runpod_sft_s8_weighted_orchestrate.ps1 then -Go -StartMonitor (no SmokeOnly).
+Do not run the first Unsloth smoke yourself — Cursor owns that. Do not call
+vast_orchestrate.ps1, vast_sft_s8_orchestrate.ps1, sft_orchestrate.ps1, or any
+CPT launcher.
 ```
 
 ## 3. After the first good watch

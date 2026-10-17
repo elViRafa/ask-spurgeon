@@ -380,7 +380,10 @@ checks = {
     "bitsandbytes": "0.50.2",
     "triton": "3.6.0",
 }
+# unsloth_zoo refuses import unless unsloth is already loaded — import unsloth first.
 if backend == "unsloth":
+    import unsloth  # noqa: F401
+    print("  unsloth:", getattr(unsloth, "__version__", "ok"), "(preloaded for zoo)")
     checks["unsloth_zoo"] = "2026.9.1"
 
 failed = []
@@ -459,8 +462,9 @@ except ImportError:
     print("  torchao: not imported (optional)")
 
 if backend == "unsloth":
-    import unsloth
-    print("  unsloth:", getattr(unsloth, "__version__", "ok"))
+    # Already imported above before unsloth_zoo pin check.
+    import unsloth  # noqa: F401
+    print("  unsloth:", getattr(unsloth, "__version__", "ok"), "(recheck)")
 else:
     print(f"  unsloth: skipped (SFT_BACKEND={backend})")
 
