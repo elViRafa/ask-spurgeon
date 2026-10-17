@@ -357,8 +357,10 @@ def main() -> None:
     result = try_provision_pod(token, pubkey)
     if not result:
         raise SystemExit(
-            "all REST v1 create attempts failed (US-IL-1 + volume 7hb931c5oe). "
-            "Try again later or set RUNPOD_API_KEY and use runpodctl path."
+            "all REST v1 create attempts failed "
+            f"(volume {NETWORK_VOLUME} missing or GPU stock/balance). "
+            "Top up RunPod (volume create needs >= $5; Secure/Community need rent funds), "
+            "then retry. Optional: set RUNPOD_API_KEY for runpodctl path."
         )
     pod_id, meta = result
     print("POD_OK", pod_id)

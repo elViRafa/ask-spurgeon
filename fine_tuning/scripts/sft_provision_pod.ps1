@@ -88,12 +88,14 @@ function Invoke-RunpodctlProvision {
 # Prefer MCP OAuth REST (works when ~/.runpod/config.toml apikey is empty).
 # Cloudflare blocks REST without a User-Agent — sft_provision_pod_mcp.py sets one.
 $mcpScript = Join-Path $PSScriptRoot "sft_provision_pod_mcp.py"
+$mcpExit = -1
 if (Test-Path $mcpScript) {
     $py = Join-Path $RepoRoot ".venv\Scripts\python.exe"
     if (-not (Test-Path $py)) { $py = "python" }
     $env:SFT_POD_NAME = $PodName
     & $py $mcpScript
-    if ($LASTEXITCODE -eq 0) {
+    $mcpExit = $LASTEXITCODE
+    if ($mcpExit -eq 0) {
         Write-Host "Provisioned via MCP OAuth REST v1"
         exit 0
     }
@@ -101,6 +103,17 @@ if (Test-Path $mcpScript) {
 
 if (Invoke-RunpodctlProvision -Cloud $CloudType) { exit 0 }
 if ($CloudType -eq "COMMUNITY" -and (Invoke-RunpodctlProvision -Cloud "SECURE")) { exit 0 }
+
+# Do not fall through to bare REST when MCP already authenticated and failed
+# (usually balance/stock). Bare REST only works with RUNPOD_API_KEY.
+try {
+    Get-RunpodApiKey | Out-Null
+}
+catch {
+    throw ("MCP OAuth provision failed (exit=$mcpExit) and RUNPOD_API_KEY unset. " +
+        "Top up RunPod balance (>= `$5 for network volume; enough for GPU rent), " +
+        "or set apikey in ~/.runpod/config.toml. Last MCP errors are above.")
+}
 
 $pub = Get-SshPublicKey
 $body = @{
