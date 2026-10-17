@@ -59,7 +59,7 @@ summary: "Map of available project memory sections."
 priority: high
 tags: [index, memory]
 schema_version: 1.3
-last_updated: "2026-10-17T14:49:55-03:00"
+last_updated: "2026-10-17T19:02:50-03:00"
 consolidation_hash: acd058fab27bf79aa31f9bd2e3dc7172
 contradictions: ["`fine-tuning/hf-spurgeon-qa-v2-gguf` and `fine-tuning/plans/ollama-merge-gguf` cover similar content but state different numbers (2.71 vs 07) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-next-session-handoff` cover similar content but state different numbers (1 vs 1.701 / 2.449 / 2250) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-s8-mhi-resume-c-prepared` cover similar content but state different numbers (1 / 2.8 / 2026.8 vs -) - review for conflict [heuristic]", "`pretraining/cpt-b-eval-strategy` and `pretraining/cpt-eval-unify-v"]
 consolidation_warnings: ["Skipped bugs\\gemma4-chat-template-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped bugs\\ollama-tokenizer-corruption-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped decisions\\gemma4-local-ollama.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-12.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-14.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-08-23.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-08-28.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-09-15.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\clerk-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\CURSOR_TODO_SFT_S8_WEIGHTED_2026-10-14.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\foundry-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\qa-open-theology-sft-handoff-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\runpod-sft-gate0-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\sft-s3-mask-multiturn-brief-2026-10-15.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-b-eval-strategy-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-expansion-plan.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-s1-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-s5-b-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-s6-c-eval-next-session.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-s6-phase0-prepared.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-implementation-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-next-steps-after-v13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-plan-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-runpod-mcp-volume-gap.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v3-s6-handoff.md during index regeneration: Missing YAML frontmatter delimiter"]
@@ -78,10 +78,10 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `debt` | low | App debt (hybrid search, rate limits) plus 2026-08-29 memory-fabric LLM/host hygiene notes. | • Known Technical Debt & Limits<br>• Roadmap & Pending Features |
 | `decisions` | medium | Generated map of memory-store/decisions/ (1 entries). | • **Gemma 4 Fine-Tuning Transition** (`decisions/gemma4-fin... |
 | `episodic` | medium | Generated map of memory-store/episodic/ (36 entries). | • **2026-09-28** (`episodic/2026-09-28`, medium) — Reframed...<br>• **2026-10-02** (`episodic/2026-10-02`, medium) —<br>• **2026-10-05** (`episodic/2026-10-05`, medium) — |
-| `failures` | medium | Generated map of memory-store/failures/ (44 entries). | • **Vast official Unsloth image smoke blocked; LD_LIBRARY_P...<br>• **AssertionError: S3 FAIL row 5: user turn leaked into la...<br>• **asyncua write_value BadTypeMismatch when writing int to... |
-| `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (61 entries). | • **Fine-tuning next session handoff** (`fine-tuning/next-s...<br>• **Open theology QA slice tooling ready for Clerk** (`fine...<br>• **Next session: plan open theological QA slice** (`fine-t... |
+| `failures` | medium | Generated map of memory-store/failures/ (47 entries). | • **Vast official Unsloth image smoke blocked; LD_LIBRARY_P...<br>• **AssertionError: S3 FAIL row 5: user turn leaked into la...<br>• **asyncua write_value BadTypeMismatch when writing int to... |
+| `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (64 entries). | • **Fine-tuning next session handoff** (`fine-tuning/next-s...<br>• **Open theology QA slice tooling ready for Clerk** (`fine...<br>• **Next session: plan open theological QA slice** (`fine-t... |
 | `framework-rules` | medium | Defines coding standards, required libraries (Streamlit, LlamaIndex), environment setup (.env), and database rules for the codebase. | • 1. Runtime Environment<br>• 2. Core Libraries & Packages<br>• 3. Vector Database Rules<br>• 4. Agent Memory Guidelines |
-| `grok` | medium | Generated map of memory-store/grok/ (6 entries). | • **Grok Bot Clerk for open-theology QA generation** (`grok...<br>• **Grok Bot Foundry for train/export code** (`grok/foundry...<br>• **Grok Integration with Memory Fabric (MCP + Docs + Nativ... |
+| `grok` | medium | Generated map of memory-store/grok/ (7 entries). | • **Grok Bot Clerk for open-theology QA generation** (`grok...<br>• **Grok Bot Foundry for train/export code** (`grok/foundry...<br>• **Grok Integration with Memory Fabric (MCP + Docs + Nativ... |
 | `pretraining` | medium | Generated map of memory-store/pretraining/ (101 entries). | • **CPT B_training_sota known issues (P1 closed — log spam)...<br>• **Composite CPT early stop merges split HF eval events** ...<br>• **Confessions + Institutes corpus (WCF, 1689, Calvin)** (... |
 | `schemas` | high | Defines data contracts, metadata schemas for ingested texts, and environment variable configurations. | • 1. Document & Chunk Metadata Schema<br>• 2. Ingestion Parameters<br>• 3. Environment Variables (Configuration Schema) |
 | `ubiquitous-language` | medium | Defines consistent domain language used throughout the codebase for clarity and shared understanding. | None recorded |
@@ -3367,6 +3367,48 @@ review_status: stale
 
 Special-token contract implemented 2026-08-29: D/E/F regenerated, Modelfile fixed, audit JSON at `fine_tuning/data/qwen35_special_token_audit.json`. Operator next: Track A bulk rewrite (`--apply --limit 50`) then stock-base D→E→F; do not mix with CPT volume `7hb931c5oe`. See `fine-tuning/next-session-handoff`.
 
+<!-- memory-fabric:store/grok/runpod-agent-setup-pod-usage -->
+---
+store_path: grok/runpod-agent-setup-pod-usage
+title: "Runpod agent setup for Cursor + Grok Forge"
+summary: "Followed official guide: https://docs.runpod.io/agent-setup.md"
+priority: high
+tags: [grok, forge, runpod, agent-setup, pod-usage, mcp, api-key]
+schema_version: 1.3
+last_updated: "2026-10-17T15:04:41-03:00"
+evidence: ["https://docs.runpod.io/agent-setup.md", "~/.cursor/mcp.json", "~/.agents/skills/runpod-usage", "~/.runpod/config.toml", .env]
+---
+
+# Runpod agent setup (Cursor) — 2026-10-17
+
+Followed official guide: https://docs.runpod.io/agent-setup.md
+
+## Verified on this PC
+
+- Node `v24.11.1` (>= 22.20 required).
+- Skills installed globally for Cursor:
+  `npx -y skills add runpod/runpod-plugins-official --skill '*' --agent cursor --yes --global`
+- Under `~/.agents/skills/`: `runpod` router, lanes (`runpod-mcp`, `runpodctl`, `flash`, `runpod-usage`, …), journeys (`discovery`, `lifecycle-crud`, `pod-deploy`, …).
+- MCP in `~/.cursor/mcp.json`: `"runpod": { "url": "https://mcp.getrunpod.io/" }`.
+- MCP OAuth works (`list-pods` empty = pass when none expected).
+
+## Credentials (updated same day)
+
+- Operator created API key; placed in **both** gitignored project `.env` (`RUNPOD_API_KEY`) and `~/.runpod/config.toml` (`apikey`).
+- `runpodctl user` OK: balance **$15**, spend $0/hr, limit $80. See `fine-tuning/runpod-credentials-ready-2026-10-17`.
+- Never paste or memory-store the key value.
+
+## Grok Bot Forge / pod usage
+
+- Forge rents/ops GPU pods via `.cursor/skills/gpu-train-ops/SKILL.md` + official `runpod-usage` / `runpod-mcp`.
+- Prefer `config.toml` for CLI; project scripts do not auto-load `RUNPOD_API_KEY` from `.env`.
+- Hosted MCP OAuth alone is half-setup; CLI needs the key (now set).
+
+## Do not
+
+- Interactive `npx @runpod/mcp-server@latest add` from an agent shell.
+- Pre-install runpodctl/Flash during setup — skills install on demand.
+
 <!-- memory-fabric:store/fine-tuning/runpod-sft-gate0-decisions -->
 ---
 store_path: fine-tuning/runpod-sft-gate0-decisions
@@ -3768,46 +3810,6 @@ review_status: stale
 - No multi-turn examples
 - Chunking is char-approx, not LlamaIndex `SentenceSplitter`
 - Citations are trailing `[Sermon N]`, not teacher-written inline quotes
-
-<!-- memory-fabric:store/fine-tuning/sft-runpod-unsloth-go-blocked-balance-2026-10-17 -->
----
-store_path: fine-tuning/sft-runpod-unsloth-go-blocked-balance-2026-10-17
-title: "RunPod Unsloth go blocked: no volume + low balance"
-summary: "- `7f27f32` RunPod Unsloth weighted path + bf16 LoRA (`load_in_4bit=False`, `load_in_16bit=True`)"
-priority: high
-tags: [sft, weighted, runpod, unsloth, balance, readiness]
-schema_version: 1.3
-last_updated: "2026-10-17T14:24:04-03:00"
----
-
-# RunPod Unsloth go blocked (2026-10-17)
-
-## Landed on main
-
-- `7f27f32` RunPod Unsloth weighted path + bf16 LoRA (`load_in_4bit=False`, `load_in_16bit=True`)
-- `08a95ff` Cloudflare 1010 fix (User-Agent on MCP REST)
-- `43fd4b6` ephemeral workspace fallback when volume missing
-- `10c6860` clear balance error (no fake RUNPOD_API_KEY throw)
-
-Offline dry: READY, DIRTY_OVERRIDES=(none), pin `10c6860`.
-
-## Paid go attempt
-
-`-Go -SmokeOnly -StartMonitor` reached REST create:
-
-1. Volume `7hb931c5oe` **not found** (list-network-volumes empty).
-2. `create-network-volume` US-IL-1 75GB → **400** needs **>= $5**.
-3. Ephemeral fallback: Community 4090 no stock; Secure/L40S → **account balance too low to rent**.
-
-No pod created. No billing from this go.
-
-## Ops next
-
-1. Top up RunPod (enough for Secure 4090 ~$0.89/hr smoke, ideally >=$5 to recreate US-IL-1 volume).
-2. Optional: set `~/.runpod/config.toml` apikey for runpodctl.
-3. Re-dry then `.
-unpod_sft_s8_weighted_orchestrate.ps1 -Go -SmokeOnly -StartMonitor`.
-4. Full go only if smoke s/step beats ~90s PEFT; else Vast PEFT (also needs Vast credit).
 
 <!-- memory-fabric:store/fine-tuning/sft-s8-weighted-crash-fix-2026-10-14 -->
 ---
@@ -5565,15 +5567,15 @@ Following the successful execution of Notebook B (Epoch 1 & 2) up to step 432:
 <!-- memory-fabric:local/failures -->
 ---
 section: failures
-summary: "Generated map of memory-store/failures/ (44 entries)."
+summary: "Generated map of memory-store/failures/ (47 entries)."
 priority: medium
 tags: [failures]
 schema_version: 1.3
-last_updated: "2026-10-17T14:22:20-03:00"
+last_updated: "2026-10-17T19:02:26-03:00"
 generated: true
 generated_from: memory-store/failures
-store_fingerprint: 28690e28e1b29daeed956bd4b4840639
-body_hash: 7f24ce14e4fb8ca329ec5c64c3d8750a
+store_fingerprint: a79241e258098e95545d521e5ad8be9f
+body_hash: 647fed182497275ba40a2af1bd725361
 ---
 
 # Failures Map
@@ -5588,20 +5590,20 @@ Generated by Memory Fabric from `memory-store/failures/` — do not edit by hand
 - **CPT B early-stop patience=2 with eval_steps=25 and 2-doc eval_spurgeon_loss halt** (`failures/cpt-b-early-stop-561e9ec07f`, medium) — CPT B early-stop patience=2 with eval_steps=25 and 2-doc eval_spurgeon_loss halted corpus v3 at step 375 of 4128 (~8.2M of 90M tokens)
 - **torch.OutOfMemoryError: CUDA out of memory during SFTTrainer.evaluate at step 20** (`failures/cuda-oom-during-mid-ffcb775074`, medium) — CUDA OOM during mid-train eval at step ~20 with PEFT bf16 seq 2048 on RTX 4090 24GB
 - **CUDA OOM on Kaggle T4 during CPT B v5 after manual pack (float32 Qwen3.5, batch ** (`failures/cuda-oom-on-kaggle-e64e9b60ce`, medium) — CUDA OOM on Kaggle T4 during CPT B v5 after manual pack (float32 Qwen3.5, batch 2, TRAIN_EMBEDDINGS=True)
-- …and 36 more entries — see `memory-store/index.md`.
+- …and 39 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:local/fine-tuning -->
 ---
 section: fine-tuning
-summary: "Generated map of memory-store/fine-tuning/ (61 entries)."
+summary: "Generated map of memory-store/fine-tuning/ (64 entries)."
 priority: medium
 tags: [fine-tuning]
 schema_version: 1.3
-last_updated: "2026-10-17T14:24:04-03:00"
+last_updated: "2026-10-17T19:02:25-03:00"
 generated: true
 generated_from: memory-store/fine-tuning
-store_fingerprint: ddc0064fd230c1621e819a74cc25c999
-body_hash: f3c952d19084f369fe3dc506759f0aa8
+store_fingerprint: 24dedd528cb1210397e93ccc7adf9480
+body_hash: 85fa71ef949067dfed392048d7ff4440
 ---
 
 # Fine Tuning Map
@@ -5620,7 +5622,7 @@ Generated by Memory Fabric from `memory-store/fine-tuning/` — do not edit by h
 - **QA verify + F5 slice gap report** (`fine-tuning/qa-prompt-strategy-verify`, high) — After overlay-safe catechism variants + multiturn merge:
 - **One prompt; diversify task slices** (`fine-tuning/qa-prompt-type-decision`, high) — **Locked after live verify.** Improves SFT via example-type diversity, not multiple prompts
 - **QA Sources Rewrite Progress** (`fine-tuning/qa-sources-rewrite-progress`, high) — Cross-session log of QA answer rewrite pipeline for SFT teacherish/quote fidelity
-- …and 49 more entries — see `memory-store/index.md`.
+- …and 52 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:store/grok/forge-training-ops -->
 ---
@@ -5760,15 +5762,15 @@ Reject empty/quoted-empty apikey values in s6_runpod_common.ps1 Get-RunpodApiKey
 <!-- memory-fabric:local/grok -->
 ---
 section: grok
-summary: "Generated map of memory-store/grok/ (6 entries)."
+summary: "Generated map of memory-store/grok/ (7 entries)."
 priority: medium
 tags: [grok]
 schema_version: 1.3
-last_updated: "2026-10-17T10:51:09-03:00"
+last_updated: "2026-10-17T14:51:51-03:00"
 generated: true
 generated_from: memory-store/grok
-store_fingerprint: be599e29cb9f5dbed488c4e3063738a9
-body_hash: 2521efb928f1b3f5881ea312174b01c3
+store_fingerprint: a8927ebad36d74482a5f53dcb8281f9e
+body_hash: 712c25a7507af08d6be15eae773a011e
 ---
 
 # Grok Map
@@ -5778,6 +5780,7 @@ Generated by Memory Fabric from `memory-store/grok/` — do not edit by hand. Wr
 - **Grok Bot Clerk for open-theology QA generation** (`grok/clerk-qa-generation`, high) — Clerk is the third Grok Bot teammate (alongside Forge and Foundry)
 - **Grok Bot Foundry for train/export code** (`grok/foundry-train-export`, high) — - **Foundry** — write/refine CPT+SFT+export code via Cursor Cloud Agents
 - **Grok Integration with Memory Fabric (MCP + Docs + Native Layer)** (`grok/integration`, high) — Grok Integration with Memory Fabric (MCP + Docs + Native Layer)
+- **Runpod agent setup for Cursor + Grok Forge** (`grok/runpod-agent-setup-pod-usage`, high) — Followed official guide: https://docs.runpod.io/agent-setup.md
 - **Grok Bot runs S8 m_hi resume Isolation C** (`grok/s8-mhi-resume-c-run`, high) — Rafael will run this Isolation C in Grok Bot (Forge), not in Cursor
 - **Grok Bot Forge for Vast/Runpod training** (`grok/forge-training-ops`, medium) — Create the teammate in the Grok Bot app from `continued_pretrain/GROK_BOT_FORGE.md`
 - **S8 Forge launch review** (`grok/s8-forge-launch-review`, medium) — S8 Forge finished the right recipe after two bad starts
@@ -6228,6 +6231,41 @@ The user requested to revert these changes. The notebook was re-configured to:
   - Assistant responses are mapped to the **Response**.
 - **SFT Trainer Delimiters:** The `train_on_responses_only` function masks the labels up to `"### Response:\n"` to focus training only on response generations.
 
+<!-- memory-fabric:store/fine-tuning/runpod-credentials-ready-2026-10-17 -->
+---
+store_path: fine-tuning/runpod-credentials-ready-2026-10-17
+title: "Runpod credentials + balance ready"
+summary: "Supersedes the same-day blocker `fine-tuning/sft-runpod-unsloth-go-blocked-balance-2026-10-17` for **auth and credit** (not for Unsloth smoke proof)"
+priority: medium
+tags: [runpod, api-key, balance, credentials, sft, forge]
+schema_version: 1.3
+last_updated: "2026-10-17T15:04:35-03:00"
+evidence: ["~/.runpod/config.toml", .env, ".gitignore:30"]
+---
+
+# Runpod credentials + balance ready (2026-10-17)
+
+Supersedes the same-day blocker `fine-tuning/sft-runpod-unsloth-go-blocked-balance-2026-10-17` for **auth and credit** (not for Unsloth smoke proof).
+
+## Verified
+
+- Cursor agent setup done (skills + MCP OAuth). See `grok/runpod-agent-setup-pod-usage`.
+- API key created by operator; stored in **both**:
+  - Project `.env` as `RUNPOD_API_KEY=…` (gitignored; `.gitignore` line 30)
+  - `~/.runpod/config.toml` as `apikey = '…'`
+- Do **not** store the key value in memory.
+- `runpodctl user` succeeded: `clientBalance` **15**, `currentSpendPerHr` **0**, `spendLimit` **80**.
+- Enough for network volume create (≥ $5) and Secure 4090 smoke (~$0.89/hr).
+
+## Caveat for scripts
+
+`Get-RunpodApiKey` in `fine_tuning/scripts/sft_runpod_common.ps1` reads process env then `config.toml` — it does **not** load `RUNPOD_API_KEY` from `.env`. Keeping `config.toml` populated is required for Forge/orchestrator CLI path.
+
+## Still not done
+
+- No pod/volume rented in this session.
+- Unsloth GPU smoke still needs operator `-Go -SmokeOnly` after dry.
+
 <!-- memory-fabric:store/failures/runpod-rest-v-n-6137a9be3b -->
 ---
 store_path: failures/runpod-rest-v-n-6137a9be3b
@@ -6248,6 +6286,65 @@ RunPod REST v1 pod create via sft_provision_pod_mcp.py returned Cloudflare 403 e
 
 **Fix:**
 Add User-Agent ask-spurgeon-sft-provision/1.0 to http_json in sft_provision_pod_mcp.py (Cloudflare blocks bare urllib). Prefer MCP OAuth provision before runpodctl; pass SFT_POD_NAME so weighted pods are not named sft-gate0.
+
+<!-- memory-fabric:store/fine-tuning/runpod-unsloth-sft-s8-smoke-pass-2026-10-17 -->
+---
+store_path: fine-tuning/runpod-unsloth-sft-s8-smoke-pass-2026-10-17
+title: "RunPod Unsloth weighted SFT S8 smoke/train pass"
+summary: "- Unsloth on RunPod **won on speed**: ~**16–18 s/step** @ seq 4608 vs ~90s PEFT baseline"
+priority: medium
+tags: [runpod, unsloth, sft, s8, weighted, smoke]
+schema_version: 1.3
+last_updated: "2026-10-17T19:02:25-03:00"
+---
+
+# RunPod Unsloth weighted SFT S8 — smoke/train pass (2026-10-17)
+
+## Verdict
+- Unsloth on RunPod **won on speed**: ~**16–18 s/step** @ seq 4608 vs ~90s PEFT baseline.
+- Adapter fetched locally under `fine_tuning/kaggle/runpod_sft_s8_weighted/sft_s8_weighted/adapter/lora/` (+ `checkpoint-514`).
+- Pod destroyed after fetch; no stray pods left. Balance landed ~$12. Volume `37lkz6dt50` may still bill storage (~$0.007/hr).
+
+## Control split (locked)
+- **Cursor** owns first paid Unsloth smoke (debug loop: MCP + runpodctl + orchestrator).
+- **Grok Forge** watches multi-hour full train only after smoke beats ~90s/step.
+- Cloud Agents must not rent GPU.
+
+## Bugs fixed this session
+1. Prefer `RUNPOD_API_KEY` over MCP OAuth; GraphQL + SSH probe for wait-ssh (OAuth hang).
+2. Import `unsloth` before `unsloth_zoo` in remote setup (pin assert).
+3. Unsloth path ignored `SFT_SMOKE`/`max_steps` → ran full 514; fixed in `train_sft_sota.py`.
+4. Compact state probe so monitor sees `SETUP_FAILED` / `SMOKE_ONLY_DONE`.
+
+## Hard rules still on
+- `SFT_EXPORT=0` until F gates; no Hub overwrite; fetch before destroy; no second GPU while one session exists.
+
+## Next
+- Commit dirty orchestrator/train/setup fixes.
+- Optional true 2-step `-SmokeOnly` to prove max_steps fix.
+- F gates / export on fetched adapter.
+- Delete volume if not needed between runs.
+
+<!-- memory-fabric:store/failures/runpod-unsloth-smoke-ran-0fdbc89770 -->
+---
+store_path: failures/runpod-unsloth-smoke-ran-0fdbc89770
+title: "RunPod Unsloth --smoke ran full 514 steps (Num Epochs=2) ignoring SFT_MAX_STEPS="
+summary: "RunPod Unsloth --smoke ran full 514 steps (Num Epochs=2) ignoring SFT_MAX_STEPS=2 / SFT_SMOKE=1; SFT_SMOKE_ONLY never reached because smoke never exited"
+priority: medium
+tags: [failure, fix, runpod, sft, smoke, unsloth]
+schema_version: 1.3
+last_updated: "2026-10-17T17:33:21-03:00"
+occurrences: 1
+error_signature: "runpod unsloth --smoke ran full <n> steps (num epochs=<n>) ignoring sft_max_steps=<n> / sft_smoke=<n>; sft_smoke_only never reached because smoke never exited"
+---
+
+## Occurrence 1 — 2026-10-17T17:33:21-03:00
+
+**Error:**
+RunPod Unsloth --smoke ran full 514 steps (Num Epochs=2) ignoring SFT_MAX_STEPS=2 / SFT_SMOKE=1; SFT_SMOKE_ONLY never reached because smoke never exited
+
+**Fix:**
+train_sft_sota.py _train_unsloth lacked smoke max_steps handling that PEFT path had. Added smoke batch/accum/max_steps, longest-row select, save_strategy=no, and SFT_SMOKE_PASS print. Live accidental full train at ~17s/step still beats Vast PEFT ~90s.
 
 <!-- memory-fabric:store/failures/runtimeerror-adapter-sha-n-b83673b4f0 -->
 ---
@@ -6444,13 +6541,13 @@ Windows PowerShell here-strings keep CRLF; bash on the GPU treats `\r` as part o
 <!-- memory-fabric:store/failures/sft-remote-setup-sh-65f34726a7 -->
 ---
 store_path: failures/sft-remote-setup-sh-65f34726a7
-title: "sft_remote_setup.sh assert_pins bare import unsloth under set -euo pipefail fail"
+title: "unsloth_zoo ImportError Please install Unsloth via pip install unsloth during PI"
 summary: "sft_remote_setup.sh assert_pins bare import unsloth under set -euo pipefail failed with unsloth_zoo ImportError Please install Unsloth via pip install unsloth despite pip list showing unsloth 2026.9.2"
 priority: medium
-tags: [failure, fix, peft, setup, sft, unsloth, vast, watchdog, weighted]
+tags: [failure, fix, runpod, setup, sft, unsloth]
 schema_version: 1.3
-last_updated: "2026-10-15T16:20:25-03:00"
-occurrences: 1
+last_updated: "2026-10-17T17:33:21-03:00"
+occurrences: 2
 error_signature: "sft_remote_setup.sh assert_pins bare import unsloth under set -euo pipefail failed with unsloth_zoo importerror please install unsloth via pip install unsloth despite pip list showing unsloth <n>.<n>.<n> and unsloth_zoo <n>.<n>.<n>; setup exited <n>; no smoke<path>; local launcher without -startmoni"
 failure_key: importerror
 ---
@@ -6462,6 +6559,12 @@ sft_remote_setup.sh assert_pins bare import unsloth under set -euo pipefail fail
 
 **Fix:**
 Gate unsloth/unsloth_zoo install+import to SFT_BACKEND=unsloth only (weighted peft path skips). Harden isolated venv (no system-site-packages, PYTHONNOUSERSITE, refuse image dist-packages on sys.path). Drop pip -q. CUDA/LD diagnostics before first unset LD_LIBRARY_PATH. ERR trap writes SETUP_FAILED line=N. Remote sft_setup_fail_watchdog.sh evidence+self-destroy. Orchestrator: -Go implies -StartMonitor, Start-Transcript, launch try/catch Invoke-DestroyOnFail, monitor breaks fast on SETUP_FAILED/SMOKE_BEFORE_TRAIN_FAILED.
+
+## Occurrence 2 — 2026-10-17T17:33:21-03:00
+
+unsloth_zoo ImportError Please install Unsloth via pip install unsloth during PIN ASSERT despite unsloth 2026.9.2 already installed in sft_venv
+
+In sft_remote_setup.sh assert_pins, import unsloth before adding unsloth_zoo to the version checks loop. unsloth_zoo refuses import unless unsloth is already loaded.
 
 <!-- memory-fabric:store/failures/sft-remote-setup-sh-7383d17245 -->
 ---
@@ -6488,6 +6591,50 @@ Disable ERR trap around expected-fail pre-torch probe and pins_already_ok checks
 
 
 Landed main 1190682: trap - ERR around expected-fail probe and pins_already_ok; append SETUPLOG without tee so $? is python; SETUP_PINS_OK after assert_pins; watchdog/monitor actionable_setup_failed only after SETUP_PINS_OK or reason= or line>=470; Save-WeightedEvidence requires real payload and does not print evidence saved when empty; offline fake-python3 probe test.
+
+<!-- memory-fabric:store/fine-tuning/sft-runpod-unsloth-go-blocked-balance-2026-10-17 -->
+---
+store_path: fine-tuning/sft-runpod-unsloth-go-blocked-balance-2026-10-17
+title: "RunPod Unsloth go blocked: no volume + low balance"
+summary: "- `7f27f32` RunPod Unsloth weighted path + bf16 LoRA (`load_in_4bit=False`, `load_in_16bit=True`)"
+priority: medium
+tags: [sft, weighted, runpod, unsloth, balance, readiness]
+schema_version: 1.3
+last_updated: "2026-10-17T15:04:44-03:00"
+---
+
+# RunPod Unsloth go blocked (2026-10-17)
+
+## Landed on main
+
+- `7f27f32` RunPod Unsloth weighted path + bf16 LoRA (`load_in_4bit=False`, `load_in_16bit=True`)
+- `08a95ff` Cloudflare 1010 fix (User-Agent on MCP REST)
+- `43fd4b6` ephemeral workspace fallback when volume missing
+- `10c6860` clear balance error (no fake RUNPOD_API_KEY throw)
+
+Offline dry: READY, DIRTY_OVERRIDES=(none), pin `10c6860`.
+
+## Paid go attempt
+
+`-Go -SmokeOnly -StartMonitor` reached REST create:
+
+1. Volume `7hb931c5oe` **not found** (list-network-volumes empty).
+2. `create-network-volume` US-IL-1 75GB → **400** needs **>= $5**.
+3. Ephemeral fallback: Community 4090 no stock; Secure/L40S → **account balance too low to rent**.
+
+No pod created. No billing from this go.
+
+## Ops next
+
+1. Top up RunPod (enough for Secure 4090 ~$0.89/hr smoke, ideally >=$5 to recreate US-IL-1 volume).
+2. Optional: set `~/.runpod/config.toml` apikey for runpodctl.
+3. Re-dry then `.
+unpod_sft_s8_weighted_orchestrate.ps1 -Go -SmokeOnly -StartMonitor`.
+4. Full go only if smoke s/step beats ~90s PEFT; else Vast PEFT (also needs Vast credit).
+
+## Update 2026-10-17 afternoon — auth + credit cleared
+
+Operator topped up and set API key in `.env` + `~/.runpod/config.toml`. `runpodctl user` shows **$15** balance. Auth/credit blocker is lifted; see `fine-tuning/runpod-credentials-ready-2026-10-17`. Next paid step is still dry then `-Go -SmokeOnly -StartMonitor` (no lease in the credential-setup session).
 
 <!-- memory-fabric:store/fine-tuning/sft-runpod-unsloth-next-session -->
 ---
@@ -6569,6 +6716,49 @@ cd ..\..
 - Contract/wiring only — not a GPU Unsloth forward/smoke
 - Before `-Go`: dirty override on `sft_remote_train_s8_weighted.sh` needs commit/push or `-AllowDirtySync`
 - Next paid step: `-Go -SmokeOnly -StartMonitor` after operator go
+
+<!-- memory-fabric:store/fine-tuning/sft-runpod-unsloth-smoke-full-2026-10-17 -->
+---
+store_path: fine-tuning/sft-runpod-unsloth-smoke-full-2026-10-17
+title: "RunPod Unsloth weighted SFT: speed win + accidental full train"
+summary: "Unsloth on RunPod Secure 4090 **beats** Vast PEFT ~90 s/step: steady **~16–18 s/step** at seq 4608 after step 1 (~92 s cold)"
+priority: medium
+tags: [sft, unsloth, runpod, smoke, adapter]
+schema_version: 1.3
+last_updated: "2026-10-17T18:39:51-03:00"
+evidence: [fine_tuning/kaggle/runpod_sft_s8_weighted/sft_s8_weighted/adapter/lora, fine_tuning/scripts/train_sft_sota.py, continued_pretrain/GROK_BOT_FORGE.md]
+---
+
+# RunPod Unsloth weighted SFT — 2026-10-17 result
+
+## Verdict
+
+Unsloth on RunPod Secure 4090 **beats** Vast PEFT ~90 s/step: steady **~16–18 s/step** at seq 4608 after step 1 (~92 s cold).
+
+## What ran
+
+- Auth: `RUNPOD_API_KEY` (funded account). Volume `37lkz6dt50` US-IL-1 75GB created.
+- Pod `2gbzxfhmyfv25c` destroyed after fetch. Balance ~$12 leftover (from ~$15).
+- Bug: `_train_unsloth` ignored `SFT_SMOKE`/`SFT_MAX_STEPS` → “smoke” ran full **514** steps. Fixed in `train_sft_sota.py` for next smoke.
+- After first 514 completed, missing `SFT_SMOKE_PASS` started a second epoch; killed; markers written; fetch kept adapter.
+
+## Artifacts (local)
+
+- Final LoRA: `fine_tuning/kaggle/runpod_sft_s8_weighted/sft_s8_weighted/adapter/lora/`
+- `checkpoint-514` under same tree + `safety_fetch_final_514_20261017_182054/`
+- `SFT_EXPORT=0` — no Hub until F gates.
+
+## Control split (confirmed)
+
+- Cursor: first Unsloth smoke / debug.
+- Forge: multi-hour watch after smoke win — profile updated in `GROK_BOT_FORGE.md`.
+- This session already produced a full adapter; next Forge go is only if a clean re-train is wanted.
+
+## Follow-ups
+
+1. Commit dirty fixes (`sft_remote_setup.sh`, `train_sft_sota.py`, wait-ssh GraphQL, probe script, volume id).
+2. True 2-step `-SmokeOnly` to confirm fix, then optional clean full `-Go` under Forge.
+3. Run F gates / `sft_export_if_gates.ps1` on fetched adapter when ready.
 
 <!-- memory-fabric:store/fine-tuning/sft-s8-weighted-residual-risks -->
 ---
@@ -6905,6 +7095,27 @@ review_status: stale
   ```
 * **Implication**: Gemma 4 is a multimodal model containing audio components (`audio_tower`/`Gemma4AudioModel`). Unsloth's auto-patcher does not natively handle embedding hooks for the audio tower and falls back to a standard pre-forward hook.
 * **Status**: This warning is expected, benign, and can be safely ignored. For text-only fine-tuning tasks (such as Spurgeon style-transfer training), the audio tower is completely inactive and does not receive input sequences, so the fallback pre-forward hook has zero impact on training correctness or stability.
+
+<!-- memory-fabric:store/failures/unsloth-sft-smoke-ignored-0ad1f47b13 -->
+---
+store_path: failures/unsloth-sft-smoke-ignored-0ad1f47b13
+title: "Unsloth SFT --smoke ignored max_steps / SFT_SMOKE and ran full weighted SFT (514"
+summary: "Unsloth SFT --smoke ignored max_steps / SFT_SMOKE and ran full weighted SFT (514 steps) on RunPod; monitor also missed SMOKE_ONLY_DONE without compact state probe"
+priority: medium
+tags: [failure, fix]
+schema_version: 1.3
+last_updated: "2026-10-17T19:02:26-03:00"
+occurrences: 1
+error_signature: "unsloth sft --smoke ignored max_steps / sft_smoke and ran full weighted sft (<n> steps) on runpod; monitor also missed smoke_only_done without compact state probe"
+---
+
+## Occurrence 1 — 2026-10-17T19:02:26-03:00
+
+**Error:**
+Unsloth SFT --smoke ignored max_steps / SFT_SMOKE and ran full weighted SFT (514 steps) on RunPod; monitor also missed SMOKE_ONLY_DONE without compact state probe
+
+**Fix:**
+In train_sft_sota.py _train_unsloth honor SFT_SMOKE/SFT_MAX_STEPS and emit SFT_SMOKE_PASS; remote train script accept complete as smoke pass; add sft_weighted_state_probe.sh + orchestrator probe; import unsloth before unsloth_zoo in sft_remote_setup.sh; prefer RUNPOD_API_KEY + GraphQL wait-ssh in sft_provision_pod_mcp.py
 
 <!-- memory-fabric:store/failures/unsloth-sigsegv-exit-n-c04655b283 -->
 ---
@@ -7269,6 +7480,27 @@ review_status: stale
 - System pip / official Unsloth Docker: still fail (SIGSEGV / SSH)
 - **Miniforge + torch cu126 pip-in-env:** smoke PASS — see `fine-tuning/vast-unsloth-conda-smoke-pass`
 - Next: wire full S6 continue-B to that recipe, or unblock Runpod
+
+<!-- memory-fabric:store/failures/wait-ssh-hung-forever-6ccb9b1c76 -->
+---
+store_path: failures/wait-ssh-hung-forever-6ccb9b1c76
+title: "wait_ssh hung forever: MCP OAuth REST v1 GET /pods/{id} returns desiredStatus bu"
+summary: "wait_ssh hung forever: MCP OAuth REST v1 GET /pods/{id} returns desiredStatus but no ssh/publicIp/runtime; API key account is a different wallet than MCP OAuth"
+priority: medium
+tags: [auth, failure, fix, runpod, ssh, volume]
+schema_version: 1.3
+last_updated: "2026-10-17T17:33:21-03:00"
+occurrences: 1
+error_signature: "wait_ssh hung forever: mcp oauth rest v<n> get <path>{id} returns desiredstatus but no ssh<path>; api key account is a different wallet than mcp oauth"
+---
+
+## Occurrence 1 — 2026-10-17T17:33:21-03:00
+
+**Error:**
+wait_ssh hung forever: MCP OAuth REST v1 GET /pods/{id} returns desiredStatus but no ssh/publicIp/runtime; API key account is a different wallet than MCP OAuth
+
+**Fix:**
+Prefer RUNPOD_API_KEY from .env/config.toml for provision. wait_ssh falls back to GraphQL machine.podHostId for proxy SSH, then probe_ssh until container answers. ensure_network_volume creates US-IL-1 75GB (id 37lkz6dt50). Destroy bad hosts with GPU requires reset.
 
 <!-- memory-fabric:store/failures/weighted-sft-exit-n-a8a9957108 -->
 ---
@@ -10003,7 +10235,7 @@ summary: "Diagnosed why weighted SFT on Vast cannot be left to finish even thoug
 priority: low
 tags: [episodic, session-journal]
 schema_version: 1.3
-last_updated: "2026-10-17T14:24:06-03:00"
+last_updated: "2026-10-17T19:02:31-03:00"
 ---
 
 ## sft-repeat-diagnosis
@@ -10071,6 +10303,47 @@ Implemented RunPod Unsloth FT readiness: bf16 LoRA loader, committed/pushed orch
 - Do not rent Vast PEFT fallback while RunPod smoke not proven and Vast credit also low
 
 - `fine_tuning/scripts/sft_verify_mount.ps1`
+
+## runpod-agent-setup
+
+Followed https://docs.runpod.io/agent-setup.md for Cursor: installed all 15 Runpod skills globally (router, lanes including runpod-usage, journeys), confirmed MCP URL already in ~/.cursor/mcp.json, verified auth via empty list-pods (pass). Saved Runpod account journal entry and project memory grok/runpod-agent-setup-pod-usage for Grok Bot Forge. Submitted POSITIVE docs feedback for /agent-setup.
+
+- Cursor path uses npx skills add --agent cursor, not Claude plugin commands
+- MCP OAuth alone is half-setup; Forge still needs RUNPOD_API_KEY for runpodctl/flash
+- Empty list-pods after auth is a verified pass
+
+- `~/.agents/skills/* (Runpod official skills)`
+- `grok/runpod-agent-setup-pod-usage`
+
+## runpod-credentials-ready
+
+Completed Runpod Cursor agent setup earlier; operator then created an API key and stored it in both gitignored project .env and ~/.runpod/config.toml. Verified runpodctl user: $15 balance, $0/hr spend. Saved readiness memory and updated the morning balance-blocker note as cleared for auth/credit.
+
+- Keep key in both .env (gitignored) and config.toml because Get-RunpodApiKey does not load RUNPOD from .env
+- Never store the key value in memory-fabric
+
+- `.env (operator)`
+- `~/.runpod/config.toml (operator)`
+- `fine-tuning/runpod-credentials-ready-2026-10-17`
+
+## runpod-unsloth-ft-prep
+
+Executed RunPod Unsloth weighted SFT prep: dry+preflight OK, then paid smoke. Fixed API-key auth, GraphQL wait-ssh, volume 37lkz6dt50, unsloth pin-assert import, and Unsloth smoke max_steps bug. Accidental full 514-step train at ~17s/step beat PEFT ~90s; adapter fetched; pod destroyed. Forge profile updated for Cursor-smoke / Forge-full split.
+
+- Cursor owns first Unsloth smoke; Forge owns full-train watch after speed win
+- Prefer RUNPOD_API_KEY over MCP OAuth for provision
+- Unsloth ~17s/step at seq 4608 wins vs Vast PEFT; Vast PEFT is fallback only
+- SFT_EXPORT=0; Hub stays until F gates
+
+- `fine_tuning/scripts/sft_weighted_state_probe.sh`
+
+## runpod-unsloth-sft-smoke-pass
+
+Completed RunPod Unsloth weighted SFT S8 paid path: smoke/debug loop on Cursor, Unsloth ~16-18s/step vs ~90s PEFT, adapter fetched and pod destroyed. Fixed wait-ssh (API key + GraphQL), unsloth import order, Unsloth max_steps/smoke honor, and state probe. Updated Forge profile and gpu-train-ops for RunPod Unsloth as default full-train watch after smoke win.
+
+- Cursor owns first paid Unsloth smoke; Forge watches multi-hour full train only after ~90s/step win
+- Prefer RUNPOD_API_KEY over MCP OAuth for wait-ssh
+- SFT_EXPORT=0 until F gates; fetch before destroy
 
 <!-- memory-fabric:store/episodic/commits/2026-10-14/604fca57e1 -->
 ---
