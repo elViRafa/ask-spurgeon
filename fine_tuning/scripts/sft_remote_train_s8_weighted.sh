@@ -41,7 +41,16 @@ export HF_HOME=/workspace/hf_home
 export PYTHONUNBUFFERED=1
 export SFT_EXPORT=0
 export SFT_GPU_PROFILE=4090
-export SFT_BACKEND=peft
+# Default peft (Vast). RunPod Unsloth sets SFT_BACKEND=unsloth before launch / in .sft_env.
+_backend_in="${SFT_BACKEND:-peft}"
+_backend_in="$(echo "$_backend_in" | tr '[:upper:]' '[:lower:]')"
+case "$_backend_in" in
+  unsloth|peft) export SFT_BACKEND="$_backend_in" ;;
+  *)
+    echo "REFUSING unknown SFT_BACKEND=${_backend_in} (want peft|unsloth)"
+    exit 2
+    ;;
+esac
 # Default seq; smoke retries may lower to 2048 then restore for full train.
 export SFT_MAX_SEQ_LENGTH=4608
 export SFT_PER_DEVICE_BATCH=1
@@ -254,6 +263,14 @@ unset CUDA_LAUNCH_BLOCKING || true
 unset SFT_SMOKE || true
 unset SFT_MAX_STEPS || true
 export SFT_FORCE_DATAPREP=1
+
+# RunPod Unsloth path: orchestrator -SmokeOnly sets SFT_SMOKE_ONLY=1 to measure s/step
+# without committing to the full ~514-step train.
+if [[ "${SFT_SMOKE_ONLY:-0}" == "1" ]]; then
+  echo "SMOKE_ONLY_DONE expandable=${SMOKE_EXPAND} seq=${SMOKE_SEQ} backend=${SFT_BACKEND}" | tee -a "$SETUPLOG" "$SMOKELOG"
+  exit 0
+fi
+
 echo "FULL_TRAIN expandable=${SMOKE_EXPAND} seq=${SMOKE_SEQ}" | tee -a "$SETUPLOG"
 
 "$PY" -X faulthandler -u /workspace/train_sft_sota.py > /workspace/sft_train.log 2>&1 &

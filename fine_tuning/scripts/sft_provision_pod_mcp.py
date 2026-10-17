@@ -12,7 +12,8 @@ from ctypes import POINTER, Structure, byref, c_byte, cast, create_string_buffer
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
-SESSION = REPO / "fine_tuning" / "kaggle" / "sft_session.json"
+_SESSION_ENV = (os.environ.get("SFT_SESSION_FILE") or "").strip()
+SESSION = Path(_SESSION_ENV) if _SESSION_ENV else (REPO / "fine_tuning" / "kaggle" / "sft_session.json")
 PUBKEY = Path.home() / ".ssh" / "runpod_cpt.pub"
 NETWORK_VOLUME = "7hb931c5oe"
 DATA_CENTER = "US-IL-1"

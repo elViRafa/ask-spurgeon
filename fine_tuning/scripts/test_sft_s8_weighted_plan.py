@@ -60,7 +60,11 @@ def test_remote_launcher_forces_weighted_s8() -> None:
     assert "SFT_OPEN_THEOLOGY_REPEAT=1" in text
     assert "SFT_FORCE_DATAPREP=1" in text
     assert "SFT_OUTPUT_DIR=/workspace/sft_s8_weighted/adapter" in text
-    assert "SFT_BACKEND=peft" in text
+    # Default peft; RunPod may override to unsloth via env / .sft_env.
+    assert 'SFT_BACKEND:-peft' in text or '_backend_in="${SFT_BACKEND:-peft}"' in text
+    assert "unsloth|peft" in text
+    assert "SFT_SMOKE_ONLY" in text
+    assert "SMOKE_ONLY_DONE" in text
     assert "SFT_MAX_SEQ_LENGTH=4608" in text
     assert "SFT_EXPORT=0" in text
     assert "sft_remote_merge.sh" not in text

@@ -1,13 +1,28 @@
-# Provision SFT GATE-0 pod: US-IL-1 + network volume 7hb931c5oe required.
+# Provision SFT pod: US-IL-1 + network volume 7hb931c5oe required.
+# GATE-0 default checks spurgeon-qa-mix zip. Weighted Unsloth skips that (-SkipGate0Artifacts).
 param(
     [ValidateSet("COMMUNITY", "SECURE")]
     [string]$CloudType = "COMMUNITY",
-    [string]$PodName = "sft-gate0"
+    [string]$PodName = "sft-gate0",
+    [switch]$SkipGate0Artifacts
 )
 
 . "$PSScriptRoot\sft_runpod_common.ps1"
 
-Test-SftArtifacts
+if (-not $SkipGate0Artifacts) {
+    Test-SftArtifacts
+}
+else {
+    foreach ($p in @(
+            "fine_tuning\scripts\train_sft_sota.py",
+            "fine_tuning\scripts\sft_remote_setup.sh",
+            "fine_tuning\scripts\sft_remote_train_s8_weighted.sh",
+            "config.py"
+        )) {
+        Resolve-SftArtifactPath $p | Out-Null
+    }
+    Write-Host "Weighted SFT artifacts OK (GATE-0 zip check skipped)"
+}
 
 function Invoke-RunpodctlProvision {
     param([string]$Cloud)

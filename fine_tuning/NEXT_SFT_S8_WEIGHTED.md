@@ -4,6 +4,11 @@ Train one PEFT LoRA on the S8 m_hi resume merged 16-bit weights with **two
 datasets kept as separate files**. Hub LoRA v2 stays Phase A `06354dfc`.
 `spurgeon-qa-v2` stays. `SFT_EXPORT=0` until F §5.
 
+**Secondary host (Unsloth speed bet):** RunPod — see
+[NEXT_SFT_S8_WEIGHTED_RUNPOD_UNSLOTH.md](NEXT_SFT_S8_WEIGHTED_RUNPOD_UNSLOTH.md)
+(`runpod_sft_s8_weighted_orchestrate.ps1`, `SFT_BACKEND=unsloth`). Do not replace
+this Vast PEFT path until Unsloth smoke proves faster and stable.
+
 ## Why weighted
 
 The frozen RAG mix teaches CONTEXT-only Q&A. The open-theology slice teaches

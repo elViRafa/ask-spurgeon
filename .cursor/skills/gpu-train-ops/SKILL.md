@@ -14,24 +14,30 @@ machine. GPUs live on Vast (primary) or Runpod (secondary). This laptop / Cloud
 Agent VM is only for scripts, logs, and fetch.
 
 Repo: `https://github.com/elViRafa/ask-spurgeon.git`
-Current SFT handoff: `fine_tuning/NEXT_SFT_S8_WEIGHTED.md`
+Current SFT handoff (Vast PEFT): `fine_tuning/NEXT_SFT_S8_WEIGHTED.md`
+Secondary (RunPod Unsloth): `fine_tuning/NEXT_SFT_S8_WEIGHTED_RUNPOD_UNSLOTH.md`
 Current recipe: weighted SFT on S8 merged CPT (RAG mix + open-theology)
-Orchestrator: `fine_tuning/scripts/vast_sft_s8_weighted_orchestrate.ps1`
+Vast orchestrator: `fine_tuning/scripts/vast_sft_s8_weighted_orchestrate.ps1`
+RunPod orchestrator: `fine_tuning/scripts/runpod_sft_s8_weighted_orchestrate.ps1`
 CPT history: `pretraining/cpt-next-session-handoff` (no new CPT resume for this job)
 
-## Standing facts (2026-10-13)
+## Standing facts (2026-10-17)
 
 - Next GPU job: **weighted SFT**, not CPT. Base is private Hub
   `rafaelvieirar1r/qwen3.5-4b-theology-cpt-s8-mhi-resume-merged-16bit`.
 - Datasets: frozen `qa_mix_train.jsonl` + `qa_open_theology/sft/open_theology_train.jsonl`
   (repeat 1). Do not merge into the RAG mix. Do not run `build_qa_mix_v2.py`.
-- Output: `/workspace/sft_s8_weighted/adapter`. Session
-  `fine_tuning/kaggle/vast_sft_s8_weighted_session.json`. Fetch
+- Output: `/workspace/sft_s8_weighted/adapter`.
+- Vast session/fetch: `vast_sft_s8_weighted_session.json` /
   `fine_tuning/kaggle/vast_sft_s8_weighted/`.
+- RunPod session/fetch: `runpod_sft_s8_weighted_session.json` /
+  `fine_tuning/kaggle/runpod_sft_s8_weighted/`.
 - Hub LoRA v2 `06354dfc` and `spurgeon-qa-v2` stay. `SFT_EXPORT=0` until F gates.
-- Backend **peft** on Vast (Unsloth SIGSEGVs). Rent **blocked until the operator says go**.
-- Do **not** call `vast_orchestrate.ps1`, `vast_sft_s8_orchestrate.ps1`, or CPT
-  launchers for this job.
+- Backend **peft** on Vast (Unsloth SIGSEGVs there). Backend **unsloth** on RunPod
+  (smoke first with `-SmokeOnly`; full go only if s/step beats ~90s PEFT).
+- Rent **blocked until the operator says go**.
+- Do **not** call `vast_orchestrate.ps1`, `vast_sft_s8_orchestrate.ps1`, GATE-0
+  `sft_orchestrate.ps1`, or CPT launchers for this weighted job.
 
 ## Approval boundary
 
@@ -61,12 +67,14 @@ Vast has no network volume — **fetch before destroy**.
 
 | Job | Host | Orchestrator |
 |-----|------|----------------|
-| Weighted SFT S8 | Vast first | `fine_tuning/scripts/vast_sft_s8_weighted_orchestrate.ps1` |
+| Weighted SFT S8 (PEFT) | Vast | `fine_tuning/scripts/vast_sft_s8_weighted_orchestrate.ps1` |
+| Weighted SFT S8 (Unsloth) | RunPod | `fine_tuning/scripts/runpod_sft_s8_weighted_orchestrate.ps1` |
 | CPT (historical) | Vast | only if operator names a CPT runbook |
-| SFT GATE-0 (historical) | Vast | `vast_orchestrate.ps1` — do not use for this job |
+| SFT GATE-0 (historical) | Vast / RunPod GATE-0 | do not use for this weighted job |
 
 Vast weighted SFT uses torch **2.11** + **PEFT** via `sft_remote_setup.sh`.
-Do not relaunch with Unsloth on Vast.
+Do not relaunch with Unsloth on Vast. RunPod Unsloth uses the same setup script
+with `SFT_BACKEND=unsloth` and dry → `-Go -SmokeOnly` → full `-Go`.
 
 ## Launch loop (after go)
 

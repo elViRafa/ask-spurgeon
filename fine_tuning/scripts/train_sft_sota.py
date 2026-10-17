@@ -998,12 +998,15 @@ def _train_unsloth() -> None:
     print("USE_CPT_MERGE:", use_merge)
     print("SFT_OUTPUT_DIR:", out_dir)
     print("SFT_OPEN_THEOLOGY:", int(_open_theology_enabled()))
+    # Qwen3.5: Unsloth docs prefer bf16 LoRA; QLoRA has higher quantization drift.
+    print("SFT_UNSLOTH_LOAD: bf16_lora load_in_4bit=0 load_in_16bit=1")
 
     model, tokenizer = FastLanguageModel.from_pretrained(
         model_name=base_model,
         max_seq_length=max_seq_length,
         dtype=None,
-        load_in_4bit=True,
+        load_in_4bit=False,
+        load_in_16bit=True,
     )
     tokenizer, im_end_id, _ = apply_sft_special_token_contract(tokenizer)
 

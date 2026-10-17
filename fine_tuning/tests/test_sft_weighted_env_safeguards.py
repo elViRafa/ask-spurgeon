@@ -190,6 +190,9 @@ def test_train_script_expandable_toggle_and_smoke_flag() -> None:
     # Unsloth import only in unsloth train path.
     unsloth_fn = text.split("def _train_unsloth", 1)[1].split("\ndef ", 1)[0]
     assert "from unsloth import" in unsloth_fn
+    # Qwen3.5: bf16 LoRA (not QLoRA) per Unsloth docs.
+    assert "load_in_4bit=False" in unsloth_fn
+    assert "load_in_16bit=True" in unsloth_fn
     peft_fn = text.split("def _train_peft", 1)[1].split("def _train_unsloth", 1)[0]
     assert "from unsloth import" not in peft_fn
     assert "import unsloth" not in peft_fn

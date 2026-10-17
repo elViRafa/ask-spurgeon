@@ -14,6 +14,13 @@ $Script:HubV2AdapterSha = "319d17a39d193041528914cfb2f83c1decf21e55ffe76dfd2ca56
 $Script:Gate0MergedRemote = "/workspace/theology_cpt_v2_merged_hf"
 $Script:StateFile = Join-Path $FtRoot "kaggle\sft_session.json"
 $Script:LocalResultsDir = Join-Path $FtRoot "kaggle\runpod_sft_gate0"
+# Weighted Unsloth orchestrator sets these before dot-sourcing so GATE-0 paths are not reused.
+if ($env:SFT_SESSION_FILE -and $env:SFT_SESSION_FILE.Trim()) {
+    $Script:StateFile = $env:SFT_SESSION_FILE.Trim()
+}
+if ($env:SFT_LOCAL_RESULTS_DIR -and $env:SFT_LOCAL_RESULTS_DIR.Trim()) {
+    $Script:LocalResultsDir = $env:SFT_LOCAL_RESULTS_DIR.Trim()
+}
 
 function Get-RunpodApiKey {
     if ($env:RUNPOD_API_KEY -and $env:RUNPOD_API_KEY.Trim()) {
