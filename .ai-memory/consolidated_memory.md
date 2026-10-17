@@ -59,7 +59,7 @@ summary: "Map of available project memory sections."
 priority: high
 tags: [index, memory]
 schema_version: 1.3
-last_updated: "2026-10-16T18:19:57-03:00"
+last_updated: "2026-10-17T14:22:39-03:00"
 consolidation_hash: acd058fab27bf79aa31f9bd2e3dc7172
 contradictions: ["`fine-tuning/hf-spurgeon-qa-v2-gguf` and `fine-tuning/plans/ollama-merge-gguf` cover similar content but state different numbers (2.71 vs 07) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-next-session-handoff` cover similar content but state different numbers (1 vs 1.701 / 2.449 / 2250) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-s8-mhi-resume-c-prepared` cover similar content but state different numbers (1 / 2.8 / 2026.8 vs -) - review for conflict [heuristic]", "`pretraining/cpt-b-eval-strategy` and `pretraining/cpt-eval-unify-v"]
 consolidation_warnings: ["Skipped bugs\\gemma4-chat-template-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped bugs\\ollama-tokenizer-corruption-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped decisions\\gemma4-local-ollama.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-12.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-14.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-08-23.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-08-28.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-09-15.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\clerk-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\CURSOR_TODO_SFT_S8_WEIGHTED_2026-10-14.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\foundry-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\qa-open-theology-sft-handoff-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\runpod-sft-gate0-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\sft-s3-mask-multiturn-brief-2026-10-15.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-b-eval-strategy-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-expansion-plan.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-s1-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-s5-b-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-s6-c-eval-next-session.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-s6-phase0-prepared.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-implementation-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-next-steps-after-v13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-plan-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-runpod-mcp-volume-gap.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v3-s6-handoff.md during index regeneration: Missing YAML frontmatter delimiter"]
@@ -77,11 +77,11 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `bugs` | medium | Generated map of memory-store/bugs/ (5 entries). | • **Qwen3.5 processor text-as-image in C_eval** (`bugs/qwen...<br>• **Bug Fix: Unsloth Embedding Offload on Read-Only Filesys...<br>• **Bug Fix: Training embed_tokens and lm_head when resizin... |
 | `debt` | low | App debt (hybrid search, rate limits) plus 2026-08-29 memory-fabric LLM/host hygiene notes. | • Known Technical Debt & Limits<br>• Roadmap & Pending Features |
 | `decisions` | medium | Generated map of memory-store/decisions/ (1 entries). | • **Gemma 4 Fine-Tuning Transition** (`decisions/gemma4-fin... |
-| `episodic` | medium | Generated map of memory-store/episodic/ (35 entries). | • **2026-09-28** (`episodic/2026-09-28`, medium) — Reframed...<br>• **2026-10-02** (`episodic/2026-10-02`, medium) —<br>• **2026-10-05** (`episodic/2026-10-05`, medium) — |
-| `failures` | medium | Generated map of memory-store/failures/ (42 entries). | • **Vast official Unsloth image smoke blocked; LD_LIBRARY_P...<br>• **AssertionError: S3 FAIL row 5: user turn leaked into la...<br>• **asyncua write_value BadTypeMismatch when writing int to... |
-| `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (57 entries). | • **Fine-tuning next session handoff** (`fine-tuning/next-s...<br>• **Open theology QA slice tooling ready for Clerk** (`fine...<br>• **Next session: plan open theological QA slice** (`fine-t... |
+| `episodic` | medium | Generated map of memory-store/episodic/ (36 entries). | • **2026-09-28** (`episodic/2026-09-28`, medium) — Reframed...<br>• **2026-10-02** (`episodic/2026-10-02`, medium) —<br>• **2026-10-05** (`episodic/2026-10-05`, medium) — |
+| `failures` | medium | Generated map of memory-store/failures/ (44 entries). | • **Vast official Unsloth image smoke blocked; LD_LIBRARY_P...<br>• **AssertionError: S3 FAIL row 5: user turn leaked into la...<br>• **asyncua write_value BadTypeMismatch when writing int to... |
+| `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (60 entries). | • **Fine-tuning next session handoff** (`fine-tuning/next-s...<br>• **Open theology QA slice tooling ready for Clerk** (`fine...<br>• **Next session: plan open theological QA slice** (`fine-t... |
 | `framework-rules` | medium | Defines coding standards, required libraries (Streamlit, LlamaIndex), environment setup (.env), and database rules for the codebase. | • 1. Runtime Environment<br>• 2. Core Libraries & Packages<br>• 3. Vector Database Rules<br>• 4. Agent Memory Guidelines |
-| `grok` | medium | Generated map of memory-store/grok/ (6 entries). | • **Grok Bot Clerk for open-theology QA generation** (`grok...<br>• **Grok Bot Forge for Vast/Runpod training** (`grok/forge-...<br>• **Grok Bot Foundry for train/export code** (`grok/foundry... |
+| `grok` | medium | Generated map of memory-store/grok/ (6 entries). | • **Grok Bot Clerk for open-theology QA generation** (`grok...<br>• **Grok Bot Foundry for train/export code** (`grok/foundry...<br>• **Grok Integration with Memory Fabric (MCP + Docs + Nativ... |
 | `pretraining` | medium | Generated map of memory-store/pretraining/ (101 entries). | • **CPT B_training_sota known issues (P1 closed — log spam)...<br>• **Composite CPT early stop merges split HF eval events** ...<br>• **Confessions + Institutes corpus (WCF, 1689, Calvin)** (... |
 | `schemas` | high | Defines data contracts, metadata schemas for ingested texts, and environment variable configurations. | • 1. Document & Chunk Metadata Schema<br>• 2. Ingestion Parameters<br>• 3. Environment Variables (Configuration Schema) |
 | `ubiquitous-language` | medium | Defines consistent domain language used throughout the codebase for clarity and shared understanding. | None recorded |
@@ -1226,6 +1226,7 @@ tags: [cpt, s6, runpod, blocker, volume]
 schema_version: 1.3
 last_updated: "2026-09-16T07:21:48-03:00"
 evidence: [continued_pretrain/scripts/s6_runpod_common.ps1, continued_pretrain/kaggle/runpod_cpt_v3/s6_continue_b/checkpoints_sota/checkpoints_sota/checkpoint-2050]
+review_status: stale
 ---
 
 # S6 GPU resume blocked — volume gone + balance (2026-09-16)
@@ -1654,7 +1655,6 @@ Cursor prepared the S8 m_hi resume 16-bit merge so Grok Bot can rent. Cursor doe
 - Grok Bot command after operator go: `.\vast_cpt_s8_mhi_resume_hf_export_orchestrate.ps1 -Go` from `continued_pretrain/scripts`.
 - Local check before that go: `LOCAL_MERGED_NOT_READY` (folder not fetched yet).
 - Hub target after a later local upload: `rafaelvieirar1r/qwen3.5-4b-theology-cpt-s8-mhi-resume-merged-16bit`. Do not overwrite LoRA v2 `06354dfc`.
-- Runbook: `[REDACTED_SECRET].md`
 
 <!-- memory-fabric:store/pretraining/cpt-s8-mhi-resume-hf-export-prepared -->
 ---
@@ -2603,40 +2603,6 @@ last_updated: "2026-09-26T16:09:17-03:00"
 ## Dry PASS 2026-09-26 ~16:09 BRT
 
 `vast_cpt_s7_orchestrate.ps1` dry on pc1 passed after mix pin `e050787e…`. Init `ddbbee3a…`. Credit ~$2.58 still blocks practical -Go until top-up + operator go. No rent.
-
-<!-- memory-fabric:store/grok/forge-training-ops -->
----
-store_path: grok/forge-training-ops
-title: "Grok Bot Forge for Vast/Runpod training"
-summary: "Create the teammate in the Grok Bot app from `continued_pretrain/GROK_BOT_FORGE.md`"
-priority: high
-tags: [grok, grok-bot, vast, runpod, sft, training-ops]
-schema_version: 1.3
-last_updated: "2026-10-14T11:36:49-03:00"
-evidence: ["commit:5b12b79", continued_pretrain/GROK_BOT_FORGE.md, .cursor/skills/gpu-train-ops/SKILL.md, fine_tuning/NEXT_SFT_S8_WEIGHTED.md]
----
-
-# Grok Bot Forge (training ops)
-
-Create the teammate in the Grok Bot app from `continued_pretrain/GROK_BOT_FORGE.md`. No create API from Cursor.
-
-## Profile
-- **Name:** Forge
-- **Title:** Vast / Runpod training watch
-- **Job:** Watch/launch CPT+SFT on Vast (primary) and Runpod (secondary). Never train on the Bot computer.
-
-## Current job (2026-10-14)
-- Weighted SFT on S8 merged CPT — runbook `fine_tuning/NEXT_SFT_S8_WEIGHTED.md`
-- Orchestrator: `fine_tuning/scripts/vast_sft_s8_weighted_orchestrate.ps1`
-- Skill: `.cursor/skills/gpu-train-ops/SKILL.md`
-- Seq 4608 / peft / `SFT_EXPORT=0`. Hub LoRA v2 `06354dfc` stays.
-- Harden on main `5b12b79`. No GPU rent until operator says **go**.
-- Auto-destroy only after fetch, or idle >20 min with no train (do not destroy mid-`sft_remote_setup`).
-
-## Operator create / refresh steps
-1. Grok Bot → edit Forge profile from updated `GROK_BOT_FORGE.md`
-2. Sign into cloud.vast.ai and console.runpod.io (no keys in chat)
-3. Paste the first-message block (audit only), then dry before go
 
 <!-- memory-fabric:store/grok/foundry-train-export -->
 ---
@@ -4453,6 +4419,7 @@ priority: high
 tags: [vast, unsloth, smoke, docker, sigsegv]
 schema_version: 1.3
 last_updated: "2026-09-16T09:47:06-03:00"
+review_status: stale
 ---
 
 # Vast Unsloth official-image smoke attempt (2026-09-16)
@@ -4847,6 +4814,7 @@ priority: medium
 tags: [disk, c-drive, checkpoints, vast]
 schema_version: 1.3
 last_updated: "2026-09-16T11:23:15-03:00"
+review_status: stale
 ---
 
 # C: disk cleanup (2026-09-16)
@@ -5504,15 +5472,15 @@ Execution configurations and dependency management rules for continued pretraini
 <!-- memory-fabric:local/episodic -->
 ---
 section: episodic
-summary: "Generated map of memory-store/episodic/ (35 entries)."
+summary: "Generated map of memory-store/episodic/ (36 entries)."
 priority: medium
 tags: [episodic]
 schema_version: 1.3
-last_updated: "2026-10-16T12:48:29-03:00"
+last_updated: "2026-10-17T07:46:17-03:00"
 generated: true
 generated_from: memory-store/episodic
-store_fingerprint: 01e36603837ea13acf38037f3db9468c
-body_hash: cf5a555963d7834a497a4a4048ffdc03
+store_fingerprint: bb0a9f02f28af7589b099beb3638f83d
+body_hash: 1ec62d90c28c695561abd8e8933bfb82
 ---
 
 # Episodic Map
@@ -5533,7 +5501,7 @@ Generated by Memory Fabric from `memory-store/episodic/` — do not edit by hand
 - **Episodic Journal — 2026-08-31** (`episodic/2026-08-31`, low) — Verified live QA mix against serve contract and F5 targets
 - **Episodic Journal — 2026-09-01** (`episodic/2026-09-01`, low) — Verified QA teacher rewrite resume point (line 1786 per handoff, confirmed live)
 - **Episodic Journal — 2026-09-02** (`episodic/2026-09-02`, low) — Saved QA rewrite stop point to memory: pass 1 complete (3244/3244 attempted), 1466 ok / 1778 drops remaining for --retry-drops, 1465 bulk merged, quote 49.1%, teacherish 1485
-- …and 21 more entries — see `memory-store/index.md`.
+- …and 22 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:store/pretraining/eval-and-export -->
 ---
@@ -5557,15 +5525,15 @@ Following the successful execution of Notebook B (Epoch 1 & 2) up to step 432:
 <!-- memory-fabric:local/failures -->
 ---
 section: failures
-summary: "Generated map of memory-store/failures/ (42 entries)."
+summary: "Generated map of memory-store/failures/ (44 entries)."
 priority: medium
 tags: [failures]
 schema_version: 1.3
-last_updated: "2026-10-16T18:10:38-03:00"
+last_updated: "2026-10-17T14:22:20-03:00"
 generated: true
 generated_from: memory-store/failures
-store_fingerprint: 451b13c9c890389e4cd5495f74882567
-body_hash: f32748449f675418d76ea69a03f041b8
+store_fingerprint: 28690e28e1b29daeed956bd4b4840639
+body_hash: 7f24ce14e4fb8ca329ec5c64c3d8750a
 ---
 
 # Failures Map
@@ -5580,20 +5548,20 @@ Generated by Memory Fabric from `memory-store/failures/` — do not edit by hand
 - **CPT B early-stop patience=2 with eval_steps=25 and 2-doc eval_spurgeon_loss halt** (`failures/cpt-b-early-stop-561e9ec07f`, medium) — CPT B early-stop patience=2 with eval_steps=25 and 2-doc eval_spurgeon_loss halted corpus v3 at step 375 of 4128 (~8.2M of 90M tokens)
 - **torch.OutOfMemoryError: CUDA out of memory during SFTTrainer.evaluate at step 20** (`failures/cuda-oom-during-mid-ffcb775074`, medium) — CUDA OOM during mid-train eval at step ~20 with PEFT bf16 seq 2048 on RTX 4090 24GB
 - **CUDA OOM on Kaggle T4 during CPT B v5 after manual pack (float32 Qwen3.5, batch ** (`failures/cuda-oom-on-kaggle-e64e9b60ce`, medium) — CUDA OOM on Kaggle T4 during CPT B v5 after manual pack (float32 Qwen3.5, batch 2, TRAIN_EMBEDDINGS=True)
-- …and 34 more entries — see `memory-store/index.md`.
+- …and 36 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:local/fine-tuning -->
 ---
 section: fine-tuning
-summary: "Generated map of memory-store/fine-tuning/ (57 entries)."
+summary: "Generated map of memory-store/fine-tuning/ (60 entries)."
 priority: medium
 tags: [fine-tuning]
 schema_version: 1.3
-last_updated: "2026-10-16T18:10:37-03:00"
+last_updated: "2026-10-17T14:21:01-03:00"
 generated: true
 generated_from: memory-store/fine-tuning
-store_fingerprint: f57e438cea31d071719b6b745e025013
-body_hash: 1ff944a497b447ec94bca40ec21465d5
+store_fingerprint: 81449211717acbeff3c73f30314d21ec
+body_hash: 09b445e5f6f1357688fce34c8513a846
 ---
 
 # Fine Tuning Map
@@ -5612,7 +5580,49 @@ Generated by Memory Fabric from `memory-store/fine-tuning/` — do not edit by h
 - **QA verify + F5 slice gap report** (`fine-tuning/qa-prompt-strategy-verify`, high) — After overlay-safe catechism variants + multiturn merge:
 - **One prompt; diversify task slices** (`fine-tuning/qa-prompt-type-decision`, high) — **Locked after live verify.** Improves SFT via example-type diversity, not multiple prompts
 - **QA Sources Rewrite Progress** (`fine-tuning/qa-sources-rewrite-progress`, high) — Cross-session log of QA answer rewrite pipeline for SFT teacherish/quote fidelity
-- …and 45 more entries — see `memory-store/index.md`.
+- …and 48 more entries — see `memory-store/index.md`.
+
+<!-- memory-fabric:store/grok/forge-training-ops -->
+---
+store_path: grok/forge-training-ops
+title: "Grok Bot Forge for Vast/Runpod training"
+summary: "Create the teammate in the Grok Bot app from `continued_pretrain/GROK_BOT_FORGE.md`"
+priority: medium
+tags: [grok, forge, runpod, unsloth, sft]
+schema_version: 1.3
+last_updated: "2026-10-17T14:14:55-03:00"
+evidence: ["commit:5b12b79", continued_pretrain/GROK_BOT_FORGE.md, .cursor/skills/gpu-train-ops/SKILL.md, fine_tuning/NEXT_SFT_S8_WEIGHTED.md]
+---
+
+# Grok Bot Forge (training ops)
+
+Create the teammate in the Grok Bot app from `continued_pretrain/GROK_BOT_FORGE.md`. No create API from Cursor.
+
+## Profile
+- **Name:** Forge
+- **Title:** Vast / Runpod training watch
+- **Job:** Watch/launch CPT+SFT on Vast (primary) and Runpod (secondary). Never train on the Bot computer.
+
+## Current job (2026-10-14)
+- Weighted SFT on S8 merged CPT — runbook `fine_tuning/NEXT_SFT_S8_WEIGHTED.md`
+- Orchestrator: `fine_tuning/scripts/vast_sft_s8_weighted_orchestrate.ps1`
+- Skill: `.cursor/skills/gpu-train-ops/SKILL.md`
+- Seq 4608 / peft / `SFT_EXPORT=0`. Hub LoRA v2 `06354dfc` stays.
+- Harden on main `5b12b79`. No GPU rent until operator says **go**.
+- Auto-destroy only after fetch, or idle >20 min with no train (do not destroy mid-`sft_remote_setup`).
+
+## Operator create / refresh steps
+1. Grok Bot → edit Forge profile from updated `GROK_BOT_FORGE.md`
+2. Sign into cloud.vast.ai and console.runpod.io (no keys in chat)
+3. Paste the first-message block (audit only), then dry before go
+
+## Pending path (2026-10-17)
+
+Next engineering session will **plan** RunPod Unsloth weighted SFT (not rent yet). Until that lands, Forge default job stays Vast PEFT `vast_sft_s8_weighted_orchestrate.ps1` with pin ≥ `afb8e7f`. Do not invent a RunPod Unsloth launcher until the handoff in `fine-tuning/sft-runpod-unsloth-next-session` is implemented.
+
+## Update 2026-10-17 — RunPod Unsloth path
+
+Code + offline dry/pytest ready (`fine-tuning/sft-runpod-unsloth-next-session`, `fine-tuning/sft-runpod-unsloth-offline-proof-2026-10-17`). Orchestrator: `runpod_sft_s8_weighted_orchestrate.ps1`. Dry then `-Go -SmokeOnly` before full go. Do not invent a different launcher. Vast PEFT `vast_sft_s8_weighted_orchestrate.ps1` stays fallback. No rent until operator go.
 
 <!-- memory-fabric:store/failures/full-semantic-judge-run-2188a7bf04 -->
 ---
@@ -5696,6 +5706,7 @@ schema_version: 1.3
 last_updated: "2026-09-16T07:22:04-03:00"
 occurrences: 1
 error_signature: "get-runpodapikey treated empty config.toml apikey = <val> as a valid key; mcp rest v<n> pod create then failed cloudflare <n><path> without a usable runpod_api_key"
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-09-16T07:22:04-03:00
@@ -5713,11 +5724,11 @@ summary: "Generated map of memory-store/grok/ (6 entries)."
 priority: medium
 tags: [grok]
 schema_version: 1.3
-last_updated: "2026-10-14T11:36:49-03:00"
+last_updated: "2026-10-17T10:51:09-03:00"
 generated: true
 generated_from: memory-store/grok
-store_fingerprint: e353c0a6bd6835f67f11308804708ae4
-body_hash: 9da47d1615cbd14cbf532ca4490e3ef3
+store_fingerprint: be599e29cb9f5dbed488c4e3063738a9
+body_hash: 2521efb928f1b3f5881ea312174b01c3
 ---
 
 # Grok Map
@@ -5725,10 +5736,10 @@ body_hash: 9da47d1615cbd14cbf532ca4490e3ef3
 Generated by Memory Fabric from `memory-store/grok/` — do not edit by hand. Write facts with `write_memory_store_tool`; Dreaming rebuilds this map.
 
 - **Grok Bot Clerk for open-theology QA generation** (`grok/clerk-qa-generation`, high) — Clerk is the third Grok Bot teammate (alongside Forge and Foundry)
-- **Grok Bot Forge for Vast/Runpod training** (`grok/forge-training-ops`, high) — Create the teammate in the Grok Bot app from `continued_pretrain/GROK_BOT_FORGE.md`
 - **Grok Bot Foundry for train/export code** (`grok/foundry-train-export`, high) — - **Foundry** — write/refine CPT+SFT+export code via Cursor Cloud Agents
 - **Grok Integration with Memory Fabric (MCP + Docs + Native Layer)** (`grok/integration`, high) — Grok Integration with Memory Fabric (MCP + Docs + Native Layer)
 - **Grok Bot runs S8 m_hi resume Isolation C** (`grok/s8-mhi-resume-c-run`, high) — Rafael will run this Isolation C in Grok Bot (Forge), not in Cursor
+- **Grok Bot Forge for Vast/Runpod training** (`grok/forge-training-ops`, medium) — Create the teammate in the Grok Bot app from `continued_pretrain/GROK_BOT_FORGE.md`
 - **S8 Forge launch review** (`grok/s8-forge-launch-review`, medium) — S8 Forge finished the right recipe after two bad starts
 
 <!-- memory-fabric:store/fine-tuning/hf-spurgeon-qa-v2-gguf -->
@@ -6103,6 +6114,7 @@ last_updated: "2026-09-16T11:02:02-03:00"
 occurrences: 1
 error_signature: "powershell <n>.<n> parsererror: string has no terminator when a utf-<n> em-dash sits inside double quotes in a .ps<n> without bom"
 failure_key: "parsererror|utf-8"
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-09-16T11:02:02-03:00
@@ -6175,6 +6187,27 @@ The user requested to revert these changes. The notebook was re-configured to:
   - `CONTEXT:` is extracted as the **Input**.
   - Assistant responses are mapped to the **Response**.
 - **SFT Trainer Delimiters:** The `train_on_responses_only` function masks the labels up to `"### Response:\n"` to focus training only on response generations.
+
+<!-- memory-fabric:store/failures/runpod-rest-v-n-6137a9be3b -->
+---
+store_path: failures/runpod-rest-v-n-6137a9be3b
+title: "RunPod REST v1 pod create via sft_provision_pod_mcp.py returned Cloudflare 403 e"
+summary: "RunPod REST v1 pod create via sft_provision_pod_mcp.py returned Cloudflare 403 error code 1010 on all GPU/image attempts; runpodctl fallback then failed because ~/.runpod/config.toml apikey is empty"
+priority: medium
+tags: [failure, fix]
+schema_version: 1.3
+last_updated: "2026-10-17T14:22:20-03:00"
+occurrences: 1
+error_signature: "runpod rest v<n> pod create via sft_provision_pod_mcp.py returned cloudflare <n> error code <n> on all gpu<path> attempts; runpodctl fallback then failed because ~<path> apikey is empty"
+---
+
+## Occurrence 1 — 2026-10-17T14:22:20-03:00
+
+**Error:**
+RunPod REST v1 pod create via sft_provision_pod_mcp.py returned Cloudflare 403 error code 1010 on all GPU/image attempts; runpodctl fallback then failed because ~/.runpod/config.toml apikey is empty
+
+**Fix:**
+Add User-Agent ask-spurgeon-sft-provision/1.0 to http_json in sft_provision_pod_mcp.py (Cloudflare blocks bare urllib). Prefer MCP OAuth provision before runpodctl; pass SFT_POD_NAME so weighted pods are not named sft-gate0.
 
 <!-- memory-fabric:store/failures/runtimeerror-adapter-sha-n-b83673b4f0 -->
 ---
@@ -6416,6 +6449,87 @@ Disable ERR trap around expected-fail pre-torch probe and pins_already_ok checks
 
 Landed main 1190682: trap - ERR around expected-fail probe and pins_already_ok; append SETUPLOG without tee so $? is python; SETUP_PINS_OK after assert_pins; watchdog/monitor actionable_setup_failed only after SETUP_PINS_OK or reason= or line>=470; Save-WeightedEvidence requires real payload and does not print evidence saved when empty; offline fake-python3 probe test.
 
+<!-- memory-fabric:store/fine-tuning/sft-runpod-unsloth-next-session -->
+---
+store_path: fine-tuning/sft-runpod-unsloth-next-session
+title: "RunPod Unsloth weighted SFT: code + offline proof"
+summary: "**Status (2026-10-17):** code landed; offline dry + contract pytest passed"
+priority: medium
+tags: [sft, weighted, runpod, unsloth, handoff]
+schema_version: 1.3
+last_updated: "2026-10-17T14:14:52-03:00"
+evidence: [fine_tuning/scripts/runpod_sft_s8_weighted_orchestrate.ps1, "[REDACTED_SECRET].md", fine_tuning/scripts/sft_remote_train_s8_weighted.sh, fine_tuning/scripts/test_sft_s8_weighted_runpod_unsloth_plan.py]
+---
+
+# RunPod Unsloth weighted SFT — implemented + offline-tested
+
+**Status (2026-10-17):** code landed; offline dry + contract pytest passed. No GPU rent until operator go.
+
+## Landed
+
+- `sft_remote_train_s8_weighted.sh`: `SFT_BACKEND` override (default peft; RunPod sets unsloth); `SFT_SMOKE_ONLY` / `SMOKE_ONLY_DONE`
+- Plan: `sft_s8_weighted_runpod_unsloth_plan.py` + tests
+- Orchestrator: `runpod_sft_s8_weighted_orchestrate.ps1` (dry / `-Go -SmokeOnly` / full `-Go`)
+- Runbook: `[REDACTED_SECRET].md`
+- Helpers: `SFT_SESSION_FILE`; provision `-SkipGate0Artifacts`
+- Skills/Forge updated; Vast PEFT remains fallback
+
+## Offline proof (no pod)
+
+- Dry orchestrator: `READY` / `DRY COMPLETE`, `HOST=runpod BACKEND=unsloth`, no runpodctl/ssh
+- Pytest: 34 passed (`test_sft_s8_weighted_runpod_unsloth_plan` + weighted plan + `test_sft_weighted_env_safeguards`)
+- Dirty sync noted on `sft_remote_train_s8_weighted.sh` — commit/push or `-AllowDirtySync` before `-Go`
+- Does **not** prove Unsloth GPU smoke (no SIGSEGV) — that needs `-Go -SmokeOnly`
+
+## Usage after go
+
+```text
+cd fine_tuning\scripts
+.\runpod_sft_s8_weighted_orchestrate.ps1
+.\runpod_sft_s8_weighted_orchestrate.ps1 -Go -SmokeOnly -StartMonitor
+.\runpod_sft_s8_weighted_orchestrate.ps1 -Go -StartMonitor
+```
+
+Full go only if smoke s/step beats ~90s PEFT. `SFT_EXPORT=0`; no Hub until F gates.
+
+<!-- memory-fabric:store/fine-tuning/sft-runpod-unsloth-offline-proof-2026-10-17 -->
+---
+store_path: fine-tuning/sft-runpod-unsloth-offline-proof-2026-10-17
+title: "Offline Unsloth FT contract proof (no RunPod)"
+summary: "Verified the RunPod Unsloth weighted SFT path **without** renting a pod"
+priority: medium
+tags: [sft, weighted, runpod, unsloth, offline, pytest, dry]
+schema_version: 1.3
+last_updated: "2026-10-17T14:14:53-03:00"
+evidence: [fine_tuning/scripts/runpod_sft_s8_weighted_orchestrate.ps1, fine_tuning/scripts/test_sft_s8_weighted_runpod_unsloth_plan.py, fine_tuning/tests/test_sft_weighted_env_safeguards.py]
+---
+
+# Offline Unsloth FT proof (2026-10-17)
+
+Verified the RunPod Unsloth weighted SFT path **without** renting a pod.
+
+## Commands
+
+```powershell
+cd fine_tuning\scripts
+cd ..\..
+.\.venv\Scripts\python.exe -m pytest fine_tuning/scripts/test_sft_s8_weighted_runpod_unsloth_plan.py fine_tuning/scripts/test_sft_s8_weighted_plan.py fine_tuning/tests/test_sft_weighted_env_safeguards.py -q
+```
+
+## Results
+
+| Check | Result |
+|-------|--------|
+| Dry orchestrator | READY / DRY COMPLETE; HOST=runpod BACKEND=unsloth |
+| Pytest | 34 passed |
+| Pod rented | no |
+
+## Limits
+
+- Contract/wiring only — not a GPU Unsloth forward/smoke
+- Before `-Go`: dirty override on `sft_remote_train_s8_weighted.sh` needs commit/push or `-AllowDirtySync`
+- Next paid step: `-Go -SmokeOnly -StartMonitor` after operator go
+
 <!-- memory-fabric:store/fine-tuning/sft-s8-weighted-residual-risks -->
 ---
 store_path: fine-tuning/sft-s8-weighted-residual-risks
@@ -6522,6 +6636,38 @@ review_status: stale
 
 ## Counts snapshot
 train 2923; gold 20; bulk merged 24; pending attempts 50 (24 ok / 26 drop ~48%)
+
+<!-- memory-fabric:store/fine-tuning/sft-weighted-live-train-destroyed-2026-10-16 -->
+---
+store_path: fine-tuning/sft-weighted-live-train-destroyed-2026-10-16
+title: "Weighted SFT live train destroyed at step 9"
+summary: "Weighted SFT on 2026-10-16 (session created 21:23Z, destroyed 21:47Z, evidence `fine_tuning/kaggle/vast_sft_s8_weighted/evidence_20261016_184609`) passed setup, CPU tokenizer smoke, and GPU smoke at s"
+priority: medium
+tags: [sft, weighted, vast, monitor, runpod, unsloth]
+schema_version: 1.3
+last_updated: "2026-10-17T10:51:08-03:00"
+---
+
+Weighted SFT on 2026-10-16 (session created 21:23Z, destroyed 21:47Z, evidence `fine_tuning/kaggle/vast_sft_s8_weighted/evidence_20261016_184609`) passed setup, CPU tokenizer smoke, and GPU smoke at seq 4608 (2 steps, loss ~1.00, `SFT_SMOKE_PASS`). Full train then started: 4098 rows, over 4608 = 0, S3 masking OK, 0 rows dropped, 514 steps, ~86-97 s/step. Log reached step 9/514 with no traceback.
+
+At evidence time 21:46:12Z the 4090 held 23932 MiB / 24564 MiB, 179 W, 36% util. `sft_train.pid` was still 1254 (supervisor) and `sft_train.exit` was absent. Watchdog had already logged `WATCHDOG_EXIT training_healthy`. The local orchestrator then saved evidence with reason `post-fetch-destroy` and destroyed the instance. No adapter (`save_steps` 40).
+
+Cause: `Get-WeightedTrainState` in `vast_sft_s8_weighted_orchestrate.ps1` marks DEAD when `kill -0` on the pidfile and `pgrep` of `train_sft_sota.py` both fail and `sft_setup.log` is older than 180s. After `FULL_TRAIN`, the train writes only `sft_train.log`, so a quiet setup log plus a pid check that does not see the trainer becomes three DEAD polls and a destroy of a live GPU. Do not rent again until that probe treats a growing `sft_train.log` (or high VRAM) as ALIVE. A full run is ~13 h (514 x ~90 s) and needs credit for that quote.
+
+## Fix landed (local, 2026-10-17)
+
+`Get-WeightedTrainState` in `vast_sft_s8_weighted_orchestrate.ps1`:
+- ALIVE if `sft_train.log` mtime age < 600s
+- ALIVE if GPU mem used > 2048 MiB after FULL_TRAIN / with train log
+- DEAD only via exit file, or train-log stale after FULL_TRAIN, or pre-FULL_TRAIN pid-gone + setup stale
+- Never DEAD on setup-log age alone after FULL_TRAIN
+
+Tests: `fine_tuning/tests/test_vast_sft_s8_weighted_monitor.py` (7 passed).
+Push before next go so sparse-checkout picks up the orchestrator. No GPU rented in the fix session.
+
+## Follow-on (2026-10-17)
+
+Operator chose next work: **plan RunPod Unsloth** for weighted SFT (design → code → usage), not another Vast PEFT go while credit is ~$2. Handoff: `fine-tuning/sft-runpod-unsloth-next-session`. Monitor fix remains on main `afb8e7f` for any future Vast PEFT run.
 
 <!-- memory-fabric:store/fine-tuning/sft-weighted-marker-protocol-2026-10-16 -->
 ---
@@ -6731,6 +6877,7 @@ schema_version: 1.3
 last_updated: "2026-09-16T07:54:00-03:00"
 occurrences: 2
 error_signature: "unsloth sigsegv (exit <n>) at first sfttrainer.train() step on vast — including full rtx <n> (<n>bit and bf<n>). also fractional gpu nvml spoof as <n>."
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-09-06T00:46:26-04:00
@@ -6758,6 +6905,7 @@ schema_version: 1.3
 last_updated: "2026-09-16T10:28:27-03:00"
 occurrences: 1
 error_signature: "unsloth sigsegv on vast with system pip; conda-forge pytorch-cuda resolved to cpu"
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-09-16T10:28:27-03:00
@@ -6846,6 +6994,7 @@ tags: [cpt, s6, vast, conda, full-corpus, handoff]
 schema_version: 1.3
 last_updated: "2026-09-16T11:02:02-03:00"
 evidence: [continued_pretrain/VAST_RUNBOOK_CPT.md, continued_pretrain/scripts/vast_cpt_orchestrate.ps1, continued_pretrain/scripts/vast_cpt_remote_continue_b.sh]
+review_status: stale
 ---
 
 # Vast CPT S6 continue-B — prepared, not trained (2026-09-16)
@@ -7011,6 +7160,7 @@ priority: medium
 tags: [vast, unsloth, conda, cpt, smoke, pass]
 schema_version: 1.3
 last_updated: "2026-09-16T10:28:25-03:00"
+review_status: stale
 ---
 
 # Vast Unsloth CPT smoke via Miniforge — PASS
@@ -7047,6 +7197,7 @@ priority: medium
 tags: [vast, unsloth, cpt, superseded]
 schema_version: 1.3
 last_updated: "2026-09-16T10:32:23-03:00"
+review_status: stale
 ---
 
 # Vast Unsloth CPT+LoRA smoke — SIGSEGV
@@ -7142,6 +7293,27 @@ weighted SFT smoke AttributeError tokenizers.Tokenizer has no attribute backend_
 
 **Fix:**
 Install protobuf==7.36.1 in the venv, stop passing fix_mistral_regex, re-raise ImportError from inside load_qwen35_tokenizer, and run a CPU tokenizer smoke that prints SETUP_FAILED rc=1 before GPU smoke. Main c376017.
+
+<!-- memory-fabric:store/failures/weighted-sft-vast-monitor-475e9e90b7 -->
+---
+store_path: failures/weighted-sft-vast-monitor-475e9e90b7
+title: "Weighted SFT Vast monitor destroyed a live 4090 train at step 9/514 with reason "
+summary: "Weighted SFT Vast monitor destroyed a live 4090 train at step 9/514 with reason post-fetch-destroy"
+priority: medium
+tags: [failure, fix, monitor, sft, vast, weighted]
+schema_version: 1.3
+last_updated: "2026-10-17T07:50:43-03:00"
+occurrences: 1
+error_signature: "weighted sft vast monitor destroyed a live <n> train at step <n><path> with reason post-fetch-destroy. after full_train, sft_setup.log goes quiet while progress is only in sft_train.log; get-weightedtrainstate treated stale setup + failed kill<path> as dead."
+---
+
+## Occurrence 1 — 2026-10-17T07:50:43-03:00
+
+**Error:**
+Weighted SFT Vast monitor destroyed a live 4090 train at step 9/514 with reason post-fetch-destroy. After FULL_TRAIN, sft_setup.log goes quiet while progress is only in sft_train.log; Get-WeightedTrainState treated stale setup + failed kill/pgrep as DEAD.
+
+**Fix:**
+Get-WeightedTrainState now treats fresh sft_train.log (<600s) and GPU memory >2048 MiB (after FULL_TRAIN or when train log exists) as ALIVE. Exit file is the hard DEAD signal. After FULL_TRAIN, setup-log age alone never marks DEAD. Tests in test_vast_sft_s8_weighted_monitor.py cover train-log/gpu/exit canned states.
 
 <!-- memory-fabric:store/failures/weighted-sft-vast-runs-cc1e1faa64 -->
 ---
@@ -8610,6 +8782,7 @@ priority: low
 tags: [episodic, session-journal]
 schema_version: 1.3
 last_updated: "2026-09-16T11:23:15-03:00"
+review_status: stale
 ---
 
 ## cpt-s6-gpu-blocked
@@ -9781,6 +9954,72 @@ Recorded weighted SFT run 7 (torchao cp310-abi3 warning, e6368cf) and run 8 (pro
 - `.ai-memory/memory-store/fine-tuning/sft-weighted-torchao-abi3-warn-2026-10-16.md`
 - `.ai-memory/memory-store/fine-tuning/sft-weighted-tokenizer-protobuf-2026-10-16.md`
 - `.ai-memory/memory-store/failures/weighted-sft-smoke-attributeerror-b9d97fec81.md`
+
+<!-- memory-fabric:store/episodic/2026-10-17 -->
+---
+store_path: episodic/2026-10-17
+title: "Episodic Journal — 2026-10-17"
+summary: "Diagnosed why weighted SFT on Vast cannot be left to finish even though training already works"
+priority: low
+tags: [episodic, session-journal]
+schema_version: 1.3
+last_updated: "2026-10-17T14:14:55-03:00"
+---
+
+## sft-repeat-diagnosis
+
+Diagnosed why weighted SFT on Vast cannot be left to finish even though training already works. The 2026-10-16 evening run passed setup and a seq-4608 smoke, then trained to step 9/514 on a 4090 using 23.9 GB and 179 W. The local monitor recorded post-fetch-destroy while sft_train.exit was still absent. The state probe treats a quiet sft_setup.log as a dead train after FULL_TRAIN because progress is only in sft_train.log.
+
+**Key decisions:**
+- Next weighted SFT go waits on a monitor fix: growing sft_train.log or busy GPU must count as ALIVE.
+- Do not rent from this diagnosis. Full job is about 13 hours and needs credit above the last ~$2 note.
+
+## sft-monitor-false-dead-fix
+
+Fixed the weighted SFT Vast monitor false-DEAD after FULL_TRAIN. Get-WeightedTrainState now keeps the job ALIVE when sft_train.log is fresh or the GPU holds >2 GiB, and only treats an exit file or a truly stale train log as DEAD. Seven monitor contract tests passed; no GPU rented.
+
+- After FULL_TRAIN, ALIVE signals are train-log freshness (600s) and GPU mem >2 GiB; exit file is hard DEAD.
+- Setup-log quiet after FULL_TRAIN is expected and must not destroy.
+
+**Files changed:**
+
+## sft-monitor-push-forge-go
+
+Committed and pushed the weighted SFT monitor false-DEAD fix (afb8e7f). Dry orchestrator READY on that pin. Vast credit is $2 with zero instances. Pasted a go-prep message into the local Grok Bot Forge window telling it to pull afb8e7f, dry, report credit, and wait for top-up before -Go.
+
+- Pushed afb8e7f monitor ALIVE fix to main.
+- Dry READY with PINNED_SHA afb8e7f; DIRTY_OVERRIDES none.
+- Vast credit $2.00 blocks a ~13h weighted SFT rent; told Forge not to rent until top-up to ~$12.
+
+
+## runpod-unsloth-handoff
+
+Saved next-session handoff for planning RunPod Unsloth weighted SFT (design, code, usage). Captured why Vast PEFT is ~13h, monitor fix afb8e7f, Unsloth CPT vs SFT facts, and public RunPod Unsloth template research. No rent; no new orchestrator code this session.
+
+- Next session focuses on RunPod Unsloth plan before coding.
+- Vast PEFT weighted remains the proven path; Unsloth on RunPod is unproven for this recipe until smoke.
+- Do not rent without go; preserve seq 4608 / mask / SFT_EXPORT=0 / Hub freeze.
+
+## runpod-unsloth-weighted-sft
+
+Implemented RunPod Unsloth weighted SFT path: backend override + smoke-only in remote train, new plan/tests, runpod_sft_s8_weighted_orchestrate.ps1 (dry/go/smoke/monitor/fetch/destroy), runbook, and gpu-train-ops/Forge updates. Dry READY and 17 pytest passed; no GPU rented.
+
+- RunPod uses existing pytorch image + sft_remote_setup with SFT_BACKEND=unsloth (not official Unsloth Docker)
+- Vast PEFT orchestrator stays as fallback until Unsloth smoke proves faster
+- Separate session file runpod_sft_s8_weighted_session.json via SFT_SESSION_FILE
+
+- `fine_tuning/scripts/sft_s8_weighted_runpod_unsloth_plan.py`
+- `fine_tuning/scripts/test_sft_s8_weighted_runpod_unsloth_plan.py`
+- `fine_tuning/scripts/runpod_sft_s8_weighted_orchestrate.ps1`
+- `[REDACTED_SECRET].md`
+- `fine_tuning/scripts/sft_wait_ssh.ps1`
+
+## save-unsloth-offline-memories
+
+Persisted RunPod Unsloth weighted SFT memories: updated handoff with offline dry+34 pytest proof, new offline-proof store entry, Forge append. No GPU rent; next paid step remains operator go for -SmokeOnly.
+
+- Offline proof is contract-only; GPU Unsloth smoke still requires -Go -SmokeOnly
+- Dirty sync on sft_remote_train_s8_weighted.sh blocks clean -Go until commit/push or -AllowDirtySync
 
 <!-- memory-fabric:store/episodic/commits/2026-10-14/604fca57e1 -->
 ---
