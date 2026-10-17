@@ -178,6 +178,80 @@ def pod_env(pubkey: str) -> dict[str, str]:
     }
 
 
+def _create_attempt(
+    token: str,
+    pubkey: str,
+    *,
+    gpu: str,
+    image: str,
+    cloud: str,
+    data_centers: list[str],
+    network_volume_id: str | None,
+    attempt_n: int,
+) -> tuple[str, dict] | None:
+    body: dict = {
+        "name": POD_NAME,
+        "gpuTypeIds": [gpu],
+        "gpuCount": 1,
+        "containerDiskInGb": 100 if not network_volume_id else 75,
+        "volumeInGb": 0,
+        "ports": ["22/tcp"],
+        "env": pod_env(pubkey),
+        "supportPublicIp": True,
+        "interruptible": False,
+        "computeType": "GPU",
+        "imageName": image,
+        "cloudType": cloud,
+        "dataCenterIds": data_centers,
+    }
+    if network_volume_id:
+        body["networkVolumeId"] = network_volume_id
+        body["volumeMountPath"] = "/workspace"
+    mode = f"vol={network_volume_id}" if network_volume_id else "ephemeral"
+    print(
+        "attempt",
+        attempt_n,
+        cloud,
+        gpu.split()[-1],
+        image.split("/")[-1],
+        mode,
+        flush=True,
+    )
+    status, payload = http_json(
+        "https://rest.runpod.io/v1/pods", token, body, method="POST"
+    )
+    print("status", status, flush=True)
+    if status in (200, 201) and isinstance(payload, dict) and payload.get("id"):
+        pod_id = str(payload["id"])
+        dc = data_centers[0] if data_centers else DATA_CENTER
+        meta = {
+            "pod_id": pod_id,
+            "name": POD_NAME,
+            "cloud_type": cloud,
+            "data_center": dc,
+            "gpu_type": gpu,
+            "created_at": __import__("datetime").datetime.now().isoformat(),
+            "network_volume_id": network_volume_id or "",
+            "ephemeral_workspace": not bool(network_volume_id),
+            "volume_mount_path": "/workspace",
+            "image_name": image,
+            "gate0_merged": "/workspace/theology_cpt_v2_merged_hf",
+            "hub_v2_adapter_sha256": HUB_V2_SHA,
+            "use_cpt_merge": True,
+            "export": False,
+            "max_wall_hours": MAX_WALL_HOURS,
+            "auth": "mcp_oauth_rest_v1",
+            "monitor_status": "provisioned",
+        }
+        return pod_id, meta
+    if isinstance(payload, dict):
+        err = payload.get("detail") or payload.get("error") or payload
+        print("error", err, flush=True)
+    else:
+        print("error", str(payload)[:500], flush=True)
+    return None
+
+
 def try_provision_pod(token: str, pubkey: str) -> tuple[str, dict] | None:
     gpu_types = [
         "NVIDIA GeForce RTX 4090",
@@ -189,65 +263,52 @@ def try_provision_pod(token: str, pubkey: str) -> tuple[str, dict] | None:
     ]
     clouds = ["COMMUNITY", "SECURE"]
     attempt_n = 0
+    volume_missing = False
     for gpu in gpu_types:
         for image in images:
             for cloud in clouds:
                 attempt_n += 1
-                body = {
-                    "name": POD_NAME,
-                    "gpuTypeIds": [gpu],
-                    "gpuCount": 1,
-                    "containerDiskInGb": 75,
-                    "volumeInGb": 0,
-                    "ports": ["22/tcp"],
-                    "env": pod_env(pubkey),
-                    "supportPublicIp": True,
-                    "interruptible": False,
-                    "computeType": "GPU",
-                    "networkVolumeId": NETWORK_VOLUME,
-                    "volumeMountPath": "/workspace",
-                    "imageName": image,
-                    "cloudType": cloud,
-                    "dataCenterIds": [DATA_CENTER],
-                }
-                print(
-                    "attempt",
-                    attempt_n,
-                    cloud,
-                    gpu.split()[-1],
-                    image.split("/")[-1],
-                    flush=True,
+                hit = _create_attempt(
+                    token,
+                    pubkey,
+                    gpu=gpu,
+                    image=image,
+                    cloud=cloud,
+                    data_centers=[DATA_CENTER],
+                    network_volume_id=NETWORK_VOLUME,
+                    attempt_n=attempt_n,
                 )
-                status, payload = http_json(
-                    "https://rest.runpod.io/v1/pods", token, body, method="POST"
+                if hit:
+                    return hit
+                # Detect deleted/missing volume so we can fall back once.
+                # (All attempts with a bad volume id fail the same way.)
+                volume_missing = True
+
+    if not volume_missing:
+        return None
+
+    print(
+        "NETWORK_VOLUME_MISSING: falling back to ephemeral /workspace "
+        f"(no {NETWORK_VOLUME}; create volume when account balance >= $5)",
+        flush=True,
+    )
+    # Any DC with stock — S8 merge comes from private Hub, not the old volume.
+    for gpu in gpu_types:
+        for image in images[:1]:
+            for cloud in clouds:
+                attempt_n += 1
+                hit = _create_attempt(
+                    token,
+                    pubkey,
+                    gpu=gpu,
+                    image=image,
+                    cloud=cloud,
+                    data_centers=[],
+                    network_volume_id=None,
+                    attempt_n=attempt_n,
                 )
-                print("status", status, flush=True)
-                if status in (200, 201) and isinstance(payload, dict) and payload.get("id"):
-                    pod_id = str(payload["id"])
-                    meta = {
-                        "pod_id": pod_id,
-                        "name": POD_NAME,
-                        "cloud_type": cloud,
-                        "data_center": DATA_CENTER,
-                        "gpu_type": gpu,
-                        "created_at": __import__("datetime").datetime.now().isoformat(),
-                        "network_volume_id": NETWORK_VOLUME,
-                        "volume_mount_path": "/workspace",
-                        "image_name": image,
-                        "gate0_merged": "/workspace/theology_cpt_v2_merged_hf",
-                        "hub_v2_adapter_sha256": HUB_V2_SHA,
-                        "use_cpt_merge": True,
-                        "export": False,
-                        "max_wall_hours": MAX_WALL_HOURS,
-                        "auth": "mcp_oauth_rest_v1",
-                        "monitor_status": "provisioned",
-                    }
-                    return pod_id, meta
-                if isinstance(payload, dict):
-                    err = payload.get("detail") or payload.get("error") or payload
-                    print("error", err, flush=True)
-                else:
-                    print("error", str(payload)[:500], flush=True)
+                if hit:
+                    return hit
     return None
 
 

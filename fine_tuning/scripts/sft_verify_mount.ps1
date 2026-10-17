@@ -1,4 +1,4 @@
-# Verify the pod has network volume 7hb931c5oe mounted at /workspace.
+# Verify /workspace is usable. Prefer network volume; allow ephemeral when session says so.
 . "$PSScriptRoot\sft_runpod_common.ps1"
 
 $session = Get-SftSession
@@ -13,12 +13,22 @@ $sshArgs = @("-i", $SshKey, "-p", "$port", "-o", "StrictHostKeyChecking=accept-n
 & ssh @($sshArgs + @($sshTarget, "df -h /workspace"))
 if ($LASTEXITCODE -ne 0) { throw "SSH verify failed" }
 
+$ephemeral = $false
+if ($session.PSObject.Properties.Name -contains "ephemeral_workspace") {
+    $ephemeral = [bool]$session.ephemeral_workspace
+}
 $volId = [string]$session.network_volume_id
-if (-not $volId -or $volId -eq "null") {
-    throw @"
+if ($ephemeral -or -not $volId -or $volId -eq "null") {
+    if (-not $ephemeral) {
+        throw @"
 ABORT: Pod has no network_volume_id in sft_session.json.
-Delete this pod and re-provision with volume $NetworkVolumeId (US-IL-1) mounted at /workspace.
+Delete this pod and re-provision with volume $NetworkVolumeId (US-IL-1) mounted at /workspace,
+or provision with ephemeral_workspace=true when balance cannot create a volume.
 "@
+    }
+    Write-Warning "EPHEMERAL_WORKSPACE=1 — /workspace is container disk; fetch before destroy (no network volume)."
+    Write-Host "Mount check OK (ephemeral) - safe to sync and train."
+    exit 0
 }
 
 Write-Host "Session reports network volume: $volId (expected $NetworkVolumeId)"

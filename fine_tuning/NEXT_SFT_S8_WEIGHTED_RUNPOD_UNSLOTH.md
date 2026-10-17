@@ -30,7 +30,9 @@ cd fine_tuning\scripts
 .\runpod_sft_s8_weighted_orchestrate.ps1 -Go -SmokeOnly -StartMonitor
 ```
 
-Provisions Community RTX 4090 on US-IL-1 with network volume `7hb931c5oe`, sparse-syncs at
+Provisions Community RTX 4090 (prefer US-IL-1 + network volume `7hb931c5oe`). If that
+volume is missing and balance is under $5 (cannot create a volume), falls back to
+**ephemeral** container `/workspace` and downloads the S8 merge from Hub. Sparse-syncs at
 `PINNED_SHA`, runs setup + 2-step smoke at 4608 with `SFT_BACKEND=unsloth`, then exits on
 `SMOKE_ONLY_DONE`. Fetch evidence, destroy pod. Budget target under ~$1.
 
