@@ -131,6 +131,49 @@ def test_orchestrator_has_alive_dead_unknown_and_debounce() -> None:
     assert len(fail_fast) == 2
     assert "Save-WeightedEvidence" in fail_fast[1].split("if ($st.State -eq \"ALIVE\")", 1)[0]
     assert "WeightedFailStop = $failReason" in fail_fast[1].split("if ($st.State -eq \"ALIVE\")", 1)[0]
+    # Post-FULL_TRAIN: train log / GPU mem keep ALIVE; setup staleness alone is not DEAD.
+    assert "TRAINLOG=/workspace/sft_train.log" in text
+    assert "TRAIN_FRESH_SEC=600" in text
+    assert "ALIVE_REASON=train_log_fresh" in text
+    assert "ALIVE_REASON=gpu_mem_mib=" in text
+    assert "DEAD_REASON=train_log_stale_after_full_train" in text
+    assert "never DEAD on setup age alone" in text or "never destroy a live trainer" in text.lower()
+    assert "TRAIN_MTIME=" in text
+
+
+def test_state_probe_prefers_train_log_over_stale_setup() -> None:
+    """Canned remote outputs after FULL_TRAIN (setup quiet, train log fresh)."""
+    fresh_train = """
+SETUP_MTIME=1710000000
+SETUP_SIZE=4096
+TRAIN_MTIME=1710000600
+TRAIN_SIZE=12000
+PIDFILE=1
+WEIGHTED_STATE=ALIVE
+ALIVE_REASON=train_log_fresh age=42
+"""
+    gpu_busy = """
+SETUP_MTIME=1710000000
+SETUP_SIZE=4096
+TRAIN_MTIME=1710000000
+TRAIN_SIZE=8000
+PIDFILE=1
+WEIGHTED_STATE=ALIVE
+ALIVE_REASON=gpu_mem_mib=23932
+"""
+    exit_dead = """
+SETUP_MTIME=1710000000
+SETUP_SIZE=4096
+TRAIN_MTIME=1710000900
+TRAIN_SIZE=20000
+PIDFILE=1
+EXIT_RC=139
+WEIGHTED_STATE=DEAD
+DEAD_REASON=exitfile
+"""
+    assert parse_weighted_state(fresh_train) == "ALIVE"
+    assert parse_weighted_state(gpu_busy) == "ALIVE"
+    assert parse_weighted_state(exit_dead) == "DEAD"
 
 
 def test_remote_train_writes_pid_exit_and_waits() -> None:

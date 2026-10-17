@@ -736,11 +736,15 @@ catch {
 function Get-WeightedTrainState {
     # Returns ALIVE / DEAD / UNKNOWN / SETUP_FAILED / SMOKE_BEFORE_TRAIN_FAILED.
     # SSH errors are UNKNOWN, never "gone". Fail markers break the monitor immediately.
+    # After FULL_TRAIN, progress is in sft_train.log (setup log goes quiet) — a stale
+    # setup log alone must never destroy a live trainer (2026-10-16 step-9 false destroy).
     $result = [pscustomobject]@{
         State       = "UNKNOWN"
         PidfileSeen = $false
         SetupMtime  = $null
         SetupSize   = $null
+        TrainMtime  = $null
+        TrainSize   = $null
         FailMarker  = $null
         TriggerLine = $null
         Raw         = ""
@@ -756,12 +760,24 @@ EXITFILE=/workspace/sft_train.exit
 SETUPLOG=/workspace/sft_setup.log
 LAUNCHLOG=/workspace/sft_launch.log
 SMOKELOG=/workspace/sft_smoke.log
+TRAINLOG=/workspace/sft_train.log
+# Steps are ~90s on 4090@4608; allow quiet gaps without false DEAD.
+TRAIN_FRESH_SEC=600
+GPU_BUSY_MIB=2048
+now=$(date +%s)
 if [ -f "$SETUPLOG" ]; then
   echo "SETUP_MTIME=$(stat -c %Y "$SETUPLOG" 2>/dev/null || echo 0)"
   echo "SETUP_SIZE=$(wc -c < "$SETUPLOG" | tr -d ' \n')"
 else
   echo "SETUP_MTIME=0"
   echo "SETUP_SIZE=0"
+fi
+if [ -f "$TRAINLOG" ]; then
+  echo "TRAIN_MTIME=$(stat -c %Y "$TRAINLOG" 2>/dev/null || echo 0)"
+  echo "TRAIN_SIZE=$(wc -c < "$TRAINLOG" | tr -d ' \n')"
+else
+  echo "TRAIN_MTIME=0"
+  echo "TRAIN_SIZE=0"
 fi
 # Anchored markers only (^SETUP_FAILED rc= and ^SMOKE_BEFORE_TRAIN_FAILED).
 # Shared logic in /workspace/sft_setup_markers.sh. Do not match mid-line text.
@@ -809,26 +825,63 @@ if [ -f "$PIDFILE" ]; then
   pid=$(tr -d ' \n\r' < "$PIDFILE")
   if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
     echo "WEIGHTED_STATE=ALIVE"
+    echo "ALIVE_REASON=pidfile"
     exit 0
   fi
 else
   echo "PIDFILE=0"
 fi
+# Exit file means the supervisor finished (success or crash). Real DEAD.
 if [ -f "$EXITFILE" ]; then
+  echo "EXIT_RC=$(tr -d ' \n\r' < "$EXITFILE")"
   echo "WEIGHTED_STATE=DEAD"
+  echo "DEAD_REASON=exitfile"
   exit 0
 fi
 if pgrep -f "[b]ash /workspace/sft_remote_train_s8_weighted.sh" >/dev/null 2>&1 \
    || pgrep -f "[t]rain_sft_sota.py" >/dev/null 2>&1; then
   echo "WEIGHTED_STATE=ALIVE"
+  echo "ALIVE_REASON=pgrep"
   exit 0
+fi
+# Fresh train log = still loading/tokenizing/stepping even if pid/pgrep flap.
+if [ -f "$TRAINLOG" ]; then
+  train_mtime=$(stat -c %Y "$TRAINLOG" 2>/dev/null || echo 0)
+  train_age=$((now - train_mtime))
+  if [ "$train_age" -lt "$TRAIN_FRESH_SEC" ]; then
+    echo "WEIGHTED_STATE=ALIVE"
+    echo "ALIVE_REASON=train_log_fresh age=${train_age}"
+    exit 0
+  fi
+fi
+# Busy GPU after FULL_TRAIN / with a train log: do not destroy a live step.
+gpu_mib=""
+if command -v nvidia-smi >/dev/null 2>&1; then
+  gpu_mib=$(nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits 2>/dev/null | head -n 1 | tr -d ' ')
+fi
+if [ -n "$gpu_mib" ] && [ "$gpu_mib" -gt "$GPU_BUSY_MIB" ] 2>/dev/null; then
+  if grep -q 'FULL_TRAIN' "$SETUPLOG" 2>/dev/null || [ -f "$TRAINLOG" ]; then
+    echo "WEIGHTED_STATE=ALIVE"
+    echo "ALIVE_REASON=gpu_mem_mib=${gpu_mib}"
+    exit 0
+  fi
 fi
 if [ ! -f "$PIDFILE" ]; then
   echo "WEIGHTED_STATE=UNKNOWN"
   exit 0
 fi
+# After FULL_TRAIN, setup.log is expected to be quiet — never DEAD on setup age alone.
+if grep -q 'FULL_TRAIN' "$SETUPLOG" 2>/dev/null; then
+  if [ -f "$TRAINLOG" ]; then
+    echo "WEIGHTED_STATE=DEAD"
+    echo "DEAD_REASON=train_log_stale_after_full_train"
+    exit 0
+  fi
+  echo "WEIGHTED_STATE=UNKNOWN"
+  echo "UNKNOWN_REASON=full_train_no_train_log"
+  exit 0
+fi
 if [ -f "$SETUPLOG" ]; then
-  now=$(date +%s)
   mtime=$(stat -c %Y "$SETUPLOG" 2>/dev/null || echo 0)
   age=$((now - mtime))
   if [ "$age" -lt 180 ]; then
@@ -837,6 +890,7 @@ if [ -f "$SETUPLOG" ]; then
   fi
 fi
 echo "WEIGHTED_STATE=DEAD"
+echo "DEAD_REASON=pid_gone_setup_stale"
 '@
     $remote = $remote -replace "`r", ""
     $prev = $ErrorActionPreference
@@ -860,6 +914,8 @@ echo "WEIGHTED_STATE=DEAD"
     if ($out -match "PIDFILE=1") { $result.PidfileSeen = $true }
     if ($out -match "SETUP_MTIME=(\d+)") { $result.SetupMtime = $Matches[1] }
     if ($out -match "SETUP_SIZE=(\d+)") { $result.SetupSize = $Matches[1] }
+    if ($out -match "TRAIN_MTIME=(\d+)") { $result.TrainMtime = $Matches[1] }
+    if ($out -match "TRAIN_SIZE=(\d+)") { $result.TrainSize = $Matches[1] }
     if ($out -match "FAIL_MARKER=(\S+)") { $result.FailMarker = $Matches[1] }
     if ($out -match "TRIGGER_LINE=(.+)") { $result.TriggerLine = $Matches[1].Trim() }
     if ($out -match "WEIGHTED_STATE=SETUP_FAILED") {
