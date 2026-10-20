@@ -104,6 +104,41 @@ def heading_cited(assistant: str, heading: str) -> bool:
     return want in ot_normalize(assistant)
 
 
+def _assistant_without_bracket_cites(assistant: str) -> str:
+    """Drop [catalog heading] spans so title quotes inside cites are not quote-checked."""
+    return HEADING_CITE_RE.sub(" ", assistant or "")
+
+
+def fabricated_quotes(assistant: str, passage: str) -> list[str]:
+    """Quoted spans (>= min chars) that are not a substring of the source passage.
+
+    Bracketed catalog cites are removed first so a heading like
+    ``[Sermon 1 — "Title"]`` does not count as a fabricated body quote.
+    """
+    variants = passage_variants(passage)
+    body = _assistant_without_bracket_cites(assistant)
+    bad: list[str] = []
+    for q in QUOTE_RE.findall(body):
+        core = quote_core(q)
+        if len(core) >= _MIN_QUOTE_CHARS and not any(core in v for v in variants):
+            bad.append(q)
+    return bad
+
+
+def wrong_heading_cites(assistant: str, heading: str) -> list[str]:
+    """Bracketed cites present when none matches the catalog heading (optional cite)."""
+    heading_n = (heading or "").strip()
+    if not heading_n:
+        return []
+    cites = citation_headings(assistant)
+    if not cites:
+        return []
+    want = ot_normalize(heading_n)
+    if any(ot_normalize(c) == want for c in cites):
+        return []
+    return cites
+
+
 # Rule 6a: the user never sees the passage. Measured as a warning, not a reject.
 META_WORDING_RE = re.compile(r"\b(?:the|this)\s+(?:passage|text|excerpt|quote)\b", re.I)
 
@@ -141,20 +176,20 @@ def check_open_theology_row(
 
     errors.extend(caricature_errors(assistant))
 
-    if quote_in_passage(assistant, passage) < 1:
-        errors.append("answerable row has no quote found in source passage")
+    # Cite/quote are optional. Pure fabrication fails; a good in-passage quote plus
+    # an extra imperfect span still passes (legacy teacher rows).
+    if fabricated_quotes(assistant, passage) and quote_in_passage(assistant, passage) < 1:
+        errors.append("fabricated quote not found in source passage")
 
     heading_n = (heading or "").strip()
-    if heading_n:
-        if not heading_cited(assistant, heading_n):
-            errors.append(f"missing catalog heading cite: {heading_n}")
-    else:
+    if not heading_n:
         errors.append("empty catalog heading")
+    elif wrong_heading_cites(assistant, heading_n):
+        errors.append(f"wrong catalog heading cite (expected {heading_n})")
 
     msgs = [{"role": "assistant", "content": assistant}]
     if is_refusal({"messages": msgs}):
         errors.append("open-theology train row must be answerable, not a refusal")
-
     if holdout_paths and source_path:
         norm = source_path.replace("\\", "/")
         if norm in holdout_paths or any(norm.endswith(h) or h.endswith(norm) for h in holdout_paths):
@@ -229,7 +264,17 @@ def _self_check() -> None:
         passage=passage,
         heading=heading,
     )
-    assert any("quote" in e for e in bad_quote), bad_quote
+    assert any("fabricated quote" in e for e in bad_quote), bad_quote
+
+    # No quote / no heading cite is allowed under the corpus-chat contract.
+    no_cite = check_open_theology_row(
+        system=THEOLOGY_CHAT_SYSTEM_PROMPT,
+        user="What does Spurgeon teach?",
+        assistant="Spurgeon teaches that Christ is the Beloved of the Father in the covenant of grace.",
+        passage=passage,
+        heading=heading,
+    )
+    assert no_cite == [], no_cite
 
     # Teacher ends the quote with "," where the passage has "." (train-puritan-121 / confession-019).
     comma_end = check_open_theology_row(
@@ -248,7 +293,7 @@ def _self_check() -> None:
         passage=passage,
         heading=heading,
     )
-    assert any("heading" in e for e in bad_cite), bad_cite
+    assert any("wrong catalog heading" in e for e in bad_cite), bad_cite
 
 
 if __name__ == "__main__":

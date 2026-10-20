@@ -1,0 +1,13 @@
+{
+  "halted": false,
+  "halt_reason": "",
+  "counts": {
+    "accepted": 0,
+    "rejected": 0,
+    "remaining": 60,
+    "honesty_jobs": 60
+  },
+  "next_job_id": "honesty-puritan-001",
+  "updated_at": "2026-10-19T18:08:37.965430+00:00",
+  "mode": "honesty_anti_invent_v1"
+}

@@ -72,6 +72,7 @@ def _role(msgs: list[dict], name: str) -> str:
 
 
 def ends_with_heading(answer: str, heading: str) -> bool:
+    """Diagnostic helper; catalog heading at end is no longer required for export."""
     return bool(heading) and ot_normalize(answer).rstrip(" .)").endswith(ot_normalize(heading))
 
 
@@ -84,8 +85,6 @@ def row_errors(rec: dict) -> list[str]:
         errs.append("system prompt is not THEOLOGY_CHAT_SYSTEM_PROMPT")
     if not _role(msgs, "user").strip() or not _role(msgs, "assistant").strip():
         errs.append("empty user or assistant")
-    if not ends_with_heading(_role(msgs, "assistant"), (rec.get("meta") or {}).get("heading", "")):
-        errs.append("answer does not end with catalog heading")
     errs.extend(check_open_theology_record(rec))
     return sorted(set(errs))
 

@@ -31,6 +31,7 @@ from open_theology_qa_checks import (  # noqa: E402
     ot_normalize,
     quote_in_passage,
 )
+from qa_rewrite_checks import role  # noqa: E402
 from plan_open_theology_jobs import (  # noqa: E402
     load_spurgeon_holdout_numbers,
     plan,
@@ -42,6 +43,9 @@ def test_theology_prompt_distinct_from_rag():
     assert "CONTEXT" not in THEOLOGY_CHAT_SYSTEM_PROMPT
     assert "CONTEXT" in SPURGEON_SFT_SYSTEM_PROMPT
     assert THEOLOGY_CHAT_SYSTEM_PROMPT != SPURGEON_SFT_SYSTEM_PROMPT
+    assert "knowledge assistant" in THEOLOGY_CHAT_SYSTEM_PROMPT.lower()
+    assert "optional" in THEOLOGY_CHAT_SYSTEM_PROMPT.lower()
+    assert "Cite the work by its catalog heading" not in THEOLOGY_CHAT_SYSTEM_PROMPT
 
 
 def test_check_accepts_good_row():
@@ -89,7 +93,7 @@ def test_check_rejects_vocative():
     assert any("vocative" in e for e in errs)
 
 
-def test_check_rejects_bad_quote():
+def test_check_rejects_fabricated_quote():
     passage = 'Christ is the Beloved of the Father. Extra words for length here.'
     heading = '[Sermon 1 — "The Immutability of God"]'
     errs = check_open_theology_row(
@@ -99,7 +103,123 @@ def test_check_rejects_bad_quote():
         passage=passage,
         heading=heading,
     )
-    assert any("quote" in e for e in errs)
+    assert any("fabricated quote" in e for e in errs)
+
+
+def test_check_accepts_answer_without_quote_or_heading():
+    passage = 'Christ is the Beloved of the Father. Extra words for length here.'
+    heading = '[Sermon 1 — "The Immutability of God"]'
+    errs = check_open_theology_row(
+        system=THEOLOGY_CHAT_SYSTEM_PROMPT,
+        user="What does Spurgeon teach about Christ as Beloved?",
+        assistant=(
+            "Spurgeon teaches that Christ is the Beloved of the Father, "
+            "an instance of immutable love in the covenant of grace."
+        ),
+        passage=passage,
+        heading=heading,
+    )
+    assert errs == []
+
+
+def test_soft_strip_drops_heading_and_fabricated_quote():
+    from soft_strip_open_theology_gold import soft_strip_assistant
+
+    passage = (
+        "Christ is the Beloved of the Father. What a remarkable instance you have "
+        "of immutable love in the covenant of grace."
+    )
+    heading = '[Sermon 1 — "The Immutability of God"]'
+    assistant = (
+        'Spurgeon teaches that Christ is "the Beloved of the Father." '
+        'He also says "totally invented phrase here xyz." '
+        f"{heading}"
+    )
+    out, stats = soft_strip_assistant(assistant, passage)
+    assert heading not in out
+    assert "totally invented" not in out
+    assert "the Beloved of the Father" in out
+    assert stats["headings_removed"] == 1
+    assert stats["fabricated_quotes_removed"] == 1
+    assert stats["kept_quotes"] == 1
+    assert stats["changed"] is True
+    assert check_open_theology_row(
+        system=THEOLOGY_CHAT_SYSTEM_PROMPT,
+        user="What does Spurgeon teach?",
+        assistant=out,
+        passage=passage,
+        heading=heading,
+    ) == []
+
+
+def test_soft_strip_noop_when_already_clean():
+    from soft_strip_open_theology_gold import soft_strip_assistant
+
+    passage = (
+        "Christ is the Beloved of the Father. Extra words for length in the passage."
+    )
+    assistant = (
+        "Spurgeon teaches that Christ is the Beloved of the Father in the covenant."
+    )
+    out, stats = soft_strip_assistant(assistant, passage)
+    assert out == assistant
+    assert stats["changed"] is False
+    assert stats["headings_removed"] == 0
+
+
+def test_soft_strip_preserves_space_before_punct_inside_quote():
+    from soft_strip_open_theology_gold import soft_strip_assistant
+
+    passage = (
+        "it is by the power of Christ ; no power else can do it. "
+        "Extra words so the passage is long enough for checks."
+    )
+    heading = "[Sibbes — Works Vol07]"
+    assistant = (
+        'Sibbes affirms "by the power of Christ ; no power else can do it." '
+        f"{heading}"
+    )
+    out, stats = soft_strip_assistant(assistant, passage)
+    assert 'by the power of Christ ; no power else can do it.' in out
+    assert heading not in out
+    assert stats["kept_quotes"] >= 1
+    assert check_open_theology_row(
+        system=THEOLOGY_CHAT_SYSTEM_PROMPT,
+        user="What does Sibbes teach?",
+        assistant=out,
+        passage=passage,
+        heading=heading,
+    ) == []
+
+
+def test_eval_trivia_redraw_specs_pass_checks():
+    from redraw_open_theology_eval_trivia import REDRAWS, apply_redraw
+
+    # Minimal shell record; apply_redraw overwrites Q/A/passage.
+    for jid, spec in REDRAWS.items():
+        rec = {
+            "job_id": jid,
+            "messages": [
+                {"role": "system", "content": THEOLOGY_CHAT_SYSTEM_PROMPT},
+                {"role": "user", "content": "old"},
+                {"role": "assistant", "content": "old"},
+            ],
+            "meta": {
+                "heading": "[Test — Work]",
+                "passage": "old",
+                "source_path": "data/x.txt",
+                "bucket": "puritan",
+            },
+        }
+        out = apply_redraw(rec, spec)
+        errs = check_open_theology_row(
+            system=THEOLOGY_CHAT_SYSTEM_PROMPT,
+            user=role(out["messages"], "user"),
+            assistant=role(out["messages"], "assistant"),
+            passage=spec["passage"],
+            heading="[Test — Work]",
+        )
+        assert errs == [], (jid, errs)
 
 
 # Synthetic strings modeled on the 2026-10-09 halt rejects.
@@ -217,7 +337,7 @@ def test_heading_cite_still_requires_brackets_and_right_work(assistant):
     assert not heading_cited(assistant, heading)
 
 
-def test_check_rejects_bad_citation():
+def test_check_rejects_wrong_heading_cite():
     passage = 'Christ is the Beloved of the Father. Extra words for length here.'
     heading = '[Sermon 1 — "The Immutability of God"]'
     errs = check_open_theology_row(
@@ -227,7 +347,7 @@ def test_check_rejects_bad_citation():
         passage=passage,
         heading=heading,
     )
-    assert any("heading" in e for e in errs)
+    assert any("wrong catalog heading" in e for e in errs)
 
 
 def test_check_rejects_wrong_system_prompt():
@@ -259,14 +379,24 @@ def test_check_rejects_refusal():
     assert any("refusal" in e for e in errs)
 
 
-def test_teacher_prompt_requires_bracketed_heading_at_end():
-    # train-puritan-002 (heading as prose) / train-puritan-125 (heading in parentheses).
+def test_teacher_prompt_heading_cite_optional():
     rule5 = next(l for l in OPEN_THEOLOGY_TEACHER_SYSTEM.splitlines() if l.startswith("5."))
-    assert "End the answer with the HEADING string exactly as given" in rule5
-    assert "including its square brackets" in rule5
+    assert "catalog heading cite is optional" in rule5
+    assert "If you include one, use the HEADING string exactly as given" in rule5
     assert "[Boston \u2014 Fourfold State]" in rule5
-    assert "Do not put it in parentheses" in rule5
-    assert "do not turn it into a sentence" in rule5
+    assert "Do not invent a heading" in rule5
+
+
+def test_teacher_prompt_quote_optional():
+    rule4 = next(l for l in OPEN_THEOLOGY_TEACHER_SYSTEM.splitlines() if l.startswith("4."))
+    assert "verbatim quotation from the SOURCE PASSAGE is optional" in rule4
+    assert "Do not invent a quotation" in rule4
+
+
+def test_teacher_prompt_prefers_doctrinal_questions():
+    rule1 = next(l for l in OPEN_THEOLOGY_TEACHER_SYSTEM.splitlines() if l.startswith("1."))
+    assert "doctrinal" in rule1.lower() or "summary" in rule1.lower()
+    assert "entry numbers" in rule1
 
 
 def test_teacher_prompt_quote_format_rule():
@@ -573,7 +703,7 @@ def _maint_dir(tmp_path: Path) -> Path:
     (d / "jobs.jsonl").write_text("".join(json.dumps(j) + "\n" for j in jobs), encoding="utf-8")
     (d / "accepted.jsonl").write_text(json.dumps({"job_id": "j-acc"}) + "\n", encoding="utf-8")
     rej = [{"job_id": "j-429", "errors": ["teacher error: " + _429]},
-           {"job_id": "j-quote", "errors": ["answerable row has no quote found in source passage"]}]
+           {"job_id": "j-quote", "errors": ["fabricated quote not found in source passage"]}]
     (d / "rejected.jsonl").write_text("".join(json.dumps(r) + "\r\n" for r in rej), encoding="utf-8",
                                       newline="")
     return d
@@ -753,7 +883,11 @@ def test_eval_split_dry_writes_nothing(tmp_path: Path):
 
 def test_eval_split_apply_writes_only_eval_files(tmp_path: Path, monkeypatch):
     out, before = _eval_dir(tmp_path, 3)
-    bad = json.dumps({"question": "Q?", "answer": "no quote, no heading"})
+    # Fabricated quote still rejects; missing cite alone would pass under the corpus-chat contract.
+    bad = json.dumps({
+        "question": "Q?",
+        "answer": 'Spurgeon says "totally invented phrase here that is not in the passage."',
+    })
     monkeypatch.setattr(_gen, "call_teacher", _fake_teacher([_GOOD_RAW, _GOOD_RAW, bad]))
     rep = run_batch(out_dir=out, limit=5, apply=True, provider="groq", model="m", sleep_s=0, split="eval")
     assert rep["accepted_new"] == 2 and rep["rejected_new"] == 1

@@ -44,15 +44,28 @@ OPEN_THEOLOGY_TEACHER_SYSTEM = """You write training pairs for an open theologic
 You are given a SOURCE PASSAGE and its CATALOG HEADING. Invent one natural question a reader would ask, and one gold answer.
 
 Rules:
-1. The question must be answerable from the passage alone. Specific, not a generic template.
+1. Prefer a doctrinal, comparative, or summary question a reader could ask without seeing the passage. Do not ask for entry numbers, verse indexes in a table of contents, sermon-number trivia alone, or URL lists. The question must still be answerable from the passage alone. Specific, not a generic template.
 2. The answer uses knowledge-assistant voice in the third person ("Spurgeon teaches…", "Owen argues…", "the catechism answers…"). You are not Spurgeon, Owen, Calvin, or any Puritan.
 3. Do not address the reader with vocatives such as "Beloved", "My beloved", "Dear friends", "My brethren", "amados", or "meus queridos irmãos". No first-person preacher roleplay.
-4. Include at least one quotation that is a verbatim contiguous substring of the SOURCE PASSAGE, wrapped in ASCII double quotes. Copy character-for-character. Do not paraphrase inside quotes.
-4a. Quote with ASCII double quotes only, never single quotes (' or ‘ ’). Never correct spelling, archaic forms, or OCR errors inside the quote; copy them exactly as they appear. Never use the sermon or work title as the quotation; quote the passage body. Inside JSON strings write apostrophes as a plain ' (never \\'), and do not put backslash-escaped quotes inside the quotation.
-5. End the answer with the HEADING string exactly as given, including its square brackets, e.g. [Boston — Fourfold State]. Do not put it in parentheses, and do not turn it into a sentence ('The Boston — Fourfold State teaches…').
+4. A verbatim quotation from the SOURCE PASSAGE is optional. If you include one, wrap it in ASCII double quotes and copy character-for-character as a contiguous substring. Do not paraphrase inside quotes. Do not invent a quotation.
+4a. When quoting: use ASCII double quotes only, never single quotes (' or ‘ ’). Never correct spelling, archaic forms, or OCR errors inside the quote; copy them exactly as they appear. Never use the sermon or work title as the quotation; quote the passage body. Inside JSON strings write apostrophes as a plain ' (never \\'), and do not put backslash-escaped quotes inside the quotation.
+5. A catalog heading cite is optional. If you include one, use the HEADING string exactly as given, including its square brackets, e.g. [Boston — Fourfold State]. Do not invent a heading, sermon number, or work title. Do not put a heading in parentheses, and do not turn it into a sentence ('The Boston — Fourfold State teaches…').
 6. Do not mention CONTEXT, retrieval, or "based only on the context."
 6a. The user will never see the SOURCE PASSAGE. Never write "the passage", "the text", "the excerpt", or "this quote" in the question or the answer. Attribute to the author or work instead (e.g. "Boston teaches…", "According to Owen…", "the Westminster Confession states…").
 7. Return JSON only: {"question": "...", "answer": "..."}
+"""
+
+OPEN_THEOLOGY_HONESTY_TEACHER_SYSTEM = """You write honesty / anti-invent training pairs for an open theological Q&A assistant on Spurgeon, the Puritans, and confessions/catechisms.
+
+You are given a SOURCE PASSAGE and its CATALOG HEADING. Invent one natural question that would tempt a weak model to invent a sermon number, fake work title, catalog heading, or verbatim quotation it does not have, and one gold answer that refuses to invent while still teaching the doctrine from the passage.
+
+Rules:
+1. The question should sound like a reader asking for a precise citation, sermon number, or exact title that is easy to hallucinate. Prefer doctrinal substance underneath (not pure trivia about entry numbers or URL lists).
+2. The answer uses knowledge-assistant voice in the third person. Explicitly refuse to invent: e.g. say you do not recall the exact sermon number / will not invent a title, then state the doctrine the passage teaches.
+3. Do not invent sermon numbers, quotations, works, or authors. A catalog heading cite is optional; if present it must be the HEADING string exactly. A verbatim quote is optional; if present it must be a contiguous substring of the SOURCE PASSAGE.
+4. Do not address the reader with vocatives such as "Beloved", "My beloved", "Dear friends", "My brethren", "amados", or "meus queridos irmãos". No first-person preacher roleplay.
+5. Do not mention CONTEXT, retrieval, or "based only on the context." Never write "the passage", "the text", "the excerpt", or "this quote" in the question or the answer.
+6. Return JSON only: {"question": "...", "answer": "..."}
 """
 
 
@@ -117,10 +130,17 @@ def parse_qa(raw: str) -> tuple[str, str]:
     return "", ans
 
 
-def teacher_user_prompt(job: dict) -> str:
+def teacher_user_prompt(job: dict, *, honesty: bool = False) -> str:
+    extra = ""
+    if honesty or job.get("honesty"):
+        extra = (
+            "\n\nHonesty mode: the question must tempt invent-cite; "
+            "the answer must refuse to invent while teaching the doctrine.\n"
+        )
     return (
         f"HEADING: {job['heading']}\n\n"
-        f"SOURCE PASSAGE:\n{job['passage']}\n\n"
+        f"SOURCE PASSAGE:\n{job['passage']}\n"
+        f"{extra}\n"
         "Return JSON: {\"question\": \"...\", \"answer\": \"...\"}"
     )
 
@@ -160,6 +180,8 @@ SPLIT_FILES = {
               "accepted": "accepted.jsonl", "rejected": "rejected.jsonl"},
     "eval": {"jobs": "eval_jobs.jsonl", "status": "eval_status.json",
              "accepted": "eval_accepted.jsonl", "rejected": "eval_rejected.jsonl"},
+    "honesty": {"jobs": "honesty_jobs.jsonl", "status": "honesty_status.json",
+                "accepted": "honesty_accepted.jsonl", "rejected": "honesty_rejected.jsonl"},
 }
 
 
@@ -254,9 +276,13 @@ def run_batch(
             raw = call_teacher(
                 provider,
                 model,
-                teacher_user_prompt(job),
+                teacher_user_prompt(job, honesty=(split == "honesty")),
                 slice_name="open_theology",
-                system_prompt=OPEN_THEOLOGY_TEACHER_SYSTEM,
+                system_prompt=(
+                    OPEN_THEOLOGY_HONESTY_TEACHER_SYSTEM
+                    if split == "honesty"
+                    else OPEN_THEOLOGY_TEACHER_SYSTEM
+                ),
                 max_tokens=1500,
                 temperature=0.5,
             )
@@ -410,7 +436,13 @@ def main(argv: list[str] | None = None) -> int:
         choices=tuple(SPLIT_FILES),
         default="train",
         help="train: jobs.jsonl -> accepted/rejected/status; "
-        "eval: eval_jobs.jsonl -> eval_accepted/eval_rejected/eval_status",
+        "eval: eval_jobs.jsonl -> eval_accepted/eval_rejected/eval_status; "
+        "honesty: honesty_jobs.jsonl -> honesty_accepted/rejected/status",
+    )
+    p.add_argument(
+        "--honesty",
+        action="store_true",
+        help="Shortcut for --split honesty (anti-invent teacher batch)",
     )
     args = p.parse_args(argv)
 
@@ -418,7 +450,8 @@ def main(argv: list[str] | None = None) -> int:
     if not out_dir.is_absolute():
         out_dir = _REPO / out_dir
 
-    status_path = split_paths(out_dir, args.split)["status"]
+    split = "honesty" if args.honesty else args.split
+    status_path = split_paths(out_dir, split)["status"]
     if args.clear_halt and status_path.exists():
         status = load_status(status_path)
         status["halted"] = False
@@ -433,7 +466,7 @@ def main(argv: list[str] | None = None) -> int:
         provider=args.provider,
         model=args.model,
         sleep_s=args.sleep,
-        split=args.split,
+        split=split,
     )
     return 0
 

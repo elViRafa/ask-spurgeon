@@ -1,8 +1,8 @@
 {
   "export_version": "open_theology_sft_v1",
   "slice": "open_theology",
-  "created_at": "2026-10-15T15:50:46.049296+00:00",
-  "source_commit": "17761888d57e91d234dd03917201b68f84ae92ff",
+  "created_at": "2026-10-19T18:05:32.884703+00:00",
+  "source_commit": "0e1fb26d0ce316d4f3c68554a9f70919367262a7",
   "generator_version": "qa_open_theology_v1",
   "format": {
     "row": {
@@ -11,28 +11,28 @@
       "messages": "[system, user, assistant] chat; no CONTEXT turn"
     },
     "system_prompt": "config.THEOLOGY_CHAT_SYSTEM_PROMPT",
-    "system_prompt_sha256": "dd293f701c7520186e2fb38c26629af95eca94502c3bc223e16b8edcf8899083"
+    "system_prompt_sha256": "f2e68223ac3c7f98fd3e0eee1cfa9154d6c06779e4477ae9f0610636b4ea53b6"
   },
   "files": {
     "train": {
       "path": "sft/open_theology_train.jsonl",
       "rows": 834,
-      "sha256": "48f9be04ddbcaff9baa84d2630b1b66d9a97c40d1de1f9154ee847489ae37c5f"
+      "sha256": "157ba2636d7360aa3ed9e5c6872ca6e8ddfa126f30058fbf5630fe41bb2a18c7"
     },
     "eval": {
       "path": "sft/open_theology_eval.jsonl",
       "rows": 40,
-      "sha256": "64b8a7f5425fb5673030cc7db790ae7b7e20333937ab7c7892dc69b79b274e60"
+      "sha256": "9f10f533c3652e158dedd972d0ed15f1cf2e2ad07621dddf2aa6a0e3f67c2483"
     }
   },
   "sources": {
     "accepted.jsonl": {
       "rows": 838,
-      "sha256": "80750fdbec092047014639f386110bfd7beb732e7cd60b78575f95c9e0bd0ba2"
+      "sha256": "d70e04db240285201292649bf3c869a0ab6f4c98c9f677c3c485324bd5a269cf"
     },
     "eval_accepted.jsonl": {
       "rows": 40,
-      "sha256": "b18f23672b45b24870b6d472156b8802992fa0751abb74b85b970181fd022dfe"
+      "sha256": "a84d21e60d82715f07ce8880fdcd2c199b8d9c79f94637667dd380120ee6f306"
     }
   },
   "eval_partial": false,
