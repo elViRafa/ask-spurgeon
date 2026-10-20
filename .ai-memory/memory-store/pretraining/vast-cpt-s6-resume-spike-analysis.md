@@ -7,6 +7,7 @@ tags: [cpt, s6, vast, early-stop, resume, analysis]
 schema_version: 1.3
 last_updated: "2026-09-18T09:30:54-03:00"
 evidence: [continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s6/fetch/theology_cpt_run_config.json, continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s6/fetch/checkpoints_sota/checkpoint-2400/trainer_state.json, continued_pretrain/scripts/cpt_runtime.py, continued_pretrain/scripts/train_cpt_sota.py]
+review_status: stale
 ---
 
 # Vast S6 continue-B — resume spike + flat early-stop (2026-09-18)

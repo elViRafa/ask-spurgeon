@@ -103,10 +103,14 @@ def _merge() -> None:
 
     work = Path(_env("SFT_WORK_ROOT", "/workspace"))
     base = Path(_env("SFT_GATE0_MERGED", str(work / "theology_cpt_v2_merged_hf")))
-    adapter = Path(
-        _env("SFT_LORA_DIR", str(work / "spurgeon_qa_lora_v2" / "lora"))
+    # Prefer weighted S8 LoRA when present; GATE-0 path remains the fallback.
+    default_lora = work / "sft_s8_weighted" / "adapter" / "lora"
+    if not (default_lora / "adapter_config.json").is_file():
+        default_lora = work / "spurgeon_qa_lora_v2" / "lora"
+    adapter = Path(_env("SFT_LORA_DIR", str(default_lora)))
+    out = Path(
+        _env("SFT_MERGED_OUT", str(work / "spurgeon_qa_s8w_merged_hf"))
     )
-    out = Path(_env("SFT_MERGED_OUT", str(work / "spurgeon_qa_merged_hf")))
     hub_id = _env(
         "SFT_LORA_HUB", "rafaelvieirar1r/qwen3.5-4b-spurgeon-qa-lora-v2"
     )

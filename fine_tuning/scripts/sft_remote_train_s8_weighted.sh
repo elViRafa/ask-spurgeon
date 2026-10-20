@@ -13,6 +13,12 @@ EXITFILE=/workspace/sft_train.exit
 SETUPLOG=/workspace/sft_setup.log
 SMOKELOG=/workspace/sft_smoke.log
 
+# Network volume keeps prior-run smoke fail markers; clear before this supervisor starts
+# so the monitor cannot false-trigger SMOKE_BEFORE_TRAIN_FAILED mid-setup.
+: > "$SMOKELOG"
+rm -rf /workspace/sft_smoke_fail
+rm -f "$EXITFILE"
+
 echo $$ > "$PIDFILE"
 _write_exit() {
   local rc=$?

@@ -132,6 +132,26 @@ def _test_jsonl(work: Path) -> Path:
     raise FileNotFoundError("qa_test_frozen.jsonl not found")
 
 
+def resolve_sft_lora_dir(kwork: Path | None = None) -> Path:
+    """LoRA dir for F eval/export. Default: weighted S8 path; GATE-0 via env override."""
+    explicit = (os.environ.get("SFT_LORA_DIR") or "").strip()
+    if explicit:
+        return Path(explicit)
+    root = kwork if kwork is not None else _kaggle_working()
+    weighted = root / "sft_s8_weighted" / "adapter" / "lora"
+    if weighted.is_dir():
+        return weighted
+    return root / "spurgeon_qa_lora_v2" / "lora"
+
+
+def resolve_sft_merged_out(kwork: Path | None = None) -> Path:
+    explicit = (os.environ.get("SFT_MERGED_OUT") or "").strip()
+    if explicit:
+        return Path(explicit)
+    root = kwork if kwork is not None else _kaggle_working()
+    return root / "spurgeon_qa_s8w_merged_hf"
+
+
 def _eval_and_maybe_export() -> None:
     from unsloth import FastLanguageModel
 
@@ -146,9 +166,10 @@ def _eval_and_maybe_export() -> None:
     export = os.environ.get("SFT_EXPORT", "0").strip().lower() in ("1", "true", "yes")
     max_seq_length = int(os.environ.get("SFT_MAX_SEQ_LENGTH", "4096"))
 
-    lora_dir = kwork / "spurgeon_qa_lora_v2" / "lora"
-    out_metrics = kwork / "sft_eval_metrics.json"
-    out_merged = kwork / "spurgeon_qa_v2_merged_hf"
+    lora_dir = resolve_sft_lora_dir(kwork)
+    metrics_name = (os.environ.get("SFT_EVAL_METRICS") or "").strip()
+    out_metrics = Path(metrics_name) if metrics_name else (kwork / "sft_eval_metrics.json")
+    out_merged = resolve_sft_merged_out(kwork)
 
     model, tokenizer = FastLanguageModel.from_pretrained(
         model_name=base_model,

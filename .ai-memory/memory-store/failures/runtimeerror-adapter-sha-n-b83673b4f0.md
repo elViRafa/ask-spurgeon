@@ -9,6 +9,7 @@ last_updated: "2026-09-18T07:38:55-03:00"
 occurrences: 1
 error_signature: "runtimeerror: adapter sha<n> mismatch: got <hex>… (s<n> lora) want <hex>… (hub v<n>). vast cpt continue-b crashed immediately because vast_inject_hf_token.ps<n> writes expected_adapter_sha<n>=hub-v<n> into <path>, and vast_cpt_remote_continue_b.sh sourced .sft_env after exporting the s<n> sha, overw"
 failure_key: runtimeerror
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-09-18T07:38:55-03:00

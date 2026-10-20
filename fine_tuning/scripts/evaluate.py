@@ -753,6 +753,18 @@ def main(argv: list[str] | None = None) -> int:
         max_tokens=args.max_tokens,
         progress_path=progress_paths["candidate"],
     )
+    # Free candidate weights before loading baseline (24GB GPUs cannot hold two 4B bf16).
+    del candidate_backend
+    try:
+        import gc
+
+        import torch
+
+        gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+    except Exception:
+        pass
 
     baseline_payload = None
     baseline_records: list[dict[str, Any]] = []

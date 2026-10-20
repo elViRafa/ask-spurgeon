@@ -7,6 +7,7 @@ tags: [cpt, s6, vast, resolved]
 schema_version: 1.3
 last_updated: "2026-09-18T11:16:07-03:00"
 evidence: [continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_session.json, continued_pretrain/scripts/train_cpt_sota.py, continued_pretrain/kaggle/runpod_cpt_v3/vast_cpt_s6/vast_cpt_monitor.log]
+review_status: stale
 ---
 
 # Principal session — act now (side-chat handoff 2026-09-18)

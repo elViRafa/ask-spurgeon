@@ -2,12 +2,13 @@
   "halted": false,
   "halt_reason": "",
   "counts": {
-    "accepted": 0,
-    "rejected": 0,
-    "remaining": 60,
-    "honesty_jobs": 60
+    "accepted": 53,
+    "rejected": 7,
+    "remaining": 0,
+    "honesty_jobs": 60,
+    "meta_wording_warnings": 18
   },
-  "next_job_id": "honesty-puritan-001",
-  "updated_at": "2026-10-19T18:08:37.965430+00:00",
+  "next_job_id": "",
+  "updated_at": "2026-10-20T13:10:35.869396+00:00",
   "mode": "honesty_anti_invent_v1"
 }

@@ -8,6 +8,7 @@ schema_version: 1.3
 last_updated: "2026-09-18T11:46:03-03:00"
 occurrences: 1
 error_signature: "s<n> vast c-eval fail: sha<n> mismatch — expected was hub-v<n> <hex>… after sourcing <path> from vast_inject_hf_token, while got was s<n> ckpt-<n> <hex>…"
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-09-18T11:46:03-03:00

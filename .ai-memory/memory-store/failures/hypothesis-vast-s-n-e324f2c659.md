@@ -8,6 +8,7 @@ schema_version: 1.3
 last_updated: "2026-09-18T20:31:31-03:00"
 occurrences: 1
 error_signature: "hypothesis: vast s<n> c +<n>.<n>% spurgeon ppl caused by untied embed<path> (ensure_weight_tying=false)."
+review_status: stale
 ---
 
 ## Occurrence 1 — 2026-09-18T20:31:31-03:00

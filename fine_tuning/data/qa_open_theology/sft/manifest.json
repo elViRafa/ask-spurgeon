@@ -1,8 +1,8 @@
 {
   "export_version": "open_theology_sft_v1",
   "slice": "open_theology",
-  "created_at": "2026-10-19T18:05:32.884703+00:00",
-  "source_commit": "0e1fb26d0ce316d4f3c68554a9f70919367262a7",
+  "created_at": "2026-10-20T13:11:06.248825+00:00",
+  "source_commit": "d0b14642d14a6a85b362ce982c2e2f1866497482",
   "generator_version": "qa_open_theology_v1",
   "format": {
     "row": {
@@ -16,8 +16,8 @@
   "files": {
     "train": {
       "path": "sft/open_theology_train.jsonl",
-      "rows": 834,
-      "sha256": "157ba2636d7360aa3ed9e5c6872ca6e8ddfa126f30058fbf5630fe41bb2a18c7"
+      "rows": 887,
+      "sha256": "4a12a9330fc7330ea6b2631bd6dd6c005d642bdb354fc372da54d3ab2da9aa67"
     },
     "eval": {
       "path": "sft/open_theology_eval.jsonl",
@@ -27,8 +27,8 @@
   },
   "sources": {
     "accepted.jsonl": {
-      "rows": 838,
-      "sha256": "d70e04db240285201292649bf3c869a0ab6f4c98c9f677c3c485324bd5a269cf"
+      "rows": 891,
+      "sha256": "299a0e972858a37f32cc2f51bd980696eb38a76573943f35033b53b69b745f0e"
     },
     "eval_accepted.jsonl": {
       "rows": 40,
@@ -51,9 +51,9 @@
   },
   "meta_wording_counts": {
     "train": {
-      "question": 10,
-      "answer": 24,
-      "any": 29
+      "question": 17,
+      "answer": 39,
+      "any": 47
     },
     "eval": {
       "question": 1,
@@ -63,9 +63,9 @@
   },
   "by_bucket": {
     "train": {
-      "confession": 135,
-      "puritan": 417,
-      "spurgeon": 282
+      "confession": 143,
+      "puritan": 445,
+      "spurgeon": 299
     },
     "eval": {
       "confession": 8,
@@ -76,7 +76,7 @@
   "by_teacher": {
     "train": {
       "gemini/gemini-2.5-flash": 12,
-      "groq/openai/gpt-oss-120b": 822
+      "groq/openai/gpt-oss-120b": 875
     },
     "eval": {
       "groq/openai/gpt-oss-120b": 40
