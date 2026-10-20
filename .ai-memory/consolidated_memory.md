@@ -59,9 +59,9 @@ summary: "Map of available project memory sections."
 priority: high
 tags: [index, memory]
 schema_version: 1.3
-last_updated: "2026-10-20T09:57:33-03:00"
+last_updated: "2026-10-20T14:01:11-03:00"
 consolidation_hash: acd058fab27bf79aa31f9bd2e3dc7172
-contradictions: ["`fine-tuning/hf-spurgeon-qa-v2-gguf` and `fine-tuning/plans/ollama-merge-gguf` cover similar content but state different numbers (2.71 vs 07) - review for conflict [heuristic]", "`fine-tuning/next-session-ot-softstrip-resft`", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-next-session-handoff` cover similar content but state different numbers (1 vs 1.701 / 2.449 / 2250) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-s8-mhi-resume-c-merge-parent` cover similar content but state different numbers (1 / 1.6349 / 132 vs 22698039 / 54545345) - review for conflict [heuristic]"]
+contradictions: ["`fine-tuning/hf-spurgeon-qa-v2-gguf` and `fine-tuning/plans/ollama-merge-gguf` cover similar content but state different numbers (2.71 vs 07) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-next-session-handoff` cover similar content but state different numbers (1 vs 1.701 / 2.449 / 2250) - review for conflict [heuristic]", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-s8-mhi-resume-c-mer", "`grok/s8-mhi-resume-c-run` and `pretraining/cpt-s8-mhi-resume-c-prepared` cover similar content but state different numbers (1 / 2.8 / 2026.8 vs -) - review for conflict [heuristic]"]
 consolidation_warnings: ["Skipped bugs\\gemma4-chat-template-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped bugs\\ollama-tokenizer-corruption-fix.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped decisions\\gemma4-local-ollama.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-12.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-07-14.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-08-23.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-08-28.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped episodic\\2026-09-15.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\clerk-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\CURSOR_TODO_SFT_S8_WEIGHTED_2026-10-14.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\foundry-memory-export-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\qa-open-theology-sft-handoff-2026-10-13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\runpod-sft-gate0-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped fine-tuning\\sft-s3-mask-multiturn-brief-2026-10-15.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-b-eval-strategy-implementation.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-expansion-plan.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-s1-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-corpus-v3-s5-b-complete.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-s6-c-eval-next-session.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-s6-phase0-prepared.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-implementation-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-next-steps-after-v13.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-plan-fable5.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v2-runpod-mcp-volume-gap.md during index regeneration: Missing YAML frontmatter delimiter", "Skipped pretraining\\cpt-v3-s6-handoff.md during index regeneration: Missing YAML frontmatter delimiter"]
 summary_hash: c81ed9efe309125e42b693ba950f4f04
 contradiction_count: 50
@@ -78,8 +78,8 @@ Updated by Memory Fabric Dreaming mode `light`.
 | `debt` | low | App debt (hybrid search, rate limits) plus 2026-08-29 memory-fabric LLM/host hygiene notes. | • Known Technical Debt & Limits<br>• Roadmap & Pending Features |
 | `decisions` | medium | Generated map of memory-store/decisions/ (1 entries). | • **Gemma 4 Fine-Tuning Transition** (`decisions/gemma4-fin... |
 | `episodic` | medium | Generated map of memory-store/episodic/ (39 entries). | • **2026-09-28** (`episodic/2026-09-28`, medium) — Reframed...<br>• **2026-10-02** (`episodic/2026-10-02`, medium) —<br>• **2026-10-05** (`episodic/2026-10-05`, medium) — |
-| `failures` | medium | Generated map of memory-store/failures/ (49 entries). | • **Vast official Unsloth image smoke blocked; LD_LIBRARY_P...<br>• **AssertionError: S3 FAIL row 5: user turn leaked into la...<br>• **asyncua write_value BadTypeMismatch when writing int to... |
-| `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (74 entries). | • **Fine-tuning next session handoff** (`fine-tuning/next-s...<br>• **Next session: OT soft-strip re-SFT + re-score (needs go...<br>• **Next after F gates fail: refusal knob not export** (`fi... |
+| `failures` | medium | Generated map of memory-store/failures/ (51 entries). | • **Vast official Unsloth image smoke blocked; LD_LIBRARY_P...<br>• **AssertionError: S3 FAIL row 5: user turn leaked into la...<br>• **asyncua write_value BadTypeMismatch when writing int to... |
+| `fine-tuning` | medium | Generated map of memory-store/fine-tuning/ (76 entries). | • **Fine-tuning next session handoff** (`fine-tuning/next-s...<br>• **Next after F gates fail: refusal knob not export** (`fi...<br>• **Open-theology chat = corpus knowledge assistant (cite o... |
 | `framework-rules` | medium | Defines coding standards, required libraries (Streamlit, LlamaIndex), environment setup (.env), and database rules for the codebase. | • 1. Runtime Environment<br>• 2. Core Libraries & Packages<br>• 3. Vector Database Rules<br>• 4. Agent Memory Guidelines |
 | `grok` | medium | Generated map of memory-store/grok/ (7 entries). | • **Grok Bot Clerk for open-theology QA generation** (`grok...<br>• **Grok Bot Foundry for train/export code** (`grok/foundry...<br>• **Grok Integration with Memory Fabric (MCP + Docs + Nativ... |
 | `pretraining` | medium | Generated map of memory-store/pretraining/ (101 entries). | • **CPT B_training_sota known issues (P1 closed — log spam)...<br>• **Composite CPT early stop merges split HF eval events** ...<br>• **Confessions + Institutes corpus (WCF, 1689, Calvin)** (... |
@@ -2757,42 +2757,6 @@ Allowlist agent IP **159.26.98.242** on the Vultr API key (or "any IP" temporari
 - EXPORT only after F §5 gates
 - Never log VULTR_API_KEY / HF_TOKEN
 
-<!-- memory-fabric:store/fine-tuning/next-session-ot-softstrip-resft -->
----
-store_path: fine-tuning/next-session-ot-softstrip-resft
-title: "Next session: OT soft-strip re-SFT + re-score (needs go)"
-summary: "Operator intent: pick up after soft-strip data landed (2026-10-19/20)"
-priority: high
-tags: [sft, open-theology, handoff, next-session]
-schema_version: 1.3
-last_updated: "2026-10-20T09:56:53-03:00"
----
-
-# Next session — OT soft-strip → re-SFT → re-score
-
-Operator intent: pick up after soft-strip data landed (2026-10-19/20).
-
-## Ready now
-
-- Soft-strip applied (`soft_strip_open_theology_gold.py`); cite theater stripped from accepted/eval_accepted
-- Eval trivia redraw: 4 junk rows → doctrine (`redraw_open_theology_eval_trivia.py`)
-- SFT export: train **834** / eval **40** (SHAs in `sft/manifest.json`)
-- Honesty jobs planned: 60 in `honesty_jobs.jsonl` — teacher **apply** needs go
-- Weighted SFT dry READY; dirty OT sft paths need `-AllowDirtySync` or commit before `-Go`
-- Runbooks: `fine_tuning/NEXT_OT_SOFTSTRIP_RESFT.md`, `fine_tuning/NEXT_OT_HONESTY_BATCH.md`
-- Prior re-score still `weak_not_useful_yet` (`fine-tuning/open-theology-eval-corpus-chat-rescore-2026-10-19`)
-
-## Do on go
-
-1. Optional: `python fine_tuning/scripts/generate_open_theology_qa.py --honesty --apply --limit 60` → merge honesty_accepted into accepted → soft-strip → export
-2. Quote $/hr; `runpod_sft_s8_weighted_orchestrate.ps1 -Go` (cleaned OT; no Hub; `SFT_EXPORT=0`). Forge for long watch.
-3. `runpod_sft_s8_weighted_open_theology_eval.ps1 -Go` under `open_theology_chat_corpus_v1`; Gemini judge on PC
-4. Destroy pod; compare to 2026-10-19 weak score
-
-## Still not this job
-
-- RAG refusal-slice / Hub / `spurgeon-qa-v2` / `build_qa_mix_v2.py`
-
 <!-- memory-fabric:store/fine-tuning/next-session-sft-f-gates-local-adapter -->
 ---
 store_path: fine-tuning/next-session-sft-f-gates-local-adapter
@@ -3120,6 +3084,93 @@ New prompt re-score under `THEOLOGY_CHAT_SYSTEM_PROMPT` (cite optional). Distinc
 - Cite diagnostics: quote_in_passage_rate 0.075 (3/40), heading_cited_rate 0.0. Of 40 rows, 20 quoted a span not in the passage, 17 quoted nothing, 3 quoted in-passage text. Invent-cite is still a problem under the optional-cite prompt.
 - OOC 8-row slice not run (not wired into the orchestrator).
 - Next export knob remains RAG refusal, not this score.
+
+<!-- memory-fabric:store/fine-tuning/ot-softstrip-resft-live-2026-10-20 -->
+---
+store_path: fine-tuning/ot-softstrip-resft-live-2026-10-20
+title: "OT soft-strip re-SFT live on Secure 4090"
+summary: "- Honesty teacher: 53 accept / 7 reject / not halted (`--honesty --apply --limit 60`)"
+priority: high
+tags: [sft, open-theology, runpod, live]
+schema_version: 1.3
+last_updated: "2026-10-20T10:28:56-03:00"
+---
+
+# OT soft-strip re-SFT live (2026-10-20)
+
+## Data (before GPU)
+
+- Honesty teacher: 53 accept / 7 reject / not halted (`--honesty --apply --limit 60`)
+- Merged into `accepted.jsonl` → 891; soft-strip; export **train 887** / eval 40
+- Dirty OT sft vs PINNED_SHA `d0b1464` → `-AllowDirtySync`
+
+## GPU
+
+- Host: RunPod Secure RTX 4090 `r01fu8rxdszh4m` US-IL-1 @ **$0.89/hr**
+- SSH direct `203.57.40.146:10223`
+- Community 4090: no stock; first Secure `re5vcu9ojlpw4q` bad-host SSH timeout → destroyed
+- Stale Oct-17 `sft_smoke.log` false-triggered SMOKE_BEFORE_TRAIN_FAILED → cleared; attach monitor `runpod_sft_s8_weighted_monitor_attach.ps1`
+- Patched `sft_remote_train_s8_weighted.sh` to truncate smoke log at supervisor start (not yet on this pod)
+
+## Walk-away gates (confirmed)
+
+- `SFT_OPEN_THEOLOGY=1`, `OPEN_THEOLOGY_ROWS 887`, `MIX_ROWS 4151`
+- `RAG_PROMPT_OK` / `THEOLOGY_PROMPT_OK`
+- Base S8 merged; `SFT_BACKEND: unsloth`; `SFT_EXPORT=0`
+- Smoke OK seq 4608; `FULL_TRAIN`; S3 masking OK; drop 0
+- ~12–14 s/it; 520 steps; loss ~1.51 @ step 10; GPU 100% / ~15.8 GiB
+
+## Next
+
+1. Forge long watch (`run is live` on `r01fu8rxdszh4m`)
+2. After fetch+destroy: `runpod_sft_s8_weighted_open_theology_eval.ps1 -Go` → Gemini judge on PC
+3. Compare to 2026-10-19 `weak_not_useful_yet` (correctness/honesty 2.525)
+4. Still out of scope: RAG refusal / Hub / `spurgeon-qa-v2`
+
+<!-- memory-fabric:store/fine-tuning/ot-softstrip-resft-score-2026-10-20 -->
+---
+store_path: fine-tuning/ot-softstrip-resft-score-2026-10-20
+title: "OT soft-strip re-SFT re-score still weak"
+summary: "**Go completed.** Soft-strip + honesty (53) + weighted Unsloth re-SFT → OT re-score under `open_theology_chat_corpus_v1`"
+priority: high
+tags: [sft, open-theology, eval, soft-strip]
+schema_version: 1.3
+last_updated: "2026-10-20T12:51:33-03:00"
+---
+
+# OT soft-strip re-SFT re-score (2026-10-20)
+
+**Go completed.** Soft-strip + honesty (53) + weighted Unsloth re-SFT → OT re-score under `open_theology_chat_corpus_v1`.
+
+## Adapter
+
+- SHA256: `a34d288652b52b840b1a40bdb5173d49348010830ceab026dc06949478cc49c0`
+- Train: 520 steps / 2 epochs; train_loss 0.9975; ~12 s/it; mix 4151 (RAG 3264 + OT 887)
+- `SFT_EXPORT=0`; no Hub
+
+## Eval ops
+
+- Pod: Secure 4090 `cjzlpbsvzl4fjc` @ $0.89/hr; destroyed (`POD_DELETED`)
+- Report: `fine_tuning/eval_results/open_theology_eval_s8_weighted.json` schema `open_theology_eval_1.1`
+- Judge: Gemini `gemini-3.5-flash-lite` 40/40
+
+## Verdict vs 2026-10-19 cite-optional re-score
+
+| Metric | 2026-10-19 (old adapter e891731c) | 2026-10-20 (soft-strip+honesty a34d2886) |
+|--------|-----------------------------------|------------------------------------------|
+| useful / label | false / weak_not_useful_yet | false / weak_not_useful_yet |
+| correctness mean | 2.525 | **2.65** |
+| honesty mean | 2.525 | **2.50** |
+| persona_leakage | 5.0 | 5.0 |
+| false_refusal | 0.025 | **0.0** |
+| quote_in_passage | 0.075 | 0.10 |
+| heading_cited | 0.0 | 0.0 |
+
+Need ≥3.5 correctness/honesty. Soft-strip + honesty batch did **not** clear invent-cite / weak doctrine. Persona/refusal side remains fine. `release_gate=false`.
+
+## Next FT knob
+
+Still **`rag_refusal_slice`** for Hub/Ollama (`fine-tuning/sft-improve-refusal-slice-first`). OT chat needs a different lever than soft-strip alone if usefulness is pursued later.
 
 <!-- memory-fabric:store/pretraining/puritan-corpus-fetch -->
 ---
@@ -5901,15 +5952,15 @@ Following the successful execution of Notebook B (Epoch 1 & 2) up to step 432:
 <!-- memory-fabric:local/failures -->
 ---
 section: failures
-summary: "Generated map of memory-store/failures/ (49 entries)."
+summary: "Generated map of memory-store/failures/ (51 entries)."
 priority: medium
 tags: [failures]
 schema_version: 1.3
-last_updated: "2026-10-17T20:55:26-03:00"
+last_updated: "2026-10-20T10:19:51-03:00"
 generated: true
 generated_from: memory-store/failures
-store_fingerprint: da9889e3d92706f35d1c5151da1ab4ef
-body_hash: 84d631b9530c40e6be7e89ded1bd345f
+store_fingerprint: 3d5beddca3915aee7aeb536c9fa7e968
+body_hash: 730c07285947aa0d9c6afe7bbc4d6bb4
 ---
 
 # Failures Map
@@ -5924,20 +5975,20 @@ Generated by Memory Fabric from `memory-store/failures/` — do not edit by hand
 - **CPT B early-stop patience=2 with eval_steps=25 and 2-doc eval_spurgeon_loss halt** (`failures/cpt-b-early-stop-561e9ec07f`, medium) — CPT B early-stop patience=2 with eval_steps=25 and 2-doc eval_spurgeon_loss halted corpus v3 at step 375 of 4128 (~8.2M of 90M tokens)
 - **torch.OutOfMemoryError: CUDA out of memory during SFTTrainer.evaluate at step 20** (`failures/cuda-oom-during-mid-ffcb775074`, medium) — CUDA OOM during mid-train eval at step ~20 with PEFT bf16 seq 2048 on RTX 4090 24GB
 - **CUDA OOM on Kaggle T4 during CPT B v5 after manual pack (float32 Qwen3.5, batch ** (`failures/cuda-oom-on-kaggle-e64e9b60ce`, medium) — CUDA OOM on Kaggle T4 during CPT B v5 after manual pack (float32 Qwen3.5, batch 2, TRAIN_EMBEDDINGS=True)
-- …and 41 more entries — see `memory-store/index.md`.
+- …and 43 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:local/fine-tuning -->
 ---
 section: fine-tuning
-summary: "Generated map of memory-store/fine-tuning/ (74 entries)."
+summary: "Generated map of memory-store/fine-tuning/ (76 entries)."
 priority: medium
 tags: [fine-tuning]
 schema_version: 1.3
-last_updated: "2026-10-20T09:56:53-03:00"
+last_updated: "2026-10-20T14:00:25-03:00"
 generated: true
 generated_from: memory-store/fine-tuning
-store_fingerprint: a00fe6a57ead2654176f1dc656aec11e
-body_hash: d7aaea2b86b986125f7a0fe6786d4c19
+store_fingerprint: ab24a2766ce8c16671d248927dc6a2eb
+body_hash: 7cbad1c0a384525123a06c4d3e1fbfa1
 ---
 
 # Fine Tuning Map
@@ -5945,7 +5996,6 @@ body_hash: d7aaea2b86b986125f7a0fe6786d4c19
 Generated by Memory Fabric from `memory-store/fine-tuning/` — do not edit by hand. Write facts with `write_memory_store_tool`; Dreaming rebuilds this map.
 
 - **Fine-tuning next session handoff** (`fine-tuning/next-session-handoff`, high) — **Updated:** 2026-09-04 ~01:20 ET
-- **Next session: OT soft-strip re-SFT + re-score (needs go)** (`fine-tuning/next-session-ot-softstrip-resft`, high) — Operator intent: pick up after soft-strip data landed (2026-10-19/20)
 - **Next after F gates fail: refusal knob not export** (`fine-tuning/next-session-sft-f-gates-local-adapter`, high) — F §5 on local Unsloth adapter **failed** only on refusal (0.46)
 - **Open-theology chat = corpus knowledge assistant (cite optional)** (`fine-tuning/open-theology-chat-corpus-contract`, high) — - **Is:** a second product beside live RAG — a general theology LLM of the Spurgeon / Puritan / confession **CPT corpus**, knowledge-assistant voice, no preacher roleplay
 - **OT corpus-chat re-score 2026-10-19: still weak** (`fine-tuning/open-theology-eval-corpus-chat-rescore-2026-10-19`, high) — **Go completed.** Same 40 held-out rows under `open_theology_chat_corpus_v1` / cite-optional system prompt
@@ -5954,8 +6004,9 @@ Generated by Memory Fabric from `memory-store/fine-tuning/` — do not edit by h
 - **Next session: plan open theological QA slice** (`fine-tuning/open-theology-qa-next-session`, high) — Operator intent: the model should be a theological Puritan/Spurgeon LLM as well as a RAG assistant
 - **Open theological QA is a new slice; RAG mix stays** (`fine-tuning/open-theology-slice-vs-rag`, high) — Operator decision 2026-10-09: the product is a RAG assistant and a theological Puritan/Spurgeon LLM
 - **OT corpus-chat re-score still weak; invent-cite remains** (`fine-tuning/ot-corpus-chat-rescore-2026-10-19`, high) — New prompt re-score under `THEOLOGY_CHAT_SYSTEM_PROMPT` (cite optional)
-- **SFT QA gold rewrite pilot (20 rows, merged)** (`fine-tuning/qa-gold-rewrite-pilot`, high) — **Status:** Complete and **merged** into `qa_mix_train.jsonl`
-- …and 63 more entries — see `memory-store/index.md`.
+- **OT soft-strip re-SFT live on Secure 4090** (`fine-tuning/ot-softstrip-resft-live-2026-10-20`, high) — - Honesty teacher: 53 accept / 7 reject / not halted (`--honesty --apply --limit 60`)
+- **OT soft-strip re-SFT re-score still weak** (`fine-tuning/ot-softstrip-resft-score-2026-10-20`, high) — **Go completed.** Soft-strip + honesty (53) + weighted Unsloth re-SFT → OT re-score under `open_theology_chat_corpus_v1`
+- …and 65 more entries — see `memory-store/index.md`.
 
 <!-- memory-fabric:store/grok/forge-training-ops -->
 ---
@@ -6317,6 +6368,37 @@ evidence: [fine-tuning/open-theology-chat-corpus-contract, fine_tuning/scripts/r
 3. Optional: score `open_theology_eval_ooc.jsonl` (8 rows) — not run on this go
 
 Do not treat OT score as Hub unlock.
+
+<!-- memory-fabric:store/fine-tuning/next-session-ot-softstrip-resft -->
+---
+store_path: fine-tuning/next-session-ot-softstrip-resft
+title: "Next session after OT soft-strip re-SFT (go complete)"
+summary: "- Honesty 53 accept / 7 reject → accepted 891 → export train **887** / eval 40"
+priority: medium
+tags: [sft, open-theology, handoff, next-session]
+schema_version: 1.3
+last_updated: "2026-10-20T14:00:25-03:00"
+---
+
+# Next session — after OT soft-strip re-SFT (2026-10-20 go done)
+
+## Go completed
+
+- Honesty 53 accept / 7 reject → accepted 891 → export train **887** / eval 40
+- Weighted Unsloth SFT Secure 4090; adapter SHA256 `a34d288652b52b840b1a40bdb5173d49348010830ceab026dc06949478cc49c0`
+- Re-score still `weak_not_useful_yet`: correctness **2.65**, honesty **2.50** (need ≥3.5) vs 2026-10-19 2.525/2.525
+- Invent-cite persists; soft-strip + honesty batch did not make OT chat useful
+- Evidence: `fine-tuning/ot-softstrip-resft-score-2026-10-20`, `fine-tuning/ot-softstrip-resft-live-2026-10-20`
+
+## Do next (different track)
+
+**RAG refusal-slice** for Hub/Ollama export (`fine-tuning/sft-improve-refusal-slice-first`). Do **not** rent another OT soft-strip re-SFT expecting usefulness.
+
+## Ops notes kept
+
+- Clear stale `/workspace/sft_smoke.log` at supervisor start (patched in `sft_remote_train_s8_weighted.sh`)
+- Attach monitor: `runpod_sft_s8_weighted_monitor_attach.ps1` if main orchestrator false-stops
+- `SFT_EXPORT=0`; Hub LoRA v2 stays
 
 <!-- memory-fabric:store/pretraining/notebook-structure -->
 ---
@@ -7428,6 +7510,28 @@ Stack-isolation C install failed: Unsloth 2026.8.22 pulls torchvision/xformers f
 **Fix:**
 Force-reinstall torch==2.8.0 + torchvision==0.23.0 + torchaudio==2.8.0 from cu126 index; uninstall xformers; set UNSLOTH_SKIP_TORCHVISION_CHECK=1. Encoded in vast_remote_stack_isolation_c.sh / vast_stack_isolation_rerun.sh.
 
+<!-- memory-fabric:store/failures/timeouterror-ssh-proxy-known-1fc3894a4a -->
+---
+store_path: failures/timeouterror-ssh-proxy-known-1fc3894a4a
+title: "TimeoutError: SSH proxy known but container unreachable for pod re5vcu9ojlpw4q ("
+summary: "TimeoutError: SSH proxy known but container unreachable for pod re5vcu9ojlpw4q (likely bad GPU host / GPU requires reset) during weighted Unsloth SFT provision on Secure 4090 US-IL-1"
+priority: medium
+tags: [bad-host, failure, fix, runpod, sft, ssh]
+schema_version: 1.3
+last_updated: "2026-10-20T10:14:36-03:00"
+occurrences: 1
+error_signature: "timeouterror: ssh proxy known but container unreachable for pod re<n>vcu<n>ojlpw<n>q (likely bad gpu host / gpu requires reset) during weighted unsloth sft provision on secure <n> us-il-<n>"
+failure_key: "timeouterror|il-1"
+---
+
+## Occurrence 1 — 2026-10-20T10:14:36-03:00
+
+**Error:**
+TimeoutError: SSH proxy known but container unreachable for pod re5vcu9ojlpw4q (likely bad GPU host / GPU requires reset) during weighted Unsloth SFT provision on Secure 4090 US-IL-1
+
+**Fix:**
+Orchestrator auto-destroyed the bad pod (POD_DELETED). Retry -Go -CloudType SECURE -AllowDirtySync; Community 4090 had no stock (500). Quote Secure 4090 $0.89/hr.
+
 <!-- memory-fabric:store/pretraining/training-configuration -->
 ---
 store_path: pretraining/training-configuration
@@ -8071,6 +8175,27 @@ weighted SFT watchdog used line>=470 SETUP_FAILED gate and fixed 25m silent time
 
 **Fix:**
 Shared sft_setup_markers.sh: actionable on reason= or SETUP_FAILED after last SETUP_PINS_OK/SETUP_PHASE=pins_ok. Phase markers + reason=trap phase= in sft_remote_setup. Watchdog extends silent deadline while sft_setup.log advances (stale 300s, cap 90m). Main 51cebd1.
+
+<!-- memory-fabric:store/failures/weighted-state-smoke-before-47e32813b0 -->
+---
+store_path: failures/weighted-state-smoke-before-47e32813b0
+title: "WEIGHTED_STATE=SMOKE_BEFORE_TRAIN_FAILED false trigger mid-setup: probe grepped "
+summary: "WEIGHTED_STATE=SMOKE_BEFORE_TRAIN_FAILED false trigger mid-setup: probe grepped stale /workspace/sft_smoke.log from prior Oct 17 run on network volume; orchestrator started evidence+destroy while sft_"
+priority: medium
+tags: [failure, false-positive, fix, network-volume, runpod, sft, smoke]
+schema_version: 1.3
+last_updated: "2026-10-20T10:19:51-03:00"
+occurrences: 1
+error_signature: "weighted_state=smoke_before_train_failed false trigger mid-setup: probe grepped stale <path> from prior oct <n> run on network volume; orchestrator started evidence+destroy while sft_remote_setup.sh still healthy"
+---
+
+## Occurrence 1 — 2026-10-20T10:19:51-03:00
+
+**Error:**
+WEIGHTED_STATE=SMOKE_BEFORE_TRAIN_FAILED false trigger mid-setup: probe grepped stale /workspace/sft_smoke.log from prior Oct 17 run on network volume; orchestrator started evidence+destroy while sft_remote_setup.sh still healthy
+
+**Fix:**
+Moved stale sft_smoke.log and sft_smoke_fail aside, truncated smoke log, killed local orchestrator before DELETE. Probe then ALIVE. Patched sft_remote_train_s8_weighted.sh to truncate smoke log and rm sft_smoke_fail at supervisor start. Attached runpod_sft_s8_weighted_monitor_attach.ps1 for remaining watch.
 
 <!-- memory-fabric:store/episodic/2026-07-11 -->
 ---
@@ -9657,6 +9782,7 @@ priority: low
 tags: [episodic, session-journal]
 schema_version: 1.3
 last_updated: "2026-09-19T11:03:52-03:00"
+review_status: stale
 ---
 
 ## save-cpt-c-eval-memories
@@ -10961,7 +11087,7 @@ summary: "Operator asked to save memories, commit, and push OT soft-strip useful
 priority: low
 tags: [episodic, session-journal]
 schema_version: 1.3
-last_updated: "2026-10-20T09:56:55-03:00"
+last_updated: "2026-10-20T14:00:18-03:00"
 ---
 
 ## ot-softstrip-commit-push
@@ -10973,6 +11099,35 @@ Operator asked to save memories, commit, and push OT soft-strip usefulness path.
 - Honesty teacher apply and GPU re-SFT both still need explicit go
 
 **Files changed:**
+
+## ot-softstrip-pushed
+
+Committed and pushed d0b1464 feat(ot): soft-strip cite theater and redraw trivia eval to origin/main. Memories saved at fine-tuning/next-session-ot-softstrip-resft. Next session starts at go for honesty teacher optional then weighted SFT + OT re-score.
+
+- Excluded bak/logs/kaggle adapters from commit
+- GPU and honesty --apply still need explicit go
+
+- `d0b1464 on main`
+
+## ot-softstrip-resft-go
+
+Completed OT soft-strip re-SFT go: honesty teacher 53/60 merged+soft-strip+export (train 887); weighted Unsloth SFT on Secure 4090 ($0.89/hr) adapter a34d2886; OT re-score still weak_not_useful_yet (correctness 2.65 / honesty 2.50 vs 2026-10-19 2.525/2.525). Soft-strip+honesty did not clear invent-cite. Next FT knob remains RAG refusal-slice. Fixed stale sft_smoke.log false-destroy; pods destroyed.
+
+- SFT_EXPORT=0 / no Hub after soft-strip re-SFT
+- OT usefulness still fails ≥3.5 gates; export path stays rag_refusal_slice
+- Truncate smoke log at weighted train supervisor start to avoid network-volume false fails
+
+- `fine_tuning/scripts/runpod_sft_s8_weighted_monitor_attach.ps1`
+
+## ot-softstrip-resft-complete
+
+Completed OT soft-strip + honesty re-SFT go: honesty teacher 53/7, export train 887, weighted Unsloth SFT on Secure 4090 (adapter a34d2886, 520 steps, loss 0.9975), OT re-score still weak_not_useful_yet (correctness 2.65 / honesty 2.50 vs 2026-10-19 2.525/2.525). Soft-strip+honesty did not fix invent-cite. Pods destroyed. Next export knob remains RAG refusal-slice.
+
+- Do not pursue more OT soft-strip alone for usefulness
+- SFT_EXPORT=0 / Hub stay locked until RAG refusal gates
+- Stale network-volume smoke markers must be cleared at train supervisor start; attach-monitor recovers false destroy
+
+- `.ai-memory/memory-store/fine-tuning/ot-softstrip-resft-score-2026-10-20.md`
 
 <!-- memory-fabric:store/episodic/commits/2026-10-14/604fca57e1 -->
 ---

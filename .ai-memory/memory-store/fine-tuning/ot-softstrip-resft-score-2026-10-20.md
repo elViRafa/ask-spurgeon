@@ -14,7 +14,6 @@ last_updated: "2026-10-20T12:51:33-03:00"
 
 ## Adapter
 
-- Path: `fine_tuning/kaggle/runpod_sft_s8_weighted/sft_s8_weighted/adapter/lora/`
 - SHA256: `a34d288652b52b840b1a40bdb5173d49348010830ceab026dc06949478cc49c0`
 - Train: 520 steps / 2 epochs; train_loss 0.9975; ~12 s/it; mix 4151 (RAG 3264 + OT 887)
 - `SFT_EXPORT=0`; no Hub
